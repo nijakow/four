@@ -12,11 +12,10 @@ public class Four {
 	public static void main(String[] args) {
 		Filesystem fs = new Filesystem();
 		File file = fs.getRoot().createDir("src").createFile("test.c").setContents("""
-				
+
+any x;			
+			
 any foo() {
-	any x;
-	
-	x = 0;
 	while (x <= 42) {
 		"Hello,\\nworld!".print();
 		x.print();
@@ -25,6 +24,7 @@ any foo() {
 }
 
 any test() {
+	x = 0;
 	foo();
 }
 		""");

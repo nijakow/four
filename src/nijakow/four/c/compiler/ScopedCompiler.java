@@ -108,12 +108,25 @@ public class ScopedCompiler implements FCompiler {
 
 	@Override
 	public void compileLoadVariable(Key identifier) {
-		writer.writeLoadLocal(findLocalVariable(identifier));	// FIXME: This leads to crashes if a variable is not found
+		Integer index = findLocalVariable(identifier);
+		if (index == null) {
+			compileLoadThis();
+			compileDot(identifier);
+		} else {
+			writer.writeLoadLocal(index);
+		}
 	}
 
 	@Override
 	public void compileStoreVariable(Key identifier) {
-		writer.writeStoreLocal(findLocalVariable(identifier));	// FIXME: This leads to crashes if a variable is not found
+		Integer index = findLocalVariable(identifier);
+		if (index == null) {
+			compilePush();
+			compileLoadThis();
+			compileDotAssign(identifier);
+		} else {
+			writer.writeStoreLocal(index);
+		}
 	}
 
 	@Override

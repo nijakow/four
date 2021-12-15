@@ -17,7 +17,7 @@ public class Blueprint {
 		return methods.get(key);
 	}
 
-	public void addSlot(Key name) {
+	public void addSlot(Type type, Key name) {
 		if (!slots.contains(name))
 			slots.add(name);
 	}

@@ -12,7 +12,6 @@ public class ASTInstanceVarDef extends ASTDefinition {
 
 	@Override
 	public void compileInto(Blueprint blueprint) {
-		// TODO Auto-generated method stub
-		
+		blueprint.addSlot(getType(), getName());
 	}
 }
