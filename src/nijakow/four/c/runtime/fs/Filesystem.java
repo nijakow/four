@@ -7,4 +7,6 @@ public class Filesystem {
 	}
 	
 	public Directory getRoot() { return root; }
+	
+	public FSNode find(String text) { return getRoot().find(text); }
 }

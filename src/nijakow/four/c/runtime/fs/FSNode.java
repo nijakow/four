@@ -8,6 +8,9 @@ public abstract class FSNode {
 		this.parent = parent;
 		this.name = name;
 	}
+	
+	public File asFile() { return null; }
+	public Directory asDir() { return null; }
 
 	public FSNode getParent() {
 		return parent;

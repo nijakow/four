@@ -9,6 +9,8 @@ public class Directory extends FSNode {
 	public Directory(FSNode parent, String name) {
 		super(parent, name);
 	}
+	
+	public Directory asDir() { return this; }
 
 	protected FSNode findChild(String name) {
 		return children.get(name);

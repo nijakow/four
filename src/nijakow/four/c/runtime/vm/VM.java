@@ -30,6 +30,10 @@ public class VM {
 		fibers.add(fiber);
 	}
 	
+	public void startFiber(Blue self, Key key) {
+		startFiber(self, key, new Instance[0]);
+	}
+	
 	public VM() {
 		
 	}

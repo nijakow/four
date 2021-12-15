@@ -4,15 +4,19 @@ import nijakow.four.c.ast.ASTFile;
 import nijakow.four.c.parser.Parser;
 import nijakow.four.c.parser.StringCharStream;
 import nijakow.four.c.parser.Tokenizer;
+import nijakow.four.c.runtime.Blue;
 import nijakow.four.c.runtime.Blueprint;
 
 public class File extends FSNode {
 	private String contents = "";
 	private Blueprint blueprint;
+	private Blue instance;
 	
 	public File(FSNode parent, String name) {
 		super(parent, name);
 	}
+	
+	public File asFile() { return this; }
 
 	protected FSNode findChild(String name) { return null; }
 	
@@ -29,5 +33,11 @@ public class File extends FSNode {
 		if (blueprint == null)
 			blueprint = compile();
 		return blueprint;
+	}
+	
+	public Blue getInstance() {
+		if (instance == null)
+			instance = getBlueprint().createBlue();
+		return instance;
 	}
 }
