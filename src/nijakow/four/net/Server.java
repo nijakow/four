@@ -46,18 +46,20 @@ public class Server {
 					clientSocket.write(bb);
 					clientSocket.close();
 				} else {
-					clientSocket.register(selector, SelectionKey.OP_READ);
-					// TODO: Create connection object and call callback with it
+					FConnection connection = new FConnection(clientSocket);
+					clientSocket.register(selector, SelectionKey.OP_READ, connection);
+					onConnectFunc.accept(connection);
 				}
 			} else if (key.isReadable()) {
 				ByteBuffer bb = ByteBuffer.allocate(1024);
 				int br = ((SocketChannel) key.channel()).read(bb);
 				if (br <= 0) {
 					key.cancel();
+					((FConnection) key.attachment()).handleDisconnect();
 					key.channel().close();
-					// TODO: Close connection object
+				} else {
+					((FConnection) key.attachment()).handleInput(bb.array());
 				}
-				System.out.println(new String(bb.array()));
 			}
 			iter.remove();
 		}
