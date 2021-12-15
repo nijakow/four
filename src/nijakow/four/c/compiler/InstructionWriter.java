@@ -1,0 +1,130 @@
+package nijakow.four.c.compiler;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Consumer;
+
+import nijakow.four.c.ast.OperatorType;
+import nijakow.four.c.runtime.Code;
+import nijakow.four.c.runtime.Instance;
+import nijakow.four.c.runtime.Key;
+import nijakow.four.c.runtime.vm.Bytecodes;
+
+public class InstructionWriter {	
+	private final List<Byte> out = new ArrayList<>();
+	private final List<Key> keys = new ArrayList<>();
+	private final List<Instance> constants = new ArrayList<>();
+	private int maxLocal = 0;
+	private int paramCount = 0;
+	
+	public InstructionWriter() {
+		
+	}
+	
+	private void u8(int v) { out.add((byte) v); }
+	private void u16(int v) { u8(v & 0xff); u8((v >> 8) & 0xff); }
+	private void putU8(int i, int v) { out.set(i, (byte) (v & 0xff)); }
+	private void putU16(int i, int v) { putU8(i, v & 0xff); putU8(i + 1, (v >> 8) & 0xff); }
+	private void key(Key k) {
+		int i = keys.indexOf(k);
+		if (i >= 0) {
+			u16(i);
+		} else {
+			u16(keys.size());
+			keys.add(k);
+		}
+	}
+	private void constant(Instance value) {
+		int i = constants.indexOf(value);
+		if (i >= 0) {
+			u16(i);
+		} else {
+			u16(constants.size());
+			constants.add(value);
+		}
+	}
+
+	public Integer getOffset() {
+		return out.size();
+	}
+	
+	public void declareParamCount(int pcount) {
+		paramCount = pcount;
+	}
+	
+	public Consumer<Integer> writePostponedJump() {
+		u8(Bytecodes.BYTECODE_JUMP);
+		int offset = getOffset();
+		Consumer<Integer> c = (i) -> putU16(offset, i);
+		u16(0);
+		return c;
+	}
+
+	public Consumer<Integer> writePostponedJumpIfNot() {
+		u8(Bytecodes.BYTECODE_JUMP_IF_NOT);
+		int offset = getOffset();
+		Consumer<Integer> c = (i) -> putU16(offset, i);
+		u16(0);
+		return c;
+	}
+
+	public void writeLoadThis() {
+		u8(Bytecodes.BYTECODE_LOAD_THIS);
+	}
+
+	public void writeLoadConstant(Instance value) {
+		u8(Bytecodes.BYTECODE_LOAD_CONSTANT);
+		constant(value);
+	}
+
+	public void writeLoadLocal(int i) {
+		u8(Bytecodes.BYTECODE_LOAD_LOCAL);
+		u8(i);
+		if (i > maxLocal) maxLocal = i;
+	}
+
+	public void writeStoreLocal(int i) {
+		u8(Bytecodes.BYTECODE_STORE_LOCAL);
+		u8(i);
+		if (i > maxLocal) maxLocal = i;
+	}
+
+	public void writePush() {
+		u8(Bytecodes.BYTECODE_PUSH);
+	}
+	
+	public void writeReturn() {
+		u8(Bytecodes.BYTECODE_RETURN);	
+	}
+
+	public void writeDot(Key k) {
+		u8(Bytecodes.BYTECODE_LOAD_INST);
+		key(k);
+	}
+
+	public void writeDotAssign(Key k) {
+		u8(Bytecodes.BYTECODE_STORE_INST);
+		key(k);
+	}
+
+	public void writeDotCall(Key k, int args) {
+		u8(Bytecodes.BYTECODE_DOTCALL);
+		key(k);
+		u8(args);
+	}
+	
+	public void writeOp(OperatorType type) {
+		u8(Bytecodes.BYTECODE_OP);
+		u8(type.ordinal());
+	}
+
+	public Code finish() {
+		byte[] bytes = new byte[out.size()];
+		for (int i = 0; i < bytes.length; i++) {
+			bytes[i] = out.get(i);
+			System.out.println(bytes[i] & 0xff);
+		}
+		System.out.println();
+		return new Code(paramCount, maxLocal + 1, bytes, keys.toArray(new Key[0]), constants.toArray(new Instance[0]));
+	}
+}
