@@ -12,19 +12,17 @@ public class Four {
 	public static void main(String[] args) {
 		Filesystem fs = new Filesystem();
 		File file = fs.getRoot().createDir("src").createFile("test.c").setContents("""
-
-any x;			
 			
 any foo() {
-	while (x <= 42) {
-		"Hello,\\nworld!".print();
+	any x;
+	
+	for (x = 0; x <= 42; x = x + 1) {
+		\"Hello,\\nworld!\".print();
 		x.print();
-		x = x + 1;
 	}
 }
 
 any test() {
-	x = 0;
 	foo();
 }
 		""");

@@ -127,6 +127,15 @@ public class Parser {
 			ASTExpression condition = parseExpression();
 			expect(TokenType.RPAREN);
 			return new ASTWhile(condition, parseInstruction());
+		} else if (check(TokenType.FOR)) {
+			expect(TokenType.LPAREN);
+			ASTExpression init = parseExpression();
+			expect(TokenType.SEMICOLON);
+			ASTExpression condition = parseExpression();
+			expect(TokenType.SEMICOLON);
+			ASTExpression update= parseExpression();
+			expect(TokenType.RPAREN);
+			return new ASTFor(init, condition, update, parseInstruction());
 		} else if (check(TokenType.RETURN)) {
 			if (check(TokenType.SEMICOLON)) {
 				return new ASTReturn(new ASTThis());

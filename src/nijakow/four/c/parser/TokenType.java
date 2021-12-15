@@ -11,6 +11,6 @@ public enum TokenType {
 	ASSIGNMENT, INC1, DEC1,
 	THIS,
 	ANY,
-	IF, ELSE, WHILE,
+	IF, ELSE, WHILE, FOR,
 	RETURN
 }
