@@ -32,8 +32,8 @@ public class Server {
 		serverSocket.register(selector, SelectionKey.OP_ACCEPT);
 	}
 	
-	public void tick() throws IOException {
-		selector.select();
+	public void tick(long timeout) throws IOException {
+		selector.select(timeout);
 		Set<SelectionKey> selectedKeys = selector.selectedKeys();
 		Iterator<SelectionKey> iter = selectedKeys.iterator();
 		while (iter.hasNext()) {

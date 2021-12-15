@@ -16,13 +16,13 @@ public class Directory extends FSNode {
 		return children.get(name);
 	}
 	
-	public Directory createDir(String name) {
+	public Directory mkdir(String name) {
 		Directory dir = new Directory(this, name);
 		children.put(name, dir);
 		return dir;
 	}
 	
-	public File createFile(String name) {
+	public File touch(String name) {
 		File file = new File(this, name);
 		children.put(name, file);
 		return file;

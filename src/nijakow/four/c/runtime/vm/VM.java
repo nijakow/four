@@ -10,6 +10,14 @@ import nijakow.four.c.runtime.Key;
 public class VM {
 	private final List<Fiber> fibers = new ArrayList<>();
 	
+	public VM() {
+		
+	}
+
+	public double notificationWish() {
+		return fibers.isEmpty() ? 1 : 0;
+	}
+
 	public void tick() {
 		int x = 0;
 		while (x < fibers.size()) {
@@ -32,9 +40,5 @@ public class VM {
 	
 	public void startFiber(Blue self, Key key) {
 		startFiber(self, key, new Instance[0]);
-	}
-	
-	public VM() {
-		
 	}
 }

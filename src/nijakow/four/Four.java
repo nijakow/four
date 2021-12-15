@@ -27,13 +27,17 @@ public class Four implements Runnable {
 		if (!wasStarted) {
 			wasStarted = true;
 			
-			FSNode f = fs.find("/secure/master.c");
+			fs.initialize();
 			
-			if (f == null || f.asFile() == null) {
-				throw new RuntimeException("/secure/master.c is not defined!");
+			{
+				FSNode f = fs.find("/secure/master.c");
+				
+				if (f == null || f.asFile() == null) {
+					throw new RuntimeException("/secure/master.c is not defined!");
+				}
+				
+				vm.startFiber(f.asFile().getInstance(), Key.get("create"));
 			}
-			
-			vm.startFiber(f.asFile().getInstance(), Key.get("create"));
 		}
 	}
 	
@@ -42,10 +46,13 @@ public class Four implements Runnable {
 		
 		while (true) {
 			vm.tick();
-			try {
-				server.tick();
-			} catch (IOException e) {
-				e.printStackTrace();
+			double wish = vm.notificationWish();
+			if (wish > 0) {
+				try {
+						server.tick((long) (vm.notificationWish() * 1000));
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 			}
 		}
 	}
