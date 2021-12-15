@@ -18,6 +18,7 @@ any foo() {
 	
 	x = 0;
 	while (x <= 42) {
+		"Hello,\\nworld!".print();
 		x.print();
 		x = x + 1;
 	}

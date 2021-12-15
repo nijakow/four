@@ -4,6 +4,7 @@ import java.util.Stack;
 
 import nijakow.four.c.ast.OperatorType;
 import nijakow.four.c.runtime.FInteger;
+import nijakow.four.c.runtime.FString;
 
 public class Tokenizer {	
 	private CharStream stream;
@@ -20,6 +21,28 @@ public class Tokenizer {
 	private void skipWhitespace() {
 		while (Character.isWhitespace(stream.peek()))
 			stream.advance();
+	}
+	
+	private String parseString(char terminator) {
+		StringBuilder builder = new StringBuilder();
+		
+		while (stream.peek() >= 0) {
+			char c = (char) stream.next();
+			if (c == terminator)
+				break;
+			else if (c == '\\') {
+				c = (char) stream.next();
+				if (c == '\\') builder.append('\\');
+				else if (c == 'n') builder.append('\n');
+				else if (c == 't') builder.append('\t');
+				else if (c == terminator) builder.append(terminator);
+				else { builder.append('\\'); builder.append(c); }
+			} else {
+				builder.append(c);
+			}
+		}
+		
+		return builder.toString();
 	}
 	
 	public Token nextToken() {
@@ -61,6 +84,7 @@ public class Tokenizer {
 		else if (peeks("^")) return new Token(this, TokenType.OPERATOR, new OperatorInfo(OperatorType.BITXOR, -1, 9, true));
 		else if (peeks("|")) return new Token(this, TokenType.OPERATOR, new OperatorInfo(OperatorType.BITOR, -1, 10, true));
 		else if (peeks("=")) return new Token(this, TokenType.ASSIGNMENT);
+		else if (peeks("\"")) return new Token(this, TokenType.CONSTANT, new FString(parseString('\"')));
 		
 		
 		StringBuilder builder = new StringBuilder();
