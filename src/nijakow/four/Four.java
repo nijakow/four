@@ -29,7 +29,7 @@ any test() {
 }
 		""");
 		
-		Blueprint bp = file.compile();
+		Blueprint bp = ((File) fs.getRoot().find("/src/test.c")).compile();
 		
 		VM vm = new VM();
 		vm.startFiber(bp.createBlue(), Key.get("test"), new Instance[0]);

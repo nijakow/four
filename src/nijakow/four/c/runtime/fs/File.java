@@ -14,7 +14,7 @@ public class File extends FSNode {
 		super(parent, name);
 	}
 
-	protected FSNode findRest(String rest) { return null; }
+	protected FSNode findChild(String name) { return null; }
 	
 	public String getContents() { return contents; }
 	public File setContents(String newContents) { contents = newContents; return this; }

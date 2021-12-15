@@ -10,13 +10,8 @@ public class Directory extends FSNode {
 		super(parent, name);
 	}
 
-	protected FSNode findRest(String rest) {
-		for (FSNode child : children.values()) {
-			FSNode n = child.find(rest);
-			if (n != null)
-				return n;
-		}
-		return null;
+	protected FSNode findChild(String name) {
+		return children.get(name);
 	}
 	
 	public Directory createDir(String name) {

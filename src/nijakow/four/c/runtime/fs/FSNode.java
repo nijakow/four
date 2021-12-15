@@ -13,25 +13,46 @@ public abstract class FSNode {
 		return parent;
 	}
 	
-	protected abstract FSNode findRest(String rest);
+	public FSNode getRoot() {
+		FSNode node;
+		for (node = this; node.getParent() != null; node = node.getParent());
+		return node;
+	}
 	
-	public FSNode find(String text) {
+	protected abstract FSNode findChild(String name);
+	
+	private FSNode find1(String name) {
+		if (name.isEmpty() || ".".equals(name)) {
+			return this;
+		} else if ("..".equals(name)) {
+			return getParent();
+		} else {
+			return findChild(name);
+		}
+	}
+	
+	private FSNode findN(String text) {
 		int indexOfSlash = text.indexOf('/');
 		
 		if (indexOfSlash < 0) {
-			if (name.equals(text) || ".".equals(text)) {
-				return this;
-			}
+			return find1(text);
 		} else {
 			String firstPart = text.substring(0, indexOfSlash);
 			String restPart = text.substring(indexOfSlash + 1);
 			
-			if (name.equals(text) || ".".equals(text)) {
-				return findRest(restPart);
-			} else if ("..".equals(name)) {
-				getParent().find(restPart);
-			}	
+			FSNode child = find1(firstPart);
+			
+			if (child != null)
+				return child.findN(restPart);	
 		}
 		return null;
+	}
+	
+	public FSNode find(String text) {
+		if (text.startsWith("/")) {
+			return getRoot().findN(text);
+		} else {
+			return findN(text);
+		}
 	}
 }
