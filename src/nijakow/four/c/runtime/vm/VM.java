@@ -10,16 +10,14 @@ import nijakow.four.c.runtime.Key;
 public class VM {
 	private final List<Fiber> fibers = new ArrayList<>();
 	
-	public void run() {
-		while (!fibers.isEmpty()) {
-			int x = 0;
-			while (x < fibers.size()) {
-				if (fibers.get(x).isTerminated()) {
-					fibers.remove(x);
-				} else {
-					fibers.get(x).tick();
-					x++;
-				}
+	public void tick() {
+		int x = 0;
+		while (x < fibers.size()) {
+			if (fibers.get(x).isTerminated()) {
+				fibers.remove(x);
+			} else {
+				fibers.get(x).tick();
+				x++;
 			}
 		}
 	}
