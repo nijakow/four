@@ -49,7 +49,7 @@ public class Four implements Runnable {
 			double wish = vm.notificationWish();
 			if (wish > 0) {
 				try {
-						server.tick((long) (vm.notificationWish() * 1000));
+					server.tick((long) (vm.notificationWish() * 1000));
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
