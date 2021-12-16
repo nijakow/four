@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.function.Consumer;
 
 import nijakow.four.c.ast.OperatorType;
+import nijakow.four.c.runtime.ByteCode;
 import nijakow.four.c.runtime.Code;
 import nijakow.four.c.runtime.Instance;
 import nijakow.four.c.runtime.Key;
@@ -118,13 +119,13 @@ public class InstructionWriter {
 		u8(type.ordinal());
 	}
 
-	public Code finish() {
+	public ByteCode finish() {
 		byte[] bytes = new byte[out.size()];
 		for (int i = 0; i < bytes.length; i++) {
 			bytes[i] = out.get(i);
 			System.out.println(bytes[i] & 0xff);
 		}
 		System.out.println();
-		return new Code(paramCount, maxLocal + 1, bytes, keys.toArray(new Key[0]), constants.toArray(new Instance[0]));
+		return new ByteCode(paramCount, maxLocal + 1, bytes, keys.toArray(new Key[0]), constants.toArray(new Instance[0]));
 	}
 }

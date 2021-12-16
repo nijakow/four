@@ -1,21 +1,20 @@
 package nijakow.four.c.runtime.vm;
 
 import nijakow.four.c.ast.OperatorType;
-import nijakow.four.c.parser.TokenType;
 import nijakow.four.c.runtime.Blue;
-import nijakow.four.c.runtime.Code;
+import nijakow.four.c.runtime.ByteCode;
 import nijakow.four.c.runtime.FInteger;
 import nijakow.four.c.runtime.Instance;
 import nijakow.four.c.runtime.Key;
 
 public class Frame {
 	private final Frame previous;
-	private final Code code;
+	private final ByteCode code;
 	private final Blue self;
 	private final Instance[] locals;
 	private int ip = 0;
 	
-	public Frame(Frame previous, Code code, Blue self) {
+	public Frame(Frame previous, ByteCode code, Blue self) {
 		this.previous = previous;
 		this.code = code;
 		this.self = self;

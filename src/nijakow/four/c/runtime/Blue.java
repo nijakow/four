@@ -37,6 +37,6 @@ public class Blue extends Instance {
 		Code code = blueprint.getMethod(key);
 		if (code == null)
 			throw new RuntimeException("Aaargh! Method not found!");
-		fiber.enter(this, code, args);
+		code.invoke(fiber, args, this);
 	}
 }

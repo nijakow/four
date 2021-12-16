@@ -3,7 +3,7 @@ package nijakow.four.c.runtime.vm;
 import java.util.Stack;
 
 import nijakow.four.c.runtime.Blue;
-import nijakow.four.c.runtime.Code;
+import nijakow.four.c.runtime.ByteCode;
 import nijakow.four.c.runtime.Instance;
 
 public class Fiber {
@@ -31,7 +31,7 @@ public class Fiber {
 		top = frame;
 	}
 
-	public void enter(Blue self, Code code, int args) {
+	public void enter(Blue self, ByteCode code, int args) {
 		if (!code.argCheck(args))
 			throw new RuntimeException("Ouch! Arg error!");
 		setTop(new Frame(top, code, self));
