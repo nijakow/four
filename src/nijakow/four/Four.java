@@ -58,7 +58,7 @@ public class Four implements Runnable {
 	}
 	
 	public static void main(String[] args) throws IOException {
-		Four four = new Four(new int[] { 8888 });
+		Four four = new Four(new int[] { 4242 });
 		four.run();
 	}
 }
