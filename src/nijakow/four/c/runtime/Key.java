@@ -5,9 +5,15 @@ import java.util.Map;
 
 public class Key {
 	private final String name;
+	private final Code code;
 	
 	private Key(String name) {
 		this.name = name;
+		this.code = null;
+	}
+
+	public Code getCode() {
+		return code;
 	}
 	
 	

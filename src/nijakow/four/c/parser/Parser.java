@@ -155,15 +155,21 @@ public class Parser {
 		List<ASTDefinition> defs = new ArrayList<>();
 	
 		while (!check(TokenType.EOF)) {
-			Type type = parseType();
-			Key name = expectKey();
-			if (check(TokenType.LPAREN)) {
-				Pair<Type, Key>[] args = parseArgdefs();
-				ASTInstruction body = parseInstruction();
-				defs.add(new ASTFunctionDef(type, name, args, body));
-			} else {
-				defs.add(new ASTInstanceVarDef(type, name));
+			if (check(TokenType.USE)) {
+				Key name = expectKey();
+				defs.add(new ASTDefaultDef(name));
 				expect(TokenType.SEMICOLON);
+			} else {
+				Type type = parseType();
+				Key name = expectKey();
+				if (check(TokenType.LPAREN)) {
+					Pair<Type, Key>[] args = parseArgdefs();
+					ASTInstruction body = parseInstruction();
+					defs.add(new ASTFunctionDef(type, name, args, body));
+				} else {
+					defs.add(new ASTInstanceVarDef(type, name));
+					expect(TokenType.SEMICOLON);
+				}
 			}
 		}
 		
