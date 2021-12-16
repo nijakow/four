@@ -27,7 +27,7 @@ public class Blueprint {
 	}
 
 	public Blue createBlue() {
-		return new Blue(this, slots.size());
+		return new Blue(this);
 	}
 
 }

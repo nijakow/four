@@ -1,14 +1,16 @@
 package nijakow.four.c.runtime;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import nijakow.four.c.runtime.vm.Fiber;
 
 public class Blue extends Instance {
 	private Blueprint blueprint;
-	private Instance slots[];
+	private Map<Key, Instance> slots = new HashMap<>();
 	
-	public Blue(Blueprint blueprint, int slots) {
+	public Blue(Blueprint blueprint) {
 		this.blueprint = blueprint;
-		this.slots = new Instance[slots];	// TODO: Initialize
 	}
 
 	@Override
@@ -18,18 +20,14 @@ public class Blue extends Instance {
 	
 	@Override
 	public void loadSlot(Fiber fiber, Key key) {
-		Integer i = blueprint.getSlotIndex(key);
-		if (i < 0)
+		if (!slots.containsKey(key))
 			throw new RuntimeException("Aaargh! Slot not found!");
-		fiber.setAccu(slots[i]);
+		fiber.setAccu(slots.get(key));
 	}
 	
 	@Override
 	public void storeSlot(Key key, Instance value) {
-		Integer i = blueprint.getSlotIndex(key);
-		if (i < 0)
-			throw new RuntimeException("Aaargh! Slot not found!");
-		slots[i] = value;
+		slots.put(key, value);
 	}
 	
 	@Override
