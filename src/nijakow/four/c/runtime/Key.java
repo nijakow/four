@@ -5,7 +5,7 @@ import java.util.Map;
 
 public class Key {
 	private final String name;
-	private final Code code;
+	private Code code;
 	
 	private Key(String name) {
 		this.name = name;
@@ -22,5 +22,10 @@ public class Key {
 		if (!KEYS.containsKey(name))
 			KEYS.put(name, new Key(name));
 		return KEYS.get(name);
+	}
+	
+	
+	static {
+		get("say_hi").code = (fiber, args, self) -> System.out.println("This is the hi function!");
 	}
 }

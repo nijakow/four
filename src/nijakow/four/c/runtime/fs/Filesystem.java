@@ -15,6 +15,23 @@ public class Filesystem {
 		Directory secure = getRoot().mkdir("secure");
 		File secureMaster = secure.touch("master.c");
 		
-		secureMaster.setContents("any create() { \"Hello, world!\".print(); }");
+		secureMaster.setContents("""
+
+use say_hi;
+
+any create() {
+    any x;
+    
+    for (x = 0; x < 10; x = x + 1) {
+		if (x % 3 == 0) {
+			"Durch drei!".print();
+		} else {
+			x.print();
+			(x * x).print();
+		}
+    }
+    say_hi();
+}		
+		""");
 	}
 }
