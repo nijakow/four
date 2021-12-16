@@ -35,7 +35,7 @@ public class Parser {
 			}
 		}
 		
-		return (Pair<Type, Key>[]) args.toArray(new Pair[0]);
+		return (Pair<Type, Key>[]) args.toArray(new Pair<>[0]);
 	}
 	
 	private ASTExpression[] parseArglist() {
