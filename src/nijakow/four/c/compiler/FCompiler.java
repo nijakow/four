@@ -12,6 +12,7 @@ public interface FCompiler {
 	void addParam(Type type, Key name);
 	void addLocal(Type type, Key name);
 	void enableVarargs();
+	boolean isLocal(Key identifier);
 
 	void compileLoadThis();
 	void compileLoadVANext();

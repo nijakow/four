@@ -94,6 +94,10 @@ public class ScopedCompiler implements FCompiler {
 	public void enableVarargs() {
 		writer.enableVarargs();
 	}
+	
+	public boolean isLocal(Key identifier) {
+		return findLocalVariable(identifier) != null;
+	}
 
 	public FCompiler subscope() {
 		return new ScopedCompiler(this);
