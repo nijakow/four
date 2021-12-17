@@ -3,6 +3,7 @@ package nijakow.four.client;
 import java.awt.BorderLayout;
 import java.awt.Cursor;
 import java.awt.EventQueue;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -10,11 +11,15 @@ import java.awt.event.WindowEvent;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.border.EtchedBorder;
 
 public class ClientWindow extends JFrame implements ActionListener {
 	private static final long serialVersionUID = 1L;
@@ -67,11 +72,55 @@ public class ClientWindow extends JFrame implements ActionListener {
 			pack();
 		else
 			setSize(width, height);
-		prompt.requestFocusInWindow();
 	}
 	
 	private void openSettingsWindow() {
-		
+		JDialog settingsWindow = new JDialog(this, "Four: Settings", true);
+		settingsWindow.getContentPane().setLayout(new GridLayout(3, 1));
+		JPanel host = new JPanel();
+		host.setLayout(new GridLayout(2, 1));
+		host.add(new JLabel("The hostname to connect to:"));
+		JTextField hostname = new JTextField();
+		host.add(hostname);
+		host.setBorder(new EtchedBorder());
+		settingsWindow.getContentPane().add(host);
+		JPanel port = new JPanel();
+		port.setLayout(new GridLayout(2, 1));
+		port.add(new JLabel("The port to use: "));
+		JTextField portNo = new JTextField();
+		port.add(portNo);
+		port.setBorder(new EtchedBorder());
+		settingsWindow.getContentPane().add(port);
+		JCheckBox lineBreak = new JCheckBox("Automated line breaking");
+		settingsWindow.getContentPane().add(lineBreak);
+		settingsWindow.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowActivated(WindowEvent e) {
+				hostname.setText(prefs.getHostname());
+				portNo.setText(Integer.toString(prefs.getPort()));
+				lineBreak.setSelected(prefs.getLineBreaking());
+			}
+			
+			@Override
+			public void windowDeactivated(WindowEvent e) {
+				prefs.setHostname(hostname.getText());
+				prefs.setLineBreaking(lineBreak.isSelected());
+				try {
+					prefs.setPort(Integer.parseInt(portNo.getText()));
+				} catch (NumberFormatException ex) {
+					System.err.println("Not a valid port: \"" + portNo.getText() +"\", ignored.");
+				}
+			}
+			
+			@Override
+			public void windowClosing(WindowEvent e) {
+				prefs.flush();
+			}
+		});
+		settingsWindow.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+		settingsWindow.setLocationRelativeTo(this);
+		settingsWindow.pack();
+		settingsWindow.setVisible(true);
 	}
 	
 	@Override

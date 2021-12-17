@@ -10,6 +10,9 @@ public class PreferencesHelper {
 	public static final String WINDOW_POS_Y = "windowPosY";
 	public static final String WINDOW_WIDTH = "windowWidth";
 	public static final String WINDOW_HEIGHT = "windowHeight";
+	public static final String HOSTNAME = "hostname";
+	public static final String PORT_NUMBER = "portNumber";
+	public static final String LINE_BREAKING = "lineBreaking";
 	private Preferences prefs;
 	
 	public PreferencesHelper() {
@@ -32,6 +35,22 @@ public class PreferencesHelper {
 		return prefs.getInt(WINDOW_WIDTH, -1);
 	}
 	
+	public int getPort() {
+		return prefs.getInt(PORT_NUMBER, 4242);
+	}
+	
+	public String getHostname() {
+		return prefs.get(HOSTNAME, "");
+	}
+	
+	public boolean getLineBreaking() {
+		return prefs.getBoolean(LINE_BREAKING, false);
+	}
+	
+	public void setLineBreaking(boolean breaking) {
+		prefs.putBoolean(LINE_BREAKING, breaking);
+	}
+	
 	public void setWindowDimensions(int posX, int posY, int width, int height) {
 		setWindowPosition(posX, posY);
 		setWindowSize(width, height);
@@ -45,6 +64,14 @@ public class PreferencesHelper {
 	public void setWindowPosition(int x, int y) {
 		prefs.putInt(WINDOW_POS_X, x);
 		prefs.putInt(WINDOW_POS_Y, y);
+	}
+	
+	public void setHostname(String hostname) {
+		prefs.put(HOSTNAME, hostname);
+	}
+	
+	public void setPort(int port) {
+		prefs.putInt(PORT_NUMBER, port);
 	}
 	
 	public boolean flush() {
