@@ -16,6 +16,7 @@ public interface FCompiler {
 
 	void compileLoadThis();
 	void compileLoadVANext();
+	void compileLoadVACount();
 	void compileLoadConstant(Instance value);
 	
 	void compileLoadVariable(Key identifier);

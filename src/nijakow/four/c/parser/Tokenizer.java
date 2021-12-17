@@ -113,6 +113,7 @@ public class Tokenizer {
 		case "for": return new Token(this, TokenType.FOR);
 		case "return": return new Token(this, TokenType.RETURN);
 		case "va_next": return new Token(this, TokenType.VA_NEXT);
+		case "va_count": return new Token(this, TokenType.VA_COUNT);
 		default: return new Token(this, TokenType.IDENT, text);
 		}
 	}

@@ -23,6 +23,7 @@ import nijakow.four.c.ast.ASTInstruction;
 import nijakow.four.c.ast.ASTReturn;
 import nijakow.four.c.ast.ASTScope;
 import nijakow.four.c.ast.ASTThis;
+import nijakow.four.c.ast.ASTVaCount;
 import nijakow.four.c.ast.ASTVaNext;
 import nijakow.four.c.ast.ASTVarDecl;
 import nijakow.four.c.ast.ASTWhile;
@@ -92,6 +93,8 @@ public class Parser {
 			return new ASTThis();
 		} else if (check(TokenType.VA_NEXT)) {
 			return new ASTVaNext();
+		} else if (check(TokenType.VA_NEXT)) {
+			return new ASTVaCount();
 		} else if (checkKeep(TokenType.CONSTANT)) {
 			return new ASTConstant((Instance) tokenizer.nextToken().getPayload());
 		} else if (check(TokenType.LPAREN)) {

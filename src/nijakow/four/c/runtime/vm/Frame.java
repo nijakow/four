@@ -140,6 +140,9 @@ public class Frame {
 		case Bytecodes.BYTECODE_LOAD_VANEXT:
 			fiber.setAccu(varargs.remove(0));
 			break;
+		case Bytecodes.BYTECODE_LOAD_VACOUNT:
+			fiber.setAccu(new FInteger(varargs.size()));
+			break;
 		default:
 			System.out.println("???");
 			break;
