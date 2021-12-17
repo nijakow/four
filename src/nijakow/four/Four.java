@@ -71,7 +71,8 @@ public class Four implements Runnable {
 				int j = 0;
 				try {
 					for (; j < args.length - i; j++) {
-						ports.add(Integer.parseInt(args[++i]));
+						ports.add(Integer.parseInt(args[i + 1]));
+						i++;
 					}
 				} catch (NumberFormatException | IndexOutOfBoundsException e) {
 					if (j == 0)
