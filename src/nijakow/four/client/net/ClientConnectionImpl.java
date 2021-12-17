@@ -39,7 +39,6 @@ public class ClientConnectionImpl implements ClientConnection {
 	public void establishConnection() throws IOException {
 		socket = socketFactory.createSocket(host, port);
 	}
-
 	
 	@Override
 	public void send(String message) throws IOException {
