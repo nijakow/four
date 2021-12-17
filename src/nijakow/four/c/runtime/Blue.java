@@ -21,8 +21,9 @@ public class Blue extends Instance {
 	@Override
 	public void loadSlot(Fiber fiber, Key key) {
 		if (!slots.containsKey(key))
-			throw new RuntimeException("Aaargh! Slot not found!");
-		fiber.setAccu(slots.get(key));
+			super.loadSlot(fiber, key);
+		else
+			fiber.setAccu(slots.get(key));
 	}
 	
 	@Override
@@ -34,7 +35,8 @@ public class Blue extends Instance {
 	public void send(Fiber fiber, Key key, int args) {
 		Code code = blueprint.getMethod(key);
 		if (code == null)
-			throw new RuntimeException("Aaargh! Method not found!");
-		code.invoke(fiber, args, this);
+			super.send(fiber, key, args);
+		else
+			code.invoke(fiber, args, this);
 	}
 }

@@ -7,7 +7,15 @@ public abstract class Instance {
 	public boolean asBoolean() { return true; }
 	public int asInt() { return hashCode(); }
 	
-	public abstract void loadSlot(Fiber fiber, Key key);
-	public abstract void storeSlot(Key key, Instance value);
-	public abstract void send(Fiber fiber, Key key, int args);
+	public void loadSlot(Fiber fiber, Key key) {
+		throw new RuntimeException("Oof. Slot not found.");
+	}
+	
+	public void storeSlot(Key key, Instance value) {
+		throw new RuntimeException("Oof. Slot not found.");
+	}
+	
+	public void send(Fiber fiber, Key key, int args) {
+		throw new RuntimeException("Oof. Method not found.");
+	}
 }
