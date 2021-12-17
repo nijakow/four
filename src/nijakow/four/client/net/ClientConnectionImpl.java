@@ -1,21 +1,19 @@
 package nijakow.four.client.net;
 
 import java.io.IOException;
-import java.net.ConnectException;
 import java.net.Socket;
-import java.net.UnknownHostException;
 
 import javax.net.SocketFactory;
 
-import nijakow.four.client.PreferencesHelper;
-
 public class ClientConnectionImpl implements ClientConnection {
-	private PreferencesHelper prefs;
+	private String host;
+	private int port;
 	private SocketFactory socketFactory;
 	private Socket socket;
 	
-	public ClientConnectionImpl(PreferencesHelper prefs) {
-		this.prefs = prefs;
+	protected ClientConnectionImpl(String host, int port) {
+		this.port = port;
+		this.host = host;
 		socketFactory = SocketFactory.getDefault();
 	}
 	
@@ -37,18 +35,8 @@ public class ClientConnectionImpl implements ClientConnection {
 		}
 	}
 	
-	public void establishConnection() throws ConnectException, UnknownHostException {
-		try {
-			socket = socketFactory.createSocket(prefs.getHostname(), prefs.getPort());
-		} catch (IOException e) {
-			if (e instanceof ConnectException)
-				throw (ConnectException) e;
-			if (e instanceof UnknownHostException)
-				throw (UnknownHostException) e;
-			System.err.println("Could not connect to host: " + e.getLocalizedMessage());
-			e.printStackTrace();
-			System.err.println("----------------------------");
-		}
+	public void establishConnection() throws IOException {
+		socket = socketFactory.createSocket(host, port);
 	}
 
 	

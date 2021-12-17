@@ -8,8 +8,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.net.ConnectException;
-import java.net.UnknownHostException;
+import java.io.IOException;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -40,10 +39,10 @@ public class ClientWindow extends JFrame implements ActionListener {
 	private Runnable reconnector = () -> {
 		if (connection != null)
 			connection.close();
-		connection = new ClientConnectionImpl(prefs);
+		connection = ClientConnection.getClientConnection(prefs.getHostname(), prefs.getPort());
 		try {
 			((ClientConnectionImpl) connection).establishConnection();
-		} catch (ConnectException | UnknownHostException ex) {
+		} catch (IOException ex) {
 			EventQueue.invokeLater(() -> JOptionPane.showMessageDialog(
 					this,
 					"Could not connect to \"" + prefs.getHostname() + "\" on port " + prefs.getPort(),
@@ -103,20 +102,20 @@ public class ClientWindow extends JFrame implements ActionListener {
 	private void openSettingsWindow() {
 		JDialog settingsWindow = new JDialog(this, "Four: Settings", true);
 		settingsWindow.getContentPane().setLayout(new GridLayout(3, 1));
-		JPanel host = new JPanel();
-		host.setLayout(new GridLayout(2, 1));
-		host.add(new JLabel("The hostname to connect to:"));
+		JPanel hostPa = new JPanel();
+		hostPa.setLayout(new GridLayout(2, 1));
+		hostPa.add(new JLabel("The hostname to connect to:"));
 		JTextField hostname = new JTextField();
-		host.add(hostname);
-		host.setBorder(new EtchedBorder());
-		settingsWindow.getContentPane().add(host);
-		JPanel port = new JPanel();
-		port.setLayout(new GridLayout(2, 1));
-		port.add(new JLabel("The port to use: "));
+		hostPa.add(hostname);
+		hostPa.setBorder(new EtchedBorder());
+		settingsWindow.getContentPane().add(hostPa);
+		JPanel portPa = new JPanel();
+		portPa.setLayout(new GridLayout(2, 1));
+		portPa.add(new JLabel("The port to use: "));
 		JTextField portNo = new JTextField();
-		port.add(portNo);
-		port.setBorder(new EtchedBorder());
-		settingsWindow.getContentPane().add(port);
+		portPa.add(portNo);
+		portPa.setBorder(new EtchedBorder());
+		settingsWindow.getContentPane().add(portPa);
 		JCheckBox lineBreak = new JCheckBox("Automated line breaking");
 		settingsWindow.getContentPane().add(lineBreak);
 		settingsWindow.addWindowListener(new WindowAdapter() {
@@ -127,17 +126,17 @@ public class ClientWindow extends JFrame implements ActionListener {
 				lineBreak.setSelected(prefs.getLineBreaking());
 			}
 			
-			@Override
-			public void windowDeactivated(WindowEvent e) {
-				if (prefs.getHostname() != hostname.getText()) {
+			private void storeSettings() {
+				String host = hostname.getText();
+				if (prefs.getHostname() != host) {
 					prefs.setHostname(hostname.getText());
 					reconnect = true;
 				}
 				prefs.setLineBreaking(lineBreak.isSelected());
 				try {
-					int p = Integer.parseInt(portNo.getText());
-					if (p != prefs.getPort()) {
-						prefs.setPort(p);
+					int port = Integer.parseInt(portNo.getText());
+					if (port != prefs.getPort()) {
+						prefs.setPort(port);
 						reconnect = true;
 					}
 				} catch (NumberFormatException ex) {
@@ -146,7 +145,13 @@ public class ClientWindow extends JFrame implements ActionListener {
 			}
 			
 			@Override
+			public void windowDeactivated(WindowEvent e) {
+				storeSettings();
+			}
+			
+			@Override
 			public void windowClosing(WindowEvent e) {
+				storeSettings();
 				prefs.flush();
 				if (reconnect)
 					new Thread(reconnector).start();
