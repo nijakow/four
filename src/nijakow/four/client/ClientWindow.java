@@ -58,7 +58,6 @@ public class ClientWindow extends JFrame implements ActionListener {
 		prefs = new PreferencesHelper();
 		if (ports.length > 0)
 			prefs.setPort(ports[0]);
-		new Thread(reconnector).start();
 		getContentPane().setLayout(new BorderLayout());
 		JPanel south = new JPanel();
 		south.setLayout(new BoxLayout(south, BoxLayout.X_AXIS));
@@ -92,6 +91,7 @@ public class ClientWindow extends JFrame implements ActionListener {
 			pack();
 		else
 			setSize(width, height);
+		new Thread(reconnector).start();	// Must be last
 	}
 	
 	public void dispose() {
