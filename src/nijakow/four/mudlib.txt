@@ -1,5 +1,6 @@
 --- /secure/object.c
 
+use _clone_instance;
 use log;
 
 any create()
@@ -15,7 +16,6 @@ any clone(...)
 	return instance;
 }
 
-
 --- /secure/master.c
 
 use log;
@@ -26,6 +26,7 @@ any receive(any connection)
 	any conn_inst;
 	log("New connection!\n");
 	conn_inst = "/secure/connection.c"->clone(connection);
+	"/secure/program.c"->clone(conn_inst);
 }
 
 any create()
@@ -33,34 +34,63 @@ any create()
 	on_connect(this, "receive");
 }
 
+--- /secure/program.c
+
+inherit "/secure/object.c";
+
+any connection;
+
+any sayhi(any text)
+{
+	connection->print(": ", text);
+	connection->prompt(this::sayhi, "> ");
+}
+
+any create(any the_connection)
+{
+    connection = the_connection;
+    connection->print("Program commencing...\n");
+    connection->prompt(this::sayhi, "> ");
+}
+
 --- /secure/connection.c
 
 inherit "/secure/object.c";
 
-use _clone_instance;
-use log;
 use write;
 use on_receive;
 
-any conn;
+any port;
+any func;
 
-any prompt()
+any prompt(any the_func, ...)
 {
-	write(conn, "> ");
+    func = the_func;
+    print(...);
 }
 
-any receive(text)
+any print(...)
 {
-	write(conn, ": ", text);
-	prompt();
+    while (va_count) {
+        write(port, va_next);
+    }
 }
 
-any create(any the_conn)
+any receive(any text)
+{
+    any _func;
+    
+    if (func) {
+    	_func = func;
+    	func = 0;
+        _func(text);
+    }
+}
+
+any create(any the_port)
 {
 	"/secure/object.c"::create();
-	conn = the_conn;
-	x = 0;
-	write(conn, "Hey, this is the connection!\n");
-	prompt();
-	on_receive(the_conn, this, "receive");
+	port = the_port;
+	func = 0;
+	on_receive(port, this, "receive");
 }
