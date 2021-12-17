@@ -8,6 +8,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.net.ConnectException;
 import java.net.UnknownHostException;
 
 import javax.swing.BoxLayout;
@@ -35,12 +36,26 @@ public class ClientWindow extends JFrame implements ActionListener {
 	private JTextArea area;
 	private PreferencesHelper prefs;
 	private ClientConnection connection;
+	private boolean reconnect;
+	private Runnable reconnector = () -> {
+		if (connection != null)
+			connection.close();
+		connection = new ClientConnectionImpl(prefs);
+		try {
+			((ClientConnectionImpl) connection).establishConnection();
+		} catch (ConnectException | UnknownHostException ex) {
+			EventQueue.invokeLater(() -> JOptionPane.showMessageDialog(
+					this,
+					"Could not connect to \"" + prefs.getHostname() + "\" on port " + prefs.getPort(),
+					"Connection failed", JOptionPane.ERROR_MESSAGE));
+		}
+	};
 	
 	public ClientWindow() {
 		super("Nijakow's \"Four\"");
 		// TODO macOS customization
 		prefs = new PreferencesHelper();
-		new Thread(() -> connection = new ClientConnectionImpl(prefs, true)).start();
+		new Thread(reconnector).start();
 		getContentPane().setLayout(new BorderLayout());
 		JPanel south = new JPanel();
 		south.setLayout(new BoxLayout(south, BoxLayout.X_AXIS));
@@ -105,8 +120,6 @@ public class ClientWindow extends JFrame implements ActionListener {
 		JCheckBox lineBreak = new JCheckBox("Automated line breaking");
 		settingsWindow.getContentPane().add(lineBreak);
 		settingsWindow.addWindowListener(new WindowAdapter() {
-			boolean reconnect;
-			
 			@Override
 			public void windowActivated(WindowEvent e) {
 				hostname.setText(prefs.getHostname());
@@ -135,20 +148,8 @@ public class ClientWindow extends JFrame implements ActionListener {
 			@Override
 			public void windowClosing(WindowEvent e) {
 				prefs.flush();
-				if (reconnect) {
-					new Thread(() -> {
-						connection.close();
-						connection = new ClientConnectionImpl(prefs, false);
-						try {
-							((ClientConnectionImpl) connection).establishConnection();
-						} catch (UnknownHostException ex) {
-							EventQueue.invokeLater(() -> JOptionPane.showMessageDialog(
-									settingsWindow,
-									"Could not connect to \"" + prefs.getHostname() + "\" on port " + prefs.getPort(),
-									"Connection failed", JOptionPane.ERROR_MESSAGE));
-						}
-					}).start();
-				}
+				if (reconnect)
+					new Thread(reconnector).start();
 			}
 		});
 		settingsWindow.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
