@@ -1,6 +1,6 @@
 package nijakow.four.net;
 
-public interface Connection {
+public interface IConnection {
 	void writeBytes(byte[] bytes);
 	void writeString(String string);
 }

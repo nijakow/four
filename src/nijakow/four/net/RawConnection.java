@@ -6,13 +6,13 @@ import java.nio.channels.SocketChannel;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FConnection implements Connection {
+public class RawConnection implements IConnection {
 
 	private final SocketChannel socket;
 	private final List<Byte> bytes = new ArrayList<>();
 	
 	
-	public FConnection(SocketChannel socket) {
+	public RawConnection(SocketChannel socket) {
 		this.socket = socket;
 	}
 

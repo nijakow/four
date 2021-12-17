@@ -14,13 +14,13 @@ import java.util.function.Consumer;
 
 public class Server {
 	private final Selector selector;
-	private Consumer<Connection> onConnectFunc = null;
+	private Consumer<IConnection> onConnectFunc = null;
 
 	public Server() throws IOException {
 		this.selector = Selector.open();
 	}
 	
-	public void onConnect(Consumer<Connection> onConnectFunc) {
+	public void onConnect(Consumer<IConnection> onConnectFunc) {
 		this.onConnectFunc = onConnectFunc;
 	}
 	
@@ -46,7 +46,7 @@ public class Server {
 					clientSocket.write(bb);
 					clientSocket.close();
 				} else {
-					FConnection connection = new FConnection(clientSocket);
+					RawConnection connection = new RawConnection(clientSocket);
 					clientSocket.register(selector, SelectionKey.OP_READ, connection);
 					onConnectFunc.accept(connection);
 				}
@@ -55,10 +55,10 @@ public class Server {
 				int br = ((SocketChannel) key.channel()).read(bb);
 				if (br <= 0) {
 					key.cancel();
-					((FConnection) key.attachment()).handleDisconnect();
+					((RawConnection) key.attachment()).handleDisconnect();
 					key.channel().close();
 				} else {
-					((FConnection) key.attachment()).handleInput(bb.array());
+					((RawConnection) key.attachment()).handleInput(bb.array());
 				}
 			}
 			iter.remove();
