@@ -24,38 +24,44 @@ public abstract class FSNode {
 	
 	protected abstract FSNode findChild(String name);
 	
-	private FSNode find1(String name) {
+	private FSNode find1(String name, boolean create, boolean isDir) {
 		if (name.isEmpty() || ".".equals(name)) {
 			return this;
 		} else if ("..".equals(name)) {
 			return getParent();
 		} else {
-			return findChild(name);
+			FSNode node = findChild(name);
+			if (node == null) {
+				node = isDir ? asDir().mkdir(name) : asDir().touch(name);
+			}
+			return node;
 		}
 	}
 	
-	private FSNode findN(String text) {
+	private FSNode findN(String text, boolean create) {
 		int indexOfSlash = text.indexOf('/');
 		
 		if (indexOfSlash < 0) {
-			return find1(text);
+			return find1(text, create, false);
 		} else {
 			String firstPart = text.substring(0, indexOfSlash);
 			String restPart = text.substring(indexOfSlash + 1);
 			
-			FSNode child = find1(firstPart);
+			FSNode child = find1(firstPart, create, true);
 			
 			if (child != null)
-				return child.findN(restPart);	
+				return child.findN(restPart, create);
 		}
 		return null;
 	}
 	
-	public FSNode find(String text) {
+	public FSNode find(String text, boolean create) {
 		if (text.startsWith("/")) {
-			return getRoot().findN(text);
+			return getRoot().findN(text, create);
 		} else {
-			return findN(text);
+			return findN(text, create);
 		}
 	}
+	
+	public FSNode find(String text) { return find(text, false); }
 }

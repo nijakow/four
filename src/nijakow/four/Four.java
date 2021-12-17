@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import nijakow.four.c.runtime.Key;
+import nijakow.four.c.runtime.fs.FSBuilder;
 import nijakow.four.c.runtime.fs.FSNode;
 import nijakow.four.c.runtime.fs.Filesystem;
 import nijakow.four.c.runtime.vm.VM;
@@ -17,7 +18,7 @@ public class Four implements Runnable {
 	private boolean wasStarted = false;
 	
 	public Four(int[] ports) throws IOException {
-		this.fs = new Filesystem();
+		this.fs = new FSBuilder(this.getClass().getResourceAsStream("mudlib.txt")).build();
 		this.server = new Server();
 		this.vm = new VM(this.server);
 		
@@ -28,8 +29,6 @@ public class Four implements Runnable {
 	public void start() {
 		if (!wasStarted) {
 			wasStarted = true;
-			
-			fs.initialize();
 			
 			{
 				FSNode f = fs.find("/secure/master.c");
