@@ -6,6 +6,7 @@ public abstract class Instance {
 
 	public boolean asBoolean() { return true; }
 	public int asInt() { return hashCode(); }
+	public String asString() { return toString(); }
 	
 	public void loadSlot(Fiber fiber, Key key) {
 		throw new RuntimeException("Oof. Slot not found.");
