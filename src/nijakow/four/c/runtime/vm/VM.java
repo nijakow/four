@@ -1,6 +1,7 @@
 package nijakow.four.c.runtime.vm;
 
 import java.util.LinkedList;
+import java.util.PriorityQueue;
 import java.util.Queue;
 
 import nijakow.four.c.runtime.Blue;
@@ -8,10 +9,14 @@ import nijakow.four.c.runtime.FConnection;
 import nijakow.four.c.runtime.Instance;
 import nijakow.four.c.runtime.Key;
 import nijakow.four.net.Server;
+import nijakow.four.util.ComparablePair;
+import nijakow.four.util.Pair;
 
 public class VM {
 	private final Server server;
 	private final Queue<Fiber> fibers = new LinkedList<>();
+	private final PriorityQueue<ComparablePair<Long, Callback>> pendingCallbacks = new PriorityQueue<>();
+	
 	
 	public VM(Server server) {
 		this.server = server;
@@ -25,11 +30,28 @@ public class VM {
 		this.server.onConnect((theConnection) -> callback.invoke(new FConnection(theConnection)));
 	}
 	
-	public double notificationWish() {
-		return fibers.isEmpty() ? 1 : 0;
+	public long notificationWish() {
+		long time = System.currentTimeMillis();
+		if (pendingCallbacks.isEmpty())
+			return 1;
+		else {
+			long diff = pendingCallbacks.peek().getFirst() - time;
+			if (diff < 0)
+				return 0;
+			else
+				return diff;
+		}
 	}
 
-	public void tick() {
+	private void wakeCallbacks() {
+		long time = System.currentTimeMillis();
+		
+		while (!pendingCallbacks.isEmpty() && pendingCallbacks.peek().getFirst() <= time) {
+			pendingCallbacks.poll().getSecond().invoke();
+		}
+	}
+	
+	private void runAllActiveFibers() {
 		while (!fibers.isEmpty()) {			
 			int x = 0;
 			Fiber fiber = fibers.poll();
@@ -42,6 +64,11 @@ public class VM {
 				x++;
 			}
 		}
+	}
+	
+	public void tick() {
+		wakeCallbacks();
+		runAllActiveFibers();
 	}
 	
 	public Fiber spawnFiber() {
@@ -58,5 +85,10 @@ public class VM {
 	
 	public void startFiber(Blue self, Key key) {
 		startFiber(self, key, new Instance[0]);
+	}
+	
+	public void invokeIn(Blue subject, Key message, long millis) {
+		long time = System.currentTimeMillis();
+		pendingCallbacks.add(new ComparablePair<>(time + millis, createCallback(subject, message)));
 	}
 }

@@ -43,6 +43,13 @@ public class Key {
 				fiber.getVM().setConnectCallback(fiber.getVM().createCallback(args[0].asBlue(), args[1].asKey()));
 			}
 		};
+		get("pause").code = new BuiltinCode() {
+			
+			@Override
+			void run(Fiber fiber, Blue self, Instance[] args) {
+				fiber.getVM().invokeIn(args[0].asBlue(), args[1].asKey(), args[2].asInt());
+			}
+		};
 		get("write").code = new BuiltinCode() {
 			
 			@Override

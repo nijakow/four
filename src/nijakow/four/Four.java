@@ -48,10 +48,10 @@ public class Four implements Runnable {
 		
 		while (true) {
 			vm.tick();
-			double wish = vm.notificationWish();
+			long wish = vm.notificationWish();
 			if (wish > 0) {
 				try {
-					server.tick((long) (vm.notificationWish() * 1000));
+					server.tick(wish);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
