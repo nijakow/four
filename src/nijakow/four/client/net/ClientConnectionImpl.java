@@ -41,10 +41,12 @@ public class ClientConnectionImpl implements ClientConnection {
 	@Override
 	public void establishConnection() throws IOException {
 		socket = socketFactory.createSocket(host, port);
-		BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-		while (isConnected() && reader.ready()) {
+		InputStreamReader reader = new InputStreamReader(socket.getInputStream());
+		int c =  reader.read();
+		while (isConnected() && c != -1) {
 			if (listener != null)
-				listener.lineReceived(reader.readLine());
+				listener.lineReceived(Character.toString((char) c));
+			c = reader.read();
 		}
 	}
 	

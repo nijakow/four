@@ -53,6 +53,7 @@ public class ClientWindow extends JFrame implements ActionListener {
 	public ClientWindow() {
 		super("Nijakow's \"Four\"");
 		// TODO macOS customization
+		// TODO C editor
 		prefs = new PreferencesHelper();
 		new Thread(reconnector).start();
 		getContentPane().setLayout(new BorderLayout());
@@ -94,7 +95,7 @@ public class ClientWindow extends JFrame implements ActionListener {
 		prefs.setWindowDimensions(getX(), getY(), getWidth(), getHeight());
 		prefs.flush();
 		connection.close();
-		dispose();
+		super.dispose();
 	}
 	
 	private void openSettingsWindow() {
@@ -175,7 +176,7 @@ public class ClientWindow extends JFrame implements ActionListener {
 					connection.establishConnection();
 				String text = prompt.getText() + "\n";
 				connection.send(text);
-				area.append("\n > " + text);
+				area.append(text);
 			} catch (Exception ex) {
 				area.append("*** Could not send message --- see console for more details! ***\n");
 			}
