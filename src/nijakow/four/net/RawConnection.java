@@ -3,13 +3,12 @@ package nijakow.four.net;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.function.Consumer;
 
 public class RawConnection implements IConnection {
 
 	private final SocketChannel socket;
-	private final List<Byte> bytes = new ArrayList<>();
+	private Consumer<String> inputHandler = null;
 	
 	
 	public RawConnection(SocketChannel socket) {
@@ -34,13 +33,24 @@ public class RawConnection implements IConnection {
 	}
 	
 	public void handleInput(byte[] bytes) {
-		for (byte b : bytes)
-			this.bytes.add(b);
-		// TODO: Call the callback function
+		if (inputHandler != null) {
+			/*
+			 * TODO, FIXME, XXX: This is dangerous!
+			 * The encoding might be corrupted.
+			 * Better: Send the bytes directly to the receiver.
+			 */
+			inputHandler.accept(new String(bytes));
+		}
 	}
 	
 	public void handleDisconnect() {
 		// TODO
+	}
+
+
+	@Override
+	public void onInput(Consumer<String> consumer) {
+		this.inputHandler = consumer;
 	}
 
 }

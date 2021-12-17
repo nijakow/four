@@ -38,16 +38,19 @@ inherit "/secure/object.c";
 use _clone_instance;
 use log;
 use write;
-use pause;
+use on_receive;
 
 any conn;
-any x;
 
-any say_something()
+any prompt()
 {
-	write(conn, "This is a test! ", x, " ", x << 1, "\n");
-	x = x + 1;
-	pause(this, "say_something", 1000);
+	write(conn, "> ");
+}
+
+any receive(text)
+{
+	write(conn, ": ", text);
+	prompt();
 }
 
 any create(any the_conn)
@@ -55,5 +58,6 @@ any create(any the_conn)
 	conn = the_conn;
 	x = 0;
 	write(conn, "Hey, this is the connection!\n");
-	pause(this, "say_something", 1000);
+	prompt();
+	on_receive(the_conn, this, "receive");
 }

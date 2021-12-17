@@ -1,5 +1,6 @@
 package nijakow.four.c.runtime;
 
+import nijakow.four.c.runtime.vm.Callback;
 import nijakow.four.net.IConnection;
 
 public class FConnection extends Instance {
@@ -7,6 +8,10 @@ public class FConnection extends Instance {
 	
 	@Override
 	public FConnection asFConnection() { return this; }
+	
+	public void onReceive(Callback cb) {
+		connection.onInput((s) -> cb.invoke(new FString(s)));
+	}
 	
 	public void send(Instance instance) {
 		connection.writeString(instance.asString());
