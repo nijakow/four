@@ -85,7 +85,7 @@ public class VM {
 		Fiber fiber = spawnFiber();
 		for (Instance arg : args)
 			fiber.push(arg);
-		self.send(fiber, self, key, args.length);
+		self.send(fiber, key, args.length);
 		fibers.add(fiber);
 	}
 	

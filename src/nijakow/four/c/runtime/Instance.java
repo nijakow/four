@@ -11,6 +11,10 @@ public abstract class Instance {
 	public Blue asBlue() { throw new RuntimeException("Conversion failed!"); }
 	public FConnection asFConnection() { throw new RuntimeException("Conversion failed!"); }
 	
+	public void invoke(Fiber fiber, int args) {
+		throw new RuntimeException("Oof. Can't invoke this object!");
+	}
+	
 	public void loadSlot(Fiber fiber, Key key) {
 		throw new RuntimeException("Oof. Slot not found.");
 	}
@@ -19,11 +23,11 @@ public abstract class Instance {
 		throw new RuntimeException("Oof. Slot not found.");
 	}
 	
-	public void send(Fiber fiber, Instance subject, Key key, int args) {
+	public void send(Fiber fiber, Key key, int args) {
 		throw new RuntimeException("Oof. Method not found.");
 	}
 	
-	public final void send(Fiber fiber, Key key, int args) {
-		send(fiber, this, key, args);
+	public Code extractMethod(Fiber fiber, Key key) {
+		throw new RuntimeException("Oof. Can't extract method.");
 	}
 }

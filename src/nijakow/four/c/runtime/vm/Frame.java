@@ -6,6 +6,7 @@ import java.util.List;
 import nijakow.four.c.ast.OperatorType;
 import nijakow.four.c.runtime.Blue;
 import nijakow.four.c.runtime.ByteCode;
+import nijakow.four.c.runtime.FClosure;
 import nijakow.four.c.runtime.FInteger;
 import nijakow.four.c.runtime.Instance;
 import nijakow.four.c.runtime.Key;
@@ -87,6 +88,17 @@ public class Frame {
 		case Bytecodes.BYTECODE_PUSH:
 			fiber.push(fiber.getAccu());
 			break;
+		case Bytecodes.BYTECODE_CALL:
+			fiber.getAccu().invoke(fiber, code.u8(ip++));
+			break;
+		case Bytecodes.BYTECODE_CALL_VARARGS:
+			int args = code.u8(ip++);
+			for (Instance v : varargs) {
+				fiber.push(v);
+				args++;
+			}
+			fiber.getAccu().invoke(fiber, args);
+			break;
 		case Bytecodes.BYTECODE_DOTCALL:
 			Key key = code.keyAt(code.u16(ip));
 			ip += 2;
@@ -95,29 +107,17 @@ public class Frame {
 		case Bytecodes.BYTECODE_DOTCALL_VARARGS:
 			key = code.keyAt(code.u16(ip));
 			ip += 2;
-			int args = code.u8(ip++);
+			args = code.u8(ip++);
 			for (Instance v : varargs) {
 				fiber.push(v);
 				args++;
 			}
 			fiber.getAccu().send(fiber, key, args);
 			break;
-		case Bytecodes.BYTECODE_SCOPECALL:
-			Instance subj = fiber.pop();
+		case Bytecodes.BYTECODE_SCOPE:
 			key = code.keyAt(code.u16(ip));
 			ip += 2;
-			subj.send(fiber, fiber.getAccu(), key, code.u8(ip++));
-			break;
-		case Bytecodes.BYTECODE_SCOPECALL_VARARGS:
-			subj = fiber.pop();
-			key = code.keyAt(code.u16(ip));
-			ip += 2;
-			args = code.u8(ip++);
-			for (Instance v : varargs) {
-				fiber.push(v);
-				args++;
-			}
-			subj.send(fiber, fiber.getAccu(), key, args);
+			fiber.setAccu(new FClosure(self, fiber.getAccu().extractMethod(fiber, key)));
 			break;
 		case Bytecodes.BYTECODE_JUMP:
 			ip = code.u16(ip);

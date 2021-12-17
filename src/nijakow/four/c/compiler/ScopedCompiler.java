@@ -163,15 +163,20 @@ public class ScopedCompiler implements FCompiler {
 	}
 
 	@Override
+	public void compileScope(Key key) {
+		writer.writeScope(key);
+	}
+
+	@Override
+	public void compileCall(int args, boolean hasVarargs) {
+		writer.writeCall(args, hasVarargs);
+	}
+	
+	@Override
 	public void compileDotCall(Key key, int args, boolean hasVarargs) {
 		writer.writeDotCall(key, args, hasVarargs);
 	}
 	
-	@Override
-	public void compileScopeCall(Key key, int args, boolean hasVarargs) {
-		writer.writeScopeCall(key, args, hasVarargs);
-	}
-
 	@Override
 	public void compileOp(OperatorType type) {
 		writer.writeOp(type);

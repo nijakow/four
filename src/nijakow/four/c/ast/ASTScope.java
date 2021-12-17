@@ -13,10 +13,8 @@ public class ASTScope extends ASTExpression {
 	}
 
 	@Override
-	public void compileCall(FCompiler compiler, int args, boolean hasVarargs) {
+	public void compile(FCompiler compiler) {
 		expr.compile(compiler);
-		compiler.compilePush();
-		compiler.compileLoadThis();
-		compiler.compileScopeCall(member, args, hasVarargs);
+		compiler.compileScope(member);
 	}
 }

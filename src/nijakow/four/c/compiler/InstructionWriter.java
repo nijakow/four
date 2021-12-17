@@ -6,7 +6,6 @@ import java.util.function.Consumer;
 
 import nijakow.four.c.ast.OperatorType;
 import nijakow.four.c.runtime.ByteCode;
-import nijakow.four.c.runtime.Code;
 import nijakow.four.c.runtime.Instance;
 import nijakow.four.c.runtime.Key;
 import nijakow.four.c.runtime.vm.Bytecodes;
@@ -117,16 +116,20 @@ public class InstructionWriter {
 		key(k);
 	}
 
+	public void writeCall(int args, boolean hasVarargs) {
+		u8(hasVarargs ? Bytecodes.BYTECODE_CALL_VARARGS : Bytecodes.BYTECODE_CALL);
+		u8(args);
+	}
+	
 	public void writeDotCall(Key k, int args, boolean hasVarargs) {
 		u8(hasVarargs ? Bytecodes.BYTECODE_DOTCALL_VARARGS : Bytecodes.BYTECODE_DOTCALL);
 		key(k);
 		u8(args);
 	}
 	
-	public void writeScopeCall(Key key, int args, boolean hasVarargs) {
-		u8(hasVarargs ? Bytecodes.BYTECODE_SCOPECALL_VARARGS : Bytecodes.BYTECODE_SCOPECALL);
+	public void writeScope(Key key) {
+		u8(Bytecodes.BYTECODE_SCOPE);
 		key(key);
-		u8(args);
 	}
 
 	public void writeOp(OperatorType type) {
