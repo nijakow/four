@@ -15,6 +15,6 @@ public class Filesystem {
 		Directory secure = getRoot().mkdir("secure");
 		File secureMaster = secure.touch("master.c");
 		
-		secureMaster.setContents("any create() {}");
+		secureMaster.setContents("use log; use on_connect; any receive(any connection) { log(\"New connection!\"); } any create() { on_connect(this, \"receive\"); }");
 	}
 }
