@@ -9,11 +9,16 @@ import nijakow.four.c.runtime.Key;
 
 public class VM {
 	private final List<Fiber> fibers = new ArrayList<>();
+	private Callback inputCallback = null;
 	
 	public VM() {
 		
 	}
 
+	public void setInputCallback(Callback callback) {
+		this.inputCallback = callback;
+	}
+	
 	public double notificationWish() {
 		return fibers.isEmpty() ? 1 : 0;
 	}
