@@ -93,7 +93,7 @@ public class Parser {
 			return new ASTThis();
 		} else if (check(TokenType.VA_NEXT)) {
 			return new ASTVaNext();
-		} else if (check(TokenType.VA_NEXT)) {
+		} else if (check(TokenType.VA_COUNT)) {
 			return new ASTVaCount();
 		} else if (checkKeep(TokenType.CONSTANT)) {
 			return new ASTConstant((Instance) tokenizer.nextToken().getPayload());
