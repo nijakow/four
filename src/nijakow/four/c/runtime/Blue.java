@@ -19,6 +19,11 @@ public class Blue extends Instance {
 	}
 	
 	@Override
+	public Blue asBlue() {
+		return this;
+	}
+	
+	@Override
 	public void loadSlot(Fiber fiber, Key key) {
 		if (!slots.containsKey(key))
 			super.loadSlot(fiber, key);

@@ -16,4 +16,9 @@ public class FString extends Instance {
 	public String asString() {
 		return value;
 	}
+	
+	@Override
+	public Key asKey() {
+		return Key.get(value);
+	}
 }

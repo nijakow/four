@@ -7,7 +7,8 @@ public abstract class Instance {
 	public boolean asBoolean() { return true; }
 	public int asInt() { return hashCode(); }
 	public String asString() { return toString(); }
-	
+	public Key asKey() { throw new RuntimeException("Conversion failed!"); }
+	public Blue asBlue() { throw new RuntimeException("Conversion failed!"); }
 	public FConnection asFConnection() { throw new RuntimeException("Conversion failed!"); }
 	
 	public void loadSlot(Fiber fiber, Key key) {

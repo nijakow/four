@@ -16,6 +16,10 @@ public class VM {
 	public VM(Server server) {
 		this.server = server;
 	}
+	
+	public Callback createCallback(Blue subject, Key message) {
+		return new Callback(this, subject, message);
+	}
 
 	public void setConnectCallback(Callback callback) {
 		this.server.onConnect((theConnection) -> callback.invoke(new FConnection(theConnection)));
