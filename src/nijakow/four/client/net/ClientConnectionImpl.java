@@ -35,13 +35,14 @@ public class ClientConnectionImpl implements ClientConnection {
 		}
 	}
 	
+	@Override
 	public void establishConnection() throws IOException {
 		socket = socketFactory.createSocket(host, port);
 	}
 
 	
 	@Override
-	public void send(String message) {
-		// TODO Send a message
+	public void send(String message) throws IOException {
+		socket.getOutputStream().write(message.getBytes());
 	}
 }

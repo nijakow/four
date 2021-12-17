@@ -24,7 +24,6 @@ import javax.swing.JTextField;
 import javax.swing.border.EtchedBorder;
 
 import nijakow.four.client.net.ClientConnection;
-import nijakow.four.client.net.ClientConnectionImpl;
 
 public class ClientWindow extends JFrame implements ActionListener {
 	private static final long serialVersionUID = 1L;
@@ -41,7 +40,7 @@ public class ClientWindow extends JFrame implements ActionListener {
 			connection.close();
 		connection = ClientConnection.getClientConnection(prefs.getHostname(), prefs.getPort());
 		try {
-			((ClientConnectionImpl) connection).establishConnection();
+			connection.establishConnection();
 		} catch (IOException ex) {
 			EventQueue.invokeLater(() -> JOptionPane.showMessageDialog(
 					this,
@@ -172,8 +171,14 @@ public class ClientWindow extends JFrame implements ActionListener {
 			break;
 			
 		case SEND:
-			connection.send(prompt.getText());
-			area.append(" > " + prompt.getText() + "\n");
+			try {
+				if (!connection.isConnected())
+					connection.establishConnection();
+				connection.send(prompt.getText());
+				area.append(" > " + prompt.getText() + "\n");
+			} catch (Exception ex) {
+				area.append("*** Could not send message --- see console for more details! ***\n");
+			}
 			prompt.setText("");
 			break;
 		}
