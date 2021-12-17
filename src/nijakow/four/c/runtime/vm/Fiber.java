@@ -7,10 +7,15 @@ import nijakow.four.c.runtime.ByteCode;
 import nijakow.four.c.runtime.Instance;
 
 public class Fiber {
+	private final VM vm;
 	private Instance accumulator;
 	private Stack<Instance> stack = new Stack<>();
 	private Frame top = null;
 
+	Fiber(VM vm) { this.vm = vm; }
+	
+	public VM getVM() { return vm; }
+	
 	public Instance getAccu() {
 		return accumulator;
 	}

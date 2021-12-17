@@ -30,8 +30,12 @@ public class VM {
 		}
 	}
 	
+	public Fiber spawnFiber() {
+		return new Fiber(this);
+	}
+	
 	public void startFiber(Blue self, Key key, Instance[] args) {
-		Fiber fiber = new Fiber();
+		Fiber fiber = spawnFiber();
 		for (Instance arg : args)
 			fiber.push(arg);
 		self.send(fiber, key, args.length);
