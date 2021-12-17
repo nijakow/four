@@ -1,10 +1,15 @@
 --- /secure/object.c
 
-any clone()
+any create()
+{
+}
+
+any clone(...)
 {
 	any instance;
 	
 	instance = _clone_instance(this);
+	instance->create(...);
 	return instance;
 }
 
@@ -18,8 +23,7 @@ any receive(any connection)
 {
 	any conn_inst;
 	log("New connection!\n");
-	conn_inst = "/secure/connection.c"->clone();
-	conn_inst->create(connection);
+	conn_inst = "/secure/connection.c"->clone(connection);
 }
 
 any create()

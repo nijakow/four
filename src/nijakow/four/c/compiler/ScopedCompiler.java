@@ -110,6 +110,11 @@ public class ScopedCompiler implements FCompiler {
 	}
 	
 	@Override
+	public void compileLoadVANext() {
+		writer.writeLoadVANext();
+	}
+	
+	@Override
 	public void compileLoadConstant(Instance value) {
 		writer.writeLoadConstant(value);
 	}

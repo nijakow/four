@@ -111,6 +111,7 @@ public class Tokenizer {
 		case "while": return new Token(this, TokenType.WHILE);
 		case "for": return new Token(this, TokenType.FOR);
 		case "return": return new Token(this, TokenType.RETURN);
+		case "va_next": return new Token(this, TokenType.VA_NEXT);
 		default: return new Token(this, TokenType.IDENT, text);
 		}
 	}

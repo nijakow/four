@@ -14,6 +14,7 @@ public interface FCompiler {
 	void enableVarargs();
 
 	void compileLoadThis();
+	void compileLoadVANext();
 	void compileLoadConstant(Instance value);
 	
 	void compileLoadVariable(Key identifier);

@@ -10,7 +10,6 @@ import nijakow.four.c.ast.ASTCall;
 import nijakow.four.c.ast.ASTConstant;
 import nijakow.four.c.ast.ASTDecl;
 import nijakow.four.c.ast.ASTDefaultDef;
-import nijakow.four.c.ast.ASTDefinition;
 import nijakow.four.c.ast.ASTDot;
 import nijakow.four.c.ast.ASTExpression;
 import nijakow.four.c.ast.ASTFile;
@@ -23,6 +22,7 @@ import nijakow.four.c.ast.ASTInstanceVarDef;
 import nijakow.four.c.ast.ASTInstruction;
 import nijakow.four.c.ast.ASTReturn;
 import nijakow.four.c.ast.ASTThis;
+import nijakow.four.c.ast.ASTVaNext;
 import nijakow.four.c.ast.ASTVarDecl;
 import nijakow.four.c.ast.ASTWhile;
 import nijakow.four.c.runtime.Instance;
@@ -48,16 +48,16 @@ public class Parser {
 		
 		if (!check(TokenType.RPAREN)) {
 			while (true) {
+				if (check(TokenType.ELLIPSIS)) {
+					hasVarargs = true;
+					expect(TokenType.RPAREN);
+					break;
+				}
 				Type t = parseType();
 				Key k = expectKey();
 				args.add(new Pair<>(t, k));
 				if (check(TokenType.RPAREN))
 					break;
-				else if (check(TokenType.ELLIPSIS)) {
-					hasVarargs = true;
-					expect(TokenType.RPAREN);
-					break;
-				}
 				expect(TokenType.COMMA);
 			}
 		}
@@ -71,14 +71,14 @@ public class Parser {
 		
 		if (!check(TokenType.RPAREN)) {
 			while (true) {
-				args.add(parseExpression());
-				if (check(TokenType.RPAREN))
-					break;
-				else if (check(TokenType.ELLIPSIS)) {
+				if (check(TokenType.ELLIPSIS)) {
 					hasVarargs = true;
 					expect(TokenType.RPAREN);
 					break;
 				}
+				args.add(parseExpression());
+				if (check(TokenType.RPAREN))
+					break;
 				expect(TokenType.COMMA);
 			}
 		}
@@ -89,6 +89,8 @@ public class Parser {
 	private ASTExpression parseSimpleExpression() {
 		if (check(TokenType.THIS)) {
 			return new ASTThis();
+		} else if (check(TokenType.VA_NEXT)) {
+			return new ASTVaNext();
 		} else if (checkKeep(TokenType.CONSTANT)) {
 			return new ASTConstant((Instance) tokenizer.nextToken().getPayload());
 		} else if (check(TokenType.LPAREN)) {

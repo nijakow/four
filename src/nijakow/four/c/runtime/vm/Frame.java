@@ -120,6 +120,9 @@ public class Frame {
 		case Bytecodes.BYTECODE_RETURN:
 			fiber.setTop(previous);
 			break;
+		case Bytecodes.BYTECODE_LOAD_VANEXT:
+			fiber.setAccu(varargs.remove(0));
+			break;
 		default:
 			System.out.println("???");
 			break;

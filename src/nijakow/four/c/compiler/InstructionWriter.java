@@ -78,6 +78,10 @@ public class InstructionWriter {
 		u8(Bytecodes.BYTECODE_LOAD_THIS);
 	}
 
+	public void writeLoadVANext() {
+		u8(Bytecodes.BYTECODE_LOAD_VANEXT);
+	}
+
 	public void writeLoadConstant(Instance value) {
 		u8(Bytecodes.BYTECODE_LOAD_CONSTANT);
 		constant(value);

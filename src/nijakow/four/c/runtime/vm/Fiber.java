@@ -41,8 +41,10 @@ public class Fiber {
 			throw new RuntimeException("Ouch! Arg error!");
 		int varargCount = args - code.getFixedArgCount();
 		Frame f = new Frame(top, code, self);
-		while (varargCount --> 0)
+		while (varargCount --> 0) {
 			f.addVararg(pop());
+			args--;
+		}
 		setTop(f);
 		while (args --> 0) {
 			top.setLocal(args, pop());

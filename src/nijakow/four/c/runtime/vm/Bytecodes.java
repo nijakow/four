@@ -14,4 +14,5 @@ public class Bytecodes {
 	public static final byte BYTECODE_JUMP_IF_NOT = 0x0a;
 	public static final byte BYTECODE_RETURN = 0x0b;
 	public static final int BYTECODE_OP = 0x0c;
+	public static final int BYTECODE_LOAD_VANEXT = 0x0d;
 }
