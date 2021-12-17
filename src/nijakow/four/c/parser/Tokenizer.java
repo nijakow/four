@@ -23,6 +23,16 @@ public class Tokenizer {
 			stream.advance();
 	}
 	
+	private void skipLineComment() {
+		while (stream.peek() != '\n')
+			stream.advance();
+	}
+	
+	private void skipBlockComment() {
+		while (!stream.peeks("*/"))
+			stream.advance();
+	}
+	
 	private String parseString(char terminator) {
 		StringBuilder builder = new StringBuilder();
 		
@@ -51,7 +61,14 @@ public class Tokenizer {
 		
 		skipWhitespace();
 		
-		if (peeks("(")) return new Token(this, TokenType.LPAREN);
+		
+		if (peeks("//")) {
+			skipLineComment();
+			return nextToken();
+		} else if (peeks("/*")) {
+			skipBlockComment();
+			return nextToken();
+		} else if (peeks("(")) return new Token(this, TokenType.LPAREN);
 		else if (peeks(")")) return new Token(this, TokenType.RPAREN);
 		else if (peeks("[")) return new Token(this, TokenType.LBRACK);
 		else if (peeks("]")) return new Token(this, TokenType.RBRACK);

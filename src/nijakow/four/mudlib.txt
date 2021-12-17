@@ -1,5 +1,9 @@
 --- /secure/object.c
 
+/*
+ * This is the basic object
+ */
+
 use _clone_instance;
 use log;
 
