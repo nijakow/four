@@ -39,6 +39,7 @@ public class ClientWindow extends JFrame implements ActionListener {
 		if (connection != null)
 			connection.close();
 		connection = ClientConnection.getClientConnection(prefs.getHostname(), prefs.getPort());
+		connection.setClientReceiveListener(message -> area.append(message));
 		try {
 			connection.establishConnection();
 		} catch (IOException ex) {
@@ -174,7 +175,7 @@ public class ClientWindow extends JFrame implements ActionListener {
 					connection.establishConnection();
 				String text = prompt.getText() + "\n";
 				connection.send(text);
-				area.append(" > " + text);
+				area.append("\n > " + text);
 			} catch (Exception ex) {
 				area.append("*** Could not send message --- see console for more details! ***\n");
 			}

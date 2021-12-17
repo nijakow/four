@@ -1,6 +1,8 @@
 package nijakow.four.client.net;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.Socket;
 
 import javax.net.SocketFactory;
@@ -10,6 +12,7 @@ public class ClientConnectionImpl implements ClientConnection {
 	private int port;
 	private SocketFactory socketFactory;
 	private Socket socket;
+	private ClientReceiveListener listener;
 	
 	protected ClientConnectionImpl(String host, int port) {
 		this.port = port;
@@ -38,6 +41,16 @@ public class ClientConnectionImpl implements ClientConnection {
 	@Override
 	public void establishConnection() throws IOException {
 		socket = socketFactory.createSocket(host, port);
+		BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+		while (isConnected() && reader.ready()) {
+			if (listener != null)
+				listener.lineReceived(reader.readLine());
+		}
+	}
+	
+	@Override
+	public void setClientReceiveListener(ClientReceiveListener listener) {
+		this.listener = listener;
 	}
 	
 	@Override
