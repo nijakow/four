@@ -5,11 +5,10 @@ import nijakow.four.net.IConnection;
 public class FConnection extends Instance {
 	private final IConnection connection;
 	
-	public void sendInt(Instance instance) {
-		connection.writeString(Integer.toString(instance.asInt()));
-	}
+	@Override
+	public FConnection asFConnection() { return this; }
 	
-	public void sendString(Instance instance) {
+	public void send(Instance instance) {
 		connection.writeString(instance.asString());
 	}
 	

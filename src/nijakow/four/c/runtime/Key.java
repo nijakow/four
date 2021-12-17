@@ -3,6 +3,8 @@ package nijakow.four.c.runtime;
 import java.util.HashMap;
 import java.util.Map;
 
+import nijakow.four.c.runtime.vm.Fiber;
+
 public class Key {
 	private final String name;
 	private Code code;
@@ -24,8 +26,14 @@ public class Key {
 		return KEYS.get(name);
 	}
 	
-	
 	static {
 		get("say_hi").code = (fiber, args, self) -> System.out.println("This is the hi function!");
+		get("write").code = new BuiltinCode() {
+			
+			@Override
+			void run(Fiber fiber, Blue self, Instance[] args) {
+				args[0].asFConnection().send(args[1]);
+			}
+		};
 	}
 }

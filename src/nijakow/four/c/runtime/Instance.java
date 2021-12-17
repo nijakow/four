@@ -8,6 +8,8 @@ public abstract class Instance {
 	public int asInt() { return hashCode(); }
 	public String asString() { return toString(); }
 	
+	public FConnection asFConnection() { throw new RuntimeException("Conversion failed!"); }
+	
 	public void loadSlot(Fiber fiber, Key key) {
 		throw new RuntimeException("Oof. Slot not found.");
 	}
