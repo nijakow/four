@@ -1,0 +1,21 @@
+--- /secure/master.c
+
+use log;
+use on_connect;
+use pause;
+
+any say_hi()
+{
+	log("Hi!");
+}
+
+any receive(any connection)
+{
+	log("New connection!");
+}
+
+any create()
+{
+	on_connect(this, "receive");
+	pause(this, "say_hi", 5000);
+}
