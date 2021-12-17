@@ -67,10 +67,14 @@ public class ScopedCompiler implements FCompiler {
 			this.writer = parent.writer;
 	}
 
+	private Integer getParentLocalCount() {
+		return ((parent == null) ? 0 : (parent.locals.size() + parent.getParentLocalCount()));
+	}
+	
 	private Integer findLocalVariable(Key name) {
 		for (int i = 0; i < locals.size(); i++)
 			if (locals.get(i).getSecond() == name)
-				return i;
+				return getParentLocalCount() + i;
 		if (parent != null) return parent.findLocalVariable(name);
 		else return null;
 	}
