@@ -3,7 +3,28 @@ package nijakow.four.c.parser;
 import java.util.ArrayList;
 import java.util.List;
 
-import nijakow.four.c.ast.*;
+import nijakow.four.c.ast.ASTAssignment;
+import nijakow.four.c.ast.ASTBinOp;
+import nijakow.four.c.ast.ASTBlock;
+import nijakow.four.c.ast.ASTCall;
+import nijakow.four.c.ast.ASTConstant;
+import nijakow.four.c.ast.ASTDecl;
+import nijakow.four.c.ast.ASTDefaultDef;
+import nijakow.four.c.ast.ASTDefinition;
+import nijakow.four.c.ast.ASTDot;
+import nijakow.four.c.ast.ASTExpression;
+import nijakow.four.c.ast.ASTFile;
+import nijakow.four.c.ast.ASTFor;
+import nijakow.four.c.ast.ASTFunctionDef;
+import nijakow.four.c.ast.ASTIdent;
+import nijakow.four.c.ast.ASTIf;
+import nijakow.four.c.ast.ASTInheritanceDef;
+import nijakow.four.c.ast.ASTInstanceVarDef;
+import nijakow.four.c.ast.ASTInstruction;
+import nijakow.four.c.ast.ASTReturn;
+import nijakow.four.c.ast.ASTThis;
+import nijakow.four.c.ast.ASTVarDecl;
+import nijakow.four.c.ast.ASTWhile;
 import nijakow.four.c.runtime.Instance;
 import nijakow.four.c.runtime.Key;
 import nijakow.four.c.runtime.Type;
@@ -152,12 +173,15 @@ public class Parser {
 	}
 	
 	public ASTFile parse() {
-		List<ASTDefinition> defs = new ArrayList<>();
+		List<ASTDecl> defs = new ArrayList<>();
 	
 		while (!check(TokenType.EOF)) {
 			if (check(TokenType.USE)) {
 				Key name = expectKey();
 				defs.add(new ASTDefaultDef(name));
+				expect(TokenType.SEMICOLON);
+			} else if (check(TokenType.INHERIT)) {
+				defs.add(new ASTInheritanceDef(((Instance) expect(TokenType.CONSTANT).getPayload()).asString()));
 				expect(TokenType.SEMICOLON);
 			} else {
 				Type type = parseType();
@@ -173,7 +197,7 @@ public class Parser {
 			}
 		}
 		
-		return new ASTFile(defs.toArray(new ASTDefinition[0]));
+		return new ASTFile(defs.toArray(new ASTDecl[0]));
 	}
 	
 	private boolean checkKeep(TokenType type) {

@@ -121,11 +121,8 @@ public class InstructionWriter {
 
 	public ByteCode finish() {
 		byte[] bytes = new byte[out.size()];
-		for (int i = 0; i < bytes.length; i++) {
+		for (int i = 0; i < out.size(); i++)
 			bytes[i] = out.get(i);
-			System.out.println(bytes[i] & 0xff);
-		}
-		System.out.println();
 		return new ByteCode(paramCount, maxLocal + 1, bytes, keys.toArray(new Key[0]), constants.toArray(new Instance[0]));
 	}
 }

@@ -38,7 +38,8 @@ public class Key {
 			
 			@Override
 			void run(Fiber fiber, Instance self, Instance[] args) {
-				System.out.println(args[0].asString());
+				for (int x = 0; x < args.length; x++)
+					System.out.print(args[x].asString());
 			}
 		};
 		get("pause").code = new BuiltinCode() {

@@ -1,3 +1,14 @@
+--- /secure/object.c
+
+any clone()
+{
+	any instance;
+	
+	instance = _clone_instance(this);
+	return instance;
+}
+
+
 --- /secure/master.c
 
 use log;
@@ -18,6 +29,8 @@ any create()
 
 --- /secure/connection.c
 
+inherit "/secure/object.c";
+
 use _clone_instance;
 use log;
 use write;
@@ -35,17 +48,8 @@ any say_something()
 
 any create(any the_conn)
 {
-log(the_conn);
 	conn = the_conn;
 	x = 0;
 	write(conn, "Hey, this is the connection!\n");
 	pause(this, "say_something", 1000);
-}
-
-any clone()
-{
-	any instance;
-	
-	instance = _clone_instance(this);
-	return instance;
 }

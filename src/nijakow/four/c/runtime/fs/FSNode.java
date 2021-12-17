@@ -1,10 +1,12 @@
 package nijakow.four.c.runtime.fs;
 
 public abstract class FSNode {
+	private final Filesystem fs;
 	private FSNode parent;
 	private String name;
 	
-	public FSNode(FSNode parent, String name) {
+	public FSNode(Filesystem fs, FSNode parent, String name) {
+		this.fs = fs;
 		this.parent = parent;
 		this.name = name;
 	}
@@ -15,6 +17,8 @@ public abstract class FSNode {
 	public FSNode getParent() {
 		return parent;
 	}
+	
+	public Filesystem getFilesystem() { return fs; }
 	
 	public FSNode getRoot() {
 		FSNode node;

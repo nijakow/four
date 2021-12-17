@@ -1,10 +1,9 @@
 package nijakow.four.c.ast;
 
-import nijakow.four.c.runtime.Blueprint;
 import nijakow.four.c.runtime.Key;
 import nijakow.four.c.runtime.Type;
 
-public abstract class ASTDefinition extends AST {
+public abstract class ASTDefinition extends ASTDecl {
 	private final Type type;
 	private final Key name;
 	
@@ -15,6 +14,4 @@ public abstract class ASTDefinition extends AST {
 
 	protected Type getType() { return type; }
 	protected Key getName() { return name; }
-	
-	public abstract void compileInto(Blueprint blueprint);
 }

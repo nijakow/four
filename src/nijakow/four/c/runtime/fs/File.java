@@ -11,9 +11,11 @@ public class File extends FSNode {
 	private String contents = "";
 	private Blueprint blueprint;
 	private Blue instance;
+	private boolean isDirty;
 	
-	public File(FSNode parent, String name) {
-		super(parent, name);
+	public File(Filesystem fs, FSNode parent, String name) {
+		super(fs, parent, name);
+		this.isDirty = false;
 	}
 	
 	public File asFile() { return this; }
@@ -21,17 +23,18 @@ public class File extends FSNode {
 	protected FSNode findChild(String name) { return null; }
 	
 	public String getContents() { return contents; }
-	public File setContents(String newContents) { contents = newContents; return this; }
+	public File setContents(String newContents) { contents = newContents; this.isDirty = true; return this; }
 	
 	public Blueprint compile() {
 		Parser parser = new Parser(new Tokenizer(new StringCharStream(contents)));
 		ASTFile file = parser.parse();
-		return file.compile();
+		return file.compile(getFilesystem());
 	}
 	
 	public Blueprint getBlueprint() {
-		if (blueprint == null)
+		if (blueprint == null || isDirty)
 			blueprint = compile();
+		isDirty = false;
 		return blueprint;
 	}
 	

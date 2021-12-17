@@ -1,11 +1,9 @@
 package nijakow.four.c.ast;
 
-import nijakow.four.c.compiler.ScopedCompiler;
 import nijakow.four.c.runtime.Blueprint;
 import nijakow.four.c.runtime.Code;
 import nijakow.four.c.runtime.Key;
-import nijakow.four.c.runtime.Type;
-import nijakow.four.util.Pair;
+import nijakow.four.c.runtime.fs.Filesystem;
 
 public class ASTDefaultDef extends ASTDefinition {
 
@@ -14,7 +12,7 @@ public class ASTDefaultDef extends ASTDefinition {
 	}
 
 	@Override
-	public void compileInto(Blueprint blueprint) {
+	public void compileInto(Blueprint blueprint, Filesystem fs) {
 		Code code = getName().getCode();
 		if (code == null)
 			throw new RuntimeException("Oof. Can't import this code!");

@@ -27,13 +27,7 @@ public class FString extends Instance {
 	}
 	
 	private Blue getBlue(Filesystem fs) {
-		// TODO: Cache this!
-		FSNode node = fs.find(value);
-		if (node == null || node.asFile() == null) {
-			return null;
-		} else {
-			return node.asFile().getInstance();
-		}
+		return fs.getBlue(value);
 	}
 
 	@Override
