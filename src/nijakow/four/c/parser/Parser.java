@@ -37,8 +37,11 @@ public class Parser {
 	private Tokenizer tokenizer;
 
 	private Type parseType() {
+		/*
+		 * TODO: More types
+		 */
 		if (check(TokenType.ANY)) {
-			return new Type(); // TODO
+			return Type.getAny();
 		} else {
 			return null;
 		}
