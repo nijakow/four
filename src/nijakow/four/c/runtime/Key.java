@@ -3,7 +3,6 @@ package nijakow.four.c.runtime;
 import java.util.HashMap;
 import java.util.Map;
 
-import nijakow.four.c.runtime.vm.Callback;
 import nijakow.four.c.runtime.vm.Fiber;
 
 public class Key {
@@ -36,13 +35,6 @@ public class Key {
 				System.out.println(args[0].asString());
 			}
 		};
-		get("on_connect").code = new BuiltinCode() {
-			
-			@Override
-			void run(Fiber fiber, Blue self, Instance[] args) {
-				fiber.getVM().setConnectCallback(fiber.getVM().createCallback(args[0].asBlue(), args[1].asKey()));
-			}
-		};
 		get("pause").code = new BuiltinCode() {
 			
 			@Override
@@ -50,11 +42,19 @@ public class Key {
 				fiber.getVM().invokeIn(args[0].asBlue(), args[1].asKey(), args[2].asInt());
 			}
 		};
+		get("on_connect").code = new BuiltinCode() {
+			
+			@Override
+			void run(Fiber fiber, Blue self, Instance[] args) {
+				fiber.getVM().setConnectCallback(fiber.getVM().createCallback(args[0].asBlue(), args[1].asKey()));
+			}
+		};
 		get("write").code = new BuiltinCode() {
 			
 			@Override
 			void run(Fiber fiber, Blue self, Instance[] args) {
-				args[0].asFConnection().send(args[1]);
+				for (int x = 1; x < args.length; x++)
+					args[0].asFConnection().send(args[x]);
 			}
 		};
 	}

@@ -3,15 +3,30 @@
 use log;
 use on_connect;
 use pause;
+use write;
 
 any say_hi()
 {
 	log("Hi!");
 }
 
+any conn;
+any x;
+
+any say_something()
+{
+	write(conn, "This is a test! ", x, " ", x << 1, "\n");
+	x = x + 1;
+	pause(this, "say_something", 1000);
+}
+
 any receive(any connection)
 {
 	log("New connection!");
+	write(connection, "Hello from the server!\n");
+	conn = connection;
+	x = 0;
+	pause(this, "say_something", 1000);
 }
 
 any create()
