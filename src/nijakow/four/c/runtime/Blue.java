@@ -12,6 +12,12 @@ public class Blue extends Instance {
 	public Blue(Blueprint blueprint) {
 		this.blueprint = blueprint;
 	}
+	
+	private Blue(Blue other) {
+		this.blueprint = other.blueprint;
+		for (Key k : other.slots.keySet())
+			slots.put(k, other.slots.get(k));
+	}
 
 	@Override
 	public boolean asBoolean() {
@@ -43,5 +49,9 @@ public class Blue extends Instance {
 			super.send(fiber, key, args);
 		else
 			code.invoke(fiber, args, this);
+	}
+	
+	public Blue clone() {
+		return new Blue(this);
 	}
 }

@@ -2,13 +2,26 @@
 
 use log;
 use on_connect;
-use pause;
-use write;
 
-any say_hi()
+any receive(any connection)
 {
-	log("Hi!");
+	any conn_inst;
+	log("New connection!\n");
+	conn_inst = "/secure/connection.c"->clone();
+	conn_inst->create(connection);
 }
+
+any create()
+{
+	on_connect(this, "receive");
+}
+
+--- /secure/connection.c
+
+use _clone_instance;
+use log;
+use write;
+use pause;
 
 any conn;
 any x;
@@ -20,27 +33,19 @@ any say_something()
 	pause(this, "say_something", 1000);
 }
 
-any receive(any connection)
+any create(any the_conn)
 {
-	log("New connection!");
-	write(connection, "Hello from the server!\n");
-	conn = connection;
+log(the_conn);
+	conn = the_conn;
 	x = 0;
+	write(conn, "Hey, this is the connection!\n");
 	pause(this, "say_something", 1000);
 }
 
-any create()
+any clone()
 {
-	"/secure/connection.c"->test();
-	on_connect(this, "receive");
-	pause(this, "say_hi", 5000);
-}
-
---- /secure/connection.c
-
-use log;
-
-any test()
-{
-	log("Connection is alive!");
+	any instance;
+	
+	instance = _clone_instance(this);
+	return instance;
 }

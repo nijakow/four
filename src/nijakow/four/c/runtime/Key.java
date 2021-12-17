@@ -27,6 +27,13 @@ public class Key {
 	}
 	
 	static {
+		get("_clone_instance").code = new BuiltinCode() {
+			
+			@Override
+			void run(Fiber fiber, Instance self, Instance[] args) {
+				fiber.setAccu(args[0].asBlue().clone());
+			}
+		};
 		get("log").code = new BuiltinCode() {
 			
 			@Override
