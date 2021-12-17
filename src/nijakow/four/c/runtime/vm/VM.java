@@ -1,22 +1,24 @@
 package nijakow.four.c.runtime.vm;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedList;
+import java.util.Queue;
 
 import nijakow.four.c.runtime.Blue;
+import nijakow.four.c.runtime.FConnection;
 import nijakow.four.c.runtime.Instance;
 import nijakow.four.c.runtime.Key;
+import nijakow.four.net.Server;
 
 public class VM {
-	private final List<Fiber> fibers = new ArrayList<>();
-	private Callback inputCallback = null;
+	private final Server server;
+	private final Queue<Fiber> fibers = new LinkedList<>();
 	
-	public VM() {
-		
+	public VM(Server server) {
+		this.server = server;
 	}
 
-	public void setInputCallback(Callback callback) {
-		this.inputCallback = callback;
+	public void setConnectCallback(Callback callback) {
+		this.server.onConnect((theConnection) -> callback.invoke(new FConnection(theConnection)));
 	}
 	
 	public double notificationWish() {
@@ -24,12 +26,15 @@ public class VM {
 	}
 
 	public void tick() {
-		int x = 0;
-		while (x < fibers.size()) {
-			if (fibers.get(x).isTerminated()) {
-				fibers.remove(x);
-			} else {
-				fibers.get(x).tick();
+		while (!fibers.isEmpty()) {			
+			int x = 0;
+			Fiber fiber = fibers.poll();
+			while (!fiber.isTerminated()) {
+				if (x >= 10000000) {
+					// TODO: Throw an error!
+					break;
+				}
+				fiber.tick();
 				x++;
 			}
 		}

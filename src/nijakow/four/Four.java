@@ -19,7 +19,7 @@ public class Four implements Runnable {
 	public Four(int[] ports) throws IOException {
 		this.fs = new Filesystem();
 		this.server = new Server();
-		this.vm = new VM();
+		this.vm = new VM(this.server);
 		
 		for (int port : ports)
 			server.serveOn(port);
