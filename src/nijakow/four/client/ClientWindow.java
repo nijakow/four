@@ -8,6 +8,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.net.ConnectException;
+import java.net.UnknownHostException;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -15,30 +17,54 @@ import javax.swing.JCheckBox;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.border.EtchedBorder;
 
+import nijakow.four.client.net.ClientConnection;
+import nijakow.four.client.net.ClientConnectionImpl;
+
 public class ClientWindow extends JFrame implements ActionListener {
 	private static final long serialVersionUID = 1L;
 	private static final String SETTINGS = "settings";
 	private static final String SEND = "send";
+	private JLabel connectionStatus;
 	private JTextField prompt;
 	private JTextArea area;
 	private PreferencesHelper prefs;
+	private ClientConnection connection;
+	private boolean reconnect;
+	private Runnable reconnector = () -> {
+		if (connection != null)
+			connection.close();
+		connection = new ClientConnectionImpl(prefs);
+		try {
+			((ClientConnectionImpl) connection).establishConnection();
+		} catch (ConnectException | UnknownHostException ex) {
+			EventQueue.invokeLater(() -> JOptionPane.showMessageDialog(
+					this,
+					"Could not connect to \"" + prefs.getHostname() + "\" on port " + prefs.getPort(),
+					"Connection failed", JOptionPane.ERROR_MESSAGE));
+		}
+	};
 	
 	public ClientWindow() {
 		super("Nijakow's \"Four\"");
 		// TODO macOS customization
 		prefs = new PreferencesHelper();
+		new Thread(reconnector).start();
 		getContentPane().setLayout(new BorderLayout());
 		JPanel south = new JPanel();
 		south.setLayout(new BoxLayout(south, BoxLayout.X_AXIS));
 		prompt = new JTextField();
 		prompt.addActionListener(this);
 		prompt.setActionCommand(SEND);
+		connectionStatus = new JLabel();
+		getContentPane().add(connectionStatus, BorderLayout.NORTH);
+		connectionStatus.setVisible(false);
 		JButton settings = new JButton("Settings");
 		settings.addActionListener(this);
 		settings.setActionCommand(SETTINGS);
@@ -56,7 +82,7 @@ public class ClientWindow extends JFrame implements ActionListener {
 			public void windowClosing(WindowEvent e) {
 				prefs.setWindowDimensions(getX(), getY(), getWidth(), getHeight());
 				prefs.flush();
-				System.out.println("TODO: Close connection");
+				connection.close();
 				dispose();
 			}
 		});
@@ -103,10 +129,17 @@ public class ClientWindow extends JFrame implements ActionListener {
 			
 			@Override
 			public void windowDeactivated(WindowEvent e) {
-				prefs.setHostname(hostname.getText());
+				if (prefs.getHostname() != hostname.getText()) {
+					prefs.setHostname(hostname.getText());
+					reconnect = true;
+				}
 				prefs.setLineBreaking(lineBreak.isSelected());
 				try {
-					prefs.setPort(Integer.parseInt(portNo.getText()));
+					int p = Integer.parseInt(portNo.getText());
+					if (p != prefs.getPort()) {
+						prefs.setPort(p);
+						reconnect = true;
+					}
 				} catch (NumberFormatException ex) {
 					System.err.println("Not a valid port: \"" + portNo.getText() +"\", ignored.");
 				}
@@ -115,10 +148,13 @@ public class ClientWindow extends JFrame implements ActionListener {
 			@Override
 			public void windowClosing(WindowEvent e) {
 				prefs.flush();
+				if (reconnect)
+					new Thread(reconnector).start();
 			}
 		});
 		settingsWindow.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		settingsWindow.setLocationRelativeTo(this);
+		settingsWindow.setResizable(false);
 		settingsWindow.pack();
 		settingsWindow.setVisible(true);
 	}
@@ -128,12 +164,11 @@ public class ClientWindow extends JFrame implements ActionListener {
 		switch (e.getActionCommand()) {
 		case SETTINGS:
 			openSettingsWindow();
-			System.out.println("TODO: settings");
 			break;
 			
 		case SEND:
-			System.out.println("TODO: send \"" + prompt.getText() + "\"");
-			area.append(prompt.getText() + "\n");
+			connection.send(prompt.getText());
+			area.append(" > " + prompt.getText() + "\n");
 			prompt.setText("");
 			break;
 		}
@@ -141,6 +176,5 @@ public class ClientWindow extends JFrame implements ActionListener {
 	
 	public static void openWindow() {
 		EventQueue.invokeLater(() -> new ClientWindow().setVisible(true));
-		// TODO connection stuff
 	}
 }
