@@ -56,64 +56,50 @@ public class Frame {
 		
 		switch (code.u8(ip++)) {
 		case Bytecodes.BYTECODE_LOAD_THIS:
-			System.out.println("THIS");
 			fiber.setAccu(self);
 			break;
 		case Bytecodes.BYTECODE_LOAD_CONSTANT:
-			System.out.println("LOAD_CONSTANT");
 			fiber.setAccu(code.constant(code.u16(ip)));
 			ip += 2;
 			break;
 		case Bytecodes.BYTECODE_LOAD_LOCAL:
-			System.out.println("LOAD_LOCAL");
 			fiber.setAccu(locals[code.u8(ip++)]);
 			break;
 		case Bytecodes.BYTECODE_STORE_LOCAL:
-			System.out.println("STORE_LOCAL");
 			locals[code.u8(ip++)] = fiber.getAccu();
 			break;
 		case Bytecodes.BYTECODE_LOAD_INST:
-			System.out.println("LOAD_INST");
 			fiber.getAccu().loadSlot(fiber, code.keyAt(code.u16(ip)));
 			ip += 2;
 			break;
 		case Bytecodes.BYTECODE_STORE_INST:
-			System.out.println("STORE_INST");
 			fiber.getAccu().storeSlot(fiber, code.keyAt(code.u16(ip)), fiber.pop());
 			ip += 2;
 			break;
 		case Bytecodes.BYTECODE_PUSH:
-			System.out.println("PUSH");
 			fiber.push(fiber.getAccu());
 			break;
 		case Bytecodes.BYTECODE_DOTCALL:
-			System.out.println("DOTCALL");
 			Key key = code.keyAt(code.u16(ip));
 			ip += 2;
 			fiber.getAccu().send(fiber, key, code.u8(ip++));
 			break;
 		case Bytecodes.BYTECODE_JUMP:
-			System.out.println("JUMP");
 			ip = code.u16(ip);
 			break;
 		case Bytecodes.BYTECODE_JUMP_IF_NOT:
-			System.out.print("JUMP_IF_NOT");
 			if (fiber.getAccu().asBoolean()) {
 				ip += 2;
-				System.out.println(" (not performed)");
 			} else {
 				ip = code.u16(ip);
-				System.out.println(" (performed)");
 			}
 			break;
 		case Bytecodes.BYTECODE_OP:
-			System.out.println("OP");
 			int a1 = fiber.pop().asInt();
 			int a2 = fiber.getAccu().asInt();
 			fiber.setAccu(new FInteger(operate(OperatorType.values()[code.u8(ip++)], a1, a2)));
 			break;
 		case Bytecodes.BYTECODE_RETURN:
-			System.out.println("RETURN");
 			fiber.setTop(previous);
 			break;
 		default:
