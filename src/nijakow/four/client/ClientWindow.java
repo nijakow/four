@@ -3,6 +3,7 @@ package nijakow.four.client;
 import java.awt.BorderLayout;
 import java.awt.Cursor;
 import java.awt.EventQueue;
+import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -22,6 +23,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.border.EtchedBorder;
+import javax.swing.plaf.FontUIResource;
 
 import nijakow.four.client.net.ClientConnection;
 
@@ -52,6 +54,9 @@ public class ClientWindow extends JFrame implements ActionListener {
 	
 	public ClientWindow(int[] ports) {
 		super("Nijakow's \"Four\"");
+
+		final Font font = new Font("Monospaced", Font.PLAIN, 14);
+		
 		// TODO macOS customization
 		// TODO C editor
 		// TODO iterate through ports
@@ -62,6 +67,7 @@ public class ClientWindow extends JFrame implements ActionListener {
 		JPanel south = new JPanel();
 		south.setLayout(new BoxLayout(south, BoxLayout.X_AXIS));
 		prompt = new JTextField();
+		prompt.setFont(font);
 		prompt.addActionListener(this);
 		prompt.setActionCommand(SEND);
 		connectionStatus = new JLabel();
@@ -76,6 +82,7 @@ public class ClientWindow extends JFrame implements ActionListener {
 		area = new JTextArea();
 		area.setEditable(false);
 		area.setCursor(new Cursor(Cursor.TEXT_CURSOR));
+		area.setFont(font);
 		JScrollPane pane = new JScrollPane(area);
 		getContentPane().add(pane, BorderLayout.CENTER);
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
