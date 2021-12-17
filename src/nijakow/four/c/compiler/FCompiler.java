@@ -27,5 +27,6 @@ public interface FCompiler {
 	void compileDotAssign(Key key);
 
 	void compileDotCall(Key key, int args, boolean hasVarargs);
+	void compileScopeCall(Key key, int args, boolean hasVarargs);
 	void compileOp(OperatorType type);
 }

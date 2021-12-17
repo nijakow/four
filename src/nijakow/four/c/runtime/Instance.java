@@ -19,7 +19,11 @@ public abstract class Instance {
 		throw new RuntimeException("Oof. Slot not found.");
 	}
 	
-	public void send(Fiber fiber, Key key, int args) {
+	public void send(Fiber fiber, Instance subject, Key key, int args) {
 		throw new RuntimeException("Oof. Method not found.");
+	}
+	
+	public final void send(Fiber fiber, Key key, int args) {
+		send(fiber, this, key, args);
 	}
 }

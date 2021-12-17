@@ -123,6 +123,12 @@ public class InstructionWriter {
 		u8(args);
 	}
 	
+	public void writeScopeCall(Key key, int args, boolean hasVarargs) {
+		u8(hasVarargs ? Bytecodes.BYTECODE_SCOPECALL_VARARGS : Bytecodes.BYTECODE_SCOPECALL);
+		key(key);
+		u8(args);
+	}
+
 	public void writeOp(OperatorType type) {
 		u8(Bytecodes.BYTECODE_OP);
 		u8(type.ordinal());

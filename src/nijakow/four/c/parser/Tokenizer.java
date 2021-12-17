@@ -58,6 +58,7 @@ public class Tokenizer {
 		else if (peeks("{")) return new Token(this, TokenType.LCURLY);
 		else if (peeks("}")) return new Token(this, TokenType.RCURLY);
 		else if (peeks("...")) return new Token(this, TokenType.ELLIPSIS);
+		else if (peeks("::")) return new Token(this, TokenType.SCOPE);
 		else if (peeks(".")) return new Token(this, TokenType.DOT);
 		else if (peeks(",")) return new Token(this, TokenType.COMMA);
 		else if (peeks(":")) return new Token(this, TokenType.COLON);

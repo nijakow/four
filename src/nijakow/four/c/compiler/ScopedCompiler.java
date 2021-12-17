@@ -166,6 +166,11 @@ public class ScopedCompiler implements FCompiler {
 	public void compileDotCall(Key key, int args, boolean hasVarargs) {
 		writer.writeDotCall(key, args, hasVarargs);
 	}
+	
+	@Override
+	public void compileScopeCall(Key key, int args, boolean hasVarargs) {
+		writer.writeScopeCall(key, args, hasVarargs);
+	}
 
 	@Override
 	public void compileOp(OperatorType type) {

@@ -41,7 +41,8 @@ public class FString extends Instance {
 	}
 
 	@Override
-	public void send(Fiber fiber, Key key, int args) {
-		getBlue(fiber.getVM().getFilesystem()).send(fiber, key, args);
+	public void send(Fiber fiber, Instance subject, Key key, int args) {
+		Blue blue = getBlue(fiber.getVM().getFilesystem());
+		blue.send(fiber, blue, key, args);
 	}
 }

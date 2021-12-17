@@ -10,9 +10,11 @@ public class Bytecodes {
 	public static final byte BYTECODE_PUSH = 0x06;
 	public static final byte BYTECODE_DOTCALL = 0x07;
 	public static final byte BYTECODE_DOTCALL_VARARGS = 0x08;
-	public static final byte BYTECODE_JUMP = 0x09;
-	public static final byte BYTECODE_JUMP_IF_NOT = 0x0a;
-	public static final byte BYTECODE_RETURN = 0x0b;
-	public static final int BYTECODE_OP = 0x0c;
-	public static final int BYTECODE_LOAD_VANEXT = 0x0d;
+	public static final byte BYTECODE_SCOPECALL = 0x09;
+	public static final byte BYTECODE_SCOPECALL_VARARGS = 0x0a;
+	public static final byte BYTECODE_JUMP = 0x0b;
+	public static final byte BYTECODE_JUMP_IF_NOT = 0x0c;
+	public static final byte BYTECODE_RETURN = 0x0d;
+	public static final byte BYTECODE_OP = 0x0e;
+	public static final byte BYTECODE_LOAD_VANEXT = 0x0f;
 }

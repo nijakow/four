@@ -43,12 +43,12 @@ public class Blue extends Instance {
 	}
 	
 	@Override
-	public void send(Fiber fiber, Key key, int args) {
+	public void send(Fiber fiber, Instance subj, Key key, int args) {
 		Code code = blueprint.getMethod(key);
 		if (code == null)
-			super.send(fiber, key, args);
+			super.send(fiber, subj, key, args);
 		else
-			code.invoke(fiber, args, this);
+			code.invoke(fiber, args, subj);
 	}
 	
 	public Blue clone() {

@@ -1,7 +1,10 @@
 --- /secure/object.c
 
+use log;
+
 any create()
 {
+	log("object create!");
 }
 
 any clone(...)
@@ -55,6 +58,7 @@ any receive(text)
 
 any create(any the_conn)
 {
+	"/secure/object.c"::create();
 	conn = the_conn;
 	x = 0;
 	write(conn, "Hey, this is the connection!\n");
