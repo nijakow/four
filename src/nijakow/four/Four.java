@@ -7,6 +7,7 @@ import nijakow.four.c.runtime.Key;
 import nijakow.four.c.runtime.fs.FSNode;
 import nijakow.four.c.runtime.fs.Filesystem;
 import nijakow.four.c.runtime.vm.VM;
+import nijakow.four.client.ClientWindow;
 import nijakow.four.net.Server;
 
 public class Four implements Runnable {
@@ -63,7 +64,7 @@ public class Four implements Runnable {
 		for (int i = 0; i < args.length; i++) {
 			switch (args[i]) {
 			case "--client":
-				// TODO
+				ClientWindow.openWindow();
 				return;
 
 			case "--port":
