@@ -17,6 +17,7 @@ public class InstructionWriter {
 	private final List<Instance> constants = new ArrayList<>();
 	private int maxLocal = 0;
 	private int paramCount = 0;
+	private boolean hasVarargs = false;
 	
 	public InstructionWriter() {
 		
@@ -51,6 +52,10 @@ public class InstructionWriter {
 	
 	public void declareParamCount(int pcount) {
 		paramCount = pcount;
+	}
+	
+	public void enableVarargs() {
+		hasVarargs = true;
 	}
 	
 	public Consumer<Integer> writePostponedJump() {
@@ -108,8 +113,8 @@ public class InstructionWriter {
 		key(k);
 	}
 
-	public void writeDotCall(Key k, int args) {
-		u8(Bytecodes.BYTECODE_DOTCALL);
+	public void writeDotCall(Key k, int args, boolean hasVarargs) {
+		u8(hasVarargs ? Bytecodes.BYTECODE_DOTCALL_VARARGS : Bytecodes.BYTECODE_DOTCALL);
 		key(k);
 		u8(args);
 	}
@@ -123,6 +128,6 @@ public class InstructionWriter {
 		byte[] bytes = new byte[out.size()];
 		for (int i = 0; i < out.size(); i++)
 			bytes[i] = out.get(i);
-		return new ByteCode(paramCount, maxLocal + 1, bytes, keys.toArray(new Key[0]), constants.toArray(new Instance[0]));
+		return new ByteCode(paramCount, hasVarargs, maxLocal + 1, bytes, keys.toArray(new Key[0]), constants.toArray(new Instance[0]));
 	}
 }

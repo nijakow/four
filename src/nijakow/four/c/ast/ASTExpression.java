@@ -4,7 +4,7 @@ import nijakow.four.c.compiler.FCompiler;
 
 public abstract class ASTExpression extends ASTInstruction {
 
-	public void compileCall(FCompiler compiler, int args) {
+	public void compileCall(FCompiler compiler, int args, boolean hasVarargs) {
 		throw new RuntimeException("Oof.");
 	}
 

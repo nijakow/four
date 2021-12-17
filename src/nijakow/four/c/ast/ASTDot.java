@@ -19,9 +19,9 @@ public class ASTDot extends ASTExpression {
 	}
 
 	@Override
-	public void compileCall(FCompiler compiler, int args) {
+	public void compileCall(FCompiler compiler, int args, boolean hasVarargs) {
 		expr.compile(compiler);
-		compiler.compileDotCall(key, args);
+		compiler.compileDotCall(key, args, hasVarargs);
 	}
 
 	@Override

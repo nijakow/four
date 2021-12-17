@@ -42,8 +42,9 @@ public class Parser {
 		}
 	}
 	
-	private Pair<Type, Key>[] parseArgdefs() {
+	private Pair<Pair<Type, Key>[], Boolean> parseArgdefs() {
 		List<Pair<Type, Key>> args = new ArrayList<>();
+		boolean hasVarargs = false;
 		
 		if (!check(TokenType.RPAREN)) {
 			while (true) {
@@ -52,26 +53,37 @@ public class Parser {
 				args.add(new Pair<>(t, k));
 				if (check(TokenType.RPAREN))
 					break;
+				else if (check(TokenType.ELLIPSIS)) {
+					hasVarargs = true;
+					expect(TokenType.RPAREN);
+					break;
+				}
 				expect(TokenType.COMMA);
 			}
 		}
 		
-		return (Pair<Type, Key>[]) args.toArray(new Pair[0]);
+		return new Pair<>((Pair<Type, Key>[]) args.toArray(new Pair[0]), hasVarargs);
 	}
 	
-	private ASTExpression[] parseArglist() {
+	private Pair<ASTExpression[], Boolean> parseArglist() {
 		List<ASTExpression> args = new ArrayList<>();
+		boolean hasVarargs = false;
 		
 		if (!check(TokenType.RPAREN)) {
 			while (true) {
 				args.add(parseExpression());
 				if (check(TokenType.RPAREN))
 					break;
+				else if (check(TokenType.ELLIPSIS)) {
+					hasVarargs = true;
+					expect(TokenType.RPAREN);
+					break;
+				}
 				expect(TokenType.COMMA);
 			}
 		}
 		
-		return args.toArray(new ASTExpression[0]);
+		return new Pair<>(args.toArray(new ASTExpression[0]), hasVarargs);
 	}
 	
 	private ASTExpression parseSimpleExpression() {
@@ -95,7 +107,8 @@ public class Parser {
 			if (check(TokenType.DOT) || check(TokenType.RARROW)) {
 				expr = new ASTDot(expr, expectKey());
 			} else if (check(TokenType.LPAREN)) {
-				expr = new ASTCall(expr, parseArglist());
+				Pair<ASTExpression[], Boolean> arglistData = parseArglist();
+				expr = new ASTCall(expr, arglistData.getFirst(), arglistData.getSecond());
 			} else if (check(TokenType.ASSIGNMENT)) {
 				expr = new ASTAssignment(expr, parseExpression());
 			} else if (checkKeep(TokenType.OPERATOR)) {
@@ -187,9 +200,9 @@ public class Parser {
 				Type type = parseType();
 				Key name = expectKey();
 				if (check(TokenType.LPAREN)) {
-					Pair<Type, Key>[] args = parseArgdefs();
+					Pair<Pair<Type, Key>[], Boolean> args = parseArgdefs();
 					ASTInstruction body = parseInstruction();
-					defs.add(new ASTFunctionDef(type, name, args, body));
+					defs.add(new ASTFunctionDef(type, name, args.getFirst(), args.getSecond(), body));
 				} else {
 					defs.add(new ASTInstanceVarDef(type, name));
 					expect(TokenType.SEMICOLON);

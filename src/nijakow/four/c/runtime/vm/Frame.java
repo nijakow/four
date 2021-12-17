@@ -1,5 +1,8 @@
 package nijakow.four.c.runtime.vm;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import nijakow.four.c.ast.OperatorType;
 import nijakow.four.c.runtime.Blue;
 import nijakow.four.c.runtime.ByteCode;
@@ -12,6 +15,7 @@ public class Frame {
 	private final ByteCode code;
 	private final Blue self;
 	private final Instance[] locals;
+	private final List<Instance> varargs = new ArrayList<>();
 	private int ip = 0;
 	
 	public Frame(Frame previous, ByteCode code, Blue self) {
@@ -23,6 +27,10 @@ public class Frame {
 	
 	public void setLocal(int index, Instance value) {
 		locals[index] = value;
+	}
+	
+	public void addVararg(Instance value) {
+		varargs.add(0, value);
 	}
 	
 	private int operate(OperatorType type, int x, int y) {
@@ -83,6 +91,16 @@ public class Frame {
 			Key key = code.keyAt(code.u16(ip));
 			ip += 2;
 			fiber.getAccu().send(fiber, key, code.u8(ip++));
+			break;
+		case Bytecodes.BYTECODE_DOTCALL_VARARGS:
+			key = code.keyAt(code.u16(ip));
+			ip += 2;
+			int args = code.u8(ip++);
+			for (Instance v : varargs) {
+				fiber.push(v);
+				args++;
+			}
+			fiber.getAccu().send(fiber, key, args);
 			break;
 		case Bytecodes.BYTECODE_JUMP:
 			ip = code.u16(ip);

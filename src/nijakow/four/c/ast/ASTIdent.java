@@ -16,9 +16,9 @@ public class ASTIdent extends ASTExpression {
 	}
 
 	@Override
-	public void compileCall(FCompiler compiler, int args) {
+	public void compileCall(FCompiler compiler, int args, boolean hasVarargs) {
 		compiler.compileLoadThis();
-		compiler.compileDotCall(identifier, args);
+		compiler.compileDotCall(identifier, args, hasVarargs);
 	}
 
 	@Override

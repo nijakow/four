@@ -39,7 +39,11 @@ public class Fiber {
 	public void enter(Blue self, ByteCode code, int args) {
 		if (!code.argCheck(args))
 			throw new RuntimeException("Ouch! Arg error!");
-		setTop(new Frame(top, code, self));
+		int varargCount = args - code.getFixedArgCount();
+		Frame f = new Frame(top, code, self);
+		while (varargCount --> 0)
+			f.addVararg(pop());
+		setTop(f);
 		while (args --> 0) {
 			top.setLocal(args, pop());
 		}

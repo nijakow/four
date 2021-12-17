@@ -91,6 +91,10 @@ public class ScopedCompiler implements FCompiler {
 		locals.add(new Pair<>(type, name));
 	}
 
+	public void enableVarargs() {
+		writer.enableVarargs();
+	}
+
 	public FCompiler subscope() {
 		return new ScopedCompiler(this);
 	}
@@ -154,8 +158,8 @@ public class ScopedCompiler implements FCompiler {
 	}
 
 	@Override
-	public void compileDotCall(Key key, int args) {
-		writer.writeDotCall(key, args);
+	public void compileDotCall(Key key, int args, boolean hasVarargs) {
+		writer.writeDotCall(key, args, hasVarargs);
 	}
 
 	@Override

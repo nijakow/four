@@ -11,6 +11,7 @@ public interface FCompiler {
 	
 	void addParam(Type type, Key name);
 	void addLocal(Type type, Key name);
+	void enableVarargs();
 
 	void compileLoadThis();
 	void compileLoadConstant(Instance value);
@@ -24,6 +25,6 @@ public interface FCompiler {
 	void compileDot(Key key);
 	void compileDotAssign(Key key);
 
-	void compileDotCall(Key key, int args);
+	void compileDotCall(Key key, int args, boolean hasVarargs);
 	void compileOp(OperatorType type);
 }

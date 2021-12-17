@@ -10,11 +10,13 @@ import nijakow.four.util.Pair;
 
 public class ASTFunctionDef extends ASTDefinition {
 	private final Pair<Type, Key>[] args;
+	private final boolean hasVarargs;
 	private final ASTInstruction body;
 
-	public ASTFunctionDef(Type type, Key name, Pair<Type, Key>[] args, ASTInstruction body) {
+	public ASTFunctionDef(Type type, Key name, Pair<Type, Key>[] args, boolean hasVarargs, ASTInstruction body) {
 		super(type, name);
 		this.args = args;
+		this.hasVarargs = hasVarargs;
 		this.body = body;
 	}
 
@@ -24,6 +26,8 @@ public class ASTFunctionDef extends ASTDefinition {
 		for (Pair<Type, Key> arg : args) {
 			compiler.addParam(arg.getFirst(), arg.getSecond());
 		}
+		if (hasVarargs)
+			compiler.enableVarargs();
 		body.compile(compiler);
 		Code code = compiler.finish();
 		blueprint.addMethod(getName(), code);
