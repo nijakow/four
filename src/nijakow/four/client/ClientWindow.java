@@ -50,11 +50,14 @@ public class ClientWindow extends JFrame implements ActionListener {
 		}
 	};
 	
-	public ClientWindow() {
+	public ClientWindow(int[] ports) {
 		super("Nijakow's \"Four\"");
 		// TODO macOS customization
 		// TODO C editor
+		// TODO iterate through ports
 		prefs = new PreferencesHelper();
+		if (ports.length > 0)
+			prefs.setPort(ports[0]);
 		new Thread(reconnector).start();
 		getContentPane().setLayout(new BorderLayout());
 		JPanel south = new JPanel();
@@ -185,7 +188,7 @@ public class ClientWindow extends JFrame implements ActionListener {
 		}
 	}
 	
-	public static void openWindow() {
-		EventQueue.invokeLater(() -> new ClientWindow().setVisible(true));
+	public static void openWindow(int[] ports) {
+		EventQueue.invokeLater(() -> new ClientWindow(ports).setVisible(true));
 	}
 }

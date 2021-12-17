@@ -60,12 +60,19 @@ public class Four implements Runnable {
 	
 	public static void main(String[] args) throws IOException {
 		ArrayList<Integer> ports = new ArrayList<>();
+		boolean server = false, client = false;
 		for (int i = 0; i < args.length; i++) {
 			switch (args[i]) {
 			case "--client":
-				ClientWindow.openWindow();
-				return;
+			case "-c":
+				client = true;
+				break;
 
+			case "--server":
+			case "-s":
+				server = true;
+				break;
+				
 			case "--port":
 			case "-p":
 				int j = 0;
@@ -96,7 +103,11 @@ public class Four implements Runnable {
 		int[] ps = new int[ports.size()];
 		for (int i = 0; i < ps.length; i++)
 			ps[i] = ports.get(i);
-		Four four = new Four(ps);
-		four.run();
+		if (client)
+			ClientWindow.openWindow(ps);
+		if (server) {
+			Four four = new Four(ps);
+			four.run();
+		}
 	}
 }
