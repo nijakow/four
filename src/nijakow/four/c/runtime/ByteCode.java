@@ -46,7 +46,7 @@ public class ByteCode implements Code {
 	}
 
 	@Override
-	public void invoke(Fiber fiber, int args, Blue self) {
-		fiber.enter(self, this, args);
+	public void invoke(Fiber fiber, int args, Instance self) {
+		fiber.enter(self.asBlue(), this, args);
 	}
 }

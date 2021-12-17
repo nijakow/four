@@ -15,7 +15,7 @@ public abstract class Instance {
 		throw new RuntimeException("Oof. Slot not found.");
 	}
 	
-	public void storeSlot(Key key, Instance value) {
+	public void storeSlot(Fiber fiber, Key key, Instance value) {
 		throw new RuntimeException("Oof. Slot not found.");
 	}
 	

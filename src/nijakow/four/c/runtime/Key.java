@@ -27,32 +27,31 @@ public class Key {
 	}
 	
 	static {
-		get("say_hi").code = (fiber, args, self) -> System.out.println("This is the hi function!");
 		get("log").code = new BuiltinCode() {
 			
 			@Override
-			void run(Fiber fiber, Blue self, Instance[] args) {
+			void run(Fiber fiber, Instance self, Instance[] args) {
 				System.out.println(args[0].asString());
 			}
 		};
 		get("pause").code = new BuiltinCode() {
 			
 			@Override
-			void run(Fiber fiber, Blue self, Instance[] args) {
+			void run(Fiber fiber, Instance self, Instance[] args) {
 				fiber.getVM().invokeIn(args[0].asBlue(), args[1].asKey(), args[2].asInt());
 			}
 		};
 		get("on_connect").code = new BuiltinCode() {
 			
 			@Override
-			void run(Fiber fiber, Blue self, Instance[] args) {
+			void run(Fiber fiber, Instance self, Instance[] args) {
 				fiber.getVM().setConnectCallback(fiber.getVM().createCallback(args[0].asBlue(), args[1].asKey()));
 			}
 		};
 		get("write").code = new BuiltinCode() {
 			
 			@Override
-			void run(Fiber fiber, Blue self, Instance[] args) {
+			void run(Fiber fiber, Instance self, Instance[] args) {
 				for (int x = 1; x < args.length; x++)
 					args[0].asFConnection().send(args[x]);
 			}

@@ -32,7 +32,7 @@ public class Blue extends Instance {
 	}
 	
 	@Override
-	public void storeSlot(Key key, Instance value) {
+	public void storeSlot(Fiber fiber, Key key, Instance value) {
 		slots.put(key, value);
 	}
 	

@@ -8,18 +8,24 @@ import nijakow.four.c.runtime.Blue;
 import nijakow.four.c.runtime.FConnection;
 import nijakow.four.c.runtime.Instance;
 import nijakow.four.c.runtime.Key;
+import nijakow.four.c.runtime.fs.Filesystem;
 import nijakow.four.net.Server;
 import nijakow.four.util.ComparablePair;
-import nijakow.four.util.Pair;
 
 public class VM {
+	private final Filesystem fs;
 	private final Server server;
 	private final Queue<Fiber> fibers = new LinkedList<>();
 	private final PriorityQueue<ComparablePair<Long, Callback>> pendingCallbacks = new PriorityQueue<>();
 	
 	
-	public VM(Server server) {
+	public VM(Filesystem fs, Server server) {
+		this.fs = fs;
 		this.server = server;
+	}
+	
+	public Filesystem getFilesystem() {
+		return fs;
 	}
 	
 	public Callback createCallback(Blue subject, Key message) {

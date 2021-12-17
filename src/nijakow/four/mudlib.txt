@@ -31,6 +31,16 @@ any receive(any connection)
 
 any create()
 {
+	"/secure/connection.c"->test();
 	on_connect(this, "receive");
 	pause(this, "say_hi", 5000);
+}
+
+--- /secure/connection.c
+
+use log;
+
+any test()
+{
+	log("Connection is alive!");
 }

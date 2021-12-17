@@ -20,7 +20,7 @@ public class Four implements Runnable {
 	public Four(int[] ports) throws IOException {
 		this.fs = new FSBuilder(this.getClass().getResourceAsStream("mudlib.txt")).build();
 		this.server = new Server();
-		this.vm = new VM(this.server);
+		this.vm = new VM(this.fs, this.server);
 		
 		for (int port : ports)
 			server.serveOn(port);

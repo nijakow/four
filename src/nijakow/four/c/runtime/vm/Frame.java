@@ -79,7 +79,7 @@ public class Frame {
 			break;
 		case Bytecodes.BYTECODE_STORE_INST:
 			System.out.println("STORE_INST");
-			fiber.getAccu().storeSlot(code.keyAt(code.u16(ip)), fiber.pop());
+			fiber.getAccu().storeSlot(fiber, code.keyAt(code.u16(ip)), fiber.pop());
 			ip += 2;
 			break;
 		case Bytecodes.BYTECODE_PUSH:
