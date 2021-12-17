@@ -1,6 +1,7 @@
 package nijakow.four.client;
 
 import java.awt.BorderLayout;
+import java.awt.Cursor;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -11,6 +12,8 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 public class ClientWindow extends JFrame implements ActionListener {
@@ -18,6 +21,7 @@ public class ClientWindow extends JFrame implements ActionListener {
 	private static final String SETTINGS = "settings";
 	private static final String SEND = "send";
 	private JTextField prompt;
+	private JTextArea area;
 	private PreferencesHelper prefs;
 	
 	public ClientWindow() {
@@ -36,6 +40,11 @@ public class ClientWindow extends JFrame implements ActionListener {
 		south.add(prompt);
 		south.add(settings);
 		getContentPane().add(south, BorderLayout.SOUTH);
+		area = new JTextArea();
+		area.setEditable(false);
+		area.setCursor(new Cursor(Cursor.TEXT_CURSOR));
+		JScrollPane pane = new JScrollPane(area);
+		getContentPane().add(pane, BorderLayout.CENTER);
 		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 		addWindowListener(new WindowAdapter() {
 			@Override
@@ -58,6 +67,7 @@ public class ClientWindow extends JFrame implements ActionListener {
 			pack();
 		else
 			setSize(width, height);
+		prompt.requestFocusInWindow();
 	}
 	
 	private void openSettingsWindow() {
@@ -74,6 +84,7 @@ public class ClientWindow extends JFrame implements ActionListener {
 			
 		case SEND:
 			System.out.println("TODO: send \"" + prompt.getText() + "\"");
+			area.append(prompt.getText() + "\n");
 			prompt.setText("");
 			break;
 		}
