@@ -74,16 +74,7 @@ public class ClientWindow extends JFrame implements ActionListener {
 		area.setCursor(new Cursor(Cursor.TEXT_CURSOR));
 		JScrollPane pane = new JScrollPane(area);
 		getContentPane().add(pane, BorderLayout.CENTER);
-		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
-		addWindowListener(new WindowAdapter() {
-			@Override
-			public void windowClosing(WindowEvent e) {
-				prefs.setWindowDimensions(getX(), getY(), getWidth(), getHeight());
-				prefs.flush();
-				connection.close();
-				dispose();
-			}
-		});
+		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		int x = prefs.getWindowPositionX();
 		int y = prefs.getWindowPositionY();
 		if (x == -1 || y == -1)
@@ -96,6 +87,13 @@ public class ClientWindow extends JFrame implements ActionListener {
 			pack();
 		else
 			setSize(width, height);
+	}
+	
+	public void dispose() {
+		prefs.setWindowDimensions(getX(), getY(), getWidth(), getHeight());
+		prefs.flush();
+		connection.close();
+		dispose();
 	}
 	
 	private void openSettingsWindow() {
@@ -174,8 +172,9 @@ public class ClientWindow extends JFrame implements ActionListener {
 			try {
 				if (!connection.isConnected())
 					connection.establishConnection();
-				connection.send(prompt.getText());
-				area.append(" > " + prompt.getText() + "\n");
+				String text = prompt.getText() + "\n";
+				connection.send(text);
+				area.append(" > " + text);
 			} catch (Exception ex) {
 				area.append("*** Could not send message --- see console for more details! ***\n");
 			}
