@@ -37,11 +37,19 @@ public class Main {
 				break;
 				
 			case "-h":
+			default:
 				System.out.println("--port");
 				System.out.println("-p");
 				System.out.println("         Specifies a (or multiple) port(s) to use");
+				System.out.println();
 				System.out.println("--client");
+				System.out.println("-c");
 				System.out.println("         Starts a client instance");
+				System.out.println();
+				System.out.println("--server");
+				System.out.println("-s");
+				System.out.println("         Starts a server instance");
+				System.out.println();
 				System.out.println("-h");
 				System.out.println("         Prints this help");
 				break;
