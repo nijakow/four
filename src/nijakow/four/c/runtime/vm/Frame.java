@@ -10,6 +10,7 @@ import nijakow.four.c.runtime.FClosure;
 import nijakow.four.c.runtime.FInteger;
 import nijakow.four.c.runtime.Instance;
 import nijakow.four.c.runtime.Key;
+import nijakow.four.c.runtime.Type;
 
 public class Frame {
 	private final Frame previous;
@@ -142,6 +143,16 @@ public class Frame {
 			break;
 		case Bytecodes.BYTECODE_LOAD_VACOUNT:
 			fiber.setAccu(new FInteger(varargs.size()));
+			break;
+		case Bytecodes.BYTECODE_TYPE_CHECK:
+			Type type = code.type(code.u16(ip));
+			ip += 2;
+			type.expect(fiber.getAccu());
+			break;
+		case Bytecodes.BYTECODE_TYPE_CAST:
+			type = code.type(code.u16(ip));
+			ip += 2;
+			fiber.setAccu(type.cast(fiber.getAccu()));
 			break;
 		default:
 			System.out.println("???");

@@ -8,12 +8,14 @@ import nijakow.four.c.ast.OperatorType;
 import nijakow.four.c.runtime.ByteCode;
 import nijakow.four.c.runtime.Instance;
 import nijakow.four.c.runtime.Key;
+import nijakow.four.c.runtime.Type;
 import nijakow.four.c.runtime.vm.Bytecodes;
 
 public class InstructionWriter {	
 	private final List<Byte> out = new ArrayList<>();
 	private final List<Key> keys = new ArrayList<>();
 	private final List<Instance> constants = new ArrayList<>();
+	private final List<Type> types = new ArrayList<>();
 	private int maxLocal = 0;
 	private int paramCount = 0;
 	private boolean hasVarargs = false;
@@ -44,6 +46,15 @@ public class InstructionWriter {
 			constants.add(value);
 		}
 	}
+	private void type(Type value) {
+		int i = types.indexOf(value);
+		if (i >= 0) {
+			u16(i);
+		} else {
+			u16(types.size());
+			types.add(value);
+		}
+	}
 
 	public Integer getOffset() {
 		return out.size();
@@ -71,6 +82,11 @@ public class InstructionWriter {
 		Consumer<Integer> c = (i) -> putU16(offset, i);
 		u16(0);
 		return c;
+	}
+
+	public void writeTypeCheck(Type type) {
+		u8(Bytecodes.BYTECODE_TYPE_CHECK);
+		type(type);
 	}
 
 	public void writeLoadThis() {
@@ -145,6 +161,12 @@ public class InstructionWriter {
 		byte[] bytes = new byte[out.size()];
 		for (int i = 0; i < out.size(); i++)
 			bytes[i] = out.get(i);
-		return new ByteCode(paramCount, hasVarargs, maxLocal + 1, bytes, keys.toArray(new Key[0]), constants.toArray(new Instance[0]));
+		return new ByteCode(paramCount,
+							hasVarargs,
+							maxLocal + 1,
+							bytes,
+							keys.toArray(new Key[0]),
+							constants.toArray(new Instance[0]),
+							types .toArray(new Type[0]));
 	}
 }

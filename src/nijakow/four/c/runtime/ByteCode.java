@@ -9,14 +9,16 @@ public class ByteCode implements Code {
 	private final byte[] bytecodes;
 	private final Key[] keys;
 	private final Instance[] constants;
+	private final Type[] types;
 	
-	public ByteCode(int params, boolean hasVarargs, int locals, byte[] bytecodes, Key[] keys, Instance[] constants) {
+	public ByteCode(int params, boolean hasVarargs, int locals, byte[] bytecodes, Key[] keys, Instance[] constants, Type[] types) {
 		this.params = params;
 		this.hasVarargs = hasVarargs;
 		this.locals = locals;
 		this.bytecodes = bytecodes;
 		this.keys = keys;
 		this.constants = constants;
+		this.types = types;
 	}
 
 	public int getLocalCount() {
@@ -41,6 +43,10 @@ public class ByteCode implements Code {
 
 	public Instance constant(int index) {
 		return constants[index];
+	}
+	
+	public Type type(int index) {
+		return types[index];
 	}
 
 	public boolean argCheck(int args) {

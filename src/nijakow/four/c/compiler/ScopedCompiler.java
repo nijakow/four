@@ -71,12 +71,15 @@ public class ScopedCompiler implements FCompiler {
 		return ((parent == null) ? 0 : (parent.locals.size() + parent.getParentLocalCount()));
 	}
 	
-	private Integer findLocalVariable(Key name) {
+	private Pair<Type, Integer> findLocalVariable(Key name) {
 		for (int i = 0; i < locals.size(); i++)
 			if (locals.get(i).getSecond() == name)
-				return getParentLocalCount() + i;
-		if (parent != null) return parent.findLocalVariable(name);
-		else return null;
+				return new Pair<>(locals.get(i).getFirst(), getParentLocalCount() + i);
+		if (parent != null) {
+			return parent.findLocalVariable(name);
+		} else {
+			return null;
+		}
 	}
 
 	@Override
@@ -130,24 +133,25 @@ public class ScopedCompiler implements FCompiler {
 
 	@Override
 	public void compileLoadVariable(Key identifier) {
-		Integer index = findLocalVariable(identifier);
-		if (index == null) {
+		Pair<Type, Integer> info = findLocalVariable(identifier);
+		if (info == null) {
 			compileLoadThis();
 			compileDot(identifier);
 		} else {
-			writer.writeLoadLocal(index);
+			writer.writeLoadLocal(info.getSecond());
 		}
 	}
 
 	@Override
 	public void compileStoreVariable(Key identifier) {
-		Integer index = findLocalVariable(identifier);
-		if (index == null) {
+		Pair<Type, Integer> info = findLocalVariable(identifier);
+		if (info == null) {
 			compilePush();
 			compileLoadThis();
 			compileDotAssign(identifier);
 		} else {
-			writer.writeStoreLocal(index);
+			writer.writeTypeCheck(info.getFirst());
+			writer.writeStoreLocal(info.getSecond());
 		}
 	}
 
