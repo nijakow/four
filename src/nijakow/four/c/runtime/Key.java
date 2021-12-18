@@ -63,6 +63,13 @@ public class Key {
 				args[0].asFConnection().onReceive(fiber.getVM().createCallback(args[1].asBlue(), args[2].asKey()));
 			}
 		};
+		get("$on_disconnect").code = new BuiltinCode() {
+			
+			@Override
+			void run(Fiber fiber, Instance self, Instance[] args) {
+				args[0].asFConnection().onDisconnect(fiber.getVM().createCallback(args[1].asBlue(), args[2].asKey()));
+			}
+		};
 		get("$write").code = new BuiltinCode() {
 			
 			@Override

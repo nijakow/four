@@ -6,4 +6,5 @@ public interface IConnection {
 	void writeBytes(byte[] bytes);
 	void writeString(String string);
 	void onInput(Consumer<String> consumer);
+	void onDisconnect(Runnable runnable);
 }

@@ -6,7 +6,7 @@
 
 use $clone_instance;
 
-any create()
+void create()
 {
 }
 
@@ -24,7 +24,7 @@ any clone(...)
 use $log;
 use $on_connect;
 
-any receive(any connection)
+void receive(any connection)
 {
 	any conn_inst;
 	$log("New connection!\n");
@@ -32,7 +32,7 @@ any receive(any connection)
 	"/secure/program.c"->clone(conn_inst);
 }
 
-any create()
+void create()
 {
 	$on_connect(this, "receive");
 }
@@ -43,13 +43,13 @@ inherit "/secure/object.c";
 
 any connection;
 
-any sayhi(any text)
+void sayhi(any text)
 {
 	connection->write(": ", text);
 	connection->prompt(this::sayhi, "> ");
 }
 
-any create(any the_connection)
+void create(any the_connection)
 {
     connection = the_connection;
     connection->write("Program commencing...\n");
@@ -60,26 +60,28 @@ any create(any the_connection)
 
 inherit "/secure/object.c";
 
+use $log;
 use $write;
 use $on_receive;
+use $on_disconnect;
 
 any port;
 any func;
 
-any prompt(any the_func, ...)
+void prompt(any the_func, ...)
 {
     func = the_func;
     write(...);
 }
 
-any write(...)
+void write(...)
 {
     while (va_count) {
         $write(port, va_next);
     }
 }
 
-any receive(any text)
+void receive(any text)
 {
     any _func;
     
@@ -90,10 +92,16 @@ any receive(any text)
     }
 }
 
-any create(any the_port)
+void handle_disconnect()
+{
+	$log("Disconnect!\n");
+}
+
+void create(any the_port)
 {
 	"/secure/object.c"::create();
 	port = the_port;
 	func = nil;
 	$on_receive(port, this, "receive");
+	$on_disconnect(port, this, "handle_disconnect");
 }

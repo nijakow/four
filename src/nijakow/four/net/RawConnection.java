@@ -9,6 +9,7 @@ public class RawConnection implements IConnection {
 
 	private final SocketChannel socket;
 	private Consumer<String> inputHandler = null;
+	private Runnable disconnectHandler = null;
 	
 	
 	public RawConnection(SocketChannel socket) {
@@ -44,7 +45,9 @@ public class RawConnection implements IConnection {
 	}
 	
 	public void handleDisconnect() {
-		// TODO
+		if (this.disconnectHandler != null) {
+			disconnectHandler.run();
+		}
 	}
 
 
@@ -53,4 +56,12 @@ public class RawConnection implements IConnection {
 		this.inputHandler = consumer;
 	}
 
+	@Override
+	public void onDisconnect(Runnable runnable) {
+		/*
+		 * TODO: Immediately run it if the connection
+		 *       has already been disconnected!
+		 */
+		this.disconnectHandler = runnable;
+	}
 }

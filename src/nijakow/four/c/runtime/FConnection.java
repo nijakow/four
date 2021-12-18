@@ -13,6 +13,10 @@ public class FConnection extends Instance {
 		connection.onInput((s) -> cb.invoke(new FString(s)));
 	}
 	
+	public void onDisconnect(Callback cb) {
+		connection.onDisconnect(() -> cb.invoke());
+	}
+	
 	public void send(Instance instance) {
 		connection.writeString(instance.asString());
 	}
