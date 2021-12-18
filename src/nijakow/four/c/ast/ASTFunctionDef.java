@@ -22,7 +22,7 @@ public class ASTFunctionDef extends ASTDefinition {
 
 	@Override
 	public void compileInto(Blueprint blueprint, Filesystem fs) {
-		ScopedCompiler compiler = new ScopedCompiler();	// TODO: body.openCompilation();
+		ScopedCompiler compiler = new ScopedCompiler(getType());	// TODO: body.openCompilation();
 		for (Pair<Type, Key> arg : args) {
 			compiler.addParam(arg.getFirst(), arg.getSecond());
 		}

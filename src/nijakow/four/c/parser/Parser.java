@@ -185,7 +185,7 @@ public class Parser {
 			return new ASTFor(init, condition, update, parseInstruction());
 		} else if (check(TokenType.RETURN)) {
 			if (check(TokenType.SEMICOLON)) {
-				return new ASTReturn(new ASTThis());
+				return new ASTReturn(null);
 			} else {
 				ASTExpression expr = parseExpression();
 				expect(TokenType.SEMICOLON);

@@ -53,18 +53,20 @@ public class ScopedCompiler implements FCompiler {
 	private final ScopedCompiler parent;
 	private final InstructionWriter writer;
 	private final List<Pair<Type, Key>> locals = new ArrayList<>();
+	private final Type returnType;
 	private int params = 0;
 	
-	public ScopedCompiler() {
-		this(null);
+	public ScopedCompiler(Type returnType) {
+		this(null, returnType);
 	}
 	
-	private ScopedCompiler(ScopedCompiler parent) {
+	private ScopedCompiler(ScopedCompiler parent, Type returnType) {
 		this.parent = parent;
 		if (parent == null)
 			this.writer = new InstructionWriter();
 		else
 			this.writer = parent.writer;
+		this.returnType = returnType;
 	}
 
 	private Integer getParentLocalCount() {
@@ -86,7 +88,6 @@ public class ScopedCompiler implements FCompiler {
 	public void addParam(Type type, Key name) {
 		addLocal(type, name);
 		params++;
-		// TODO: Increment parameter count by one
 	}
 
 	@Override
@@ -103,7 +104,7 @@ public class ScopedCompiler implements FCompiler {
 	}
 
 	public FCompiler subscope() {
-		return new ScopedCompiler(this);
+		return new ScopedCompiler(this, returnType);
 	}
 	
 	@Override
@@ -162,6 +163,7 @@ public class ScopedCompiler implements FCompiler {
 	
 	@Override
 	public void compileReturn() {
+		writer.writeTypeCheck(returnType);
 		writer.writeReturn();
 	}
 
@@ -196,6 +198,12 @@ public class ScopedCompiler implements FCompiler {
 	}
 
 	public Code finish() {
+		/*
+		 * TODO: Only do this if the programmer hasn't supplied their
+		 *       own return statement!
+		 */
+		compileLoadConstant(Instance.getNil());
+		compileReturn();
 		writer.declareParamCount(params);
 		return writer.finish();
 	}
