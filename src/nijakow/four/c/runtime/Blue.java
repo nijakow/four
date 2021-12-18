@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import nijakow.four.c.runtime.vm.Fiber;
+import nijakow.four.util.Pair;
 
 public class Blue extends Instance {
 	private Blueprint blueprint;
@@ -39,6 +40,9 @@ public class Blue extends Instance {
 	
 	@Override
 	public void storeSlot(Fiber fiber, Key key, Instance value) {
+		Pair<Type, Key> info = blueprint.getSlotInfo(key);
+		if (info == null || !info.getFirst().check(value))
+			throw new RuntimeException("Oof. Slot not found (or wrong type)...");
 		slots.put(key, value);
 	}
 	

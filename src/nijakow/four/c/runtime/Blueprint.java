@@ -5,11 +5,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import nijakow.four.c.runtime.vm.VM;
+import nijakow.four.util.Pair;
 
 public class Blueprint {
 	private List<Blueprint> supers = new ArrayList<>();
-	private List<Key> slots = new ArrayList<>();
+	private List<Pair<Type, Key>> slots = new ArrayList<>();
 	private Map<Key, Code> methods = new HashMap<>();
 
 	public Blueprint() {}
@@ -32,7 +32,23 @@ public class Blueprint {
 	
 	public void addSlot(Type type, Key name) {
 		if (!slots.contains(name))
-			slots.add(name);
+			slots.add(new Pair<>(type, name));
+	}
+	
+	public Pair<Type, Key> getSlotInfo(Key name) {
+		for (Pair<Type, Key> slot : slots) {
+			if (slot.getSecond() == name) {
+				return slot;
+			}
+		}
+		
+		for (Blueprint parent : supers) {
+			Pair<Type, Key> slot = parent.getSlotInfo(name);
+			if (slot != null)
+				return slot;
+		}
+		
+		return null;
 	}
 	
 	public void addMethod(Key name, Code code) {
