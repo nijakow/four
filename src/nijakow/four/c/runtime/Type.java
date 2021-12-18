@@ -27,9 +27,26 @@ public abstract class Type {
 		}
 	};
 	
+	private static final Type INT = new Type() {
+		
+		@Override
+		public Instance cast(Instance instance) {
+			if (check(instance))
+				return instance;
+			else
+				return new FInteger(instance.asInt());
+		}
+		
+		@Override
+		public boolean check(Instance instance) {
+			return instance instanceof FInteger;
+		}
+	};
+	
 	
 	public static Type getAny() { return ANY; }
 	public static Type getVoid() { return VOID; }
+	public static Type getInt() { return INT; }
 	
 	private Type() {}
 	
