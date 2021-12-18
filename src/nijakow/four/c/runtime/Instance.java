@@ -9,7 +9,7 @@ public abstract class Instance {
 	
 	public boolean isNil() { return this == NIL; }
 	
-	public boolean asBoolean() { return true; }
+	public boolean asBoolean() { return !isNil(); }
 	public int asInt() { return hashCode(); }
 	public String asString() { return toString(); }
 	public Key asKey() { throw new RuntimeException("Conversion failed!"); }

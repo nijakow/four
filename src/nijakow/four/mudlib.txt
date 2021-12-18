@@ -86,7 +86,7 @@ any receive(any text)
     
     if (func) {
     	_func = func;
-    	func = 0;
+    	func = nil;
         _func(text);
     }
 }
@@ -95,6 +95,6 @@ any create(any the_port)
 {
 	"/secure/object.c"::create();
 	port = the_port;
-	func = 0;
+	func = nil;
 	on_receive(port, this, "receive");
 }
