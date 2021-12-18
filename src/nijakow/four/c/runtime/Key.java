@@ -78,7 +78,7 @@ public class Key {
 					args[0].asFConnection().send(args[x]);
 			}
 		};
-		get("$string_length").code = new BuiltinCode() {
+		get("$strlen").code = new BuiltinCode() {
 			
 			@Override
 			void run(Fiber fiber, Instance self, Instance[] args) {

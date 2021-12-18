@@ -3,6 +3,8 @@ package nijakow.four.net;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
+import java.nio.charset.CharsetDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.function.Consumer;
 
 public class RawConnection implements IConnection {
@@ -40,7 +42,7 @@ public class RawConnection implements IConnection {
 			 * The encoding might be corrupted.
 			 * Better: Send the bytes directly to the receiver.
 			 */
-			inputHandler.accept(new String(bytes));
+			inputHandler.accept(new String(bytes, StandardCharsets.UTF_8));
 		}
 	}
 	

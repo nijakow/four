@@ -8,6 +8,7 @@ import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
+import java.nio.charset.StandardCharsets;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -58,7 +59,16 @@ public class Server {
 					((RawConnection) key.attachment()).handleDisconnect();
 					key.channel().close();
 				} else {
-					((RawConnection) key.attachment()).handleInput(bb.array());
+					int p;
+					byte[] bytes = bb.array();
+					for (p = 0; p < bytes.length; p++) {
+						if (bytes[p] == 0)
+							break;
+					}
+					byte[] newbytes = new byte[p];
+					while (p --> 0)
+						newbytes[p] = bytes[p];
+					((RawConnection) key.attachment()).handleInput(newbytes);
 				}
 			}
 			iter.remove();

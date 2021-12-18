@@ -41,11 +41,13 @@ void create()
 
 inherit "/secure/object.c";
 
+use $strlen;
+
 any connection;
 
 void sayhi(any text)
 {
-	connection->write(": ", text);
+	connection->write("(", $strlen(text), "): ", text);
 	connection->prompt(this::sayhi, "> ");
 }
 
