@@ -23,7 +23,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.border.EtchedBorder;
-import javax.swing.plaf.FontUIResource;
 
 import nijakow.four.client.net.ClientConnection;
 
