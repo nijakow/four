@@ -121,6 +121,7 @@ public class Tokenizer {
 		switch (text) {
 		case "": return new Token(this, TokenType.EOF);
 		case "this": return new Token(this, TokenType.THIS);
+		case "nil": return new Token(this, TokenType.NIL);
 		case "use": return new Token(this, TokenType.USE);
 		case "inherit": return new Token(this, TokenType.INHERIT);
 		case "any": return new Token(this, TokenType.ANY);

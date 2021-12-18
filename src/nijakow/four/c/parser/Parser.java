@@ -98,6 +98,8 @@ public class Parser {
 	private ASTExpression parseSimpleExpression() {
 		if (check(TokenType.THIS)) {
 			return new ASTThis();
+		} else if (check(TokenType.NIL)) {
+			return new ASTConstant(Instance.getNil());
 		} else if (check(TokenType.VA_NEXT)) {
 			return new ASTVaNext();
 		} else if (check(TokenType.VA_COUNT)) {
