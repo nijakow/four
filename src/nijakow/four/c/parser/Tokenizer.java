@@ -124,6 +124,7 @@ public class Tokenizer {
 		case "use": return new Token(this, TokenType.USE);
 		case "inherit": return new Token(this, TokenType.INHERIT);
 		case "any": return new Token(this, TokenType.ANY);
+		case "void": return new Token(this, TokenType.VOID);
 		case "if": return new Token(this, TokenType.IF);
 		case "else": return new Token(this, TokenType.ELSE);
 		case "while": return new Token(this, TokenType.WHILE);

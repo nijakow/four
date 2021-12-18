@@ -42,6 +42,8 @@ public class Parser {
 		 */
 		if (check(TokenType.ANY)) {
 			return Type.getAny();
+		} else if (check(TokenType.VOID)) {
+			return Type.getVoid();
 		} else {
 			return null;
 		}

@@ -3,7 +3,12 @@ package nijakow.four.c.runtime;
 import nijakow.four.c.runtime.vm.Fiber;
 
 public abstract class Instance {
+	private static final Instance NIL = new Instance() {};
 
+	public static Instance getNil() { return NIL; }
+	
+	public boolean isNil() { return this == NIL; }
+	
 	public boolean asBoolean() { return true; }
 	public int asInt() { return hashCode(); }
 	public String asString() { return toString(); }

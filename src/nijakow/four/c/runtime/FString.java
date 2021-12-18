@@ -1,6 +1,5 @@
 package nijakow.four.c.runtime;
 
-import nijakow.four.c.runtime.fs.FSNode;
 import nijakow.four.c.runtime.fs.Filesystem;
 import nijakow.four.c.runtime.vm.Fiber;
 
