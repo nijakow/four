@@ -14,6 +14,7 @@ public abstract class Instance {
 	public String asString() { return toString(); }
 	public Key asKey() { throw new RuntimeException("Conversion failed!"); }
 	public Blue asBlue() { throw new RuntimeException("Conversion failed!"); }
+	public FString asFString() { throw new RuntimeException("Conversion failed!"); }
 	public FConnection asFConnection() { throw new RuntimeException("Conversion failed!"); }
 	
 	public void invoke(Fiber fiber, int args) {

@@ -25,6 +25,11 @@ public class FString extends Instance {
 		return Key.get(value);
 	}
 	
+	@Override
+	public FString asFString() {
+		return this;
+	}
+	
 	private Blue getBlue(Filesystem fs) {
 		return fs.getBlue(value);
 	}

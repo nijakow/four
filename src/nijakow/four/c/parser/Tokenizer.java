@@ -11,7 +11,7 @@ public class Tokenizer {
 	private Stack<Token> pushbacks;
 	
 	private boolean isSpecial(int c) {
-		return !(Character.isAlphabetic(c) || Character.isDigit(c) || c == '_');
+		return !(Character.isAlphabetic(c) || Character.isDigit(c) || c == '_' || c == '$');
 	}
 	
 	private boolean peeks(String s) {

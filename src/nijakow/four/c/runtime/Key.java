@@ -27,14 +27,14 @@ public class Key {
 	}
 	
 	static {
-		get("_clone_instance").code = new BuiltinCode() {
+		get("$clone_instance").code = new BuiltinCode() {
 			
 			@Override
 			void run(Fiber fiber, Instance self, Instance[] args) {
 				fiber.setAccu(args[0].asBlue().clone());
 			}
 		};
-		get("log").code = new BuiltinCode() {
+		get("$log").code = new BuiltinCode() {
 			
 			@Override
 			void run(Fiber fiber, Instance self, Instance[] args) {
@@ -42,33 +42,47 @@ public class Key {
 					System.out.print(args[x].asString());
 			}
 		};
-		get("pause").code = new BuiltinCode() {
+		get("$pause").code = new BuiltinCode() {
 			
 			@Override
 			void run(Fiber fiber, Instance self, Instance[] args) {
 				fiber.getVM().invokeIn(args[0].asBlue(), args[1].asKey(), args[2].asInt());
 			}
 		};
-		get("on_connect").code = new BuiltinCode() {
+		get("$on_connect").code = new BuiltinCode() {
 			
 			@Override
 			void run(Fiber fiber, Instance self, Instance[] args) {
 				fiber.getVM().setConnectCallback(fiber.getVM().createCallback(args[0].asBlue(), args[1].asKey()));
 			}
 		};
-		get("on_receive").code = new BuiltinCode() {
+		get("$on_receive").code = new BuiltinCode() {
 			
 			@Override
 			void run(Fiber fiber, Instance self, Instance[] args) {
 				args[0].asFConnection().onReceive(fiber.getVM().createCallback(args[1].asBlue(), args[2].asKey()));
 			}
 		};
-		get("write").code = new BuiltinCode() {
+		get("$write").code = new BuiltinCode() {
 			
 			@Override
 			void run(Fiber fiber, Instance self, Instance[] args) {
 				for (int x = 1; x < args.length; x++)
 					args[0].asFConnection().send(args[x]);
+			}
+		};
+		get("$string_length").code = new BuiltinCode() {
+			
+			@Override
+			void run(Fiber fiber, Instance self, Instance[] args) {
+				fiber.setAccu(new FInteger(args[0].asFString().asString().length()));
+			}
+		};
+		get("$substr").code = new BuiltinCode() {
+			
+			@Override
+			void run(Fiber fiber, Instance self, Instance[] args) {
+				fiber.setAccu(new FString(args[0].asFString().asString().substring(args[1].asInt(), args[2].asInt())));
 			}
 		};
 	}
