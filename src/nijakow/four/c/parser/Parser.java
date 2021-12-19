@@ -111,12 +111,12 @@ public class Parser {
 			ASTExpression expr = parseExpression();
 			expect(TokenType.RPAREN);
 			return expr;
-		} else if (check(TokenType.LISTBEGIN)) {
+		} else if (check(TokenType.LCURLY)) {
 			List<ASTExpression> exprs = new ArrayList<>();
-			if (!check(TokenType.LISTEND)) {
+			if (!check(TokenType.LCURLY)) {
 				while (true) {
 					exprs.add(parseExpression());
-					if (check(TokenType.LISTEND))
+					if (check(TokenType.RCURLY))
 						break;
 					expect(TokenType.COMMA);
 				}

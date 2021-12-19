@@ -34,7 +34,11 @@ void receive(any connection)
 
 void create()
 {
-	$log(({ 1, 2, 3 }));
+	any x;
+	
+	x = ({ 1, 2, 3 });
+	
+	$log(x);
 	$on_connect(this, "receive");
 }
 
