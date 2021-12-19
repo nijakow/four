@@ -39,7 +39,7 @@ void create()
 	x = ({ 1, 2, 3 });
 	
 	$log(x);
-	$on_connect(this, "receive");
+	$on_connect(this::receive);
 }
 
 --- /secure/program.c
@@ -109,6 +109,6 @@ void create(any the_port)
 	"/secure/object.c"::create();
 	port = the_port;
 	func = nil;
-	$on_receive(port, this, "receive");
-	$on_disconnect(port, this, "handle_disconnect");
+	$on_receive(port, this::receive);
+	$on_disconnect(port, this::handle_disconnect);
 }

@@ -5,6 +5,7 @@ import java.util.PriorityQueue;
 import java.util.Queue;
 
 import nijakow.four.c.runtime.Blue;
+import nijakow.four.c.runtime.FClosure;
 import nijakow.four.c.runtime.FConnection;
 import nijakow.four.c.runtime.Instance;
 import nijakow.four.c.runtime.Key;
@@ -26,6 +27,10 @@ public class VM {
 	
 	public Filesystem getFilesystem() {
 		return fs;
+	}
+	
+	public Callback createCallback(FClosure closure) {
+		return new Callback(this, closure);
 	}
 	
 	public Callback createCallback(Blue subject, Key message) {
@@ -91,6 +96,14 @@ public class VM {
 	
 	public void startFiber(Blue self, Key key) {
 		startFiber(self, key, new Instance[0]);
+	}
+	
+	public void startFiber(FClosure closure, Instance[] args) {
+		Fiber fiber = spawnFiber();
+		for (Instance arg : args)
+			fiber.push(arg);
+		closure.invoke(fiber, args.length);
+		fibers.add(fiber);
 	}
 	
 	public void invokeIn(Blue subject, Key message, long millis) {

@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import nijakow.four.c.runtime.vm.Fiber;
+import nijakow.four.c.runtime.vm.VM;
 import nijakow.four.util.Pair;
 
 public class Blue extends Instance {
@@ -56,7 +57,7 @@ public class Blue extends Instance {
 	}
 	
 	@Override
-	public Code extractMethod(Fiber fiber, Key key) {
+	public Code extractMethod(VM vm, Key key) {
 		return blueprint.getMethod(key);
 	}
 	

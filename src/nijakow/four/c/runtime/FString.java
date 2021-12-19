@@ -2,6 +2,7 @@ package nijakow.four.c.runtime;
 
 import nijakow.four.c.runtime.fs.Filesystem;
 import nijakow.four.c.runtime.vm.Fiber;
+import nijakow.four.c.runtime.vm.VM;
 
 public class FString extends Instance {
 	private final String value;
@@ -51,8 +52,8 @@ public class FString extends Instance {
 	}
 
 	@Override
-	public Code extractMethod(Fiber fiber, Key key) {
-		Blue blue = getBlue(fiber.getVM().getFilesystem());
-		return blue.extractMethod(fiber, key);
+	public Code extractMethod(VM vm, Key key) {
+		Blue blue = getBlue(vm.getFilesystem());
+		return blue.extractMethod(vm, key);
 	}
 }

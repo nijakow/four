@@ -10,6 +10,11 @@ public class FClosure extends Instance {
 		this.self = self;
 		this.code = code;
 	}
+	
+	@Override
+	public FClosure asFClosure() {
+		return this;
+	}
 
 	@Override
 	public void invoke(Fiber fiber, int args) {

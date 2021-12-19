@@ -53,21 +53,21 @@ public class Key {
 			
 			@Override
 			void run(Fiber fiber, Instance self, Instance[] args) {
-				fiber.getVM().setConnectCallback(fiber.getVM().createCallback(args[0].asBlue(), args[1].asKey()));
+				fiber.getVM().setConnectCallback(fiber.getVM().createCallback(args[0].asFClosure()));
 			}
 		};
 		get("$on_receive").code = new BuiltinCode() {
 			
 			@Override
 			void run(Fiber fiber, Instance self, Instance[] args) {
-				args[0].asFConnection().onReceive(fiber.getVM().createCallback(args[1].asBlue(), args[2].asKey()));
+				args[0].asFConnection().onReceive(fiber.getVM().createCallback(args[1].asFClosure()));
 			}
 		};
 		get("$on_disconnect").code = new BuiltinCode() {
 			
 			@Override
 			void run(Fiber fiber, Instance self, Instance[] args) {
-				args[0].asFConnection().onDisconnect(fiber.getVM().createCallback(args[1].asBlue(), args[2].asKey()));
+				args[0].asFConnection().onDisconnect(fiber.getVM().createCallback(args[1].asFClosure()));
 			}
 		};
 		get("$write").code = new BuiltinCode() {

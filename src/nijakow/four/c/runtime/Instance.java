@@ -1,6 +1,7 @@
 package nijakow.four.c.runtime;
 
 import nijakow.four.c.runtime.vm.Fiber;
+import nijakow.four.c.runtime.vm.VM;
 
 public abstract class Instance {
 	private static final Instance NIL = new Instance() {};
@@ -16,6 +17,7 @@ public abstract class Instance {
 	public Blue asBlue() { throw new RuntimeException("Conversion failed!"); }
 	public FString asFString() { throw new RuntimeException("Conversion failed!"); }
 	public FList asFList() { throw new RuntimeException("Conversion failed!"); }
+	public FClosure asFClosure() { throw new RuntimeException("Conversion failed!"); }
 	public FConnection asFConnection() { throw new RuntimeException("Conversion failed!"); }
 	
 	public void invoke(Fiber fiber, int args) {
@@ -34,7 +36,7 @@ public abstract class Instance {
 		throw new RuntimeException("Oof. Method not found.");
 	}
 	
-	public Code extractMethod(Fiber fiber, Key key) {
+	public Code extractMethod(VM vm, Key key) {
 		throw new RuntimeException("Oof. Can't extract method.");
 	}
 }
