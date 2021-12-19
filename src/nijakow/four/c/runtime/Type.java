@@ -43,10 +43,27 @@ public abstract class Type {
 		}
 	};
 	
+	private static final Type STRING = new Type() {
+		
+		@Override
+		public Instance cast(Instance instance) {
+			if (check(instance))
+				return instance;
+			else
+				return new FString(instance.asString());
+		}
+		
+		@Override
+		public boolean check(Instance instance) {
+			return instance instanceof FString;
+		}
+	};
+	
 	
 	public static Type getAny() { return ANY; }
 	public static Type getVoid() { return VOID; }
 	public static Type getInt() { return INT; }
+	public static Type getString() { return STRING; }
 	
 	private Type() {}
 	

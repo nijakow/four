@@ -42,27 +42,6 @@ void create()
 	$on_connect(this::receive);
 }
 
---- /secure/program.c
-
-inherit "/secure/object.c";
-
-use $strlen;
-
-any connection;
-
-void sayhi(any text)
-{
-	connection->write("(", $strlen(text), "): ", text);
-	connection->prompt(this::sayhi, "> ");
-}
-
-void create(any the_connection)
-{
-    connection = the_connection;
-    connection->write("Program commencing...\n");
-    connection->prompt(this::sayhi, "> ");
-}
-
 --- /secure/connection.c
 
 inherit "/secure/object.c";
@@ -111,4 +90,45 @@ void create(any the_port)
 	func = nil;
 	$on_receive(port, this::receive);
 	$on_disconnect(port, this::handle_disconnect);
+}
+
+--- /std/thing.c
+
+inherit "/secure/object.c";
+
+string short;
+string long;
+
+string get_short() { return short; }
+string get_long()  { return long;  }
+
+void set_short(string s) { short = s; }
+void set_long(string l)  { long  = l; }
+
+void create()
+{
+    "/secure/object.c"::create();
+    set_short("<error>");
+    set_long("<error>");
+}
+
+--- /secure/program.c
+
+inherit "/secure/object.c";
+
+use $strlen;
+
+any connection;
+
+void sayhi(any text)
+{
+	connection->write("(", $strlen(text), "): ", text);
+	connection->prompt(this::sayhi, "> ");
+}
+
+void create(any the_connection)
+{
+    connection = the_connection;
+    connection->write("Program commencing...\n");
+    connection->prompt(this::sayhi, "> ");
 }
