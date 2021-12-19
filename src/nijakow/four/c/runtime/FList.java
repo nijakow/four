@@ -23,4 +23,12 @@ public class FList extends Instance {
 	public Instance at(int i) {
 		return list.get(i);
 	}
+	
+	public void insert(int i, Instance value) {
+		list.add(i, value);
+	}
+	
+	public Instance remove(int i) {
+		return list.remove(i);
+	}
 }

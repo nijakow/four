@@ -106,5 +106,19 @@ public class Key {
 				fiber.setAccu(args[0].asFList().at(args[1].asInt()));
 			}
 		};
+		get("$listinsert").code = new BuiltinCode() {
+			
+			@Override
+			void run(Fiber fiber, Instance self, Instance[] args) {
+				args[0].asFList().insert(args[1].asInt(), args[2]);
+			}
+		};
+		get("$listremove").code = new BuiltinCode() {
+			
+			@Override
+			void run(Fiber fiber, Instance self, Instance[] args) {
+				fiber.setAccu(args[0].asFList().remove(args[1].asInt()));
+			}
+		};
 	}
 }
