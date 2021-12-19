@@ -21,4 +21,9 @@ public class FInteger extends Instance {
 	public String asString() {
 		return Integer.toString(value);
 	}
+	
+	@Override
+	public Instance plus(Instance y) {
+		return new FInteger(value + y.asInt());
+	}
 }

@@ -20,6 +20,8 @@ public abstract class Instance {
 	public FClosure asFClosure() { throw new RuntimeException("Conversion failed!"); }
 	public FConnection asFConnection() { throw new RuntimeException("Conversion failed!"); }
 	
+	public Instance plus(Instance y) { throw new RuntimeException("Addition failed!"); }
+	
 	public void invoke(Fiber fiber, int args) {
 		throw new RuntimeException("Oof. Can't invoke this object!");
 	}

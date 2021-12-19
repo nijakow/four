@@ -31,6 +31,11 @@ public class FString extends Instance {
 		return this;
 	}
 	
+	@Override
+	public Instance plus(Instance y) {
+		return new FString(value + y.asFString().value);
+	}
+	
 	private Blue getBlue(Filesystem fs) {
 		return fs.getBlue(value);
 	}

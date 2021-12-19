@@ -36,24 +36,24 @@ public class Frame {
 		varargs.add(0, value);
 	}
 	
-	private int operate(OperatorType type, int x, int y) {
+	private Instance operate(OperatorType type, Instance x, Instance y) {
 		switch (type) {
-		case PLUS: return x + y;
-		case MINUS: return x - y;
-		case MULT: return x * y;
-		case DIV: return x / y;
-		case MOD: return x % y;
-		case EQ: return (x == y) ? 1 : 0;
-		case INEQ: return (x != y) ? 1 : 0;
-		case LESS: return (x < y) ? 1 : 0;
-		case GREATER: return (x > y) ? 1 : 0;
-		case LEQ: return (x <= y) ? 1 : 0;
-		case GEQ: return (x >= y) ? 1 : 0;
-		case SHL: return x << y;
-		case SHR: return x >> y;
-		case BITAND: return x & y;
-		case BITOR: return x | y;
-		case BITXOR: return x ^ y; 
+		case PLUS: return x.plus(y);
+		case MINUS: return new FInteger(x.asInt() + y.asInt());
+		case MULT: return new FInteger(x.asInt() + y.asInt());
+		case DIV: return new FInteger(x.asInt() / y.asInt());
+		case MOD: return new FInteger(x.asInt() % y.asInt());
+		case EQ: return x.equals(y) ? new FInteger(1) : new FInteger(0);
+		case INEQ: return x.equals(y) ? new FInteger(0) : new FInteger(1);
+		case LESS: return (x.asInt() < y.asInt()) ? new FInteger(1) : new FInteger(0);
+		case GREATER: return (x.asInt() > y.asInt()) ? new FInteger(1) : new FInteger(0);
+		case LEQ: return (x.asInt() <= y.asInt()) ? new FInteger(1) : new FInteger(0);
+		case GEQ: return (x.asInt() >= y.asInt()) ? new FInteger(1) : new FInteger(0);
+		case SHL: return new FInteger(x.asInt() << y.asInt());
+		case SHR: return new FInteger(x.asInt() >> y.asInt());
+		case BITAND: return new FInteger(x.asInt() & y.asInt());
+		case BITOR: return new FInteger(x.asInt() | y.asInt());
+		case BITXOR: return new FInteger(x.asInt() ^ y.asInt()); 
 		default: 
 			throw new RuntimeException("Whoopsie, didn't catch the op type!");
 		}
@@ -132,9 +132,9 @@ public class Frame {
 			}
 			break;
 		case Bytecodes.BYTECODE_OP:
-			int a1 = fiber.pop().asInt();
-			int a2 = fiber.getAccu().asInt();
-			fiber.setAccu(new FInteger(operate(OperatorType.values()[code.u8(ip++)], a1, a2)));
+			Instance a1 = fiber.pop();
+			Instance a2 = fiber.getAccu();
+			fiber.setAccu(operate(OperatorType.values()[code.u8(ip++)], a1, a2));
 			break;
 		case Bytecodes.BYTECODE_RETURN:
 			fiber.setTop(previous);
