@@ -17,6 +17,7 @@ import nijakow.four.c.ast.ASTFor;
 import nijakow.four.c.ast.ASTFunctionDef;
 import nijakow.four.c.ast.ASTIdent;
 import nijakow.four.c.ast.ASTIf;
+import nijakow.four.c.ast.ASTIndex;
 import nijakow.four.c.ast.ASTInheritanceDef;
 import nijakow.four.c.ast.ASTInstanceVarDef;
 import nijakow.four.c.ast.ASTInstruction;
@@ -140,6 +141,9 @@ public class Parser {
 			} else if (check(TokenType.LPAREN)) {
 				Pair<ASTExpression[], Boolean> arglistData = parseArglist();
 				expr = new ASTCall(expr, arglistData.getFirst(), arglistData.getSecond());
+			} else if (check(TokenType.LBRACK)) {
+				expr = new ASTIndex(expr, parseExpression());
+				expect(TokenType.RBRACK);
 			} else if (check(TokenType.SCOPE)) {
 				expr = new ASTScope(expr, expectKey());
 			} else if (check(TokenType.ASSIGNMENT)) {

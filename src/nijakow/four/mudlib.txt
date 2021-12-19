@@ -127,7 +127,6 @@ void create()
 
 inherit "/secure/object.c";
 
-use $listat;
 use $listinsert;
 use $listlen;
 use $listremove;
@@ -144,7 +143,7 @@ void remove_subscriber(any client)
     int x;
     
     for (x = 0; x < $listlen(subscribers); this) {
-        if ($listat(subscribers, x) == client) {
+        if (subscribers[x] == client) {
             $listremove(subscribers, x);
         } else {
             x = x + 1;
@@ -157,7 +156,7 @@ void broadcast(string message)
     int x;
     
     for (x = 0; x < $listlen(subscribers); this) {
-        $listat(subscribers, x)->write(message);
+        subscribers[x]->write(message);
         x = x + 1;
     }
 }

@@ -178,6 +178,16 @@ public class ScopedCompiler implements FCompiler {
 	}
 
 	@Override
+	public void compileIndex() {
+		writer.writeIndex();
+	}
+
+	@Override
+	public void compileIndexAssign() {
+		writer.writeIndexAssign();
+	}
+	
+	@Override
 	public void compileScope(Key key) {
 		writer.writeScope(key);
 	}

@@ -16,6 +16,17 @@ public class FList extends Instance {
 		return this;
 	}
 	
+	@Override
+	public Instance index(Instance index) {
+		return at(index.asInt());
+	}
+	
+	@Override
+	public Instance putIndex(Instance index, Instance value) {
+		list.set(index.asInt(), value);
+		return this;
+	}
+	
 	public int getSize() {
 		return list.size();
 	}

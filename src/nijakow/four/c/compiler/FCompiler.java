@@ -27,6 +27,8 @@ public interface FCompiler {
 
 	void compileDot(Key key);
 	void compileDotAssign(Key key);
+	void compileIndex();
+	void compileIndexAssign();
 	void compileScope(Key key);
 
 	void compileCall(int args, boolean hasVarargs);

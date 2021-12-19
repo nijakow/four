@@ -136,6 +136,14 @@ public class InstructionWriter {
 		key(k);
 	}
 
+	public void writeIndex() {
+		u8(Bytecodes.BYTECODE_LOAD_INDEX);
+	}
+	
+	public void writeIndexAssign() {
+		u8(Bytecodes.BYTECODE_STORE_INDEX);
+	}
+
 	public void writeCall(int args, boolean hasVarargs) {
 		u8(hasVarargs ? Bytecodes.BYTECODE_CALL_VARARGS : Bytecodes.BYTECODE_CALL);
 		u8(args);
