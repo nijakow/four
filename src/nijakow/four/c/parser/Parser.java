@@ -20,6 +20,7 @@ import nijakow.four.c.ast.ASTIf;
 import nijakow.four.c.ast.ASTInheritanceDef;
 import nijakow.four.c.ast.ASTInstanceVarDef;
 import nijakow.four.c.ast.ASTInstruction;
+import nijakow.four.c.ast.ASTList;
 import nijakow.four.c.ast.ASTReturn;
 import nijakow.four.c.ast.ASTScope;
 import nijakow.four.c.ast.ASTThis;
@@ -110,6 +111,17 @@ public class Parser {
 			ASTExpression expr = parseExpression();
 			expect(TokenType.RPAREN);
 			return expr;
+		} else if (check(TokenType.LISTBEGIN)) {
+			List<ASTExpression> exprs = new ArrayList<>();
+			if (!check(TokenType.LISTEND)) {
+				while (true) {
+					exprs.add(parseExpression());
+					if (check(TokenType.LISTEND))
+						break;
+					expect(TokenType.COMMA);
+				}
+			}
+			return new ASTList(exprs.toArray(new ASTExpression[0]));
 		}
 		return new ASTIdent(expectKey());
 	}

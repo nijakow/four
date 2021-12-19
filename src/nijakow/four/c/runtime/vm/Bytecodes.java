@@ -21,4 +21,5 @@ public class Bytecodes {
 	public static final byte BYTECODE_LOAD_VACOUNT = 0x11;
 	public static final byte BYTECODE_TYPE_CHECK = 0x12;
 	public static final byte BYTECODE_TYPE_CAST = 0x13;
+	public static final byte BYTECODE_MAKE_LIST = 0x14;
 }

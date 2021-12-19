@@ -157,6 +157,11 @@ public class InstructionWriter {
 		u8(type.ordinal());
 	}
 
+	public void writeMakeList(int length) {
+		u8(Bytecodes.BYTECODE_MAKE_LIST);
+		u16(length);
+	}
+
 	public ByteCode finish() {
 		byte[] bytes = new byte[out.size()];
 		for (int i = 0; i < out.size(); i++)

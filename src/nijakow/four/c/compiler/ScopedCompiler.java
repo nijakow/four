@@ -197,6 +197,11 @@ public class ScopedCompiler implements FCompiler {
 		writer.writeOp(type);
 	}
 
+	@Override
+	public void compileMakeList(int length) {
+		writer.writeMakeList(length);
+	}
+	
 	public Code finish() {
 		/*
 		 * TODO: Only do this if the programmer hasn't supplied their

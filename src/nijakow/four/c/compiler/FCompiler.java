@@ -32,4 +32,6 @@ public interface FCompiler {
 	void compileCall(int args, boolean hasVarargs);
 	void compileDotCall(Key key, int args, boolean hasVarargs);
 	void compileOp(OperatorType type);
+	
+	void compileMakeList(int length);
 }

@@ -68,7 +68,9 @@ public class Tokenizer {
 		} else if (peeks("/*")) {
 			skipBlockComment();
 			return nextToken();
-		} else if (peeks("(")) return new Token(this, TokenType.LPAREN);
+		} else if (peeks("({")) return new Token(this, TokenType.LISTBEGIN);
+		else if (peeks("})")) return new Token(this, TokenType.LISTEND);
+		else if (peeks("(")) return new Token(this, TokenType.LPAREN);
 		else if (peeks(")")) return new Token(this, TokenType.RPAREN);
 		else if (peeks("[")) return new Token(this, TokenType.LBRACK);
 		else if (peeks("]")) return new Token(this, TokenType.RBRACK);

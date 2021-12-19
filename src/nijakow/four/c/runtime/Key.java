@@ -92,5 +92,19 @@ public class Key {
 				fiber.setAccu(new FString(args[0].asFString().asString().substring(args[1].asInt(), args[2].asInt())));
 			}
 		};
+		get("$listlen").code = new BuiltinCode() {
+			
+			@Override
+			void run(Fiber fiber, Instance self, Instance[] args) {
+				fiber.setAccu(new FInteger(args[0].asFList().getSize()));
+			}
+		};
+		get("$listat").code = new BuiltinCode() {
+			
+			@Override
+			void run(Fiber fiber, Instance self, Instance[] args) {
+				fiber.setAccu(args[0].asFList().at(args[1].asInt()));
+			}
+		};
 	}
 }

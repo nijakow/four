@@ -8,6 +8,7 @@ import nijakow.four.c.runtime.Blue;
 import nijakow.four.c.runtime.ByteCode;
 import nijakow.four.c.runtime.FClosure;
 import nijakow.four.c.runtime.FInteger;
+import nijakow.four.c.runtime.FList;
 import nijakow.four.c.runtime.Instance;
 import nijakow.four.c.runtime.Key;
 import nijakow.four.c.runtime.Type;
@@ -153,6 +154,14 @@ public class Frame {
 			type = code.type(code.u16(ip));
 			ip += 2;
 			fiber.setAccu(type.cast(fiber.getAccu()));
+			break;
+		case Bytecodes.BYTECODE_MAKE_LIST:
+			int length = code.u16(ip);
+			ip += 2;
+			Instance[] instances = new Instance[length];
+			while (length --> 0)
+				instances[length] = fiber.pop();
+			fiber.setAccu(new FList(instances));
 			break;
 		default:
 			System.out.println("???");
