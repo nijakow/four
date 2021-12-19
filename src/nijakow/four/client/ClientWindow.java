@@ -10,6 +10,10 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -36,11 +40,11 @@ public class ClientWindow extends JFrame implements ActionListener {
 	private PreferencesHelper prefs;
 	private ClientConnection connection;
 	private boolean reconnect;
-	private Runnable reconnector = () -> {
-		if (connection != null)
-			connection.close();
+	private ScheduledFuture<?> reconnectorHandler;
+	private final ScheduledExecutorService queue;
+	private final Runnable reconnector = () -> {
 		connection = ClientConnection.getClientConnection(prefs.getHostname(), prefs.getPort());
-		connection.setClientReceiveListener(message -> area.append(message));
+		connection.setClientReceiveListener(message -> EventQueue.invokeLater(() -> area.append(message)));
 		try {
 			connection.establishConnection();
 		} catch (IOException ex) {
@@ -60,6 +64,7 @@ public class ClientWindow extends JFrame implements ActionListener {
 		// TODO C editor
 		// TODO iterate through ports
 		prefs = new PreferencesHelper();
+		queue = Executors.newScheduledThreadPool(2);
 		if (ports.length > 0)
 			prefs.setPort(ports[0]);
 		getContentPane().setLayout(new BorderLayout());
@@ -97,14 +102,20 @@ public class ClientWindow extends JFrame implements ActionListener {
 			pack();
 		else
 			setSize(width, height);
-		new Thread(reconnector).start();	// Must be last
+		reconnectorHandler = queue.scheduleAtFixedRate(reconnector, 0, 5, TimeUnit.SECONDS);	// Must be last
 	}
 	
 	public void dispose() {
 		prefs.setWindowDimensions(getX(), getY(), getWidth(), getHeight());
 		prefs.flush();
-		connection.close();
+		closeConnection();
 		super.dispose();
+	}
+	
+	private void closeConnection() {
+		reconnectorHandler.cancel(false);
+		if (connection != null)
+			connection.close();
 	}
 	
 	private void openSettingsWindow() {
@@ -161,8 +172,10 @@ public class ClientWindow extends JFrame implements ActionListener {
 			public void windowClosing(WindowEvent e) {
 				storeSettings();
 				prefs.flush();
-				if (reconnect)
-					new Thread(reconnector).start();
+				if (reconnect) {
+					closeConnection();
+					reconnectorHandler = queue.scheduleAtFixedRate(reconnector, 0, 5, TimeUnit.SECONDS);
+				}
 			}
 		});
 		settingsWindow.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
@@ -180,16 +193,16 @@ public class ClientWindow extends JFrame implements ActionListener {
 			break;
 			
 		case SEND:
-			try {
-				if (!connection.isConnected())
-					connection.establishConnection();
-				String text = prompt.getText() + "\n";
-				connection.send(text);
-				area.append(text);
-			} catch (Exception ex) {
-				area.append("*** Could not send message --- see console for more details! ***\n");
-			}
+			String text = prompt.getText() + "\n";
+			area.append(text);
 			prompt.setText("");
+			queue.schedule(() -> {
+				try {
+					connection.send(text);
+				} catch (Exception ex) {
+					EventQueue.invokeLater(() -> area.append("*** Could not send message --- see console for more details! ***\n"));
+				}
+			}, 0, TimeUnit.NANOSECONDS);
 			break;
 		}
 	}
