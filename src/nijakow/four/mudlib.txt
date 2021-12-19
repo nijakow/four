@@ -1,4 +1,17 @@
+--- /secure/stdlib.c
+
+use $the_object;
+
+object the_object(string id)
+{
+    return $the_object(id);
+}
+
+
 --- /secure/object.c
+
+inherit "/secure/stdlib.c";
+
 
 /*
  * This is the basic object
@@ -21,16 +34,17 @@ any clone(...)
 
 --- /secure/master.c
 
+inherit "/secure/stdlib.c";
+
 use $log;
 use $on_connect;
-use $the_object;
 
 void receive(any connection)
 {
 	any conn_inst;
 	$log("New connection!\n");
 	conn_inst = "/secure/connection.c"->clone(connection);
-	"/secure/program.c"->clone(conn_inst, $the_object("/prg/chat/chatroom.c"));
+	"/secure/program.c"->clone(conn_inst, the_object("/prg/chat/chatroom.c"));
 }
 
 void create()

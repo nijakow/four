@@ -49,6 +49,8 @@ public class Parser {
 			return Type.getInt();
 		} else if (check(TokenType.STRING)) {
 			return Type.getString();
+		} else if (check(TokenType.OBJECT)) {
+			return Type.getObject();
 		} else {
 			return null;
 		}

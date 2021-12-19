@@ -128,6 +128,7 @@ public class Tokenizer {
 		case "void": return new Token(this, TokenType.VOID);
 		case "int": return new Token(this, TokenType.INT);
 		case "string": return new Token(this, TokenType.STRING);
+		case "object": return new Token(this, TokenType.OBJECT);
 		case "if": return new Token(this, TokenType.IF);
 		case "else": return new Token(this, TokenType.ELSE);
 		case "while": return new Token(this, TokenType.WHILE);
