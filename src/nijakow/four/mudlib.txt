@@ -173,15 +173,23 @@ inherit "/secure/object.c";
 
 use $log;
 
-any connection;
-any chatroom;
+object connection;
+object chatroom;
+
+string name;
 
 void write(...) { connection->write(...); }
 
 void msg(string text)
 {
-	chatroom->broadcast(text);
+	chatroom->broadcast("[" + name + "]: " + text);
 	connection->prompt(this::msg, "> ");
+}
+
+void setname(string _name)
+{
+    name = _name;
+    connection->prompt(this::msg, "> ");
 }
 
 void create(any the_connection, any the_chatroom)
@@ -189,5 +197,5 @@ void create(any the_connection, any the_chatroom)
     connection = the_connection;
     chatroom = the_chatroom;
     the_chatroom->add_subscriber(this);
-    connection->prompt(this::msg, "> ");
+    connection->prompt(this::setname, "What's your name? ");
 }
