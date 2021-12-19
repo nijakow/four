@@ -35,7 +35,7 @@ public abstract class Instance {
 	}
 	
 	public void send(Fiber fiber, Key key, int args) {
-		throw new RuntimeException("Oof. Method not found.");
+		throw new RuntimeException("Oof. Method not found: " + key);
 	}
 	
 	public Code extractMethod(VM vm, Key key) {

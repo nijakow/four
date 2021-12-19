@@ -14,10 +14,14 @@ public class Key {
 		this.code = null;
 	}
 
-	public Code getCode() {
-		return code;
+	@Override
+	public String toString() {
+		return "'" + this.name;
 	}
 	
+	public Code getCode() {
+		return code;
+	}	
 	
 	private static Map<String, Key> KEYS = new HashMap<>();
 	public static Key get(String name) {
@@ -27,6 +31,13 @@ public class Key {
 	}
 	
 	static {
+		get("$the_object").code = new BuiltinCode() {
+			
+			@Override
+			void run(Fiber fiber, Instance self, Instance[] args) {
+				fiber.setAccu(args[0].asFString().getBlue(fiber.getVM().getFilesystem()));
+			}
+		};
 		get("$clone_instance").code = new BuiltinCode() {
 			
 			@Override

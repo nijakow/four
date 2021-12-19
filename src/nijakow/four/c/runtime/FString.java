@@ -36,7 +36,7 @@ public class FString extends Instance {
 		return new FString(value + y.asFString().value);
 	}
 	
-	private Blue getBlue(Filesystem fs) {
+	public Blue getBlue(Filesystem fs) {
 		return fs.getBlue(value);
 	}
 

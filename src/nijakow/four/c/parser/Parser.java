@@ -115,7 +115,7 @@ public class Parser {
 			return expr;
 		} else if (check(TokenType.LCURLY)) {
 			List<ASTExpression> exprs = new ArrayList<>();
-			if (!check(TokenType.LCURLY)) {
+			if (!check(TokenType.RCURLY)) {
 				while (true) {
 					exprs.add(parseExpression());
 					if (check(TokenType.RCURLY))
