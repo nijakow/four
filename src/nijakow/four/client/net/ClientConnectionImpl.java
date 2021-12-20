@@ -38,8 +38,7 @@ public class ClientConnectionImpl implements ClientConnection {
 	}
 	
 	@Override
-	public void establishConnection() throws IOException {
-		socket = socketFactory.createSocket(host, port);
+	public void openStreams() throws IOException {
 		InputStreamReader reader = new InputStreamReader(socket.getInputStream());
 		int c =  reader.read();
 		while (isConnected() && c != -1) {
@@ -47,6 +46,11 @@ public class ClientConnectionImpl implements ClientConnection {
 				listener.lineReceived(Character.toString((char) c));
 			c = reader.read();
 		}
+	}
+	
+	@Override
+	public void establishConnection() throws IOException {
+		socket = socketFactory.createSocket(host, port);
 	}
 	
 	@Override

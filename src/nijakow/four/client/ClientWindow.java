@@ -27,6 +27,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.Timer;
 import javax.swing.border.EtchedBorder;
 
 import nijakow.four.client.net.ClientConnection;
@@ -35,11 +36,13 @@ public class ClientWindow extends JFrame implements ActionListener {
 	private static final long serialVersionUID = 1L;
 	private static final String SETTINGS = "settings";
 	private static final String SEND = "send";
+	private static final String STATUS_LABEL_TIMER = "invisible";
 	private JLabel connectionStatus;
 	private JTextField prompt;
 	private JTextArea area;
 	private PreferencesHelper prefs;
 	private ClientConnection connection;
+	private Timer labelTimer;
 	private boolean reconnect;
 	private boolean bother;
 	private ScheduledFuture<?> reconnectorHandler;
@@ -52,6 +55,7 @@ public class ClientWindow extends JFrame implements ActionListener {
 			EventQueue.invokeLater(() -> {
 				connectionStatus.setText(" Connected!");
 				connectionStatus.setForeground(Color.green);
+				labelTimer.start();
 			});
 			connection.openStreams();
 		} catch (IOException ex) {
@@ -61,6 +65,7 @@ public class ClientWindow extends JFrame implements ActionListener {
 							"Could not connect to \"" + prefs.getHostname() + "\" on port " + prefs.getPort(),
 							"Connection failed", JOptionPane.ERROR_MESSAGE);
 				bother = false;
+				connectionStatus.setVisible(true);
 				connectionStatus.setText(" Not connected!");
 				connectionStatus.setForeground(Color.red);
 			});
@@ -114,6 +119,9 @@ public class ClientWindow extends JFrame implements ActionListener {
 			pack();
 		else
 			setSize(width, height);
+		labelTimer = new Timer(5000, this);
+		labelTimer.setActionCommand(STATUS_LABEL_TIMER);
+		labelTimer.setRepeats(false);
 		reconnectorHandler = queue.scheduleAtFixedRate(reconnector, 0, 5, TimeUnit.SECONDS);	// Must be last
 	}
 	
@@ -203,6 +211,10 @@ public class ClientWindow extends JFrame implements ActionListener {
 		switch (e.getActionCommand()) {
 		case SETTINGS:
 			openSettingsWindow();
+			break;
+			
+		case STATUS_LABEL_TIMER:
+			connectionStatus.setVisible(false);
 			break;
 			
 		case SEND:
