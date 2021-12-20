@@ -48,6 +48,10 @@ public class Parser {
 			return Type.getVoid();
 		} else if (check(TokenType.INT)) {
 			return Type.getInt();
+		} else if (check(TokenType.CHAR)) {
+			return Type.getChar();
+		} else if (check(TokenType.BOOL)) {
+			return Type.getBool();
 		} else if (check(TokenType.STRING)) {
 			return Type.getString();
 		} else if (check(TokenType.OBJECT)) {
