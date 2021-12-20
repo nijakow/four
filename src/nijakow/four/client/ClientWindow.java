@@ -104,6 +104,7 @@ public class ClientWindow extends JFrame implements ActionListener {
 		area.setEditable(false);
 		area.setCursor(new Cursor(Cursor.TEXT_CURSOR));
 		area.setFont(font);
+		area.setLineWrap(prefs.getLineBreaking());
 		JScrollPane pane = new JScrollPane(area);
 		getContentPane().add(pane, BorderLayout.CENTER);
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
@@ -168,7 +169,7 @@ public class ClientWindow extends JFrame implements ActionListener {
 			
 			private void storeSettings() {
 				String host = hostname.getText();
-				if (prefs.getHostname() != host) {
+				if (!prefs.getHostname().equals(host)) {
 					prefs.setHostname(hostname.getText());
 					reconnect = true;
 				}
@@ -196,7 +197,9 @@ public class ClientWindow extends JFrame implements ActionListener {
 				if (reconnect) {
 					closeConnection();
 					reconnectorHandler = queue.scheduleAtFixedRate(reconnector, 0, 5, TimeUnit.SECONDS);
+					reconnect = false;
 				}
+				area.setLineWrap(prefs.getLineBreaking());
 			}
 		});
 		settingsWindow.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
