@@ -39,7 +39,7 @@ int strlen(string str)
     return $strlen(str);
 }
 
-string substr(string str, index i0, index i1)
+string substr(string str, int i0, int i1)
 {
     return $substr(str, i0, i1);
 }
