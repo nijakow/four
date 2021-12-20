@@ -43,7 +43,7 @@ public class ClientConnectionImpl implements ClientConnection {
 		int c =  reader.read();
 		while (isConnected() && c != -1) {
 			if (listener != null)
-				listener.lineReceived(Character.toString((char) c));
+				listener.lineReceived((char) c);
 			c = reader.read();
 		}
 	}

@@ -35,8 +35,9 @@ import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 
 import nijakow.four.client.net.ClientConnection;
+import nijakow.four.client.net.ClientReceiveListener;
 
-public class ClientWindow extends JFrame implements ActionListener {
+public class ClientWindow extends JFrame implements ActionListener, ClientReceiveListener {
 	private static final long serialVersionUID = 1L;
 	private static final String SETTINGS = "settings";
 	private static final String SEND = "send";
@@ -57,13 +58,7 @@ public class ClientWindow extends JFrame implements ActionListener {
 	private final ScheduledExecutorService queue;
 	private final Runnable reconnector = () -> {
 		connection = ClientConnection.getClientConnection(prefs.getHostname(), prefs.getPort());
-		connection.setClientReceiveListener(message -> EventQueue.invokeLater(() -> {
-			try {
-				term.insertString(term.getLength(), message, null);
-			} catch (BadLocationException e) {
-				e.printStackTrace();
-			}
-		}));
+		connection.setClientReceiveListener(this);
 		try {
 			connection.establishConnection();
 			EventQueue.invokeLater(() -> {
@@ -235,6 +230,22 @@ public class ClientWindow extends JFrame implements ActionListener {
 		settingsWindow.setResizable(false);
 		settingsWindow.pack();
 		settingsWindow.setVisible(true);
+	}
+	
+	@Override
+	public void lineReceived(char c) {
+		EventQueue.invokeLater(() -> {
+			try {
+				Style s = null;
+				if (c == '%')
+					s = term.getStyle(STYLE_RED);
+				else if (c == '$')
+					s = term.getStyle(STYLE_GREEN);
+				term.insertString(term.getLength(), Character.toString(c), s);
+			} catch (BadLocationException e) {
+				e.printStackTrace();
+			}
+		});
 	}
 	
 	@Override
