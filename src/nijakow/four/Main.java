@@ -35,6 +35,24 @@ public class Main {
 						System.err.println("No proper port specified! Argument was: " + args[i]);
 				}
 				break;
+			
+			case "--license":
+			case "--info":
+				System.out.println("");
+				System.out.println("This is the MUD driver Four by nijakow.");
+				System.out.println("This software is licensed under the EUPL v1.2.");
+				System.out.println("");
+				System.out.println("The Licensor will in no event be liable for any direct or indirect,");
+				System.out.println("material or moral, damages of any kind, arising out of the Licence or of the use");
+				System.out.println("of the Work, including without limitation, damages for loss of goodwill, work");
+				System.out.println("stoppage, computer failure or malfunction, loss of data or any commercial");
+				System.out.println("damage, even if the Licensor has been advised of the possibility of such damage.");
+				System.out.println("");
+				System.out.println("You can find more information here:");
+				System.out.println(" - https://github.com/nijakow/four");
+				System.out.println(" - https://joinup.ec.europa.eu/collection/eupl");
+				System.out.println("");
+				break;
 				
 			case "-h":
 			default:
@@ -52,6 +70,10 @@ public class Main {
 				System.out.println();
 				System.out.println("-h");
 				System.out.println("         Prints this help");
+				System.out.println();
+				System.out.println("--license");
+				System.out.println("--info");
+				System.out.println("         Prints license and general information");
 				break;
 			}
 		}
