@@ -29,6 +29,11 @@ void insert(any lst, int index, any value)
     $listinsert(lst, index, value);
 }
 
+void append(any lst, any value)
+{
+    insert(lst, length(lst), value);
+}
+
 any remove(any lst, int index)
 {
     return $listremove(lst, index);
@@ -49,6 +54,11 @@ bool isspace(char c)
     return (c == ' ') || (c == '\t') || (c == '\n') || (c == '\r');
 }
 
+bool isnewline(char c)
+{
+    return (c == '\n');
+}
+
 string trim(string s)
 {
     int start = 0;
@@ -61,6 +71,31 @@ string trim(string s)
     return substr(s, start, end + 1);
 }
 
+any spliton(string s, any predicate)
+{
+    int pos = 0;
+    int start = 0;
+    int len = strlen(s);
+    any lst = {};
+    
+    while (pos < len)
+    {
+        if (predicate(s[pos])) {
+            if (pos - start > 1)
+                append(lst, substr(s, start, pos));
+            start = pos + 1;
+        }
+        pos = pos + 1;
+    }
+    if (pos - start > 1)
+        append(lst, substr(s, start, pos));
+    return lst;
+}
+
+any split(string s)
+{
+    return spliton(s, this::isspace);
+}
 
 --- /secure/object.c
 
@@ -183,7 +218,7 @@ any subscribers;
 
 void add_subscriber(any client)
 {
-    insert(subscribers, length(subscribers), client);
+    append(subscribers, client);
 }
 
 void remove_subscriber(any client)
@@ -250,8 +285,6 @@ void banner()
 
 void msg(string text)
 {
-    int i;
-    
 	chatroom->broadcast("[", name, "]: ", text, "\n");
 	connection->prompt(this::msg, "> ");
 }
