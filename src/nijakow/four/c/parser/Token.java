@@ -9,6 +9,10 @@ public class Token {
 		return this.type == type;
 	}
 	
+	public TokenType getType() {
+		return type;
+	}
+	
 	public Object getPayload() {
 		return payload;
 	}

@@ -182,12 +182,24 @@ public class Parser {
 		return new ASTBlock(instructions.toArray(new ASTInstruction[0]));
 	}
 	
-	private ASTInstruction parseInstruction() {
+	private ASTVarDecl parseVarDecl() {
 		Type type = parseType();
 		if (type != null) {
 			Key name = expectKey();
+			ASTExpression value = null;
+			if (check(TokenType.ASSIGNMENT))
+				value = parseExpression();
 			expect(TokenType.SEMICOLON);
-			return new ASTVarDecl(type, name);
+			return new ASTVarDecl(type, name, value);
+		} else {
+			return null;
+		}
+	}
+	
+	private ASTInstruction parseInstruction() {
+		ASTVarDecl decl = parseVarDecl();
+		if (decl != null) {
+			return decl;
 		} else if (check(TokenType.LCURLY)) {
 			return parseBlock();
 		} else if (check(TokenType.IF)) {
@@ -207,11 +219,14 @@ public class Parser {
 			return new ASTWhile(condition, parseInstruction());
 		} else if (check(TokenType.FOR)) {
 			expect(TokenType.LPAREN);
-			ASTExpression init = parseExpression();
-			expect(TokenType.SEMICOLON);
+			ASTInstruction init = parseVarDecl();
+			if (init == null) {
+				init = parseExpression();
+				expect(TokenType.SEMICOLON);
+			}
 			ASTExpression condition = parseExpression();
 			expect(TokenType.SEMICOLON);
-			ASTExpression update= parseExpression();
+			ASTExpression update = parseExpression();
 			expect(TokenType.RPAREN);
 			return new ASTFor(init, condition, update, parseInstruction());
 		} else if (check(TokenType.RETURN)) {
@@ -273,7 +288,7 @@ public class Parser {
 	private Token expect(TokenType type) {
 		Token t = tokenizer.nextToken();
 		if (t.is(type)) return t;
-		else throw new RuntimeException("Expected different token!");
+		else throw new RuntimeException("Expected different token! " + type + ", got " + t.getType());
 	}
 	
 	private Key expectKey() {
