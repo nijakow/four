@@ -1,6 +1,7 @@
 package nijakow.four.client;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.EventQueue;
 import java.awt.Font;
@@ -40,6 +41,7 @@ public class ClientWindow extends JFrame implements ActionListener {
 	private PreferencesHelper prefs;
 	private ClientConnection connection;
 	private boolean reconnect;
+	private boolean bother;
 	private ScheduledFuture<?> reconnectorHandler;
 	private final ScheduledExecutorService queue;
 	private final Runnable reconnector = () -> {
@@ -47,11 +49,21 @@ public class ClientWindow extends JFrame implements ActionListener {
 		connection.setClientReceiveListener(message -> EventQueue.invokeLater(() -> area.append(message)));
 		try {
 			connection.establishConnection();
+			EventQueue.invokeLater(() -> {
+				connectionStatus.setText(" Connected!");
+				connectionStatus.setForeground(Color.green);
+			});
+			connection.openStreams();
 		} catch (IOException ex) {
-			EventQueue.invokeLater(() -> JOptionPane.showMessageDialog(
-					this,
-					"Could not connect to \"" + prefs.getHostname() + "\" on port " + prefs.getPort(),
-					"Connection failed", JOptionPane.ERROR_MESSAGE));
+			EventQueue.invokeLater(() -> {
+				if (bother)
+					JOptionPane.showMessageDialog(this,
+							"Could not connect to \"" + prefs.getHostname() + "\" on port " + prefs.getPort(),
+							"Connection failed", JOptionPane.ERROR_MESSAGE);
+				bother = false;
+				connectionStatus.setText(" Not connected!");
+				connectionStatus.setForeground(Color.red);
+			});
 		}
 	};
 	
@@ -63,6 +75,7 @@ public class ClientWindow extends JFrame implements ActionListener {
 		// TODO macOS customization
 		// TODO C editor
 		// TODO iterate through ports
+		bother = true;
 		prefs = new PreferencesHelper();
 		queue = Executors.newScheduledThreadPool(2);
 		if (ports.length > 0)
@@ -76,7 +89,6 @@ public class ClientWindow extends JFrame implements ActionListener {
 		prompt.setActionCommand(SEND);
 		connectionStatus = new JLabel();
 		getContentPane().add(connectionStatus, BorderLayout.NORTH);
-		connectionStatus.setVisible(false);
 		JButton settings = new JButton("Settings");
 		settings.addActionListener(this);
 		settings.setActionCommand(SETTINGS);
@@ -113,9 +125,10 @@ public class ClientWindow extends JFrame implements ActionListener {
 	}
 	
 	private void closeConnection() {
-		reconnectorHandler.cancel(false);
+		reconnectorHandler.cancel(true);
 		if (connection != null)
 			connection.close();
+		bother = true;
 	}
 	
 	private void openSettingsWindow() {
