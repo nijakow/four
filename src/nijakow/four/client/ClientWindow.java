@@ -27,8 +27,11 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.JTextPane;
 import javax.swing.Timer;
 import javax.swing.border.EtchedBorder;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.StyledDocument;
 
 import nijakow.four.client.net.ClientConnection;
 
@@ -39,7 +42,8 @@ public class ClientWindow extends JFrame implements ActionListener {
 	private static final String STATUS_LABEL_TIMER = "invisible";
 	private JLabel connectionStatus;
 	private JTextField prompt;
-	private JTextArea area;
+	private JTextPane area;
+	private StyledDocument term;
 	private PreferencesHelper prefs;
 	private ClientConnection connection;
 	private Timer labelTimer;
@@ -49,7 +53,13 @@ public class ClientWindow extends JFrame implements ActionListener {
 	private final ScheduledExecutorService queue;
 	private final Runnable reconnector = () -> {
 		connection = ClientConnection.getClientConnection(prefs.getHostname(), prefs.getPort());
-		connection.setClientReceiveListener(message -> EventQueue.invokeLater(() -> area.append(message)));
+		connection.setClientReceiveListener(message -> EventQueue.invokeLater(() -> {
+			try {
+				term.insertString(term.getLength(), message, null);
+			} catch (BadLocationException e) {
+				e.printStackTrace();
+			}
+		}));
 		try {
 			connection.establishConnection();
 			EventQueue.invokeLater(() -> {
@@ -100,11 +110,13 @@ public class ClientWindow extends JFrame implements ActionListener {
 		south.add(prompt);
 		south.add(settings);
 		getContentPane().add(south, BorderLayout.SOUTH);
-		area = new JTextArea();
+		area = new JTextPane();
 		area.setEditable(false);
 		area.setCursor(new Cursor(Cursor.TEXT_CURSOR));
 		area.setFont(font);
-		area.setLineWrap(prefs.getLineBreaking());
+		term = area.getStyledDocument();
+		addStyles();
+		//area.setLineWrap(prefs.getLineBreaking());
 		JScrollPane pane = new JScrollPane(area);
 		getContentPane().add(pane, BorderLayout.CENTER);
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
@@ -124,6 +136,10 @@ public class ClientWindow extends JFrame implements ActionListener {
 		labelTimer.setActionCommand(STATUS_LABEL_TIMER);
 		labelTimer.setRepeats(false);
 		reconnectorHandler = queue.scheduleAtFixedRate(reconnector, 0, 5, TimeUnit.SECONDS);	// Must be last
+	}
+	
+	public void addStyles() {
+		// TODO
 	}
 	
 	public void dispose() {
@@ -199,7 +215,7 @@ public class ClientWindow extends JFrame implements ActionListener {
 					reconnectorHandler = queue.scheduleAtFixedRate(reconnector, 0, 5, TimeUnit.SECONDS);
 					reconnect = false;
 				}
-				area.setLineWrap(prefs.getLineBreaking());
+				//area.setLineWrap(prefs.getLineBreaking());
 			}
 		});
 		settingsWindow.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
@@ -222,13 +238,23 @@ public class ClientWindow extends JFrame implements ActionListener {
 			
 		case SEND:
 			String text = prompt.getText() + "\n";
-			area.append(text);
+			try {
+				term.insertString(term.getLength(), text, null);
+			} catch (BadLocationException e1) {
+				e1.printStackTrace();
+			}
 			prompt.setText("");
 			queue.schedule(() -> {
 				try {
 					connection.send(text);
 				} catch (Exception ex) {
-					EventQueue.invokeLater(() -> area.append("*** Could not send message --- see console for more details! ***\n"));
+					EventQueue.invokeLater(() -> {
+						try {
+							term.insertString(term.getLength(), "*** Could not send message --- see console for more details! ***\n", null);
+						} catch (BadLocationException e1) {
+							e1.printStackTrace();
+						}
+					});
 				}
 			}, 0, TimeUnit.NANOSECONDS);
 			break;
