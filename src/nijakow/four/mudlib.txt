@@ -51,11 +51,9 @@ bool isspace(char c)
 
 string trim(string s)
 {
-    int start;
-    int end;
+    int start = 0;
+    int end = strlen(s) - 1;
     
-    start = 0;
-    end = strlen(s) - 1;
     while ((start < end) && isspace(s[start]))
         start = start + 1;
     while ((start < end) && isspace(s[end]))
@@ -190,9 +188,7 @@ void add_subscriber(any client)
 
 void remove_subscriber(any client)
 {
-    int x;
-    
-    for (x = 0; x < length(subscribers);) {
+    for (int x = 0; x < length(subscribers);) {
         if (subscribers[x] == client) {
             remove(subscribers, x);
         } else {
@@ -203,9 +199,7 @@ void remove_subscriber(any client)
 
 void broadcast(...)
 {
-    int x;
-    
-    for (x = 0; x < length(subscribers);) {
+    for (int x = 0; x < length(subscribers);) {
         subscribers[x]->write(...);
         x = x + 1;
     }

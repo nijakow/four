@@ -4,12 +4,12 @@ import nijakow.four.c.compiler.FCompiler;
 import nijakow.four.c.compiler.Label;
 
 public class ASTFor extends ASTInstruction {
-	private final ASTExpression initialization;
+	private final ASTInstruction initialization;
 	private final ASTExpression condition;
 	private final ASTExpression update;
 	private final ASTInstruction body;
 
-	public ASTFor(ASTExpression init, ASTExpression condition, ASTExpression update, ASTInstruction body) {
+	public ASTFor(ASTInstruction init, ASTExpression condition, ASTExpression update, ASTInstruction body) {
 		this.initialization = init;
 		this.condition = condition;
 		this.update = update;
