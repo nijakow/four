@@ -2,10 +2,10 @@ package nijakow.four;
 
 import java.io.IOException;
 
+import nijakow.four.c.runtime.Blue;
 import nijakow.four.c.runtime.Key;
-import nijakow.four.c.runtime.fs.FSBuilder;
-import nijakow.four.c.runtime.fs.FSNode;
 import nijakow.four.c.runtime.fs.Filesystem;
+import nijakow.four.c.runtime.fs.ResourceLoader;
 import nijakow.four.c.runtime.vm.VM;
 import nijakow.four.net.Server;
 
@@ -16,7 +16,8 @@ public class Four implements Runnable {
 	private boolean wasStarted = false;
 	
 	public Four(int[] ports) throws IOException {
-		this.fs = new FSBuilder(this.getClass().getResourceAsStream("mudlib.c")).build();
+		//this.fs = new FSBuilder(this.getClass().getResourceAsStream("mudlib.c")).build();
+		this.fs = new Filesystem(new ResourceLoader());
 		this.server = new Server();
 		this.vm = new VM(this.fs, this.server);
 		
@@ -29,13 +30,13 @@ public class Four implements Runnable {
 			wasStarted = true;
 			
 			{
-				FSNode f = fs.find("/secure/master.c");
+				Blue master = fs.getBlue("/secure/master.c");
 				
-				if (f == null || f.asFile() == null) {
+				if (master == null) {
 					throw new RuntimeException("/secure/master.c is not defined!");
 				}
 				
-				vm.startFiber(f.asFile().getInstance(), Key.get("create"));
+				vm.startFiber(master, Key.get("create"));
 			}
 		}
 	}

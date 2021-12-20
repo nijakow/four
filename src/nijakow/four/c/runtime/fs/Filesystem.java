@@ -5,9 +5,13 @@ import nijakow.four.c.runtime.Blueprint;
 
 public class Filesystem {
 	private final Directory root = new Directory(this, null, "");
+	private final ResourceLoader loader;
 	
-	public Filesystem() {	
+	public Filesystem(ResourceLoader loader) {
+		this.loader = loader;
 	}
+	
+	public Filesystem() { this(null); }
 	
 	public Directory getRoot() { return root; }
 	
@@ -17,19 +21,30 @@ public class Filesystem {
 		return getRoot().find(fname, true);
 	}
 
+	private File loadFile(String path) {
+		String source = loader.getResourceText(path);
+		if (source != null) {
+			FSNode node = touchf(path);
+			node.asFile().setContents(source);
+			return node.asFile();
+		} else {
+			return null;
+		}
+	}
+	
 	public Blue getBlue(String path) {
 		FSNode node = find(path);
 		if (node == null || node.asFile() == null)
-			return null;
-		else
-			return node.asFile().getInstance();
+			node = loadFile(path);
+		if (node == null) return null;
+		return node.asFile().getInstance();
 	}
 	
 	public Blueprint getBlueprint(String path) {
 		FSNode node = find(path);
 		if (node == null || node.asFile() == null)
-			return null;
-		else
-			return node.asFile().getBlueprint();
+			node = loadFile(path);
+		if (node == null) return null;
+		return node.asFile().getBlueprint();
 	}
 }

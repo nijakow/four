@@ -36,7 +36,11 @@ public abstract class FSNode {
 		} else {
 			FSNode node = findChild(name);
 			if (node == null) {
-				node = isDir ? asDir().mkdir(name) : asDir().touch(name);
+				if (create) {
+					node = isDir ? asDir().mkdir(name) : asDir().touch(name);
+				} else {
+					return null;
+				}
 			}
 			return node;
 		}
