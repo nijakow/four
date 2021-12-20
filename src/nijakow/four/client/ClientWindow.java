@@ -54,6 +54,7 @@ public class ClientWindow extends JFrame implements ActionListener, ClientReceiv
 	private Timer labelTimer;
 	private boolean reconnect;
 	private boolean bother;
+	private Style current;
 	private ScheduledFuture<?> reconnectorHandler;
 	private final ScheduledExecutorService queue;
 	private final Runnable reconnector = () -> {
@@ -237,12 +238,13 @@ public class ClientWindow extends JFrame implements ActionListener, ClientReceiv
 	public void lineReceived(char c) {
 		EventQueue.invokeLater(() -> {
 			try {
-				Style s = null;
 				if (c == '%')
-					s = term.getStyle(STYLE_RED);
+					current = term.getStyle(STYLE_RED);
 				else if (c == '$')
-					s = term.getStyle(STYLE_GREEN);
-				term.insertString(term.getLength(), Character.toString(c), s);
+					current = term.getStyle(STYLE_GREEN);
+				else if (c == '&')
+					current = null;
+				term.insertString(term.getLength(), Character.toString(c), current);
 			} catch (BadLocationException e) {
 				e.printStackTrace();
 			}
