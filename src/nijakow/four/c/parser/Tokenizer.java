@@ -149,6 +149,7 @@ public class Tokenizer {
 		case "bool": return new Token(this, TokenType.BOOL);
 		case "string": return new Token(this, TokenType.STRING);
 		case "object": return new Token(this, TokenType.OBJECT);
+		case "func": return new Token(this, TokenType.FUNC);
 		case "if": return new Token(this, TokenType.IF);
 		case "else": return new Token(this, TokenType.ELSE);
 		case "while": return new Token(this, TokenType.WHILE);

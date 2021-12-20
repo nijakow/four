@@ -39,7 +39,7 @@ public abstract class Type {
 		
 		@Override
 		public boolean check(Instance instance) {
-			return instance instanceof FInteger;
+			return (instance instanceof FInteger) || instance.isNil();
 		}
 	};
 	
@@ -55,7 +55,7 @@ public abstract class Type {
 		
 		@Override
 		public boolean check(Instance instance) {
-			return instance instanceof FString;
+			return (instance instanceof FString) || instance.isNil();
 		}
 	};
 	
@@ -71,7 +71,23 @@ public abstract class Type {
 		
 		@Override
 		public boolean check(Instance instance) {
-			return instance instanceof Blue;
+			return (instance instanceof Blue) || instance.isNil();
+		}
+	};
+	
+	private static final Type FUNC = new Type() {
+		
+		@Override
+		public Instance cast(Instance instance) {
+			if (check(instance))
+				return instance;
+			else
+				throw new RuntimeException("Can't cast!");
+		}
+		
+		@Override
+		public boolean check(Instance instance) {
+			return (instance instanceof FClosure) || instance.isNil();
 		}
 	};
 	
@@ -83,6 +99,7 @@ public abstract class Type {
 	public static Type getBool() { return getInt(); }
 	public static Type getString() { return STRING; }
 	public static Type getObject() { return OBJECT; }
+	public static Type getFunc() { return FUNC; }
 	
 	private Type() {}
 	

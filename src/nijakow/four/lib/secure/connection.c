@@ -5,29 +5,30 @@ use $on_receive;
 use $on_disconnect;
 
 any port;
-any func;
+func callback;
 
-void prompt(any the_func, ...)
+void prompt(func cb, ...)
 {
-    func = the_func;
+    callback = cb;
     write(...);
 }
 
 void write(...)
 {
-    while (va_count) {
+    while (va_count)
+    {
         $write(port, va_next);
     }
 }
 
 void receive(any text)
 {
-    any _func;
+    func _cb;
 
-    if (func) {
-    	_func = func;
-    	func = nil;
-        call(_func, trim(text));
+    if (callback) {
+    	_cb = callback;
+    	callback = nil;
+        call(_cb, trim(text));
     }
 }
 
@@ -40,7 +41,7 @@ void create(any the_port)
 {
 	"/secure/object.c"::create();
 	port = the_port;
-	func = nil;
+	callback = nil;
 	$on_receive(port, this::receive);
 	$on_disconnect(port, this::handle_disconnect);
 }

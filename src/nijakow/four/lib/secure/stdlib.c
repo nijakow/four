@@ -85,7 +85,7 @@ string trim(string s)
     return substr(s, start, end + 1);
 }
 
-any splitson(string s, any predicate)
+any splitson(string s, func predicate)
 {
     int pos = 0;
     int start = 0;
@@ -104,7 +104,7 @@ any splitson(string s, any predicate)
     return lst;
 }
 
-any spliton(string s, any predicate)
+any spliton(string s, func predicate)
 {
     int pos = 0;
     int start = 0;
