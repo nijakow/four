@@ -142,15 +142,12 @@ public class ClientWindow extends JFrame implements ActionListener, ClientReceiv
 	}
 	
 	private void setLineBreaking(boolean breaking) {
-		if (breaking) {
-			pane.setViewportView(area);
-			pane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-		} else {
+		if (breaking)
+			pane.setViewportView(area);else {
 			JPanel wrap = new JPanel();
 			wrap.setLayout(new BorderLayout());
 			wrap.add(area);
 			pane.setViewportView(wrap);
-			pane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		}
 	}
 	
@@ -255,6 +252,16 @@ public class ClientWindow extends JFrame implements ActionListener, ClientReceiv
 			try {
 				if (wasSpecial) {
 					switch (c) {
+					/*
+					 * N = normal
+					 * B = blue
+					 * R = red
+					 * G = green
+					 * 0 = black
+					 * i = inversive
+					 * b = bold
+					 * u = underscored
+					 */
 					// TODO
 					}
 				} else if (c == 0x07)
