@@ -113,6 +113,7 @@ public class Tokenizer {
 		else if (peeks("&")) return new Token(this, TokenType.OPERATOR, new OperatorInfo(OperatorType.BITAND, -1, 8, true));
 		else if (peeks("^")) return new Token(this, TokenType.OPERATOR, new OperatorInfo(OperatorType.BITXOR, -1, 9, true));
 		else if (peeks("|")) return new Token(this, TokenType.OPERATOR, new OperatorInfo(OperatorType.BITOR, -1, 10, true));
+		else if (peeks("!")) return new Token(this, TokenType.OPERATOR, new OperatorInfo(OperatorType.LOGNOT, 2, -1, true));
 		else if (peeks("=")) return new Token(this, TokenType.ASSIGNMENT);
 		else if (peeks("\"")) return new Token(this, TokenType.CONSTANT, new FString(parseString('\"')));
 		else if (peeks("\'")) {

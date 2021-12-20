@@ -68,6 +68,11 @@ bool isnewline(char c)
     return (c == '\n');
 }
 
+bool isdigit(char c)
+{
+	return ((c >= '0') && (c <= '9'));
+}
+
 string trim(string s)
 {
     int start = 0;
@@ -131,4 +136,25 @@ int sfind(string s, char c)
         if (s[x] == c)
             return x;
     return -1;
+}
+
+int atoi(string s)
+{
+	int index = 0;
+	int factor = 1;
+	int num = 0;
+
+	while (isspace(s[index]))
+		index++;
+	if (s[index] == '-') {
+		factor = -1;
+		index++;
+	} else if (s[index] == '+') {
+		index++;
+	}
+	while (isdigit(s[index])) {
+		num = (num * 10) + (s[index] - '0');
+		index++;
+	}
+	return num * factor;
 }

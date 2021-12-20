@@ -28,6 +28,7 @@ import nijakow.four.c.ast.ASTList;
 import nijakow.four.c.ast.ASTReturn;
 import nijakow.four.c.ast.ASTScope;
 import nijakow.four.c.ast.ASTThis;
+import nijakow.four.c.ast.ASTUnaryOp;
 import nijakow.four.c.ast.ASTVaCount;
 import nijakow.four.c.ast.ASTVaNext;
 import nijakow.four.c.ast.ASTVarDecl;
@@ -142,7 +143,16 @@ public class Parser {
 	}
 	
 	private ASTExpression parseExpression(int prec) {
-		ASTExpression expr = parseSimpleExpression();
+		ASTExpression expr;
+		
+		if (checkKeep(TokenType.OPERATOR)) {
+			Token t = tokenizer.nextToken();
+			OperatorInfo info = (OperatorInfo) t.getPayload();
+			expr = new ASTUnaryOp(info.getType(), parseExpression(info.getUnaryPrecedence()));
+		} else {
+			expr = parseSimpleExpression(); 
+		}
+		
 		ASTExpression next = null;
 		while (expr != next) {
 			next = expr;

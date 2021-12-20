@@ -142,11 +142,25 @@ public class Frame {
 				ip = code.u16(ip);
 			}
 			break;
-		case Bytecodes.BYTECODE_OP:
-			Instance a1 = fiber.pop();
-			Instance a2 = fiber.getAccu();
-			fiber.setAccu(operate(OperatorType.values()[code.u8(ip++)], a1, a2));
+		case Bytecodes.BYTECODE_OP: {
+			OperatorType operation = OperatorType.values()[code.u8(ip++)];
+			if (operation == OperatorType.LOGNOT) {
+				if (fiber.getAccu().asBoolean()) {
+					fiber.setAccu(new FInteger(0));
+				} else {
+					fiber.setAccu(new FInteger(1));
+				}
+			} else if (operation == OperatorType.UPLUS) {
+				// Do nothing
+			} else if (operation == OperatorType.UMINUS) {
+				fiber.setAccu(new FInteger(-fiber.getAccu().asInt()));
+			} else {
+				Instance a1 = fiber.pop();
+				Instance a2 = fiber.getAccu();
+				fiber.setAccu(operate(operation, a1, a2));
+			}
 			break;
+		}
 		case Bytecodes.BYTECODE_RETURN:
 			fiber.setTop(previous);
 			break;
@@ -175,8 +189,7 @@ public class Frame {
 			fiber.setAccu(new FList(instances));
 			break;
 		default:
-			System.out.println("???");
-			break;
+			throw new RuntimeException("Unknown bytecode!");
 		}
 	}
 }
