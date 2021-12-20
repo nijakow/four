@@ -39,8 +39,8 @@ public class Frame {
 	private Instance operate(OperatorType type, Instance x, Instance y) {
 		switch (type) {
 		case PLUS: return x.plus(y);
-		case MINUS: return new FInteger(x.asInt() + y.asInt());
-		case MULT: return new FInteger(x.asInt() + y.asInt());
+		case MINUS: return new FInteger(x.asInt() - y.asInt());
+		case MULT: return new FInteger(x.asInt() * y.asInt());
 		case DIV: return new FInteger(x.asInt() / y.asInt());
 		case MOD: return new FInteger(x.asInt() % y.asInt());
 		case EQ: return x.equals(y) ? new FInteger(1) : new FInteger(0);

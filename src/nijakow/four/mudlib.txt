@@ -49,6 +49,20 @@ bool isspace(char c)
     return (c == ' ') || (c == '\t') || (c == '\n') || (c == '\r');
 }
 
+string trim(string s)
+{
+    int start;
+    int end;
+    
+    start = 0;
+    end = strlen(s) - 1;
+    while ((start < end) && isspace(s[start]))
+        start = start + 1;
+    while ((start < end) && isspace(s[end]))
+        end = end - 1;
+    return substr(s, start, end + 1);
+}
+
 
 --- /secure/object.c
 
@@ -125,7 +139,7 @@ void receive(any text)
     if (func) {
     	_func = func;
     	func = nil;
-        _func(text);
+        _func(trim(text));
     }
 }
 
@@ -244,9 +258,7 @@ void msg(string text)
 {
     int i;
     
-    for (i = 0; i < strlen(text); i = i + 1)
-        chatroom->broadcast(text[i], " ", isspace(text[i]), "\n");
-	chatroom->broadcast("[" + name + "]: " + text);
+	chatroom->broadcast("[", name, "]: ", text, "\n");
 	connection->prompt(this::msg, "> ");
 }
 
