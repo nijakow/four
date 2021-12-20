@@ -127,8 +127,11 @@ public class Parser {
 				}
 			}
 			return new ASTList(exprs.toArray(new ASTExpression[0]));
+		} else if (checkKeep(TokenType.IDENT)) {
+			return new ASTIdent(Key.get((String) tokenizer.nextToken().getPayload()));
+		} else {
+			return new ASTThis();
 		}
-		return new ASTIdent(expectKey());
 	}
 	
 	private ASTExpression parseExpression(int prec) {

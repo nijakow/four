@@ -161,7 +161,7 @@ void remove_subscriber(any client)
 {
     int x;
     
-    for (x = 0; x < length(subscribers); this) {
+    for (x = 0; x < length(subscribers);) {
         if (subscribers[x] == client) {
             remove(subscribers, x);
         } else {
@@ -174,7 +174,7 @@ void broadcast(string message)
 {
     int x;
     
-    for (x = 0; x < length(subscribers); this) {
+    for (x = 0; x < length(subscribers);) {
         subscribers[x]->write(message);
         x = x + 1;
     }
