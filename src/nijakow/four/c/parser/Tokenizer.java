@@ -33,23 +33,29 @@ public class Tokenizer {
 			stream.advance();
 	}
 	
+	private int parseChar(char terminator) {
+		char c = (char) stream.next();
+		if (c == terminator)
+			return -1;
+		else if (c == '\\') {
+			c = (char) stream.next();
+			if (c == '\\') return '\\';
+			else if (c == 'n') return '\n';
+			else if (c == 't') return '\t';
+			else if (c == terminator) return terminator;
+			else return c;
+		} else {
+			return c;
+		}
+	}
+	
 	private String parseString(char terminator) {
 		StringBuilder builder = new StringBuilder();
 		
 		while (stream.peek() >= 0) {
-			char c = (char) stream.next();
-			if (c == terminator)
-				break;
-			else if (c == '\\') {
-				c = (char) stream.next();
-				if (c == '\\') builder.append('\\');
-				else if (c == 'n') builder.append('\n');
-				else if (c == 't') builder.append('\t');
-				else if (c == terminator) builder.append(terminator);
-				else { builder.append('\\'); builder.append(c); }
-			} else {
-				builder.append(c);
-			}
+			int c = parseChar(terminator);
+			if (c != -1) builder.append((char) c);
+			else break;
 		}
 		
 		return builder.toString();
@@ -104,6 +110,12 @@ public class Tokenizer {
 		else if (peeks("|")) return new Token(this, TokenType.OPERATOR, new OperatorInfo(OperatorType.BITOR, -1, 10, true));
 		else if (peeks("=")) return new Token(this, TokenType.ASSIGNMENT);
 		else if (peeks("\"")) return new Token(this, TokenType.CONSTANT, new FString(parseString('\"')));
+		else if (peeks("\'")) {
+			char c = (char) parseChar('\'');
+			if (stream.next() != '\'')
+				throw new RuntimeException("Expected \"\'\"!");
+			return new Token(this, TokenType.CONSTANT, new FInteger(c));
+		}
 		
 		
 		StringBuilder builder = new StringBuilder();
