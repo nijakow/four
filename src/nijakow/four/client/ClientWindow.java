@@ -74,6 +74,7 @@ public class ClientWindow extends JFrame implements ActionListener, ClientReceiv
 							"Could not connect to \"" + prefs.getHostname() + "\" on port " + prefs.getPort(),
 							"Connection failed", JOptionPane.ERROR_MESSAGE);
 				bother = false;
+				labelTimer.stop();
 				connectionStatus.setVisible(true);
 				connectionStatus.setText(" Not connected!");
 				connectionStatus.setForeground(Color.red);
@@ -134,7 +135,7 @@ public class ClientWindow extends JFrame implements ActionListener, ClientReceiv
 		labelTimer = new Timer(5000, this);
 		labelTimer.setActionCommand(STATUS_LABEL_TIMER);
 		labelTimer.setRepeats(false);
-		reconnectorHandler = queue.scheduleAtFixedRate(reconnector, 0, 5, TimeUnit.SECONDS);	// Must be last
+		reconnectorHandler = queue.scheduleWithFixedDelay(reconnector, 0, 5, TimeUnit.SECONDS);
 	}
 	
 	public void addStyles() {
