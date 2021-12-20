@@ -79,6 +79,8 @@ public abstract class Type {
 	public static Type getAny() { return ANY; }
 	public static Type getVoid() { return VOID; }
 	public static Type getInt() { return INT; }
+	public static Type getChar() { return getInt(); }
+	public static Type getBool() { return getInt(); }
 	public static Type getString() { return STRING; }
 	public static Type getObject() { return OBJECT; }
 	
