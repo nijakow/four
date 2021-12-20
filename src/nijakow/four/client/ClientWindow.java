@@ -55,6 +55,7 @@ public class ClientWindow extends JFrame implements ActionListener, ClientReceiv
 	private Timer labelTimer;
 	private boolean reconnect;
 	private boolean bother;
+	private boolean wasSpecial;
 	private Style current;
 	private ScheduledFuture<?> reconnectorHandler;
 	private final ScheduledExecutorService queue;
@@ -143,6 +144,7 @@ public class ClientWindow extends JFrame implements ActionListener, ClientReceiv
 	private void setLineBreaking(boolean breaking) {
 		if (breaking) {
 			pane.setViewportView(area);
+			pane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		} else {
 			JPanel wrap = new JPanel();
 			wrap.setLayout(new BorderLayout());
@@ -250,13 +252,14 @@ public class ClientWindow extends JFrame implements ActionListener, ClientReceiv
 	public void lineReceived(char c) {
 		EventQueue.invokeLater(() -> {
 			try {
-				if (c == '%')
-					current = term.getStyle(STYLE_RED);
-				else if (c == '$')
-					current = term.getStyle(STYLE_GREEN);
-				else if (c == '&')
-					current = null;
-				term.insertString(term.getLength(), Character.toString(c), current);
+				if (wasSpecial) {
+					switch (c) {
+					// TODO
+					}
+				} else if (c == 0x07)
+					wasSpecial = true;
+				else
+					term.insertString(term.getLength(), Character.toString(c), current);
 			} catch (BadLocationException e) {
 				e.printStackTrace();
 			}
