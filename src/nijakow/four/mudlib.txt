@@ -127,6 +127,14 @@ any split(string s)
     return spliton(s, this::isspace);
 }
 
+int sfind(string s, char c)
+{
+    for (int x = 0; x < strlen(s); x++)
+        if (s[x] == c)
+            return x;
+    return -1;
+}
+
 --- /secure/object.c
 
 inherit "/secure/stdlib.c";
