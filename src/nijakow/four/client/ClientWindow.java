@@ -39,8 +39,8 @@ import nijakow.four.client.net.ClientReceiveListener;
 
 public class ClientWindow extends JFrame implements ActionListener, ClientReceiveListener {
 	private static final long serialVersionUID = 1L;
-	private static final String SETTINGS = "settings";
-	private static final String SEND = "send";
+	private static final String ACTION_SETTINGS = "settings";
+	private static final String ACTION_SEND = "send";
 	private static final String STATUS_LABEL_TIMER = "invisible";
 	private static final String STYLE_ERROR = "error";
 	private static final String STYLE_RED = "red";
@@ -101,12 +101,12 @@ public class ClientWindow extends JFrame implements ActionListener, ClientReceiv
 		prompt = new JTextField();
 		prompt.setFont(font);
 		prompt.addActionListener(this);
-		prompt.setActionCommand(SEND);
+		prompt.setActionCommand(ACTION_SEND);
 		connectionStatus = new JLabel();
 		getContentPane().add(connectionStatus, BorderLayout.NORTH);
 		JButton settings = new JButton("Settings");
 		settings.addActionListener(this);
-		settings.setActionCommand(SETTINGS);
+		settings.setActionCommand(ACTION_SETTINGS);
 		south.add(prompt);
 		south.add(settings);
 		getContentPane().add(south, BorderLayout.SOUTH);
@@ -252,7 +252,7 @@ public class ClientWindow extends JFrame implements ActionListener, ClientReceiv
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		switch (e.getActionCommand()) {
-		case SETTINGS:
+		case ACTION_SETTINGS:
 			openSettingsWindow();
 			break;
 			
@@ -260,7 +260,7 @@ public class ClientWindow extends JFrame implements ActionListener, ClientReceiv
 			connectionStatus.setVisible(false);
 			break;
 			
-		case SEND:
+		case ACTION_SEND:
 			String text = prompt.getText() + "\n";
 			try {
 				term.insertString(term.getLength(), text, null);
