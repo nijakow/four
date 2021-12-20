@@ -16,7 +16,7 @@ public class Four implements Runnable {
 	private boolean wasStarted = false;
 	
 	public Four(int[] ports) throws IOException {
-		this.fs = new FSBuilder(this.getClass().getResourceAsStream("mudlib.txt")).build();
+		this.fs = new FSBuilder(this.getClass().getResourceAsStream("mudlib.c")).build();
 		this.server = new Server();
 		this.vm = new VM(this.fs, this.server);
 		

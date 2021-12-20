@@ -139,7 +139,6 @@ int sfind(string s, char c)
 
 inherit "/secure/stdlib.c";
 
-
 /*
  * This is the basic object
  */
