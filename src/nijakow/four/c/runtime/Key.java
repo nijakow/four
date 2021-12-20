@@ -45,6 +45,15 @@ public class Key {
 				fiber.setAccu(args[0].asBlue().clone());
 			}
 		};
+		get("$call").code = new BuiltinCode() {
+			
+			@Override
+			void run(Fiber fiber, Instance self, Instance[] args) {
+				for (int x = 1; x < args.length; x++)
+					fiber.push(args[x]);
+				args[0].asFClosure().invoke(fiber, args.length - 1);
+			}
+		};
 		get("$log").code = new BuiltinCode() {
 			
 			@Override

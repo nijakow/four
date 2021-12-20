@@ -30,7 +30,7 @@ public abstract class Instance {
 	}
 	
 	public void loadSlot(Fiber fiber, Key key) {
-		throw new RuntimeException("Oof. Slot not found.");
+		throw new RuntimeException("Oof. Slot not found: " + key);
 	}
 	
 	public void storeSlot(Fiber fiber, Key key, Instance value) {

@@ -2,6 +2,7 @@
 
 use $log;
 use $the_object;
+use $call;
 use $listinsert;
 use $listremove;
 use $listlen;
@@ -12,6 +13,16 @@ use $substr;
 object the_object(string id)
 {
     return $the_object(id);
+}
+
+any new(string blueprint, ...)
+{
+    return the_object(blueprint)->clone(...);
+}
+
+any call(any f, ...)
+{
+    return $call(f, ...);
 }
 
 void log(...)
@@ -69,6 +80,25 @@ string trim(string s)
     while ((start < end) && isspace(s[end]))
         end = end - 1;
     return substr(s, start, end + 1);
+}
+
+any splitson(string s, any predicate)
+{
+    int pos = 0;
+    int start = 0;
+    int len = strlen(s);
+    any lst = {};
+    
+    while (pos < len)
+    {
+        if (predicate(s[pos])) {
+            append(lst, substr(s, start, pos));
+            start = pos + 1;
+        }
+        pos = pos + 1;
+    }
+    append(lst, substr(s, start, pos));
+    return lst;
 }
 
 any spliton(string s, any predicate)
@@ -172,7 +202,7 @@ void receive(any text)
     if (func) {
     	_func = func;
     	func = nil;
-        _func(trim(text));
+        call(_func, trim(text));
     }
 }
 
@@ -208,6 +238,40 @@ void create()
     "/secure/object.c"::create();
     set_short("<error>");
     set_long("<error>");
+}
+
+--- /prg/edit/editor.c
+
+inherit "/secure/object.c";
+
+object io;
+any regain;
+int line;
+any lines;
+
+void cmd(string text)
+{
+    if (text == "exit") {
+        call(regain);
+    } else {
+        io->write("???: ", text, "\n");
+        newcmd();
+    }
+}
+
+void newcmd()
+{
+    io->prompt(this::cmd, "edit> ");
+}
+
+void start() { newcmd(); }
+
+void create(object the_io, any the_regain, string text)
+{
+    "/secure/object.c"::create();
+    io = the_io;
+    regain = the_regain;
+    lines = splitson(text, this::isnewline);
 }
 
 --- /prg/chat/chatroom.c
@@ -292,14 +356,20 @@ void msg(string text)
 void setname(string _name)
 {
     name = _name;
+    chatroom->add_subscriber(this);
     connection->prompt(this::msg, "> ");
+}
+
+void resume()
+{
+    connection->prompt(this::setname, "What's your name? ");
 }
 
 void create(any the_connection, any the_chatroom)
 {
     connection = the_connection;
-    chatroom = the_chatroom;
-    the_chatroom->add_subscriber(this);
     banner();
-    connection->prompt(this::setname, "What's your name? ");
+    chatroom = the_chatroom;    
+    object editor = new("/prg/edit/editor.c", connection, this::resume, "");
+    editor->start();
 }
