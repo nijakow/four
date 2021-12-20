@@ -150,6 +150,7 @@ public class ClientWindow extends JFrame implements ActionListener, ClientReceiv
 			wrap.setLayout(new BorderLayout());
 			wrap.add(area);
 			pane.setViewportView(wrap);
+			pane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		}
 	}
 	
