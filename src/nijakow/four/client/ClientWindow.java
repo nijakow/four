@@ -46,6 +46,7 @@ public class ClientWindow extends JFrame implements ActionListener, ClientReceiv
 	private static final String STYLE_RED = "red";
 	private static final String STYLE_GREEN = "green";
 	private JLabel connectionStatus;
+	private JScrollPane pane;
 	private JTextField prompt;
 	private JTextPane area;
 	private StyledDocument term;
@@ -117,8 +118,8 @@ public class ClientWindow extends JFrame implements ActionListener, ClientReceiv
 		area.setFont(font);
 		term = area.getStyledDocument();
 		addStyles();
-		//area.setLineWrap(prefs.getLineBreaking());
-		JScrollPane pane = new JScrollPane(area);
+		pane = new JScrollPane();
+		setLineBreaking(prefs.getLineBreaking());
 		getContentPane().add(pane, BorderLayout.CENTER);
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		int x = prefs.getWindowPositionX();
@@ -139,7 +140,18 @@ public class ClientWindow extends JFrame implements ActionListener, ClientReceiv
 		reconnectorHandler = queue.scheduleWithFixedDelay(reconnector, 0, 5, TimeUnit.SECONDS);
 	}
 	
-	public void addStyles() {
+	private void setLineBreaking(boolean breaking) {
+		if (breaking) {
+			pane.setViewportView(area);
+		} else {
+			JPanel wrap = new JPanel();
+			wrap.setLayout(new BorderLayout());
+			wrap.add(area);
+			pane.setViewportView(wrap);
+		}
+	}
+	
+	private void addStyles() {
 		final Style def = area.getLogicalStyle();
 		Style s = term.addStyle(STYLE_ERROR, def);
 		StyleConstants.setBold(s, true);
@@ -224,7 +236,7 @@ public class ClientWindow extends JFrame implements ActionListener, ClientReceiv
 					reconnectorHandler = queue.scheduleAtFixedRate(reconnector, 0, 5, TimeUnit.SECONDS);
 					reconnect = false;
 				}
-				//area.setLineWrap(prefs.getLineBreaking());
+				setLineBreaking(prefs.getLineBreaking());
 			}
 		});
 		settingsWindow.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
