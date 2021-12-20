@@ -209,6 +209,32 @@ string name;
 
 void write(...) { connection->write(...); }
 
+void banner()
+{
+    write("\n");
+    write("                /####/  #################\n");
+    write("              /####/    #####/     ######\n");
+    write("            /####/      ###/       ######\n");
+    write("          /####/        #/         /####/\n");
+    write("        /####/          /        /####/\n");
+    write("      /####/                   /####/\n");
+    write("    /####/                   /####/\n");
+    write("  /####/                   /####/\n");
+    write("/####/                   /####/         /\n");
+    write("#####################   ######         /#\n");
+    write("#####################   ######       /###\n");
+    write("#####################   ######     /#####\n");
+    write("               ######   #################\n");
+    write("               ######\n");
+    write("               ######\n");
+    write("               ######   #\n");
+    write("   _                    #  #  #  #==  #  #    #==\   #==,  *==*  #\\  #  #\\  #\n");
+    write("  |c| nijakow, mhahn    #  #==#  #=   #  #    #==<   #=*   #  #  # \\ #  # \\ #\n");
+    write("  '-'                   #  #  #  #==  #  #==  #==/   # \\  *==*  #  \\#  #  \\#\n");
+    write("                        #\n");
+    write("\n");
+}
+
 void msg(string text)
 {
     int i;
@@ -230,5 +256,6 @@ void create(any the_connection, any the_chatroom)
     connection = the_connection;
     chatroom = the_chatroom;
     the_chatroom->add_subscriber(this);
+    banner();
     connection->prompt(this::setname, "What's your name? ");
 }
