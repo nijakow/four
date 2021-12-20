@@ -49,7 +49,11 @@ public class FString extends Instance {
 	
 	@Override
 	public Instance index(Instance index) {
-		return new FInteger(value.charAt(index.asInt()));
+		try {
+			return new FInteger(value.charAt(index.asInt()));
+		} catch (StringIndexOutOfBoundsException e) {
+			return new FInteger(0);
+		}
 	}
 
 	public Blue getBlue(Filesystem fs) {
