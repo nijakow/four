@@ -80,7 +80,7 @@ string trim(string s)
 
     while ((start < end) && isspace(s[start]))
         start = start + 1;
-    while ((start < end) && isspace(s[end]))
+    while ((start <= end) && isspace(s[end]))
         end = end - 1;
     return substr(s, start, end + 1);
 }
