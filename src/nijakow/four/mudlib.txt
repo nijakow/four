@@ -5,6 +5,8 @@ use $the_object;
 use $listinsert;
 use $listremove;
 use $listlen;
+use $strlen;
+use $substr;
 
 
 object the_object(string id)
@@ -30,6 +32,16 @@ void insert(any lst, int index, any value)
 any remove(any lst, int index)
 {
     return $listremove(lst, index);
+}
+
+int strlen(string str)
+{
+    return $strlen(str);
+}
+
+string substr(string str, index i0, index i1)
+{
+    return $substr(str, i0, i1);
 }
 
 
@@ -170,12 +182,12 @@ void remove_subscriber(any client)
     }
 }
 
-void broadcast(string message)
+void broadcast(...)
 {
     int x;
     
     for (x = 0; x < length(subscribers);) {
-        subscribers[x]->write(message);
+        subscribers[x]->write(...);
         x = x + 1;
     }
 }
@@ -199,6 +211,10 @@ void write(...) { connection->write(...); }
 
 void msg(string text)
 {
+    int i;
+    
+    for (i = 0; i < strlen(text); i = i + 1)
+        chatroom->broadcast(text[i], "\n");
 	chatroom->broadcast("[" + name + "]: " + text);
 	connection->prompt(this::msg, "> ");
 }

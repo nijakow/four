@@ -33,9 +33,18 @@ public class FString extends Instance {
 	
 	@Override
 	public Instance plus(Instance y) {
-		return new FString(value + y.asFString().value);
+		if (y instanceof FInteger) {
+			return new FString(value + (char) y.asInt());
+		} else {
+			return new FString(value + y.asString());
+		}
 	}
 	
+	@Override
+	public Instance index(Instance index) {
+		return new FInteger(value.charAt(index.asInt()));
+	}
+
 	public Blue getBlue(Filesystem fs) {
 		return fs.getBlue(value);
 	}
