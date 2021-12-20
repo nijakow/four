@@ -12,6 +12,13 @@ public class FString extends Instance {
 	}
 	
 	@Override
+	public boolean equals(Object obj) {
+		if (obj == null) return false;
+		else if (!(obj instanceof FString)) return false;
+		else return value.equals(((FString) obj).value);
+	}
+	
+	@Override
 	public boolean asBoolean() {
 		return !value.isEmpty();
 	}

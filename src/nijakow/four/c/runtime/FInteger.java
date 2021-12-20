@@ -8,6 +8,13 @@ public class FInteger extends Instance {
 	}
 	
 	@Override
+	public boolean equals(Object obj) {
+		if (obj == null) return false;
+		else if (!(obj instanceof FInteger)) return false;
+		else return ((FInteger) obj).value == value;
+	}
+
+	@Override
 	public boolean asBoolean() {
 		return value != 0;
 	}

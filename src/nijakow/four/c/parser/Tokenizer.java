@@ -40,8 +40,11 @@ public class Tokenizer {
 		else if (c == '\\') {
 			c = (char) stream.next();
 			if (c == '\\') return '\\';
-			else if (c == 'n') return '\n';
 			else if (c == 't') return '\t';
+			else if (c == 'n') return '\n';
+			else if (c == 'r') return '\r';
+			else if (c == 'b') return '\b';
+			else if (c == 'e') return '\033';
 			else if (c == terminator) return terminator;
 			else return c;
 		} else {

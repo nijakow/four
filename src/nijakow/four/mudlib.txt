@@ -44,6 +44,11 @@ string substr(string str, int i0, int i1)
     return $substr(str, i0, i1);
 }
 
+bool isspace(char c)
+{
+    return (c == ' ') || (c == '\t') || (c == '\n') || (c == '\r');
+}
+
 
 --- /secure/object.c
 
@@ -240,7 +245,7 @@ void msg(string text)
     int i;
     
     for (i = 0; i < strlen(text); i = i + 1)
-        chatroom->broadcast(text[i], "\n");
+        chatroom->broadcast(text[i], " ", isspace(text[i]), "\n");
 	chatroom->broadcast("[" + name + "]: " + text);
 	connection->prompt(this::msg, "> ");
 }
