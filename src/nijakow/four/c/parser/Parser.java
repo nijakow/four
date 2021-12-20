@@ -17,6 +17,7 @@ import nijakow.four.c.ast.ASTFor;
 import nijakow.four.c.ast.ASTFunctionDef;
 import nijakow.four.c.ast.ASTIdent;
 import nijakow.four.c.ast.ASTIf;
+import nijakow.four.c.ast.ASTIncrement;
 import nijakow.four.c.ast.ASTIndex;
 import nijakow.four.c.ast.ASTInheritanceDef;
 import nijakow.four.c.ast.ASTInstanceVarDef;
@@ -155,6 +156,10 @@ public class Parser {
 				expr = new ASTScope(expr, expectKey());
 			} else if (check(TokenType.ASSIGNMENT)) {
 				expr = new ASTAssignment(expr, parseExpression());
+			} else if (check(TokenType.INC1)) {
+				expr = new ASTIncrement(expr, 1, true);
+			} else if (check(TokenType.DEC1)) {
+				expr = new ASTIncrement(expr, -1, true);
 			} else if (checkKeep(TokenType.OPERATOR)) {
 				Token t = tokenizer.nextToken();
 				OperatorInfo info = (OperatorInfo) t.getPayload();

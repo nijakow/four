@@ -83,10 +83,13 @@ public class Frame {
 			fiber.getAccu().loadSlot(fiber, code.keyAt(code.u16(ip)));
 			ip += 2;
 			break;
-		case Bytecodes.BYTECODE_STORE_INST:
-			fiber.getAccu().storeSlot(fiber, code.keyAt(code.u16(ip)), fiber.pop());
+		case Bytecodes.BYTECODE_STORE_INST: {
+			Instance value = fiber.pop();
+			fiber.getAccu().storeSlot(fiber, code.keyAt(code.u16(ip)), value);
 			ip += 2;
+			fiber.setAccu(value);
 			break;
+		}
 		case Bytecodes.BYTECODE_LOAD_INDEX:
 			fiber.setAccu(fiber.pop().index(fiber.getAccu()));
 			break;
