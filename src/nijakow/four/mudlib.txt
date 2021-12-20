@@ -1,10 +1,35 @@
 --- /secure/stdlib.c
 
+use $log;
 use $the_object;
+use $listinsert;
+use $listremove;
+use $listlen;
+
 
 object the_object(string id)
 {
     return $the_object(id);
+}
+
+void log(...)
+{
+    $log(...);
+}
+
+int length(any lst)
+{
+    return $listlen(lst);
+}
+
+void insert(any lst, int index, any value)
+{
+    $listinsert(lst, index, value);
+}
+
+any remove(any lst, int index)
+{
+    return $listremove(lst, index);
 }
 
 
@@ -36,13 +61,12 @@ any clone(...)
 
 inherit "/secure/stdlib.c";
 
-use $log;
 use $on_connect;
 
 void receive(any connection)
 {
 	any conn_inst;
-	$log("New connection!\n");
+	log("New connection!\n");
 	conn_inst = "/secure/connection.c"->clone(connection);
 	"/secure/program.c"->clone(conn_inst, the_object("/prg/chat/chatroom.c"));
 }
@@ -57,7 +81,6 @@ void create()
 
 inherit "/secure/object.c";
 
-use $log;
 use $write;
 use $on_receive;
 use $on_disconnect;
@@ -91,7 +114,7 @@ void receive(any text)
 
 void handle_disconnect()
 {
-	$log("Disconnect!\n");
+	log("Disconnect!\n");
 }
 
 void create(any the_port)
@@ -127,24 +150,20 @@ void create()
 
 inherit "/secure/object.c";
 
-use $listinsert;
-use $listlen;
-use $listremove;
-
 any subscribers;
 
 void add_subscriber(any client)
 {
-    $listinsert(subscribers, $listlen(subscribers), client);
+    insert(subscribers, length(subscribers), client);
 }
 
 void remove_subscriber(any client)
 {
     int x;
     
-    for (x = 0; x < $listlen(subscribers); this) {
+    for (x = 0; x < length(subscribers); this) {
         if (subscribers[x] == client) {
-            $listremove(subscribers, x);
+            remove(subscribers, x);
         } else {
             x = x + 1;
         }
@@ -155,7 +174,7 @@ void broadcast(string message)
 {
     int x;
     
-    for (x = 0; x < $listlen(subscribers); this) {
+    for (x = 0; x < length(subscribers); this) {
         subscribers[x]->write(message);
         x = x + 1;
     }
@@ -170,8 +189,6 @@ void create()
 --- /secure/program.c
 
 inherit "/secure/object.c";
-
-use $log;
 
 object connection;
 object chatroom;
