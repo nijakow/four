@@ -152,6 +152,8 @@ public class Tokenizer {
 		case "else": return new Token(this, TokenType.ELSE);
 		case "while": return new Token(this, TokenType.WHILE);
 		case "for": return new Token(this, TokenType.FOR);
+		case "break": return new Token(this, TokenType.BREAK);
+		case "continue": return new Token(this, TokenType.CONTINUE);
 		case "return": return new Token(this, TokenType.RETURN);
 		case "va_next": return new Token(this, TokenType.VA_NEXT);
 		case "va_count": return new Token(this, TokenType.VA_COUNT);

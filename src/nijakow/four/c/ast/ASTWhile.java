@@ -15,14 +15,18 @@ public class ASTWhile extends ASTInstruction {
 	@Override
 	void compile(FCompiler compiler) {
 		compiler = compiler.subscope();
+		Label breakLabel = compiler.openBreakLabel();
+		Label continueLabel = compiler.openContinueLabel();
 		Label start = compiler.openLabel();
 		Label end = compiler.openLabel();
 		start.place();
+		continueLabel.place();
 		condition.compile(compiler);
 		end.compileJumpIfNot();
 		body.compile(compiler);
 		start.compileJump();
 		end.place();
+		breakLabel.place();
 		start.close();
 		end.close();
 	}

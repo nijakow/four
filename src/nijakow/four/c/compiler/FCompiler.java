@@ -7,6 +7,10 @@ import nijakow.four.c.runtime.Type;
 
 public interface FCompiler {
 	Label openLabel();
+	Label openBreakLabel();
+	Label openContinueLabel();
+	Label getBreakLabel();
+	Label getContinueLabel();
 	FCompiler subscope();
 	
 	void addParam(Type type, Key name);

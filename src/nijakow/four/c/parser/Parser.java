@@ -6,8 +6,10 @@ import java.util.List;
 import nijakow.four.c.ast.ASTAssignment;
 import nijakow.four.c.ast.ASTBinOp;
 import nijakow.four.c.ast.ASTBlock;
+import nijakow.four.c.ast.ASTBreak;
 import nijakow.four.c.ast.ASTCall;
 import nijakow.four.c.ast.ASTConstant;
+import nijakow.four.c.ast.ASTContinue;
 import nijakow.four.c.ast.ASTDecl;
 import nijakow.four.c.ast.ASTDefaultDef;
 import nijakow.four.c.ast.ASTDot;
@@ -234,6 +236,12 @@ public class Parser {
 			ASTExpression update = parseExpression();
 			expect(TokenType.RPAREN);
 			return new ASTFor(init, condition, update, parseInstruction());
+		} else if (check(TokenType.BREAK)) {
+			expect(TokenType.SEMICOLON);
+			return new ASTBreak();
+		} else if (check(TokenType.CONTINUE)) {
+			expect(TokenType.SEMICOLON);
+			return new ASTContinue();	
 		} else if (check(TokenType.RETURN)) {
 			if (check(TokenType.SEMICOLON)) {
 				return new ASTReturn(null);

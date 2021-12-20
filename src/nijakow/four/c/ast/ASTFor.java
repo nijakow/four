@@ -19,6 +19,8 @@ public class ASTFor extends ASTInstruction {
 	@Override
 	void compile(FCompiler compiler) {
 		compiler = compiler.subscope();
+		Label breakLabel = compiler.openBreakLabel();
+		Label continueLabel = compiler.openContinueLabel();
 		Label start = compiler.openLabel();
 		Label breakPos = compiler.openLabel();
 		Label end = compiler.openLabel();
@@ -28,9 +30,11 @@ public class ASTFor extends ASTInstruction {
 		end.compileJumpIfNot();
 		body.compile(compiler);
 		breakPos.place();
+		continueLabel.place();
 		update.compile(compiler);
 		start.compileJump();
 		end.place();
+		breakLabel.place();
 		start.close();
 		breakPos.close();
 		end.close();

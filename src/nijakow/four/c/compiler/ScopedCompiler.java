@@ -55,6 +55,7 @@ public class ScopedCompiler implements FCompiler {
 	private final List<Pair<Type, Key>> locals = new ArrayList<>();
 	private final Type returnType;
 	private int params = 0;
+	private Label breakLabel = null, continueLabel = null;
 	
 	public ScopedCompiler(Type returnType) {
 		this(null, returnType);
@@ -110,6 +111,40 @@ public class ScopedCompiler implements FCompiler {
 	@Override
 	public Label openLabel() {
 		return new ScopedCompilerLabel(this, writer);
+	}
+	
+	@Override
+	public Label openBreakLabel() {
+		if (breakLabel == null)
+			breakLabel = openLabel();
+		return breakLabel;
+	}
+	
+	@Override
+	public Label getBreakLabel() {
+		if (breakLabel != null)
+			return breakLabel;
+		else if (parent != null)
+			return parent.getBreakLabel();
+		else
+			return null;
+	}
+	
+	@Override
+	public Label openContinueLabel() {
+		if (continueLabel == null)
+			continueLabel = openLabel();
+		return continueLabel;
+	}
+	
+	@Override
+	public Label getContinueLabel() {
+		if (continueLabel != null)
+			return continueLabel;
+		else if (parent != null)
+			return parent.getContinueLabel();
+		else
+			return null;
 	}
 
 	@Override
