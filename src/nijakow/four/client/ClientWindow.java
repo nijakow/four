@@ -25,12 +25,13 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.Timer;
 import javax.swing.border.EtchedBorder;
 import javax.swing.text.BadLocationException;
+import javax.swing.text.Style;
+import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 
 import nijakow.four.client.net.ClientConnection;
@@ -40,6 +41,9 @@ public class ClientWindow extends JFrame implements ActionListener {
 	private static final String SETTINGS = "settings";
 	private static final String SEND = "send";
 	private static final String STATUS_LABEL_TIMER = "invisible";
+	private static final String STYLE_ERROR = "error";
+	private static final String STYLE_RED = "red";
+	private static final String STYLE_GREEN = "green";
 	private JLabel connectionStatus;
 	private JTextField prompt;
 	private JTextPane area;
@@ -139,7 +143,15 @@ public class ClientWindow extends JFrame implements ActionListener {
 	}
 	
 	public void addStyles() {
-		// TODO
+		final Style def = area.getLogicalStyle();
+		Style s = term.addStyle(STYLE_ERROR, def);
+		StyleConstants.setBold(s, true);
+		StyleConstants.setItalic(s, true);
+		StyleConstants.setForeground(s, Color.red);
+		s = term.addStyle(STYLE_RED, def);
+		StyleConstants.setForeground(s, Color.red);
+		s = term.addStyle(STYLE_GREEN, def);
+		StyleConstants.setForeground(s, Color.green);
 	}
 	
 	public void dispose() {
@@ -250,7 +262,7 @@ public class ClientWindow extends JFrame implements ActionListener {
 				} catch (Exception ex) {
 					EventQueue.invokeLater(() -> {
 						try {
-							term.insertString(term.getLength(), "*** Could not send message --- see console for more details! ***\n", null);
+							term.insertString(term.getLength(), "*** Could not send message --- see console for more details! ***\n", term.getStyle(STYLE_ERROR));
 						} catch (BadLocationException e1) {
 							e1.printStackTrace();
 						}
