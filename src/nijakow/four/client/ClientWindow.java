@@ -45,13 +45,15 @@ public class ClientWindow extends JFrame implements ActionListener, ClientReceiv
 	private static final char SPECIAL_START = 0x02;
 	private static final char SPECIAL_END = 0x03;
 	private static final String STYLE_ERROR = "error";
-	private static final String STYLE_BLUE = "B";
-	private static final String STYLE_GREEN = "G";
-	private static final String STYLE_BLACK = "0";
-	private static final String STYLE_RED = "R";
-	private static final String STYLE_ITALIC = "i";
-	private static final String STYLE_BOLD = "b";
-	private static final String STYLE_UNDERSCORED = "u";
+	private static final String STYLE_NORMAL = "RESET";
+	private static final String STYLE_BLUE = "BLUE";
+	private static final String STYLE_GREEN = "GREEN";
+	private static final String STYLE_YELLOW = "YELLOW";
+	private static final String STYLE_BLACK = "BLACK";
+	private static final String STYLE_RED = "RED";
+	private static final String STYLE_ITALIC = "ITALIC";
+	private static final String STYLE_BOLD = "BOLD";
+	private static final String STYLE_UNDERSCORED = "UNDERSCORED";
 	private String buffer;
 	private JLabel connectionStatus;
 	private JScrollPane pane;
@@ -254,6 +256,10 @@ public class ClientWindow extends JFrame implements ActionListener, ClientReceiv
 	private Style getStyleByName(String style) {
 		Style ret = term.addStyle(style, current == null ? area.getLogicalStyle() : current);
 		switch (style) {
+		case STYLE_NORMAL:
+			ret = null;
+			break;
+			
 		case STYLE_BLUE:
 			StyleConstants.setForeground(ret, Color.blue);
 			break;
@@ -266,6 +272,10 @@ public class ClientWindow extends JFrame implements ActionListener, ClientReceiv
 			StyleConstants.setForeground(ret, Color.green);
 			break;
 
+		case STYLE_YELLOW:
+			StyleConstants.setForeground(ret, Color.yellow);
+			break;
+			
 		case STYLE_BLACK:
 			StyleConstants.setForeground(ret, Color.black);
 			break;
@@ -289,15 +299,14 @@ public class ClientWindow extends JFrame implements ActionListener, ClientReceiv
 	public void lineReceived(char c) {
 		EventQueue.invokeLater(() -> {
 			try {
-				if (wasSpecial)
+				if (c == SPECIAL_END) {
+					wasSpecial = false;
+					current = getStyleByName(buffer);
+				} else if (wasSpecial)
 					buffer += c;
 				else if (c == SPECIAL_START) {
 					wasSpecial = true;
 					buffer = "";
-				}
-				else if (c == SPECIAL_END) {
-					wasSpecial = false;
-					current = getStyleByName(buffer);
 				}
 				else
 					term.insertString(term.getLength(), Character.toString(c), current);

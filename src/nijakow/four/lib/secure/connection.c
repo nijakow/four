@@ -22,14 +22,15 @@ void write(...)
     }
 }
 
-void mode_normal()     { write("\{N\}"); }
-void mode_red()        { write("\{R\}"); }
-void mode_green()      { write("\{G\}"); }
-void mode_blue()       { write("\{B\}"); }
-void mode_black()      { write("\{0\}"); }
-void mode_italic()     { write("\{i\}"); }
-void mode_bold()       { write("\{b\}"); }
-void mode_underscore() { write("\{u\}"); }
+void mode_normal()     { write("\{RESET\}"); }
+void mode_red()        { write("\{RED\}"); }
+void mode_green()      { write("\{GREEN\}"); }
+void mode_blue()       { write("\{BLUE\}"); }
+void mode_yellow()     { write("\{YELLOW\}"); }
+void mode_black()      { write("\{BLACK\}"); }
+void mode_italic()     { write("\{ITALIC\}"); }
+void mode_bold()       { write("\{BOLD\}"); }
+void mode_underscore() { write("\{UNDERSCORED\}"); }
 
 void receive(string text)
 {
