@@ -3,6 +3,7 @@ package nijakow.four.c.runtime;
 import java.util.HashMap;
 import java.util.Map;
 
+import nijakow.four.c.runtime.fs.FSNode;
 import nijakow.four.c.runtime.vm.Fiber;
 
 public class Key {
@@ -169,6 +170,46 @@ public class Key {
 			@Override
 			void run(Fiber fiber, Instance self, Instance[] args) {
 				fiber.setAccu(new FInteger((int) (Math.random() * Integer.MAX_VALUE)));
+			}
+		};
+		get("$filetext").code = new BuiltinCode() {
+			
+			@Override
+			void run(Fiber fiber, Instance self, Instance[] args) {
+				String path = args[0].asFString().asString();
+				FSNode node = fiber.getVM().getFilesystem().find(path);
+				if (node == null || node.asFile() == null) {
+					fiber.setAccu(Instance.getNil());
+				} else {
+					fiber.setAccu(new FString(node.asFile().getContents()));
+				}
+			}
+		};
+		get("$filetext_set").code = new BuiltinCode() {
+			
+			@Override
+			void run(Fiber fiber, Instance self, Instance[] args) {
+				String path = args[0].asFString().asString();
+				String value = args[1].asFString().asString();
+				FSNode node = fiber.getVM().getFilesystem().find(path);
+				if (node == null || node.asFile() == null) {
+					fiber.setAccu(Instance.getNil());
+					fiber.setAccu(new FInteger(0));
+				} else {
+					node.asFile().setContents(value);
+					fiber.setAccu(new FInteger(1));
+				}
+			}
+		};
+		get("$touch").code = new BuiltinCode() {
+			
+			@Override
+			void run(Fiber fiber, Instance self, Instance[] args) {
+				String path = args[0].asFString().asString();
+				if (fiber.getVM().getFilesystem().touchf(path) != null)
+					fiber.setAccu(new FInteger(1));
+				else
+					fiber.setAccu(new FInteger(0));
 			}
 		};
 	}
