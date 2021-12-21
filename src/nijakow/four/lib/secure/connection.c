@@ -8,6 +8,7 @@ use $on_disconnect;
 any port;
 func callback;
 string line;
+string escline;
 
 void prompt(func cb, ...)
 {
@@ -49,13 +50,27 @@ void mode_bold()       { write("\{BOLD\}"); }
 void mode_underscore() { write("\{UNDERSCORED\}"); }
 
 
+void process_escaped(string ln)
+{
+    /*
+     * TODO: Handle codes sent by the client!
+     */
+}
+
 void receive(string text)
 {
     func _cb;
     
+    /*
+     * TODO: There are a few security holes in here,
+     *       the checking for escline != nil must happen before
+     *       anything else is being checked!
+     */
     for (int i = 0; i < strlen(text); i++)
     {
-        if (text[i] == '\n') {
+        if (text[i] == '\{') {
+            escline = "";
+        } else if (text[i] == '\n') {
             string line2 = line;
             line = "";
             _cb = callback;
@@ -66,7 +81,16 @@ void receive(string text)
                 log("The system can't provide an input handler -- TODO: Reset to failsafe!\n");
             }
         } else {
-            line = line + chr(text[i]);
+            if (escline != nil) {
+                if (text[i] == '\}') {
+                    process_escaped(escline);
+                    escline = nil;
+                } else {
+                    escline = escline + chr(text[i]);
+                }
+            }
+            else
+                line = line + chr(text[i]);
         }
     }
 }
@@ -87,6 +111,7 @@ void create(any the_port)
 	port = the_port;
 	callback = nil;
 	line = "";
+	escline = nil;
 	$on_receive(port, this::receive);
 	$on_disconnect(port, this::handle_disconnect);
 }
