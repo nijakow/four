@@ -42,6 +42,8 @@ public class ClientWindow extends JFrame implements ActionListener, ClientReceiv
 	private static final String ACTION_SETTINGS = "settings";
 	private static final String ACTION_SEND = "send";
 	private static final String ACTION_STATUS_LABEL_TIMER = "invisible";
+	private static final char SPECIAL_START = 0x02;
+	private static final char SPECIAL_END = 0x03;
 	private static final String STYLE_ERROR = "error";
 	private static final String STYLE_BLUE = "B";
 	private static final String STYLE_GREEN = "G";
@@ -50,6 +52,7 @@ public class ClientWindow extends JFrame implements ActionListener, ClientReceiv
 	private static final String STYLE_ITALIC = "i";
 	private static final String STYLE_BOLD = "b";
 	private static final String STYLE_UNDERSCORED = "u";
+	private String buffer;
 	private JLabel connectionStatus;
 	private JScrollPane pane;
 	private JTextField prompt;
@@ -98,6 +101,7 @@ public class ClientWindow extends JFrame implements ActionListener, ClientReceiv
 		// TODO macOS customization
 		// TODO C editor
 		// TODO iterate through ports
+		buffer = "";
 		bother = true;
 		prefs = new PreferencesHelper();
 		queue = Executors.newScheduledThreadPool(2);
@@ -285,14 +289,16 @@ public class ClientWindow extends JFrame implements ActionListener, ClientReceiv
 	public void lineReceived(char c) {
 		EventQueue.invokeLater(() -> {
 			try {
-				if (wasSpecial) {
-					if (c == 'N')
-						current = null;
-					else
-						current = getStyleByName(Character.toString(c));
-					wasSpecial = false;
-				} else if (c == 0x07)
+				if (wasSpecial)
+					buffer += c;
+				else if (c == SPECIAL_START) {
 					wasSpecial = true;
+					buffer = "";
+				}
+				else if (c == SPECIAL_END) {
+					wasSpecial = false;
+					current = getStyleByName(buffer);
+				}
 				else
 					term.insertString(term.getLength(), Character.toString(c), current);
 			} catch (BadLocationException e) {
