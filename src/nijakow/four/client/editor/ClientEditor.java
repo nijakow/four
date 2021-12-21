@@ -1,6 +1,7 @@
 package nijakow.four.client.editor;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -10,6 +11,8 @@ import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -17,6 +20,10 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.text.Style;
+import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 
 import nijakow.four.client.Commands;
@@ -39,6 +46,23 @@ public class ClientEditor extends JDialog implements ActionListener {
 		pane.setText(args[2]);
 		pane.setFont(new Font("Monospaced", Font.PLAIN, 14));
 		doc = pane.getStyledDocument();
+		addStyles();
+		doc.addDocumentListener(new DocumentListener() {
+			@Override
+			public void removeUpdate(DocumentEvent e) {
+				updateSyntaxHighlighting();
+			}
+			
+			@Override
+			public void insertUpdate(DocumentEvent e) {
+				updateSyntaxHighlighting();
+			}
+			
+			@Override
+			public void changedUpdate(DocumentEvent e) {
+				updateSyntaxHighlighting();
+			}
+		});
 		getContentPane().setLayout(new BorderLayout());
 		JScrollPane sp = new JScrollPane(pane);
 		getContentPane().add(sp, BorderLayout.CENTER);
@@ -61,6 +85,46 @@ public class ClientEditor extends JDialog implements ActionListener {
 		});
 		pack();
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+	}
+	
+	private void addStyles() {
+		final Style def = pane.getLogicalStyle();
+		Style s = doc.addStyle(Commands.STYLE_KEYWORD, def);
+		StyleConstants.setForeground(s, Color.red);
+		StyleConstants.setBold(s, true);
+		s = doc.addStyle(Commands.STYLE_TYPE, def);
+		StyleConstants.setForeground(s, Color.green);
+		s = doc.addStyle(Commands.STYLE_SPECIAL_WORD, def);
+		StyleConstants.setItalic(s, true);
+		StyleConstants.setForeground(s, Color.blue);
+		s = doc.addStyle(Commands.STYLE_STDLIB, def);
+		StyleConstants.setForeground(s, Color.orange);
+		StyleConstants.setItalic(s, true);
+	}
+	
+	private void updateSyntaxHighlighting() {
+		queue.execute(() -> {
+			String keywords = "\\b(inherit|use|this|if|else|while|for|break|continue|switch|case|return)\\b";
+			Matcher matcher = Pattern.compile(keywords).matcher(pane.getText());
+			while (matcher.find())
+				doc.setCharacterAttributes(matcher.start(), matcher.end() - matcher.start(),
+						doc.getStyle(Commands.STYLE_KEYWORD), false);
+			keywords = "\\b(any|void|int|char|bool|string|object|list|mapping)\\b";
+			matcher = Pattern.compile(keywords).matcher(pane.getText());
+			while (matcher.find())
+				doc.setCharacterAttributes(matcher.start(), matcher.end() - matcher.start(),
+						doc.getStyle(Commands.STYLE_TYPE), false);
+			keywords = "\\b(true|false|nil|va_next|va_count)\\b";
+			matcher = Pattern.compile(keywords).matcher(pane.getText());
+			while (matcher.find())
+				doc.setCharacterAttributes(matcher.start(), matcher.end() - matcher.start(),
+						doc.getStyle(Commands.STYLE_SPECIAL_WORD), false);
+			keywords = "\\b(???)\\b";
+			matcher = Pattern.compile(keywords).matcher(pane.getText());
+			while (matcher.find())
+				doc.setCharacterAttributes(matcher.start(), matcher.end() - matcher.start(),
+						doc.getStyle(Commands.STYLE_STDLIB), false);
+		});
 	}
 	
 	public void send(final boolean save) {

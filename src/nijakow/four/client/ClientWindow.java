@@ -350,10 +350,15 @@ public class ClientWindow extends JFrame implements ActionListener, ClientReceiv
 			});
 		} else if (arg.startsWith(Commands.SPECIAL_EDIT)) {
 			String splitter = arg.substring(Commands.SPECIAL_EDIT.length(), arg.length());
-			String[] args = splitter.split(Commands.SPECIAL_RAW);
-			if (args.length != 3)
-				return;
-			openEditor(args);
+			int i0 = splitter.indexOf(Commands.SPECIAL_RAW);
+			if (i0 < 0) return;
+			String id = splitter.substring(0, i0);
+			splitter = splitter.substring(i0 + 1);
+			int i1 = splitter.indexOf(Commands.SPECIAL_RAW);
+			if (i1 < 0) return;
+			String title = splitter.substring(i0 + 1, i1);
+			splitter = splitter.substring(i1 + 1);
+			openEditor(new String[] { id, title, splitter });
 		} else
 			current = getStyleByName(arg);
 	}
