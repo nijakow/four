@@ -1,6 +1,7 @@
 package nijakow.four.client.editor;
 
 import java.awt.BorderLayout;
+import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -16,6 +17,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
+import javax.swing.text.StyledDocument;
 
 import nijakow.four.client.Commands;
 import nijakow.four.client.net.ClientConnection;
@@ -23,6 +25,7 @@ import nijakow.four.client.net.ClientConnection;
 public class ClientEditor extends JDialog implements ActionListener {
 	private static final long serialVersionUID = 1L;
 	private JTextPane pane;
+	private StyledDocument doc;
 	private ClientConnection connection;
 	private final String id;
 	private final ExecutorService queue;
@@ -34,6 +37,8 @@ public class ClientEditor extends JDialog implements ActionListener {
 		connection = c;
 		pane = new JTextPane();
 		pane.setText(args[2]);
+		pane.setFont(new Font("Monospaced", Font.PLAIN, 14));
+		doc = pane.getStyledDocument();
 		getContentPane().setLayout(new BorderLayout());
 		JScrollPane sp = new JScrollPane(pane);
 		getContentPane().add(sp, BorderLayout.CENTER);
