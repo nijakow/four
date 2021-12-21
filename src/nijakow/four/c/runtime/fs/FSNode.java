@@ -14,13 +14,18 @@ public abstract class FSNode {
 	public File asFile() { return null; }
 	public Directory asDir() { return null; }
 
-	public FSNode getParent() {
-		return parent;
-	}
-	
 	public Filesystem getFilesystem() { return fs; }
-	
+		
+	public FSNode getParent() { return parent; }
 	public String getName() { return name; }
+	
+	public String getFullName() {
+		if (getParent() == null) {
+			return "";
+		} else {
+			return (getParent().getFullName()) + "/" + getName();
+		}
+	}
 	
 	public FSNode getRoot() {
 		FSNode node;
