@@ -8,14 +8,14 @@ use $strlen;
 use $substr;
 
 
-object the_object(string id)
+object the(string id)
 {
     return $the_object(id);
 }
 
 any new(string blueprint, ...)
 {
-    return the_object(blueprint)->clone(...);
+    return the(blueprint)->clone(...);
 }
 
 any call(any f, ...)

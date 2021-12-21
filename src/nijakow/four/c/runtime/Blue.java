@@ -43,7 +43,7 @@ public class Blue extends Instance {
 	public void storeSlot(Fiber fiber, Key key, Instance value) {
 		Pair<Type, Key> info = blueprint.getSlotInfo(key);
 		if (info == null || !info.getFirst().check(value))
-			throw new RuntimeException("Oof. Slot not found (or wrong type)...");
+			throw new RuntimeException("Oof. Slot not found (or wrong type): " + key);
 		slots.put(key, value);
 	}
 	
