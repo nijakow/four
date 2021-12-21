@@ -6,9 +6,6 @@ inherit "/secure/stdlib.c";
 
 use $clone_instance;
 
-void create()
-{
-}
 
 any clone(...)
 {
@@ -17,4 +14,13 @@ any clone(...)
 	instance = $clone_instance(this);
 	instance->create(...);
 	return instance;
+}
+
+void create()
+{
+}
+
+void _init()
+{
+    log("Initializing ", this, "...\n");
 }

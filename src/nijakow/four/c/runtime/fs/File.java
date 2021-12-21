@@ -26,10 +26,11 @@ public class File extends FSNode {
 	public File setContents(String newContents) { contents = newContents; this.isDirty = true; return this; }
 	
 	public Blueprint compile() {
-		System.out.println("Compiling file " + getFullName());
+		final String name = getFullName();
+		System.out.println("Compiling file " + name);
 		Parser parser = new Parser(new Tokenizer(new StringCharStream(contents)));
 		ASTFile file = parser.parse();
-		return file.compile(getFilesystem());
+		return file.compile(name, getFilesystem());
 	}
 	
 	public Blueprint getBlueprint() {

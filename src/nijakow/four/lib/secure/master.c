@@ -10,6 +10,5 @@ void receive(any connection)
 
 void create()
 {
-    the("/world/void.c")->create();
 	$on_connect(this::receive);
 }

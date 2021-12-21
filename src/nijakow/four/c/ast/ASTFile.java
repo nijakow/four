@@ -10,8 +10,8 @@ public class ASTFile extends AST {
 		this.defs = defs;
 	}
 
-	public Blueprint compile(Filesystem fs) {
-		Blueprint blueprint = new Blueprint();
+	public Blueprint compile(String filename, Filesystem fs) {
+		Blueprint blueprint = new Blueprint(filename);
 		
 		for (ASTDecl decl : defs) {
 			decl.compileInto(blueprint, fs);

@@ -26,6 +26,11 @@ public class Blue extends Instance {
 	public void setInitialized() { initialized = true; }
 	
 	@Override
+	public String toString() {
+		return blueprint.toString() + "#" + hashCode();
+	}
+	
+	@Override
 	public boolean asBoolean() {
 		return true;
 	}

@@ -66,3 +66,9 @@ void create()
     set_short("<error>");
     set_long("<error>");
 }
+
+void _init()
+{
+    "/secure/object.c"::_init();
+    create();
+}

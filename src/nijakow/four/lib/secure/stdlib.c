@@ -1,5 +1,7 @@
 use $log;
 use $the_object;
+use $is_initialized;
+use $set_initialized;
 use $call;
 use $listinsert;
 use $listremove;
@@ -10,7 +12,13 @@ use $substr;
 
 object the(string id)
 {
-    return $the_object(id);
+    object obj = $the_object(id);
+    
+    if (!$is_initialized(obj)) {
+        $set_initialized(obj);
+        obj->_init();
+    }
+    return obj;
 }
 
 any new(string blueprint, ...)

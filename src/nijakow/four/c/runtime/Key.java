@@ -38,6 +38,20 @@ public class Key {
 				fiber.setAccu(args[0].asFString().getBlue(fiber.getVM().getFilesystem()));
 			}
 		};
+		get("$is_initialized").code = new BuiltinCode() {
+			
+			@Override
+			void run(Fiber fiber, Instance self, Instance[] args) {
+				fiber.setAccu(args[0].asBlue().isInitialized() ? new FInteger(1) : new FInteger(0));
+			}
+		};
+		get("$set_initialized").code = new BuiltinCode() {
+			
+			@Override
+			void run(Fiber fiber, Instance self, Instance[] args) {
+				args[0].asBlue().setInitialized();
+			}
+		};
 		get("$clone_instance").code = new BuiltinCode() {
 			
 			@Override

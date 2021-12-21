@@ -8,11 +8,19 @@ import java.util.Map;
 import nijakow.four.util.Pair;
 
 public class Blueprint {
+	private final String filename;
 	private List<Blueprint> supers = new ArrayList<>();
 	private List<Pair<Type, Key>> slots = new ArrayList<>();
 	private Map<Key, Code> methods = new HashMap<>();
 
-	public Blueprint() {}
+	public Blueprint(String filename) {
+		this.filename = filename;
+	}
+	
+	@Override
+	public String toString() {
+		return filename;
+	}
 
 	public Code getMethod(Key key) {
 		Code c = methods.get(key);
