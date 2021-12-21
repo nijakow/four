@@ -92,7 +92,6 @@ public class ClientEditor extends JDialog implements ActionListener {
 		StyleConstants.setForeground(s, Color.blue);
 		s = doc.addStyle(Commands.STYLE_STDLIB, def);
 		StyleConstants.setForeground(s, Color.orange);
-		StyleConstants.setItalic(s, true);
 	}
 	
 	private void updateSyntaxHighlighting() {
@@ -101,7 +100,7 @@ public class ClientEditor extends JDialog implements ActionListener {
 					   getDefaultStyleContext().
 					   getStyle(StyleContext.DEFAULT_STYLE);
 			doc.setCharacterAttributes(0, doc.getLength(), defaultStyle, true);
-			String keywords = "\\b(inherit|use|this|if|else|while|for|break|continue|switch|case|return)\\b";
+			String keywords = "\\b(new|inherit|use|this|if|else|while|for|break|continue|switch|case|return)\\b";
 			Matcher matcher = Pattern.compile(keywords).matcher(pane.getText());
 			while (matcher.find())
 				doc.setCharacterAttributes(matcher.start(), matcher.end() - matcher.start(),
@@ -116,7 +115,7 @@ public class ClientEditor extends JDialog implements ActionListener {
 			while (matcher.find())
 				doc.setCharacterAttributes(matcher.start(), matcher.end() - matcher.start(),
 						doc.getStyle(Commands.STYLE_SPECIAL_WORD), true);
-			keywords = "\\b(???)\\b";
+			keywords = "\\b(create|the|call|log|length|insert|append|remove|strlen|chr|write|prompt|password|edit)\\b";
 			matcher = Pattern.compile(keywords).matcher(pane.getText());
 			while (matcher.find())
 				doc.setCharacterAttributes(matcher.start(), matcher.end() - matcher.start(),
