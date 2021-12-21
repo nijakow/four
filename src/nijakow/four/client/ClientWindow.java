@@ -61,10 +61,12 @@ public class ClientWindow extends JFrame implements ActionListener, ClientReceiv
 	private static final String STYLE_BOLD = "BOLD";
 	private static final String STYLE_UNDERSCORED = "UNDERSCORED";
 	private static final String SPECIAL_PWD = "?";
+	private static final String SPECIAL_PROMPT = ".";
 	private static final char SPECIAL_START = 0x02;
 	private static final char SPECIAL_END = 0x03;
 	private String buffer;
 	private JLabel connectionStatus;
+	private JLabel promptText;
 	private JScrollPane pane;
 	private JTextField prompt;
 	private JPasswordField pwf;
@@ -113,8 +115,6 @@ public class ClientWindow extends JFrame implements ActionListener, ClientReceiv
 		// TODO macOS customization
 		// TODO C editor
 		// TODO iterate through ports
-		// TODO . Prompt
-		// TODO ? Password
 		buffer = "";
 		bother = true;
 		prefs = new PreferencesHelper();
@@ -132,11 +132,13 @@ public class ClientWindow extends JFrame implements ActionListener, ClientReceiv
 		pwf.setFont(font);
 		pwf.addActionListener(this);
 		pwf.setActionCommand(ACTION_PASSWORD);
+		promptText = new JLabel();
 		connectionStatus = new JLabel();
 		getContentPane().add(connectionStatus, BorderLayout.NORTH);
 		JButton settings = new JButton("Settings");
 		settings.addActionListener(this);
 		settings.setActionCommand(ACTION_SETTINGS);
+		south.add(promptText);
 		south.add(prompt);
 		south.add(pwf);
 		pwf.setVisible(false);
@@ -343,20 +345,19 @@ public class ClientWindow extends JFrame implements ActionListener, ClientReceiv
 	}
 	
 	private void parseArgument(String arg) {
-		switch (arg) {
-		case SPECIAL_PWD:
+		if (arg.equals(SPECIAL_PWD)) {
 			EventQueue.invokeLater(() -> {
 				pwf.setVisible(true);
 				prompt.setVisible(false);
 				pwf.requestFocusInWindow();
 				validate();
 			});
-			break;
-			
-		default:
+		} else if (arg.startsWith(SPECIAL_PROMPT)) {
+			EventQueue.invokeLater(() -> {
+				promptText.setText(arg.substring(SPECIAL_PROMPT.length(), arg.length() - 1));
+			});
+		} else
 			current = getStyleByName(arg);
-			break;
-		}
 	}
 	
 	@Override
