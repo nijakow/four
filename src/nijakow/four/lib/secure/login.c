@@ -33,6 +33,14 @@ void banner()
 void setname(string name)
 {
     this.name = name;
+    if (!(the("/secure/logman.c")->check_login(name, ""))) {
+        connection->write("\n");
+        connection->mode_red();
+        connection->mode_underscore();
+        connection->write("Username or password not recognized.\nConnection terminated.\n");
+        connection->close();
+        return;
+    }
     connection->write("Hello ", this.name, "!\n");
 }
 

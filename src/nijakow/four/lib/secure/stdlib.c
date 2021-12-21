@@ -138,6 +138,19 @@ int sfind(string s, char c)
     return -1;
 }
 
+int find(any lst, any e)
+{
+    for (int x = 0; x < length(lst); x++)
+        if (lst[x] == e)
+            return x;
+    return -1;
+}
+
+bool member(any lst, any e)
+{
+    return find(lst, e) != -1;
+}
+
 int atoi(string s)
 {
 	int index = 0;
