@@ -7,4 +7,5 @@ public interface IConnection {
 	void writeString(String string);
 	void onInput(Consumer<String> consumer);
 	void onDisconnect(Runnable runnable);
+	void close();
 }

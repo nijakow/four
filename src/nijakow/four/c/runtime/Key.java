@@ -98,6 +98,13 @@ public class Key {
 					args[0].asFConnection().send(args[x]);
 			}
 		};
+		get("$close").code = new BuiltinCode() {
+			
+			@Override
+			void run(Fiber fiber, Instance self, Instance[] args) {
+				args[0].asFConnection().close();
+			}
+		};
 		get("$strlen").code = new BuiltinCode() {
 			
 			@Override

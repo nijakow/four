@@ -1,6 +1,7 @@
 inherit "/secure/object.c";
 
 use $write;
+use $close;
 use $on_receive;
 use $on_disconnect;
 
@@ -30,7 +31,7 @@ void mode_italic()     { write("\ai"); }
 void mode_bold()       { write("\ab"); }
 void mode_underscore() { write("\au"); }
 
-void receive(any text)
+void receive(string text)
 {
     func _cb;
 
@@ -44,6 +45,11 @@ void receive(any text)
 void handle_disconnect()
 {
 	log("Disconnect!\n");
+}
+
+void close()
+{
+    $close(port);
 }
 
 void create(any the_port)

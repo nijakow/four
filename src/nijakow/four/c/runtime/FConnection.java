@@ -21,6 +21,10 @@ public class FConnection extends Instance {
 		connection.writeString(instance.asString());
 	}
 	
+	public void close() {
+		connection.close();
+	}
+	
 	public FConnection(IConnection connection) {
 		this.connection = connection;
 	}

@@ -28,6 +28,14 @@ public class RawConnection implements IConnection {
 			e.printStackTrace();
 		}
 	}
+	
+	@Override
+	public void close() {
+		try {
+			socket.close();
+		} catch (IOException e) {
+		}
+	}
 
 
 	@Override
