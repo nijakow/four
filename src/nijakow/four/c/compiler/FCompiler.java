@@ -40,4 +40,5 @@ public interface FCompiler {
 	void compileOp(OperatorType type);
 	
 	void compileMakeList(int length);
+	void compileMakeMapping(int length);
 }

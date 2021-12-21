@@ -25,6 +25,7 @@ import nijakow.four.c.ast.ASTInheritanceDef;
 import nijakow.four.c.ast.ASTInstanceVarDef;
 import nijakow.four.c.ast.ASTInstruction;
 import nijakow.four.c.ast.ASTList;
+import nijakow.four.c.ast.ASTMapping;
 import nijakow.four.c.ast.ASTReturn;
 import nijakow.four.c.ast.ASTScope;
 import nijakow.four.c.ast.ASTThis;
@@ -64,6 +65,8 @@ public class Parser {
 			return Type.getFunc();
 		} else if (check(TokenType.LIST)) {
 			return Type.getList();
+		} else if (check(TokenType.MAPPING)) {
+			return Type.getMapping();
 		} else {
 			return null;
 		}
@@ -139,6 +142,18 @@ public class Parser {
 				}
 			}
 			return new ASTList(exprs.toArray(new ASTExpression[0]));
+		} else if (check(TokenType.LBRACK)) {
+			List<ASTExpression> exprs = new ArrayList<>();
+			if (!check(TokenType.RBRACK)) {
+				while (true) {
+					exprs.add(parseExpression());
+					if (check(TokenType.RBRACK))
+						break;
+					if (!check(TokenType.COLON))
+						expect(TokenType.COMMA);
+				}
+			}
+			return new ASTMapping(exprs.toArray(new ASTExpression[0]));
 		} else if (checkKeep(TokenType.IDENT)) {
 			return new ASTIdent(Key.get((String) tokenizer.nextToken().getPayload()));
 		} else {

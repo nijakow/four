@@ -169,6 +169,11 @@ public class InstructionWriter {
 		u8(Bytecodes.BYTECODE_MAKE_LIST);
 		u16(length);
 	}
+	
+	public void writeMakeMapping(int length) {
+		u8(Bytecodes.BYTECODE_MAKE_MAPPING);
+		u16(length);
+	}
 
 	public ByteCode finish() {
 		byte[] bytes = new byte[out.size()];

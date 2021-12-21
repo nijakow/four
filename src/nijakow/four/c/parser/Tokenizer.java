@@ -153,6 +153,7 @@ public class Tokenizer {
 		case "object": return new Token(this, TokenType.OBJECT);
 		case "func": return new Token(this, TokenType.FUNC);
 		case "list": return new Token(this, TokenType.LIST);
+		case "mapping": return new Token(this, TokenType.MAPPING);
 		case "if": return new Token(this, TokenType.IF);
 		case "else": return new Token(this, TokenType.ELSE);
 		case "while": return new Token(this, TokenType.WHILE);

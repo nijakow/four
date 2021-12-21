@@ -247,6 +247,11 @@ public class ScopedCompiler implements FCompiler {
 		writer.writeMakeList(length);
 	}
 	
+	@Override
+	public void compileMakeMapping(int length) {
+		writer.writeMakeMapping(length);
+	}
+	
 	public Code finish() {
 		/*
 		 * TODO: Only do this if the programmer hasn't supplied their
