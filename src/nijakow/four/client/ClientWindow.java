@@ -353,13 +353,13 @@ public class ClientWindow extends JFrame implements ActionListener, ClientReceiv
 			String[] args = splitter.split(Commands.SPECIAL_RAW);
 			if (args.length != 3)
 				return;
-			openEditor(args[0], args[1], args[2]);
+			openEditor(args);
 		} else
 			current = getStyleByName(arg);
 	}
 	
-	private void openEditor(final String id, final String title, String content) {
-		//new ClientEditor(this, this, id, title, content).setVisible(true);
+	private void openEditor(String[] args) {
+		new ClientEditor(this, connection, queue, args).setVisible(true);
 	}
 	
 	@Override
