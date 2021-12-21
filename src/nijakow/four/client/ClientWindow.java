@@ -95,18 +95,20 @@ public class ClientWindow extends JFrame implements ActionListener, ClientReceiv
 			reconnectorHandler.cancel(false);
 			connection.openStreams();
 		} catch (IOException ex) {
-			EventQueue.invokeLater(() -> {
-				if (bother) {
-					bother = false;
-					JOptionPane.showMessageDialog(this,
-							"Could not connect to \"" + prefs.getHostname() + "\" on port " + prefs.getPort(),
-							"Connection failed", JOptionPane.ERROR_MESSAGE);
-				}
-				labelTimer.stop();
-				connectionStatus.setVisible(true);
-				connectionStatus.setText(" Not connected!");
-				connectionStatus.setForeground(Color.red);
-			});
+			if (!reconnectorHandler.isCancelled()) {
+				EventQueue.invokeLater(() -> {
+					if (bother) {
+						bother = false;
+						JOptionPane.showMessageDialog(this,
+								"Could not connect to \"" + prefs.getHostname() + "\" on port " + prefs.getPort(),
+								"Connection failed", JOptionPane.ERROR_MESSAGE);
+					}
+					labelTimer.stop();
+					connectionStatus.setVisible(true);
+					connectionStatus.setText(" Not connected!");
+					connectionStatus.setForeground(Color.red);
+				});
+			}
 		}
 	};
 	
