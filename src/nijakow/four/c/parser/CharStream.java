@@ -5,4 +5,5 @@ public interface CharStream {
 	int next();
 	void advance();
 	boolean peeks(String s);
+	StreamPosition getPosition();
 }

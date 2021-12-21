@@ -2,6 +2,7 @@ package nijakow.four.c.parser;
 
 public class Token {
 	private final Tokenizer tokenizer;
+	private final StreamPosition position;
 	private final TokenType type;
 	private final Object payload;
 	
@@ -21,12 +22,13 @@ public class Token {
 		tokenizer.unread(this);
 	}
 	
-	public Token(Tokenizer tokenizer, TokenType type) {
-		this(tokenizer, type, null);
+	public Token(Tokenizer tokenizer, StreamPosition pos, TokenType type) {
+		this(tokenizer, pos, type, null);
 	}
 	
-	public Token(Tokenizer tokenizer, TokenType type, Object payload) {
+	public Token(Tokenizer tokenizer, StreamPosition pos, TokenType type, Object payload) {
 		this.tokenizer = tokenizer;
+		this.position = pos;
 		this.type = type;
 		this.payload = payload;
 	}
