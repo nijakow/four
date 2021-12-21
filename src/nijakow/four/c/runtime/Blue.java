@@ -8,6 +8,7 @@ import nijakow.four.c.runtime.vm.VM;
 import nijakow.four.util.Pair;
 
 public class Blue extends Instance {
+	private boolean initialized = false;
 	private Blueprint blueprint;
 	private Map<Key, Instance> slots = new HashMap<>();
 	
@@ -21,6 +22,9 @@ public class Blue extends Instance {
 			slots.put(k, other.slots.get(k));
 	}
 
+	public boolean isInitialized() { return initialized; }
+	public void setInitialized() { initialized = true; }
+	
 	@Override
 	public boolean asBoolean() {
 		return true;

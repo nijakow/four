@@ -11,7 +11,9 @@ func callback;
 void prompt(func cb, ...)
 {
     callback = cb;
+    write("\{.");
     write(...);
+    write("\}");
 }
 
 void password(func cb, ...)
