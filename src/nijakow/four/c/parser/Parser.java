@@ -34,6 +34,7 @@ import nijakow.four.c.ast.ASTVaCount;
 import nijakow.four.c.ast.ASTVaNext;
 import nijakow.four.c.ast.ASTVarDecl;
 import nijakow.four.c.ast.ASTWhile;
+import nijakow.four.c.runtime.FInteger;
 import nijakow.four.c.runtime.Instance;
 import nijakow.four.c.runtime.Key;
 import nijakow.four.c.runtime.Type;
@@ -121,6 +122,10 @@ public class Parser {
 			return new ASTThis();
 		} else if (check(TokenType.NIL)) {
 			return new ASTConstant(Instance.getNil());
+		} else if (check(TokenType.NIL)) {
+			return new ASTConstant(new FInteger(1));
+		} else if (check(TokenType.FALSE)) {
+			return new ASTConstant(new FInteger(0));
 		} else if (check(TokenType.VA_NEXT)) {
 			return new ASTVaNext();
 		} else if (check(TokenType.VA_COUNT)) {
