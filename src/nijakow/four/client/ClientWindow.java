@@ -43,15 +43,13 @@ public class ClientWindow extends JFrame implements ActionListener, ClientReceiv
 	private static final String ACTION_SEND = "send";
 	private static final String STATUS_LABEL_TIMER = "invisible";
 	private static final String STYLE_ERROR = "error";
-	private static final String STYLE_RED = "red";
-	private static final String STYLE_GREEN = "green";
-	private static final String S_BLUE = "B";
-	private static final String S_GREEN = "G";
-	private static final String S_BLACK = "0";
-	private static final String S_RED = "R";
-	private static final String S_ITALIC = "i";
-	private static final String S_BOLD = "b";
-	private static final String S_UNDERSCORED = "u";
+	private static final String STYLE_BLUE = "B";
+	private static final String STYLE_GREEN = "G";
+	private static final String STYLE_BLACK = "0";
+	private static final String STYLE_RED = "R";
+	private static final String STYLE_ITALIC = "i";
+	private static final String STYLE_BOLD = "b";
+	private static final String STYLE_UNDERSCORED = "u";
 	private JLabel connectionStatus;
 	private JScrollPane pane;
 	private JTextField prompt;
@@ -164,10 +162,6 @@ public class ClientWindow extends JFrame implements ActionListener, ClientReceiv
 		StyleConstants.setBold(s, true);
 		StyleConstants.setItalic(s, true);
 		StyleConstants.setForeground(s, Color.red);
-		s = term.addStyle(STYLE_RED, def);
-		StyleConstants.setForeground(s, Color.red);
-		s = term.addStyle(STYLE_GREEN, def);
-		StyleConstants.setForeground(s, Color.green);
 	}
 	
 	public void dispose() {
@@ -256,31 +250,31 @@ public class ClientWindow extends JFrame implements ActionListener, ClientReceiv
 	private Style getStyleByName(String style) {
 		Style ret = term.addStyle(style, current == null ? area.getLogicalStyle() : current);
 		switch (style) {
-		case S_BLUE:
+		case STYLE_BLUE:
 			StyleConstants.setForeground(ret, Color.blue);
 			break;
 			
-		case S_RED:
+		case STYLE_RED:
 			StyleConstants.setForeground(ret, Color.red);
 			break;
 
-		case S_GREEN:
+		case STYLE_GREEN:
 			StyleConstants.setForeground(ret, Color.green);
 			break;
 
-		case S_BLACK:
+		case STYLE_BLACK:
 			StyleConstants.setForeground(ret, Color.black);
 			break;
 
-		case S_ITALIC:
+		case STYLE_ITALIC:
 			StyleConstants.setItalic(ret, true);
 			break;
 			
-		case S_BOLD:
+		case STYLE_BOLD:
 			StyleConstants.setBold(ret, true);
 			break;
 			
-		case S_UNDERSCORED:
+		case STYLE_UNDERSCORED:
 			StyleConstants.setUnderline(ret, true);
 			break;
 		}
