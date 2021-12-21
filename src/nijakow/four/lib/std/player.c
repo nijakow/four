@@ -16,8 +16,22 @@ void lookaround()
 
 void docmd(string cmd)
 {
+    string args;
+    
+    int i = indexof(cmd, ' ');
+    
+    if (i != -1) {
+        args = substr(cmd, i + 1, strlen(cmd));
+        cmd = substr(cmd, 0, i);
+    } else {
+        args = "";
+    }
+    
     if (cmd == "look") {
         lookaround();
+    } else if (cmd == "exit") {
+        exit();
+        return;
     } else {
         connection->write("I didn't quite get that, sorry...\n");
     }
@@ -31,6 +45,13 @@ void resume()
         say_room = 0;
     }
     connection->prompt(this::docmd, "> ");
+}
+
+void exit()
+{
+    log("Player requested logout.\n");
+    connection->write("Goodbye!\n");
+    connection->close();
 }
 
 void bind(object connection)

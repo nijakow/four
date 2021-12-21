@@ -138,6 +138,8 @@ int sfind(string s, char c)
     return -1;
 }
 
+int indexof(string s, char c) { return sfind(s, c); }
+
 int find(any lst, any e)
 {
     for (int x = 0; x < length(lst); x++)

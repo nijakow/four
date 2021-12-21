@@ -116,7 +116,10 @@ public class Key {
 			
 			@Override
 			void run(Fiber fiber, Instance self, Instance[] args) {
-				fiber.setAccu(new FString(args[0].asFString().asString().substring(args[1].asInt(), args[2].asInt())));
+				String str = args[0].asFString().asString();
+				int start = args[1].asInt();
+				int end = args[2].asInt();
+				fiber.setAccu(new FString(str.substring(start, end)));
 			}
 		};
 		get("$listlen").code = new BuiltinCode() {

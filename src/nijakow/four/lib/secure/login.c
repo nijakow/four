@@ -38,8 +38,7 @@ void setname(string name)
 
 void setpass(string pass)
 {
-    log(name, " : ", pass, "\n");
-    if (the("/secure/logman.c")->check_login(name, "")) {
+    if (the("/secure/logman.c")->check_login(name, pass)) {
         connection->write("Hello ", this.name, "!\n\n");
         object player = the("/secure/logman.c")->get_player(name);
         player->bind(connection);
