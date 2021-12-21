@@ -45,6 +45,13 @@ public class ClientWindow extends JFrame implements ActionListener, ClientReceiv
 	private static final String STYLE_ERROR = "error";
 	private static final String STYLE_RED = "red";
 	private static final String STYLE_GREEN = "green";
+	private static final String S_BLUE = "B";
+	private static final String S_GREEN = "G";
+	private static final String S_BLACK = "0";
+	private static final String S_RED = "R";
+	private static final String S_ITALIC = "i";
+	private static final String S_BOLD = "b";
+	private static final String S_UNDERSCORED = "u";
 	private JLabel connectionStatus;
 	private JScrollPane pane;
 	private JTextField prompt;
@@ -246,24 +253,50 @@ public class ClientWindow extends JFrame implements ActionListener, ClientReceiv
 		settingsWindow.setVisible(true);
 	}
 	
+	private Style getStyleByName(String style) {
+		Style ret = term.addStyle(style, current == null ? area.getLogicalStyle() : current);
+		switch (style) {
+		case S_BLUE:
+			StyleConstants.setForeground(ret, Color.blue);
+			break;
+			
+		case S_RED:
+			StyleConstants.setForeground(ret, Color.red);
+			break;
+
+		case S_GREEN:
+			StyleConstants.setForeground(ret, Color.green);
+			break;
+
+		case S_BLACK:
+			StyleConstants.setForeground(ret, Color.black);
+			break;
+
+		case S_ITALIC:
+			StyleConstants.setItalic(ret, true);
+			break;
+			
+		case S_BOLD:
+			StyleConstants.setBold(ret, true);
+			break;
+			
+		case S_UNDERSCORED:
+			StyleConstants.setUnderline(ret, true);
+			break;
+		}
+		return ret;
+	}
+	
 	@Override
 	public void lineReceived(char c) {
 		EventQueue.invokeLater(() -> {
 			try {
 				if (wasSpecial) {
-					switch (c) {
-					/*
-					 * N = normal
-					 * B = blue
-					 * R = red
-					 * G = green
-					 * 0 = black
-					 * i = inversive
-					 * b = bold
-					 * u = underscored
-					 */
-					// TODO
-					}
+					if (c == 'N')
+						current = null;
+					else
+						current = getStyleByName(Character.toString(c));
+					wasSpecial = false;
 				} else if (c == 0x07)
 					wasSpecial = true;
 				else
