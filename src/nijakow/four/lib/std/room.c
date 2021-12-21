@@ -19,6 +19,12 @@ void broadcast(...)
     }
 }
 
+
+object get_exit(string dir)
+{
+    return nil;
+}
+
 void create()
 {
     "/std/thing.c"::create();

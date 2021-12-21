@@ -56,6 +56,7 @@ void evt_leaving(object obj) {}
 
 void write(...) {}
 
+bool inhibit_create_on_init() { return 0; }
 
 void create()
 {
@@ -70,5 +71,7 @@ void create()
 void _init()
 {
     "/secure/object.c"::_init();
-    create();
+    if (!inhibit_create_on_init()) {
+        create();
+    }
 }

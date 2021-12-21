@@ -22,13 +22,32 @@ void go_to(object location)
     move_to(location);
     if (current != nil)
         current->evt_leaving(this);
+    say_room = 1;
 }
 
 
 void lookaround()
 {
+    connection->write("\n");
     connection->write(get_location()->get_short(), "\n");
     connection->write(get_location()->get_long(), "\n");
+    for (object obj = get_location()->get_children();
+         obj != nil;
+         obj = obj->get_sibling())
+    {
+        if (obj != this)
+            connection->write(obj->get_short(), ".\n");
+    }
+}
+
+void cmd_go(string dir)
+{
+    object loc = get_location()->get_exit(dir);
+    
+    if (loc != nil)
+    	go_to(loc);
+    else
+    	connection->write("There is no exit in this direction!\n");
 }
 
 
@@ -48,6 +67,8 @@ void docmd(string cmd)
     if (cmd == "") {
     } else if (cmd == "look") {
         lookaround();
+    } else if (cmd == "go") {
+        cmd_go(args);
     } else if (cmd == "exit") {
         exit();
         return;
@@ -78,6 +99,8 @@ void bind(object connection)
 {
     this.connection = connection;
 }
+
+bool inhibit_create_on_init() { return 1; }
 
 void create()
 {
