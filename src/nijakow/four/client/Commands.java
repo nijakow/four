@@ -23,6 +23,10 @@ public abstract class Commands {
 	public static final String STYLE_ITALIC = "ITALIC";
 	public static final String STYLE_BOLD = "BOLD";
 	public static final String STYLE_UNDERSCORED = "UNDERSCORED";
+	public static final String STYLE_KEYWORD = "editor/keyword";
+	public static final String STYLE_TYPE = "editor/type";
+	public static final String STYLE_SPECIAL_WORD = "editor/specialWord";
+	public static final String STYLE_STDLIB = "editor/stdlib";
 	public static final String SPECIAL_EDIT = "$";
 	public static final String SPECIAL_RAW = ":";
 	public static final String SPECIAL_PWD = "?";
