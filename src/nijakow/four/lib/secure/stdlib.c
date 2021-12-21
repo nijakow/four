@@ -8,6 +8,7 @@ use $listremove;
 use $listlen;
 use $strlen;
 use $substr;
+use $chr;
 
 
 object the(string id)
@@ -69,6 +70,11 @@ int strlen(string str)
 string substr(string str, int i0, int i1)
 {
     return $substr(str, i0, i1);
+}
+
+string chr(char c)
+{
+    return $chr(c);
 }
 
 bool isspace(char c)

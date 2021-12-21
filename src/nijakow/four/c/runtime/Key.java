@@ -119,6 +119,13 @@ public class Key {
 				args[0].asFConnection().close();
 			}
 		};
+		get("$chr").code = new BuiltinCode() {
+			
+			@Override
+			void run(Fiber fiber, Instance self, Instance[] args) {
+				fiber.setAccu(new FString("" + (char) args[0].asInt()));
+			}
+		};
 		get("$strlen").code = new BuiltinCode() {
 			
 			@Override

@@ -7,6 +7,7 @@ use $on_disconnect;
 
 any port;
 func callback;
+string line;
 
 void prompt(func cb, ...)
 {
@@ -51,11 +52,17 @@ void mode_underscore() { write("\{UNDERSCORED\}"); }
 void receive(string text)
 {
     func _cb;
-
-    if (callback) {
-    	_cb = callback;
-    	callback = nil;
-        call(_cb, trim(text));
+    
+    for (int i = 0; i < strlen(text); i++)
+    {
+        if (text[i] == '\n') {
+            _cb = callback;
+    	    callback = nil;
+            call(_cb, trim(line));
+            line = "";
+        } else {
+            line = line + chr(text[i]);
+        }
     }
 }
 
@@ -74,6 +81,7 @@ void create(any the_port)
 	"/secure/object.c"::create();
 	port = the_port;
 	callback = nil;
+	line = "";
 	$on_receive(port, this::receive);
 	$on_disconnect(port, this::handle_disconnect);
 }

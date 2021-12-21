@@ -3,6 +3,7 @@ inherit "/secure/object.c";
 object connection;
 
 string name;
+string pass;
 
 void banner()
 {
@@ -38,10 +39,17 @@ void setname(string name)
 
 void setpass(string pass)
 {
+    this.pass = pass;
+    connection->write("\nWelcome to the 42 MUD, ", this.name, "!\n\n");
+    connection->prompt(this::setuname, "By what name will your character be known? ");
+}
+
+void setuname(string uname)
+{
     if (the("/secure/logman.c")->check_login(name, pass)) {
-        connection->write("Hello ", this.name, "!\n\n");
         object player = the("/secure/logman.c")->get_player(name);
         player->bind(connection);
+        player->activate_as(uname);
         player->resume();
     } else {
         connection->write("\n");

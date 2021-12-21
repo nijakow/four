@@ -117,10 +117,15 @@ void bind(object connection)
 
 bool inhibit_create_on_init() { return 1; }
 
+void activate_as(string name)
+{
+    set_short(name);
+    go_to(the("/world/void.c"));
+}
+
 void create()
 {
     "/std/thing.c"::create();
     connection = nil;
     say_room = 1;
-    go_to(the("/world/void.c"));
 }
