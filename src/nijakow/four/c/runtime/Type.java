@@ -1,5 +1,28 @@
 package nijakow.four.c.runtime;
 
+class ListType extends Type {
+	private final Type parent;
+	
+	public ListType(Type type) {
+		this.parent = type;
+	}
+	
+	public Type getParent() { return parent; }
+
+	@Override
+	public Instance cast(Instance instance) {
+		if (check(instance))
+			return instance;
+		else
+			throw new RuntimeException("Can't cast!");
+	}
+	
+	@Override
+	public boolean check(Instance instance) {
+		return (instance instanceof FList) || instance.isNil();
+	}
+}
+
 public abstract class Type {
 	private static final Type ANY = new Type() {
 		
@@ -91,22 +114,6 @@ public abstract class Type {
 		}
 	};
 	
-	private static final Type LIST = new Type() {
-		
-		@Override
-		public Instance cast(Instance instance) {
-			if (check(instance))
-				return instance;
-			else
-				throw new RuntimeException("Can't cast!");
-		}
-		
-		@Override
-		public boolean check(Instance instance) {
-			return (instance instanceof FList) || instance.isNil();
-		}
-	};
-	
 	private static final Type MAPPING = new Type() {
 		
 		@Override
@@ -132,10 +139,13 @@ public abstract class Type {
 	public static Type getString() { return STRING; }
 	public static Type getObject() { return OBJECT; }
 	public static Type getFunc() { return FUNC; }
-	public static Type getList() { return LIST; }
+	public static Type getList() { return ANY.listType(); }
 	public static Type getMapping() { return MAPPING; }
 	
-	private Type() {}
+	
+	private ListType theListType = null;
+	
+	protected Type() {}
 	
 	
 	public abstract Instance cast(Instance instance);
@@ -145,5 +155,11 @@ public abstract class Type {
 	public void expect(Instance instance) {
 		if (!check(instance))
 			throw new RuntimeException("Expected different type!");
+	}
+	
+	public Type listType() {
+		if (theListType == null)
+			theListType = new ListType(this);
+		return theListType;
 	}
 }

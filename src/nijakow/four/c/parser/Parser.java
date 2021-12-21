@@ -65,6 +65,12 @@ public class Parser {
 		} else if (check(TokenType.FUNC)) {
 			return Type.getFunc();
 		} else if (check(TokenType.LIST)) {
+			if (check(TokenType.LPAREN)) {
+				Type t = parseType();
+				if (t == null)
+					throw new RuntimeException("Expected a type!");
+				return t.listType();
+			}
 			return Type.getList();
 		} else if (check(TokenType.MAPPING)) {
 			return Type.getMapping();
