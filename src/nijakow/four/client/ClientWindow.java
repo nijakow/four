@@ -92,19 +92,23 @@ public class ClientWindow extends JFrame implements ActionListener, ClientReceiv
 				connectionStatus.setForeground(Color.green);
 				labelTimer.start();
 			});
+			reconnectorHandler.cancel(false);
 			connection.openStreams();
 		} catch (IOException ex) {
-			EventQueue.invokeLater(() -> {
-				if (bother)
-					JOptionPane.showMessageDialog(this,
-							"Could not connect to \"" + prefs.getHostname() + "\" on port " + prefs.getPort(),
-							"Connection failed", JOptionPane.ERROR_MESSAGE);
-				bother = false;
-				labelTimer.stop();
-				connectionStatus.setVisible(true);
-				connectionStatus.setText(" Not connected!");
-				connectionStatus.setForeground(Color.red);
-			});
+			if (!reconnectorHandler.isCancelled()) {
+				EventQueue.invokeLater(() -> {
+					if (bother) {
+						bother = false;
+						JOptionPane.showMessageDialog(this,
+								"Could not connect to \"" + prefs.getHostname() + "\" on port " + prefs.getPort(),
+								"Connection failed", JOptionPane.ERROR_MESSAGE);
+					}
+					labelTimer.stop();
+					connectionStatus.setVisible(true);
+					connectionStatus.setText(" Not connected!");
+					connectionStatus.setForeground(Color.red);
+				});
+			}
 		}
 	};
 	
@@ -114,6 +118,7 @@ public class ClientWindow extends JFrame implements ActionListener, ClientReceiv
 		final Font font = new Font("Monospaced", Font.PLAIN, 14);
 		
 		// TODO macOS customization
+		// TODO macOS CMD+Q Handler
 		// TODO C editor
 		// TODO iterate through ports
 		buffer = "";
@@ -420,7 +425,7 @@ public class ClientWindow extends JFrame implements ActionListener, ClientReceiv
 				if (tmp == prompt)
 					term.insertString(term.getLength(), text, s);
 				else
-					term.insertString(term.getLength(), StringHelper.generateFilledString('*', text.length()) + "\n", s);
+					term.insertString(term.getLength(), StringHelper.generateFilledString('*', text.length() - 1) + "\n", s);
 			} catch (BadLocationException e1) {
 				e1.printStackTrace();
 			}
