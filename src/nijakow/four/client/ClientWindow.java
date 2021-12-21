@@ -345,16 +345,23 @@ public class ClientWindow extends JFrame implements ActionListener, ClientReceiv
 	}
 	
 	private void parseArgument(String arg) {
-		if (arg.equals(SPECIAL_PWD)) {
+		if (arg.startsWith(SPECIAL_PWD)) {
 			EventQueue.invokeLater(() -> {
 				pwf.setVisible(true);
 				prompt.setVisible(false);
 				pwf.requestFocusInWindow();
+				if (arg.length() > SPECIAL_PROMPT.length() + 1)
+					promptText.setText(arg.substring(SPECIAL_PWD.length(), arg.length() - 1));
+				else
+					promptText.setText("");
 				validate();
 			});
 		} else if (arg.startsWith(SPECIAL_PROMPT)) {
 			EventQueue.invokeLater(() -> {
-				promptText.setText(arg.substring(SPECIAL_PROMPT.length(), arg.length() - 1));
+				if (arg.length() > SPECIAL_PROMPT.length() + 1)
+					promptText.setText(arg.substring(SPECIAL_PWD.length(), arg.length() - 1));
+				else
+					promptText.setText("");
 			});
 		} else
 			current = getStyleByName(arg);
@@ -405,9 +412,9 @@ public class ClientWindow extends JFrame implements ActionListener, ClientReceiv
 			tmp.enableInputMethods(true);
 			try {
 				if (tmp == prompt)
-					term.insertString(term.getLength(), text, null);
+					term.insertString(term.getLength(), promptText.getText() + " " + text, null);
 				else
-					term.insertString(term.getLength(), StringHelper.generateFilledString('*', text.length()) + "\n", null);
+					term.insertString(term.getLength(), promptText.getText() + " " + StringHelper.generateFilledString('*', text.length()) + "\n", null);
 			} catch (BadLocationException e1) {
 				e1.printStackTrace();
 			}

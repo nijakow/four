@@ -19,7 +19,9 @@ void prompt(func cb, ...)
 void password(func cb, ...)
 {
     callback = cb;
-    write("\{?\}", ...);
+    write("\{?");
+    write(...);
+    write("\}");
 }
 
 void write(...)
