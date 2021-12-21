@@ -37,6 +37,7 @@ import javax.swing.text.StyledDocument;
 
 import nijakow.four.client.net.ClientConnection;
 import nijakow.four.client.net.ClientReceiveListener;
+import nijakow.four.client.utils.StringHelper;
 
 public class ClientWindow extends JFrame implements ActionListener, ClientReceiveListener {
 	private static final long serialVersionUID = 1L;
@@ -402,7 +403,10 @@ public class ClientWindow extends JFrame implements ActionListener, ClientReceiv
 			String text = tmp.getText() + "\n";
 			tmp.enableInputMethods(true);
 			try {
-				term.insertString(term.getLength(), text, null);
+				if (tmp == prompt)
+					term.insertString(term.getLength(), text, null);
+				else
+					term.insertString(term.getLength(), StringHelper.generateFilledString('*', text.length()) + "\n", null);
 			} catch (BadLocationException e1) {
 				e1.printStackTrace();
 			}
