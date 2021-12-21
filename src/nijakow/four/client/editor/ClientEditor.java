@@ -68,10 +68,8 @@ public class ClientEditor extends JDialog implements ActionListener {
 		queue.execute(() -> {
 			try {
 				connection.send(Commands.SPECIAL_START + Commands.SPECIAL_EDIT + id);
-				connection.send(Commands.SPECIAL_RAW + getTitle());
-				if (save) {
+				if (save)
 					connection.send(Commands.SPECIAL_RAW + pane.getText());
-				}
 				connection.send("" + Commands.SPECIAL_END);
 			} catch (IOException e) {
 				System.err.println("Could not send message!");
