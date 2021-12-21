@@ -1,11 +1,14 @@
 package nijakow.four.c.ast;
 
 import nijakow.four.c.compiler.FCompiler;
+import nijakow.four.c.runtime.ListType;
 
 public class ASTList extends ASTExpression {
+	private final ListType type;
 	private final ASTExpression[] exprs;
 	
-	public ASTList(ASTExpression[] exprs) {
+	public ASTList(ListType type, ASTExpression[] exprs) {
+		this.type = type;
 		this.exprs = exprs;
 	}
 
@@ -15,6 +18,6 @@ public class ASTList extends ASTExpression {
 			expr.compile(compiler);
 			compiler.compilePush();
 		}
-		compiler.compileMakeList(exprs.length);
+		compiler.compileMakeList(type, exprs.length);
 	}
 }

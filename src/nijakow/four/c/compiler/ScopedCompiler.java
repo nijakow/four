@@ -8,6 +8,7 @@ import nijakow.four.c.ast.OperatorType;
 import nijakow.four.c.runtime.Code;
 import nijakow.four.c.runtime.Instance;
 import nijakow.four.c.runtime.Key;
+import nijakow.four.c.runtime.ListType;
 import nijakow.four.c.runtime.Type;
 import nijakow.four.util.Pair;
 
@@ -243,8 +244,8 @@ public class ScopedCompiler implements FCompiler {
 	}
 
 	@Override
-	public void compileMakeList(int length) {
-		writer.writeMakeList(length);
+	public void compileMakeList(ListType type, int length) {
+		writer.writeMakeList(type, length);
 	}
 	
 	@Override

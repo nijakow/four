@@ -12,6 +12,7 @@ import nijakow.four.c.runtime.FList;
 import nijakow.four.c.runtime.FMapping;
 import nijakow.four.c.runtime.Instance;
 import nijakow.four.c.runtime.Key;
+import nijakow.four.c.runtime.ListType;
 import nijakow.four.c.runtime.Type;
 
 public class Frame {
@@ -182,12 +183,14 @@ public class Frame {
 			fiber.setAccu(type.cast(fiber.getAccu()));
 			break;
 		case Bytecodes.BYTECODE_MAKE_LIST: {
+			ListType ltype = (ListType) code.type(code.u16(ip));
+			ip += 2;
 			int length = code.u16(ip);
 			ip += 2;
 			Instance[] instances = new Instance[length];
 			while (length --> 0)
 				instances[length] = fiber.pop();
-			fiber.setAccu(new FList(instances));
+			fiber.setAccu(new FList(ltype, instances));
 			break;
 		}
 		case Bytecodes.BYTECODE_MAKE_MAPPING: {

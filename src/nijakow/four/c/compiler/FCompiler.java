@@ -3,6 +3,7 @@ package nijakow.four.c.compiler;
 import nijakow.four.c.ast.OperatorType;
 import nijakow.four.c.runtime.Instance;
 import nijakow.four.c.runtime.Key;
+import nijakow.four.c.runtime.ListType;
 import nijakow.four.c.runtime.Type;
 
 public interface FCompiler {
@@ -39,6 +40,6 @@ public interface FCompiler {
 	void compileDotCall(Key key, int args, boolean hasVarargs);
 	void compileOp(OperatorType type);
 	
-	void compileMakeList(int length);
+	void compileMakeList(ListType type, int length);
 	void compileMakeMapping(int length);
 }

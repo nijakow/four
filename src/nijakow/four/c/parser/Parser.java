@@ -37,6 +37,7 @@ import nijakow.four.c.ast.ASTWhile;
 import nijakow.four.c.runtime.FInteger;
 import nijakow.four.c.runtime.Instance;
 import nijakow.four.c.runtime.Key;
+import nijakow.four.c.runtime.ListType;
 import nijakow.four.c.runtime.Type;
 import nijakow.four.util.Pair;
 
@@ -152,7 +153,7 @@ public class Parser {
 					expect(TokenType.COMMA);
 				}
 			}
-			return new ASTList(exprs.toArray(new ASTExpression[0]));
+			return new ASTList(Type.getList(), exprs.toArray(new ASTExpression[0]));
 		} else if (check(TokenType.LBRACK)) {
 			List<ASTExpression> exprs = new ArrayList<>();
 			if (!check(TokenType.RBRACK)) {

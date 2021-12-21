@@ -8,6 +8,7 @@ import nijakow.four.c.ast.OperatorType;
 import nijakow.four.c.runtime.ByteCode;
 import nijakow.four.c.runtime.Instance;
 import nijakow.four.c.runtime.Key;
+import nijakow.four.c.runtime.ListType;
 import nijakow.four.c.runtime.Type;
 import nijakow.four.c.runtime.vm.Bytecodes;
 
@@ -165,8 +166,9 @@ public class InstructionWriter {
 		u8(type.ordinal());
 	}
 
-	public void writeMakeList(int length) {
+	public void writeMakeList(ListType type, int length) {
 		u8(Bytecodes.BYTECODE_MAKE_LIST);
+		type(type);
 		u16(length);
 	}
 	
