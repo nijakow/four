@@ -37,7 +37,6 @@ import nijakow.four.c.ast.ASTWhile;
 import nijakow.four.c.runtime.FInteger;
 import nijakow.four.c.runtime.Instance;
 import nijakow.four.c.runtime.Key;
-import nijakow.four.c.runtime.ListType;
 import nijakow.four.c.runtime.Type;
 import nijakow.four.util.Pair;
 
@@ -45,7 +44,11 @@ import nijakow.four.util.Pair;
 public class Parser {
 	private Tokenizer tokenizer;
 
-	private Type parseType() {
+	private void error(String message) throws ParseException {
+		throw new ParseException(tokenizer.nextToken(), message);
+	}
+	
+	private Type parseType() throws ParseException {
 		/*
 		 * TODO: More types
 		 */
@@ -69,7 +72,7 @@ public class Parser {
 			if (check(TokenType.LPAREN)) {
 				Type t = parseType();
 				if (t == null)
-					throw new RuntimeException("Expected a type!");
+					error("Expected a type!");
 				return t.listType();
 			}
 			return Type.getList();
@@ -80,7 +83,7 @@ public class Parser {
 		}
 	}
 	
-	private Pair<Pair<Type, Key>[], Boolean> parseArgdefs() {
+	private Pair<Pair<Type, Key>[], Boolean> parseArgdefs() throws ParseException {
 		List<Pair<Type, Key>> args = new ArrayList<>();
 		boolean hasVarargs = false;
 		
@@ -103,7 +106,7 @@ public class Parser {
 		return new Pair<>((Pair<Type, Key>[]) args.toArray(new Pair[0]), hasVarargs);
 	}
 	
-	private Pair<ASTExpression[], Boolean> parseArglist() {
+	private Pair<ASTExpression[], Boolean> parseArglist() throws ParseException {
 		List<ASTExpression> args = new ArrayList<>();
 		boolean hasVarargs = false;
 		
@@ -124,7 +127,7 @@ public class Parser {
 		return new Pair<>(args.toArray(new ASTExpression[0]), hasVarargs);
 	}
 	
-	private ASTExpression parseSimpleExpression() {
+	private ASTExpression parseSimpleExpression() throws ParseException {
 		if (check(TokenType.THIS)) {
 			return new ASTThis();
 		} else if (check(TokenType.NIL)) {
@@ -173,7 +176,7 @@ public class Parser {
 		}
 	}
 	
-	private ASTExpression parseExpression(int prec) {
+	private ASTExpression parseExpression(int prec) throws ParseException {
 		ASTExpression expr;
 		
 		if (checkKeep(TokenType.OPERATOR)) {
@@ -216,11 +219,11 @@ public class Parser {
 		return expr;
 	}
 	
-	private ASTExpression parseExpression() {
+	private ASTExpression parseExpression() throws ParseException {
 		return parseExpression(Integer.MAX_VALUE);
 	}
 	
-	private ASTBlock parseBlock() {
+	private ASTBlock parseBlock() throws ParseException {
 		List<ASTInstruction> instructions = new ArrayList<>();
 		
 		while (!check(TokenType.RCURLY)) {
@@ -230,7 +233,7 @@ public class Parser {
 		return new ASTBlock(instructions.toArray(new ASTInstruction[0]));
 	}
 	
-	private ASTVarDecl parseVarDecl() {
+	private ASTVarDecl parseVarDecl() throws ParseException {
 		Type type = parseType();
 		if (type != null) {
 			Key name = expectKey();
@@ -244,7 +247,7 @@ public class Parser {
 		}
 	}
 	
-	private ASTInstruction parseInstruction() {
+	private ASTInstruction parseInstruction() throws ParseException {
 		ASTVarDecl decl = parseVarDecl();
 		if (decl != null) {
 			return decl;
@@ -298,7 +301,7 @@ public class Parser {
 		}
 	}
 	
-	public ASTFile parse() {
+	public ASTFile parse() throws ParseException {
 		List<ASTDecl> defs = new ArrayList<>();
 	
 		while (!check(TokenType.EOF)) {
@@ -339,13 +342,13 @@ public class Parser {
 		return false;
 	}
 	
-	private Token expect(TokenType type) {
+	private Token expect(TokenType type) throws ParseException {
 		Token t = tokenizer.nextToken();
 		if (t.is(type)) return t;
-		else throw new RuntimeException("Expected different token! " + type + ", got " + t.getType());
+		else throw new ParseException(t, "Expected different token! " + type + ", got " + t.getType());
 	}
 	
-	private Key expectKey() {
+	private Key expectKey() throws ParseException {
 		return Key.get((String) expect(TokenType.IDENT).getPayload());
 	}
 	

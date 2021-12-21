@@ -6,6 +6,10 @@ public class Token {
 	private final TokenType type;
 	private final Object payload;
 	
+	public StreamPosition getPosition() {
+		return position;
+	}
+	
 	public boolean is(TokenType type) {
 		return this.type == type;
 	}

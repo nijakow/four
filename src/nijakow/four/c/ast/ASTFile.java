@@ -1,5 +1,6 @@
 package nijakow.four.c.ast;
 
+import nijakow.four.c.parser.ParseException;
 import nijakow.four.c.runtime.Blueprint;
 import nijakow.four.c.runtime.fs.Filesystem;
 
@@ -10,7 +11,7 @@ public class ASTFile extends AST {
 		this.defs = defs;
 	}
 
-	public Blueprint compile(String filename, Filesystem fs) {
+	public Blueprint compile(String filename, Filesystem fs) throws ParseException {
 		Blueprint blueprint = new Blueprint(filename);
 		
 		for (ASTDecl decl : defs) {

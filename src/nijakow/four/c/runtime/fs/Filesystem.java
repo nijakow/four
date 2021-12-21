@@ -1,5 +1,6 @@
 package nijakow.four.c.runtime.fs;
 
+import nijakow.four.c.parser.ParseException;
 import nijakow.four.c.runtime.Blue;
 import nijakow.four.c.runtime.Blueprint;
 

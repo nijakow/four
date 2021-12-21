@@ -1,6 +1,7 @@
 package nijakow.four.c.runtime.fs;
 
 import nijakow.four.c.ast.ASTFile;
+import nijakow.four.c.parser.ParseException;
 import nijakow.four.c.parser.Parser;
 import nijakow.four.c.parser.StringCharStream;
 import nijakow.four.c.parser.Tokenizer;
@@ -25,7 +26,7 @@ public class File extends FSNode {
 	public String getContents() { return contents; }
 	public File setContents(String newContents) { contents = newContents; this.isDirty = true; return this; }
 	
-	public Blueprint compile() {
+	public Blueprint compile() throws ParseException {
 		final String name = getFullName();
 		System.out.println("Compiling file " + name);
 		Parser parser = new Parser(new Tokenizer(new StringCharStream(contents)));
@@ -34,8 +35,14 @@ public class File extends FSNode {
 	}
 	
 	public Blueprint getBlueprint() {
-		if (blueprint == null || isDirty)
-			blueprint = compile();
+		if (blueprint == null || isDirty) {
+			try {
+				blueprint = compile();
+			} catch (ParseException e) {
+				e.printStackTrace();
+				return null;  // TODO: Delegate this error to the system
+			}
+		}
 		isDirty = false;
 		return blueprint;
 	}
