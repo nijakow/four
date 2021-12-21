@@ -96,11 +96,12 @@ public class ClientWindow extends JFrame implements ActionListener, ClientReceiv
 			connection.openStreams();
 		} catch (IOException ex) {
 			EventQueue.invokeLater(() -> {
-				if (bother)
+				if (bother) {
+					bother = false;
 					JOptionPane.showMessageDialog(this,
 							"Could not connect to \"" + prefs.getHostname() + "\" on port " + prefs.getPort(),
 							"Connection failed", JOptionPane.ERROR_MESSAGE);
-				bother = false;
+				}
 				labelTimer.stop();
 				connectionStatus.setVisible(true);
 				connectionStatus.setText(" Not connected!");
@@ -115,6 +116,7 @@ public class ClientWindow extends JFrame implements ActionListener, ClientReceiv
 		final Font font = new Font("Monospaced", Font.PLAIN, 14);
 		
 		// TODO macOS customization
+		// TODO macOS CMD+Q Handler
 		// TODO C editor
 		// TODO iterate through ports
 		buffer = "";
