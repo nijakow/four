@@ -56,10 +56,15 @@ void receive(string text)
     for (int i = 0; i < strlen(text); i++)
     {
         if (text[i] == '\n') {
-            _cb = callback;
-    	    callback = nil;
-            call(_cb, trim(line));
+            string line2 = line;
             line = "";
+            _cb = callback;
+    	    if (_cb != nil) {
+        	    callback = nil;
+                call(_cb, trim(line2));
+            } else {
+                log("The system can't provide an input handler -- TODO: Reset to failsafe!\n");
+            }
         } else {
             line = line + chr(text[i]);
         }

@@ -39,19 +39,7 @@ void setname(string name)
 
 void setpass(string pass)
 {
-    this.pass = pass;
-    connection->write("\nWelcome to the 42 MUD, ", this.name, "!\n\n");
-    connection->prompt(this::setuname, "By what name will your character be known? ");
-}
-
-void setuname(string uname)
-{
-    if (the("/secure/logman.c")->check_login(name, pass)) {
-        object player = the("/secure/logman.c")->get_player(name);
-        player->bind(connection);
-        player->activate_as(uname);
-        player->resume();
-    } else {
+    if (!the("/secure/logman.c")->check_login(name, pass)) {
         connection->write("\n");
         connection->mode_red();
         connection->mode_underscore();
@@ -60,6 +48,16 @@ void setuname(string uname)
         connection->close();
         return;
     }
+    connection->write("\nWelcome to the 42 MUD, ", this.name, "!\n\n");
+    connection->prompt(this::setuname, "By what name will your character be known? ");
+}
+
+void setuname(string uname)
+{
+    object player = the("/secure/logman.c")->get_player(name);
+    player->bind(connection);
+    player->activate_as(uname);
+    player->resume();
 }
 
 void create(object the_connection)
