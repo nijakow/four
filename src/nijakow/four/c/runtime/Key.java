@@ -143,5 +143,12 @@ public class Key {
 				fiber.setAccu(args[0].asFList().remove(args[1].asInt()));
 			}
 		};
+		get("$random").code = new BuiltinCode() {
+			
+			@Override
+			void run(Fiber fiber, Instance self, Instance[] args) {
+				fiber.setAccu(new FInteger((int) (Math.random() * Integer.MAX_VALUE)));
+			}
+		};
 	}
 }
