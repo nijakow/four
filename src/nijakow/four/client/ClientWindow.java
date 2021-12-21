@@ -29,6 +29,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.Timer;
+import javax.swing.UIManager;
 import javax.swing.border.EtchedBorder;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Style;
@@ -460,6 +461,11 @@ public class ClientWindow extends JFrame implements ActionListener, ClientReceiv
 	}
 	
 	public static void openWindow(int[] ports) {
+		try {
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		} catch (Exception e) {
+			System.err.println("Could not set UI - will use default UI.");
+		}
 		EventQueue.invokeLater(() -> new ClientWindow(ports).setVisible(true));
 	}
 }
