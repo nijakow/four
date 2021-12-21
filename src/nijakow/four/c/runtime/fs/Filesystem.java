@@ -1,6 +1,5 @@
 package nijakow.four.c.runtime.fs;
 
-import nijakow.four.c.parser.ParseException;
 import nijakow.four.c.runtime.Blue;
 import nijakow.four.c.runtime.Blueprint;
 
@@ -16,7 +15,13 @@ public class Filesystem {
 	
 	public Directory getRoot() { return root; }
 	
-	public FSNode find(String text) { return getRoot().find(text); }
+	public FSNode find(String text) {
+		FSNode node = getRoot().find(text);
+		if (node == null)
+			return loadFile(text);
+		else
+			return node;
+	}
 	
 	public FSNode touchf(String fname) {
 		return getRoot().find(fname, true);
