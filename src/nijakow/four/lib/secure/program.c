@@ -10,26 +10,26 @@ void write(...) { connection->write(...); }
 void banner()
 {
     write("\n");
-    write("                /####/  #################\n");
-    write("              /####/    #####/     ######\n");
-    write("            /####/      ###/       ######\n");
-    write("          /####/        #/         /####/\n");
-    write("        /####/          /        /####/\n");
-    write("      /####/                   /####/\n");
-    write("    /####/                   /####/\n");
-    write("  /####/                   /####/\n");
-    write("/####/                   /####/         /\n");
-    write("#####################   ######         /#\n");
-    write("#####################   ######       /###\n");
-    write("#####################   ######     /#####\n");
-    write("               ######   #################\n");
-    write("               ######\n");
-    write("               ######\n");
-    write("               ######   #\n");
-    write("   _                    #  #  #  #==  #  #    #==\\   #==,  *==*  #\\\\  #  #\\\\  #\n");
-    write("  |c| nijakow, mhahnFr  #  #==#  #=   #  #    #==<   #=*   #  #  # \\\\ #  # \\\\ #\n");
-    write("  '-'                   #  #  #  #==  #  #==  #==/   # \\\\  *==*  #  \\\\#  #  \\\\#\n");
-    write("                        #\n");
+    write("                                  /####/  #################\n");
+    write("                                /####/    #####/     ######\n");
+    write("                              /####/      ###/       ######\n");
+    write("                            /####/        #/         /####/\n");
+    write("                          /####/          /        /####/\n");
+    write("                        /####/                   /####/\n");
+    write("                      /####/                   /####/\n");
+    write("                    /####/                   /####/\n");
+    write("                  /####/                   /####/         /\n");
+    write("                  #####################   ######         /#\n");
+    write("                  #####################   ######       /###\n");
+    write("                  #####################   ######     /#####\n");
+    write("                                 ######   #################\n");
+    write("                                 ######\n");
+    write("                                 ######\n");
+    write("                                 ######\n");
+    write("\n");
+    connection->mode_italic();
+    write("  Welcome to the 42 MUD!\n");
+    connection->mode_normal();
     write("\n");
 }
 
@@ -54,8 +54,7 @@ void resume()
 void create(any the_connection, any the_chatroom)
 {
     connection = the_connection;
-    banner();
     chatroom = the_chatroom;
-    object editor = new("/prg/edit/editor.c", connection, this::resume, "");
-    editor->start();
+    banner();
+    resume();
 }

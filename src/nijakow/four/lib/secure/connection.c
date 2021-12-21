@@ -21,6 +21,15 @@ void write(...)
     }
 }
 
+void mode_normal()     { write("\aN"); }
+void mode_red()        { write("\aR"); }
+void mode_green()      { write("\aG"); }
+void mode_blue()       { write("\aB"); }
+void mode_black()      { write("\a0"); }
+void mode_italic()     { write("\ai"); }
+void mode_bold()       { write("\ab"); }
+void mode_underscore() { write("\au"); }
+
 void receive(any text)
 {
     func _cb;
