@@ -7,7 +7,6 @@ string name;
 void banner()
 {
     connection->write("\n");
-    connection->write("\{BG_RED\}");
     connection->write("                                  /####/  #################\n");
     connection->write("                                /####/    #####/     ######\n");
     connection->write("                              /####/      ###/       ######\n");
@@ -34,15 +33,17 @@ void banner()
 void setname(string name)
 {
     this.name = name;
-    if (!(the("/secure/logman.c")->check_login(name, ""))) {
+    if (the("/secure/logman.c")->check_login(name, "")) {
+        connection->write("Hello ", this.name, "!\n");
+    } else {
         connection->write("\n");
         connection->mode_red();
         connection->mode_underscore();
         connection->write("Username or password not recognized.\nConnection terminated.\n");
+        connection->mode_normal();
         connection->close();
         return;
     }
-    connection->write("Hello ", this.name, "!\n");
 }
 
 void create(object the_connection)
