@@ -356,7 +356,7 @@ public class ClientWindow extends JFrame implements ActionListener, ClientReceiv
 			splitter = splitter.substring(i0 + 1);
 			int i1 = splitter.indexOf(Commands.SPECIAL_RAW);
 			if (i1 < 0) return;
-			String title = splitter.substring(i0 + 1, i1);
+			String title = splitter.substring(0, i1);
 			splitter = splitter.substring(i1 + 1);
 			openEditor(new String[] { id, title, splitter });
 		} else

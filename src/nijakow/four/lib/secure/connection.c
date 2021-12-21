@@ -69,14 +69,16 @@ void receive(string text)
 {
     func _cb;
     
-    /*
-     * TODO: There are a few security holes in here,
-     *       the checking for escline != nil must happen before
-     *       anything else is being checked!
-     */
     for (int i = 0; i < strlen(text); i++)
     {
-        if (text[i] == '\{') {
+        if (escline != nil) {
+            if (text[i] == '\}') {
+                process_escaped(escline);
+                escline = nil;
+            } else {
+                escline = escline + chr(text[i]);
+            }
+        } else if (text[i] == '\{') {
             escline = "";
         } else if (text[i] == '\n') {
             string line2 = line;
@@ -89,16 +91,7 @@ void receive(string text)
                 log("The system can't provide an input handler -- TODO: Reset to failsafe!\n");
             }
         } else {
-            if (escline != nil) {
-                if (text[i] == '\}') {
-                    process_escaped(escline);
-                    escline = nil;
-                } else {
-                    escline = escline + chr(text[i]);
-                }
-            }
-            else
-                line = line + chr(text[i]);
+            line = line + chr(text[i]);
         }
     }
 }

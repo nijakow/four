@@ -8,7 +8,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
@@ -23,8 +22,6 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
@@ -51,22 +48,6 @@ public class ClientEditor extends JDialog implements ActionListener {
 		pane.setFont(new Font("Monospaced", Font.PLAIN, 14));
 		doc = pane.getStyledDocument();
 		addStyles();
-		/*doc.addDocumentListener(new DocumentListener() {
-			@Override
-			public void removeUpdate(DocumentEvent e) {
-				updateSyntaxHighlighting();
-			}
-			
-			@Override
-			public void insertUpdate(DocumentEvent e) {
-				updateSyntaxHighlighting();
-			}
-			
-			@Override
-			public void changedUpdate(DocumentEvent e) {
-				updateSyntaxHighlighting();
-			}
-		});*/
 		pane.addKeyListener(new KeyAdapter() {
 
 			@Override
@@ -75,9 +56,7 @@ public class ClientEditor extends JDialog implements ActionListener {
 			}
 		});
 		getContentPane().setLayout(new BorderLayout());
-		JPanel wrapping = new JPanel();
-		wrapping.add(pane);
-		JScrollPane sp = new JScrollPane(wrapping);
+		JScrollPane sp = new JScrollPane(pane);
 		getContentPane().add(sp, BorderLayout.CENTER);
 		JButton accept = new JButton("Accept Changes");
 		accept.addActionListener(this);
@@ -118,7 +97,6 @@ public class ClientEditor extends JDialog implements ActionListener {
 	
 	private void updateSyntaxHighlighting() {
 		queue.execute(() -> {
-			pane.invalidate();
 			Style defaultStyle = StyleContext.
 					   getDefaultStyleContext().
 					   getStyle(StyleContext.DEFAULT_STYLE);
