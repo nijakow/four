@@ -6,6 +6,9 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
@@ -24,6 +27,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
+import javax.swing.text.StyleContext;
 import javax.swing.text.StyledDocument;
 
 import nijakow.four.client.Commands;
@@ -47,7 +51,7 @@ public class ClientEditor extends JDialog implements ActionListener {
 		pane.setFont(new Font("Monospaced", Font.PLAIN, 14));
 		doc = pane.getStyledDocument();
 		addStyles();
-		doc.addDocumentListener(new DocumentListener() {
+		/*doc.addDocumentListener(new DocumentListener() {
 			@Override
 			public void removeUpdate(DocumentEvent e) {
 				updateSyntaxHighlighting();
@@ -62,9 +66,18 @@ public class ClientEditor extends JDialog implements ActionListener {
 			public void changedUpdate(DocumentEvent e) {
 				updateSyntaxHighlighting();
 			}
+		});*/
+		pane.addKeyListener(new KeyAdapter() {
+
+			@Override
+			public void keyTyped(KeyEvent e) {
+				updateSyntaxHighlighting();
+			}
 		});
 		getContentPane().setLayout(new BorderLayout());
-		JScrollPane sp = new JScrollPane(pane);
+		JPanel wrapping = new JPanel();
+		wrapping.add(pane);
+		JScrollPane sp = new JScrollPane(wrapping);
 		getContentPane().add(sp, BorderLayout.CENTER);
 		JButton accept = new JButton("Accept Changes");
 		accept.addActionListener(this);
@@ -84,6 +97,7 @@ public class ClientEditor extends JDialog implements ActionListener {
 			}
 		});
 		pack();
+		updateSyntaxHighlighting();
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 	}
 	
@@ -104,26 +118,31 @@ public class ClientEditor extends JDialog implements ActionListener {
 	
 	private void updateSyntaxHighlighting() {
 		queue.execute(() -> {
+			pane.invalidate();
+			Style defaultStyle = StyleContext.
+					   getDefaultStyleContext().
+					   getStyle(StyleContext.DEFAULT_STYLE);
+			doc.setCharacterAttributes(0, doc.getLength(), defaultStyle, true);
 			String keywords = "\\b(inherit|use|this|if|else|while|for|break|continue|switch|case|return)\\b";
 			Matcher matcher = Pattern.compile(keywords).matcher(pane.getText());
 			while (matcher.find())
 				doc.setCharacterAttributes(matcher.start(), matcher.end() - matcher.start(),
-						doc.getStyle(Commands.STYLE_KEYWORD), false);
+						doc.getStyle(Commands.STYLE_KEYWORD), true);
 			keywords = "\\b(any|void|int|char|bool|string|object|list|mapping)\\b";
 			matcher = Pattern.compile(keywords).matcher(pane.getText());
 			while (matcher.find())
 				doc.setCharacterAttributes(matcher.start(), matcher.end() - matcher.start(),
-						doc.getStyle(Commands.STYLE_TYPE), false);
+						doc.getStyle(Commands.STYLE_TYPE), true);
 			keywords = "\\b(true|false|nil|va_next|va_count)\\b";
 			matcher = Pattern.compile(keywords).matcher(pane.getText());
 			while (matcher.find())
 				doc.setCharacterAttributes(matcher.start(), matcher.end() - matcher.start(),
-						doc.getStyle(Commands.STYLE_SPECIAL_WORD), false);
+						doc.getStyle(Commands.STYLE_SPECIAL_WORD), true);
 			keywords = "\\b(???)\\b";
 			matcher = Pattern.compile(keywords).matcher(pane.getText());
 			while (matcher.find())
 				doc.setCharacterAttributes(matcher.start(), matcher.end() - matcher.start(),
-						doc.getStyle(Commands.STYLE_STDLIB), false);
+						doc.getStyle(Commands.STYLE_STDLIB), true);
 		});
 	}
 	

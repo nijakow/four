@@ -7,6 +7,7 @@ use $on_disconnect;
 
 any port;
 func callback;
+mapping mapped_callbacks;
 string line;
 string escline;
 
@@ -24,6 +25,13 @@ void password(func cb, ...)
     write("\{?");
     write(...);
     write("\}");
+}
+
+void edit(func cb, string title, string text)
+{
+    string key = "42";
+    mapped_callbacks[key] = cb;
+    write("\{$", key, ":", title, ":", text, "\}");
 }
 
 void write(...)
@@ -112,6 +120,7 @@ void create(any the_port)
 	callback = nil;
 	line = "";
 	escline = nil;
+	mapped_callbacks = [];
 	$on_receive(port, this::receive);
 	$on_disconnect(port, this::handle_disconnect);
 }
