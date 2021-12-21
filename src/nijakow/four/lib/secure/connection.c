@@ -28,6 +28,11 @@ void mode_green()      { write("\{GREEN\}"); }
 void mode_blue()       { write("\{BLUE\}"); }
 void mode_yellow()     { write("\{YELLOW\}"); }
 void mode_black()      { write("\{BLACK\}"); }
+void mode_bg_red()     { write("\{BG_RED\}"); }
+void mode_bg_green()   { write("\{BG_GREEN\}"); }
+void mode_bg_blue()    { write("\{BG_BLUE\}"); }
+void mode_bg_yellow()  { write("\{BG_YELLOW\}"); }
+void mode_bg_black()   { write("\{BG_BLACK\}"); }
 void mode_italic()     { write("\{ITALIC\}"); }
 void mode_bold()       { write("\{BOLD\}"); }
 void mode_underscore() { write("\{UNDERSCORED\}"); }
