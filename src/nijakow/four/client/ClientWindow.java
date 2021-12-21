@@ -41,7 +41,7 @@ public class ClientWindow extends JFrame implements ActionListener, ClientReceiv
 	private static final long serialVersionUID = 1L;
 	private static final String ACTION_SETTINGS = "settings";
 	private static final String ACTION_SEND = "send";
-	private static final String STATUS_LABEL_TIMER = "invisible";
+	private static final String ACTION_STATUS_LABEL_TIMER = "invisible";
 	private static final String STYLE_ERROR = "error";
 	private static final String STYLE_BLUE = "B";
 	private static final String STYLE_GREEN = "G";
@@ -141,7 +141,7 @@ public class ClientWindow extends JFrame implements ActionListener, ClientReceiv
 		else
 			setSize(width, height);
 		labelTimer = new Timer(5000, this);
-		labelTimer.setActionCommand(STATUS_LABEL_TIMER);
+		labelTimer.setActionCommand(ACTION_STATUS_LABEL_TIMER);
 		labelTimer.setRepeats(false);
 		reconnectorHandler = queue.scheduleWithFixedDelay(reconnector, 0, 5, TimeUnit.SECONDS);
 	}
@@ -308,7 +308,7 @@ public class ClientWindow extends JFrame implements ActionListener, ClientReceiv
 			openSettingsWindow();
 			break;
 			
-		case STATUS_LABEL_TIMER:
+		case ACTION_STATUS_LABEL_TIMER:
 			connectionStatus.setVisible(false);
 			break;
 			
