@@ -10,6 +10,11 @@ bool check_login(string name, string pass)
     return member(users, name);
 }
 
+object get_player(string name)
+{
+    return new("/std/player.c");
+}
+
 void create()
 {
 }

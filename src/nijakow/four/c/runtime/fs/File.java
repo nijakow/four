@@ -26,6 +26,7 @@ public class File extends FSNode {
 	public File setContents(String newContents) { contents = newContents; this.isDirty = true; return this; }
 	
 	public Blueprint compile() {
+		System.out.println("Compiling file " + getName());
 		Parser parser = new Parser(new Tokenizer(new StringCharStream(contents)));
 		ASTFile file = parser.parse();
 		return file.compile(getFilesystem());

@@ -34,7 +34,10 @@ void setname(string name)
 {
     this.name = name;
     if (the("/secure/logman.c")->check_login(name, "")) {
-        connection->write("Hello ", this.name, "!\n");
+        connection->write("Hello ", this.name, "!\n\n");
+        object player = the("/secure/logman.c")->get_player(name);
+        player->bind(connection);
+        player->resume();
     } else {
         connection->write("\n");
         connection->mode_red();

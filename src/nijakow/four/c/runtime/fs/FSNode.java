@@ -20,6 +20,8 @@ public abstract class FSNode {
 	
 	public Filesystem getFilesystem() { return fs; }
 	
+	public String getName() { return name; }
+	
 	public FSNode getRoot() {
 		FSNode node;
 		for (node = this; node.getParent() != null; node = node.getParent());
