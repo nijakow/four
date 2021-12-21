@@ -7,6 +7,7 @@ string name;
 void banner()
 {
     connection->write("\n");
+    connection->write("\{BG_RED\}");
     connection->write("                                  /####/  #################\n");
     connection->write("                                /####/    #####/     ######\n");
     connection->write("                              /####/      ###/       ######\n");

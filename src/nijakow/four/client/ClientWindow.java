@@ -133,6 +133,7 @@ public class ClientWindow extends JFrame implements ActionListener, ClientReceiv
 		area.setEditable(false);
 		area.setCursor(new Cursor(Cursor.TEXT_CURSOR));
 		area.setFont(font);
+		area.setOpaque(true);
 		term = area.getStyledDocument();
 		addStyles();
 		pane = new JScrollPane();
