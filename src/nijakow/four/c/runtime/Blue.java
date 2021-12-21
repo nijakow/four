@@ -8,15 +8,23 @@ import nijakow.four.c.runtime.vm.VM;
 import nijakow.four.util.Pair;
 
 public class Blue extends Instance {
+	private static long ID_COUNTER = 0;
+	private final long id;
 	private boolean initialized = false;
 	private Blueprint blueprint;
 	private Map<Key, Instance> slots = new HashMap<>();
 	
+	private Blue() {
+		this.id = ID_COUNTER++;
+	}
+	
 	public Blue(Blueprint blueprint) {
+		this();
 		this.blueprint = blueprint;
 	}
 	
 	private Blue(Blue other) {
+		this();
 		this.blueprint = other.blueprint;
 		for (Key k : other.slots.keySet())
 			slots.put(k, other.slots.get(k));
@@ -27,7 +35,7 @@ public class Blue extends Instance {
 	
 	@Override
 	public String toString() {
-		return blueprint.toString() + "#" + hashCode();
+		return blueprint.toString() + "#" + id;
 	}
 	
 	@Override
