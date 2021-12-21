@@ -22,14 +22,14 @@ void write(...)
     }
 }
 
-void mode_normal()     { write("\aN"); }
-void mode_red()        { write("\aR"); }
-void mode_green()      { write("\aG"); }
-void mode_blue()       { write("\aB"); }
-void mode_black()      { write("\a0"); }
-void mode_italic()     { write("\ai"); }
-void mode_bold()       { write("\ab"); }
-void mode_underscore() { write("\au"); }
+void mode_normal()     { write("\{N\}"); }
+void mode_red()        { write("\{R\}"); }
+void mode_green()      { write("\{G\}"); }
+void mode_blue()       { write("\{B\}"); }
+void mode_black()      { write("\{0\}"); }
+void mode_italic()     { write("\{i\}"); }
+void mode_bold()       { write("\{b\}"); }
+void mode_underscore() { write("\{u\}"); }
 
 void receive(string text)
 {
