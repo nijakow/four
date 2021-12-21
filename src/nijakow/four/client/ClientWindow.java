@@ -46,6 +46,7 @@ public class ClientWindow extends JFrame implements ActionListener, ClientReceiv
 	private static final String ACTION_STATUS_LABEL_TIMER = "invisible";
 	private static final String ACTION_PASSWORD = "password";
 	private static final String STYLE_ERROR = "error";
+	private static final String STYLE_INPUT = "input";
 	private static final String STYLE_NORMAL = "RESET";
 	private static final String STYLE_BG_BLUE = "BG_BLUE";
 	private static final String STYLE_BLUE = "BLUE";
@@ -197,6 +198,8 @@ public class ClientWindow extends JFrame implements ActionListener, ClientReceiv
 		StyleConstants.setBold(s, true);
 		StyleConstants.setItalic(s, true);
 		StyleConstants.setForeground(s, Color.red);
+		s = term.addStyle(STYLE_INPUT, def);
+		StyleConstants.setForeground(s, Color.gray);
 	}
 	
 	public void dispose() {
@@ -408,13 +411,16 @@ public class ClientWindow extends JFrame implements ActionListener, ClientReceiv
 			tmp = pwf;
 			
 		case ACTION_SEND:
+			// TODO Don't reset background
 			String text = tmp.getText() + "\n";
 			tmp.enableInputMethods(true);
 			try {
+				term.insertString(term.getLength(), promptText.getText() + " ", null);
+				final Style s = term.getStyle(STYLE_INPUT);
 				if (tmp == prompt)
-					term.insertString(term.getLength(), promptText.getText() + " " + text, null);
+					term.insertString(term.getLength(), text, s);
 				else
-					term.insertString(term.getLength(), promptText.getText() + " " + StringHelper.generateFilledString('*', text.length()) + "\n", null);
+					term.insertString(term.getLength(), StringHelper.generateFilledString('*', text.length()) + "\n", s);
 			} catch (BadLocationException e1) {
 				e1.printStackTrace();
 			}
