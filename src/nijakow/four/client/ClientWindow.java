@@ -180,6 +180,14 @@ public class ClientWindow extends JFrame implements ActionListener, ClientReceiv
 		}
 	}
 	
+	public void setVisible(boolean visible) {
+		super.setVisible(visible);
+		if (prompt.isVisible())
+			prompt.requestFocusInWindow();
+		else
+			pwf.requestFocusInWindow();
+	}
+	
 	private void addStyles() {
 		final Style def = area.getLogicalStyle();
 		Style s = term.addStyle(STYLE_ERROR, def);
@@ -339,6 +347,7 @@ public class ClientWindow extends JFrame implements ActionListener, ClientReceiv
 			EventQueue.invokeLater(() -> {
 				pwf.setVisible(true);
 				prompt.setVisible(false);
+				pwf.requestFocusInWindow();
 				validate();
 			});
 			break;
@@ -385,6 +394,7 @@ public class ClientWindow extends JFrame implements ActionListener, ClientReceiv
 		case ACTION_PASSWORD:
 			prompt.setVisible(true);
 			pwf.setVisible(false);
+			prompt.requestFocusInWindow();
 			validate();
 			tmp = pwf;
 			
