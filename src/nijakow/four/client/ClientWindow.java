@@ -336,7 +336,7 @@ public class ClientWindow extends JFrame implements ActionListener, ClientReceiv
 				prompt.setVisible(false);
 				pwf.requestFocusInWindow();
 				if (arg.length() > Commands.SPECIAL_PROMPT.length() + 1)
-					promptText.setText(arg.substring(Commands.SPECIAL_PWD.length(), arg.length() - 1));
+					promptText.setText(arg.substring(Commands.SPECIAL_PWD.length(), arg.length()));
 				else
 					promptText.setText("");
 				validate();
@@ -344,12 +344,12 @@ public class ClientWindow extends JFrame implements ActionListener, ClientReceiv
 		} else if (arg.startsWith(Commands.SPECIAL_PROMPT)) {
 			EventQueue.invokeLater(() -> {
 				if (arg.length() > Commands.SPECIAL_PROMPT.length() + 1)
-					promptText.setText(arg.substring(Commands.SPECIAL_PWD.length(), arg.length() - 1));
+					promptText.setText(arg.substring(Commands.SPECIAL_PWD.length(), arg.length()));
 				else
 					promptText.setText("");
 			});
 		} else if (arg.startsWith(Commands.SPECIAL_EDIT)) {
-			String splitter = arg.substring(Commands.SPECIAL_EDIT.length(), arg.length() - 1);
+			String splitter = arg.substring(Commands.SPECIAL_EDIT.length(), arg.length());
 			String[] args = splitter.split(Commands.SPECIAL_RAW);
 			if (args.length != 3)
 				return;
