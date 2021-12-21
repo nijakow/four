@@ -92,6 +92,7 @@ public class ClientWindow extends JFrame implements ActionListener, ClientReceiv
 				connectionStatus.setForeground(Color.green);
 				labelTimer.start();
 			});
+			reconnectorHandler.cancel(false);
 			connection.openStreams();
 		} catch (IOException ex) {
 			EventQueue.invokeLater(() -> {
