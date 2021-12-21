@@ -35,6 +35,11 @@ import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 
+import com.apple.eawt.Application;
+import com.apple.eawt.QuitHandler;
+import com.apple.eawt.QuitResponse;
+import com.apple.eawt.AppEvent.QuitEvent;
+
 import nijakow.four.client.net.ClientConnection;
 import nijakow.four.client.net.ClientReceiveListener;
 import nijakow.four.client.utils.StringHelper;
@@ -61,6 +66,8 @@ public class ClientWindow extends JFrame implements ActionListener, ClientReceiv
 	private static final String STYLE_ITALIC = "ITALIC";
 	private static final String STYLE_BOLD = "BOLD";
 	private static final String STYLE_UNDERSCORED = "UNDERSCORED";
+	private static final String SPECIAL_EDIT = "$";
+	private static final String SPECIAL_RAW = ":";
 	private static final String SPECIAL_PWD = "?";
 	private static final String SPECIAL_PROMPT = ".";
 	private static final char SPECIAL_START = 0x02;
@@ -118,7 +125,6 @@ public class ClientWindow extends JFrame implements ActionListener, ClientReceiv
 		final Font font = new Font("Monospaced", Font.PLAIN, 14);
 		
 		// TODO macOS customization
-		// TODO macOS CMD+Q Handler
 		// TODO C editor
 		// TODO iterate through ports
 		buffer = "";
@@ -176,6 +182,14 @@ public class ClientWindow extends JFrame implements ActionListener, ClientReceiv
 		labelTimer = new Timer(5000, this);
 		labelTimer.setActionCommand(ACTION_STATUS_LABEL_TIMER);
 		labelTimer.setRepeats(false);
+		final Application app = Application.getApplication();
+		app.setQuitHandler(new QuitHandler() {
+			@Override
+			public void handleQuitRequestWith(QuitEvent ev, QuitResponse res) {
+				dispose();
+				res.performQuit();
+			}
+		});
 		reconnectorHandler = queue.scheduleWithFixedDelay(reconnector, 0, 5, TimeUnit.SECONDS);
 	}
 	
