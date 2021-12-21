@@ -36,38 +36,13 @@ import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 
+import nijakow.four.client.editor.ClientEditor;
 import nijakow.four.client.net.ClientConnection;
 import nijakow.four.client.net.ClientReceiveListener;
 import nijakow.four.client.utils.StringHelper;
 
 public class ClientWindow extends JFrame implements ActionListener, ClientReceiveListener {
 	private static final long serialVersionUID = 1L;
-	private static final String ACTION_SETTINGS = "settings";
-	private static final String ACTION_SEND = "send";
-	private static final String ACTION_STATUS_LABEL_TIMER = "invisible";
-	private static final String ACTION_PASSWORD = "password";
-	private static final String STYLE_ERROR = "error";
-	private static final String STYLE_INPUT = "input";
-	private static final String STYLE_NORMAL = "RESET";
-	private static final String STYLE_BG_BLUE = "BG_BLUE";
-	private static final String STYLE_BLUE = "BLUE";
-	private static final String STYLE_BG_GREEN = "BG_GREEN";
-	private static final String STYLE_GREEN = "GREEN";
-	private static final String STYLE_BG_YELLOW = "BG_YELLOW";
-	private static final String STYLE_YELLOW = "YELLOW";
-	private static final String STYLE_BG_BLACK = "BG_BLACK";
-	private static final String STYLE_BLACK = "BLACK";
-	private static final String STYLE_BG_RED = "BG_RED";
-	private static final String STYLE_RED = "RED";
-	private static final String STYLE_ITALIC = "ITALIC";
-	private static final String STYLE_BOLD = "BOLD";
-	private static final String STYLE_UNDERSCORED = "UNDERSCORED";
-	private static final String SPECIAL_EDIT = "$";
-	private static final String SPECIAL_RAW = ":";
-	private static final String SPECIAL_PWD = "?";
-	private static final String SPECIAL_PROMPT = ".";
-	private static final char SPECIAL_START = 0x02;
-	private static final char SPECIAL_END = 0x03;
 	private String buffer;
 	private JLabel connectionStatus;
 	private JLabel promptText;
@@ -135,17 +110,17 @@ public class ClientWindow extends JFrame implements ActionListener, ClientReceiv
 		prompt = new JTextField();
 		prompt.setFont(font);
 		prompt.addActionListener(this);
-		prompt.setActionCommand(ACTION_SEND);
+		prompt.setActionCommand(Commands.ACTION_SEND);
 		pwf = new JPasswordField();
 		pwf.setFont(font);
 		pwf.addActionListener(this);
-		pwf.setActionCommand(ACTION_PASSWORD);
+		pwf.setActionCommand(Commands.ACTION_PASSWORD);
 		promptText = new JLabel();
 		connectionStatus = new JLabel();
 		getContentPane().add(connectionStatus, BorderLayout.NORTH);
 		JButton settings = new JButton("Settings");
 		settings.addActionListener(this);
-		settings.setActionCommand(ACTION_SETTINGS);
+		settings.setActionCommand(Commands.ACTION_SETTINGS);
 		south.add(promptText);
 		south.add(prompt);
 		south.add(pwf);
@@ -176,7 +151,7 @@ public class ClientWindow extends JFrame implements ActionListener, ClientReceiv
 		else
 			setSize(width, height);
 		labelTimer = new Timer(5000, this);
-		labelTimer.setActionCommand(ACTION_STATUS_LABEL_TIMER);
+		labelTimer.setActionCommand(Commands.ACTION_STATUS_LABEL_TIMER);
 		labelTimer.setRepeats(false);
 		reconnectorHandler = queue.scheduleWithFixedDelay(reconnector, 0, 5, TimeUnit.SECONDS);
 	}
@@ -201,11 +176,11 @@ public class ClientWindow extends JFrame implements ActionListener, ClientReceiv
 	
 	private void addStyles() {
 		final Style def = area.getLogicalStyle();
-		Style s = term.addStyle(STYLE_ERROR, def);
+		Style s = term.addStyle(Commands.STYLE_ERROR, def);
 		StyleConstants.setBold(s, true);
 		StyleConstants.setItalic(s, true);
 		StyleConstants.setForeground(s, Color.red);
-		s = term.addStyle(STYLE_INPUT, def);
+		s = term.addStyle(Commands.STYLE_INPUT, def);
 		StyleConstants.setForeground(s, Color.gray);
 	}
 	
@@ -295,59 +270,59 @@ public class ClientWindow extends JFrame implements ActionListener, ClientReceiv
 	private Style getStyleByName(String style) {
 		Style ret = term.addStyle(style, current == null ? area.getLogicalStyle() : current);
 		switch (style) {
-		case STYLE_NORMAL:
+		case Commands.STYLE_NORMAL:
 			ret = null;
 			break;
 			
-		case STYLE_BLUE:
+		case Commands.STYLE_BLUE:
 			StyleConstants.setForeground(ret, Color.blue);
 			break;
 			
-		case STYLE_RED:
+		case Commands.STYLE_RED:
 			StyleConstants.setForeground(ret, Color.red);
 			break;
 
-		case STYLE_GREEN:
+		case Commands.STYLE_GREEN:
 			StyleConstants.setForeground(ret, Color.green);
 			break;
 
-		case STYLE_YELLOW:
+		case Commands.STYLE_YELLOW:
 			StyleConstants.setForeground(ret, Color.yellow);
 			break;
 			
-		case STYLE_BLACK:
+		case Commands.STYLE_BLACK:
 			StyleConstants.setForeground(ret, Color.black);
 			break;
 
-		case STYLE_ITALIC:
+		case Commands.STYLE_ITALIC:
 			StyleConstants.setItalic(ret, true);
 			break;
 			
-		case STYLE_BOLD:
+		case Commands.STYLE_BOLD:
 			StyleConstants.setBold(ret, true);
 			break;
 			
-		case STYLE_UNDERSCORED:
+		case Commands.STYLE_UNDERSCORED:
 			StyleConstants.setUnderline(ret, true);
 			break;
 			
-		case STYLE_BG_BLACK:
+		case Commands.STYLE_BG_BLACK:
 			StyleConstants.setBackground(ret, Color.black);
 			break;
 			
-		case STYLE_BG_BLUE:
+		case Commands.STYLE_BG_BLUE:
 			StyleConstants.setBackground(ret, Color.blue);
 			break;
 			
-		case STYLE_BG_GREEN:
+		case Commands.STYLE_BG_GREEN:
 			StyleConstants.setBackground(ret, Color.green);
 			break;
 			
-		case STYLE_BG_RED:
+		case Commands.STYLE_BG_RED:
 			StyleConstants.setBackground(ret, Color.red);
 			break;
 			
-		case STYLE_BG_YELLOW:
+		case Commands.STYLE_BG_YELLOW:
 			StyleConstants.setBackground(ret, Color.yellow);
 			break;
 		}
@@ -355,27 +330,27 @@ public class ClientWindow extends JFrame implements ActionListener, ClientReceiv
 	}
 	
 	private void parseArgument(String arg) {
-		if (arg.startsWith(SPECIAL_PWD)) {
+		if (arg.startsWith(Commands.SPECIAL_PWD)) {
 			EventQueue.invokeLater(() -> {
 				pwf.setVisible(true);
 				prompt.setVisible(false);
 				pwf.requestFocusInWindow();
-				if (arg.length() > SPECIAL_PROMPT.length() + 1)
-					promptText.setText(arg.substring(SPECIAL_PWD.length(), arg.length() - 1));
+				if (arg.length() > Commands.SPECIAL_PROMPT.length() + 1)
+					promptText.setText(arg.substring(Commands.SPECIAL_PWD.length(), arg.length() - 1));
 				else
 					promptText.setText("");
 				validate();
 			});
-		} else if (arg.startsWith(SPECIAL_PROMPT)) {
+		} else if (arg.startsWith(Commands.SPECIAL_PROMPT)) {
 			EventQueue.invokeLater(() -> {
-				if (arg.length() > SPECIAL_PROMPT.length() + 1)
-					promptText.setText(arg.substring(SPECIAL_PWD.length(), arg.length() - 1));
+				if (arg.length() > Commands.SPECIAL_PROMPT.length() + 1)
+					promptText.setText(arg.substring(Commands.SPECIAL_PWD.length(), arg.length() - 1));
 				else
 					promptText.setText("");
 			});
-		} else if (arg.startsWith(SPECIAL_EDIT)) {
-			String splitter = arg.substring(SPECIAL_EDIT.length(), arg.length() - 1);
-			String[] args = splitter.split(SPECIAL_RAW);
+		} else if (arg.startsWith(Commands.SPECIAL_EDIT)) {
+			String splitter = arg.substring(Commands.SPECIAL_EDIT.length(), arg.length() - 1);
+			String[] args = splitter.split(Commands.SPECIAL_RAW);
 			if (args.length != 3)
 				return;
 			openEditor(args[0], args[1], args[2]);
@@ -384,20 +359,19 @@ public class ClientWindow extends JFrame implements ActionListener, ClientReceiv
 	}
 	
 	private void openEditor(final String id, final String title, String content) {
-		JDialog edWindow = new JDialog(this, title);
-		//JTextPane
+		//new ClientEditor(this, this, id, title, content).setVisible(true);
 	}
 	
 	@Override
 	public void lineReceived(char c) {
 		EventQueue.invokeLater(() -> {
 			try {
-				if (c == SPECIAL_END) {
+				if (c == Commands.SPECIAL_END) {
 					wasSpecial = false;
 					parseArgument(buffer);
 				} else if (wasSpecial)
 					buffer += c;
-				else if (c == SPECIAL_START) {
+				else if (c == Commands.SPECIAL_START) {
 					wasSpecial = true;
 					buffer = "";
 				}
@@ -413,28 +387,28 @@ public class ClientWindow extends JFrame implements ActionListener, ClientReceiv
 	public void actionPerformed(ActionEvent e) {
 		JTextField tmp = prompt;
 		switch (e.getActionCommand()) {
-		case ACTION_SETTINGS:
+		case Commands.ACTION_SETTINGS:
 			openSettingsWindow();
 			break;
 			
-		case ACTION_STATUS_LABEL_TIMER:
+		case Commands.ACTION_STATUS_LABEL_TIMER:
 			connectionStatus.setVisible(false);
 			break;
 			
-		case ACTION_PASSWORD:
+		case Commands.ACTION_PASSWORD:
 			prompt.setVisible(true);
 			pwf.setVisible(false);
 			prompt.requestFocusInWindow();
 			validate();
 			tmp = pwf;
 			
-		case ACTION_SEND:
+		case Commands.ACTION_SEND:
 			// TODO Don't reset background
 			String text = tmp.getText() + "\n";
 			tmp.enableInputMethods(true);
 			try {
 				term.insertString(term.getLength(), promptText.getText() + " ", null);
-				final Style s = term.getStyle(STYLE_INPUT);
+				final Style s = term.getStyle(Commands.STYLE_INPUT);
 				if (tmp == prompt)
 					term.insertString(term.getLength(), text, s);
 				else
@@ -449,7 +423,7 @@ public class ClientWindow extends JFrame implements ActionListener, ClientReceiv
 				} catch (Exception ex) {
 					EventQueue.invokeLater(() -> {
 						try {
-							term.insertString(term.getLength(), "*** Could not send message --- see console for more details! ***\n", term.getStyle(STYLE_ERROR));
+							term.insertString(term.getLength(), "*** Could not send message --- see console for more details! ***\n", term.getStyle(Commands.STYLE_ERROR));
 						} catch (BadLocationException e1) {
 							e1.printStackTrace();
 						}
