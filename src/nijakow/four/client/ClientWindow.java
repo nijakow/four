@@ -46,10 +46,15 @@ public class ClientWindow extends JFrame implements ActionListener, ClientReceiv
 	private static final char SPECIAL_END = 0x03;
 	private static final String STYLE_ERROR = "error";
 	private static final String STYLE_NORMAL = "RESET";
+	private static final String STYLE_BG_BLUE = "blue";
 	private static final String STYLE_BLUE = "BLUE";
+	private static final String STYLE_BG_GREEN = "green";
 	private static final String STYLE_GREEN = "GREEN";
+	private static final String STYLE_BG_YELLOW = "yellow";
 	private static final String STYLE_YELLOW = "YELLOW";
+	private static final String STYLE_BG_BLACK = "black";
 	private static final String STYLE_BLACK = "BLACK";
+	private static final String STYLE_BG_RED = "red";
 	private static final String STYLE_RED = "RED";
 	private static final String STYLE_ITALIC = "ITALIC";
 	private static final String STYLE_BOLD = "BOLD";
@@ -290,6 +295,26 @@ public class ClientWindow extends JFrame implements ActionListener, ClientReceiv
 			
 		case STYLE_UNDERSCORED:
 			StyleConstants.setUnderline(ret, true);
+			break;
+			
+		case STYLE_BG_BLACK:
+			StyleConstants.setBackground(ret, Color.black);
+			break;
+			
+		case STYLE_BG_BLUE:
+			StyleConstants.setBackground(ret, Color.blue);
+			break;
+			
+		case STYLE_BG_GREEN:
+			StyleConstants.setBackground(ret, Color.green);
+			break;
+			
+		case STYLE_BG_RED:
+			StyleConstants.setBackground(ret, Color.red);
+			break;
+			
+		case STYLE_BG_YELLOW:
+			StyleConstants.setBackground(ret, Color.yellow);
 			break;
 		}
 		return ret;
