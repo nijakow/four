@@ -139,7 +139,7 @@ public abstract class Type {
 	public static Type getString() { return STRING; }
 	public static Type getObject() { return OBJECT; }
 	public static Type getFunc() { return FUNC; }
-	public static Type getList() { return ANY.listType(); }
+	public static ListType getList() { return ANY.listType(); }
 	public static Type getMapping() { return MAPPING; }
 	
 	
@@ -157,7 +157,7 @@ public abstract class Type {
 			throw new RuntimeException("Expected different type!");
 	}
 	
-	public Type listType() {
+	public ListType listType() {
 		if (theListType == null)
 			theListType = new ListType(this);
 		return theListType;
