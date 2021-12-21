@@ -4,7 +4,25 @@ object connection;
 bool say_room;
 
 
+void write(...)
+{
+    if (connection != nil)
+        connection->write(...);
+}
+
+
 object get_location() { return get_parent(); }
+
+void go_to(object location)
+{
+    object current = get_location();
+    
+    if (location != nil)
+        location->evt_entering(this);
+    move_to(location);
+    if (current != nil)
+        current->evt_leaving(this);
+}
 
 
 void lookaround()
@@ -27,7 +45,8 @@ void docmd(string cmd)
         args = "";
     }
     
-    if (cmd == "look") {
+    if (cmd == "") {
+    } else if (cmd == "look") {
         lookaround();
     } else if (cmd == "exit") {
         exit();
@@ -49,6 +68,7 @@ void resume()
 
 void exit()
 {
+    go_to(nil);
     log("Player requested logout.\n");
     connection->write("Goodbye!\n");
     connection->close();
@@ -62,6 +82,7 @@ void bind(object connection)
 void create()
 {
     "/std/thing.c"::create();
-    move_to(the("/world/void.c"));
+    connection = nil;
     say_room = 1;
+    go_to(the("/world/void.c"));
 }

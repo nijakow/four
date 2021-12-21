@@ -28,6 +28,11 @@ void log(...)
     $log(...);
 }
 
+int rand()
+{
+    return $random();
+}
+
 int length(any lst)
 {
     return $listlen(lst);

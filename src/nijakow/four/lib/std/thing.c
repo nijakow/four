@@ -51,6 +51,12 @@ void set_short(string s) { short_desc = s; }
 void set_long(string l)  { long_desc  = l; }
 
 
+void evt_entering(object obj) {}
+void evt_leaving(object obj) {}
+
+void write(...) {}
+
+
 void create()
 {
     "/secure/object.c"::create();
