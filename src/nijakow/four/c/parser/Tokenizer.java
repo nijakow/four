@@ -47,6 +47,8 @@ public class Tokenizer {
 			else if (c == '0') return '\0';
 			else if (c == 'a') return '\07';
 			else if (c == 'e') return '\033';
+			else if (c == '{') return '\02';
+			else if (c == '}') return '\03';
 			else if (c == terminator) return terminator;
 			else return c;
 		} else {
