@@ -50,6 +50,19 @@ void cmd_go(string dir)
     	connection->write("There is no exit in this direction!\n");
 }
 
+/*
+ * TODO: Use the "act()" method for this!
+ */
+void cmd_say(string text)
+{
+    for (object obj = get_location()->get_children();
+         obj != nil;
+         obj = obj->get_sibling())
+    {
+        if (obj != this)
+            obj->write(get_short(), " says: ", text, "\n");
+    }
+}
 
 void docmd(string cmd)
 {
@@ -69,6 +82,8 @@ void docmd(string cmd)
         lookaround();
     } else if (cmd == "go") {
         cmd_go(args);
+    } else if (cmd == "say") {
+        cmd_say(args);
     } else if (cmd == "exit") {
         exit();
         return;
