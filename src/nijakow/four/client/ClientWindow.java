@@ -24,6 +24,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPasswordField;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
@@ -42,8 +43,7 @@ public class ClientWindow extends JFrame implements ActionListener, ClientReceiv
 	private static final String ACTION_SETTINGS = "settings";
 	private static final String ACTION_SEND = "send";
 	private static final String ACTION_STATUS_LABEL_TIMER = "invisible";
-	private static final char SPECIAL_START = 0x02;
-	private static final char SPECIAL_END = 0x03;
+	private static final String ACTION_PASSWORD = "password";
 	private static final String STYLE_ERROR = "error";
 	private static final String STYLE_NORMAL = "RESET";
 	private static final String STYLE_BG_BLUE = "BG_BLUE";
@@ -59,10 +59,14 @@ public class ClientWindow extends JFrame implements ActionListener, ClientReceiv
 	private static final String STYLE_ITALIC = "ITALIC";
 	private static final String STYLE_BOLD = "BOLD";
 	private static final String STYLE_UNDERSCORED = "UNDERSCORED";
+	private static final String SPECIAL_PWD = "?";
+	private static final char SPECIAL_START = 0x02;
+	private static final char SPECIAL_END = 0x03;
 	private String buffer;
 	private JLabel connectionStatus;
 	private JScrollPane pane;
 	private JTextField prompt;
+	private JPasswordField pwf;
 	private JTextPane area;
 	private StyledDocument term;
 	private PreferencesHelper prefs;
@@ -108,6 +112,8 @@ public class ClientWindow extends JFrame implements ActionListener, ClientReceiv
 		// TODO macOS customization
 		// TODO C editor
 		// TODO iterate through ports
+		// TODO . Prompt
+		// TODO ? Password
 		buffer = "";
 		bother = true;
 		prefs = new PreferencesHelper();
@@ -121,12 +127,18 @@ public class ClientWindow extends JFrame implements ActionListener, ClientReceiv
 		prompt.setFont(font);
 		prompt.addActionListener(this);
 		prompt.setActionCommand(ACTION_SEND);
+		pwf = new JPasswordField();
+		pwf.setFont(font);
+		pwf.addActionListener(this);
+		pwf.setActionCommand(ACTION_PASSWORD);
 		connectionStatus = new JLabel();
 		getContentPane().add(connectionStatus, BorderLayout.NORTH);
 		JButton settings = new JButton("Settings");
 		settings.addActionListener(this);
 		settings.setActionCommand(ACTION_SETTINGS);
 		south.add(prompt);
+		south.add(pwf);
+		pwf.setVisible(false);
 		south.add(settings);
 		getContentPane().add(south, BorderLayout.SOUTH);
 		area = new JTextPane();
@@ -321,13 +333,29 @@ public class ClientWindow extends JFrame implements ActionListener, ClientReceiv
 		return ret;
 	}
 	
+	private void parseArgument(String arg) {
+		switch (arg) {
+		case SPECIAL_PWD:
+			EventQueue.invokeLater(() -> {
+				pwf.setVisible(true);
+				prompt.setVisible(false);
+				validate();
+			});
+			break;
+			
+		default:
+			current = getStyleByName(arg);
+			break;
+		}
+	}
+	
 	@Override
 	public void lineReceived(char c) {
 		EventQueue.invokeLater(() -> {
 			try {
 				if (c == SPECIAL_END) {
 					wasSpecial = false;
-					current = getStyleByName(buffer);
+					parseArgument(buffer);
 				} else if (wasSpecial)
 					buffer += c;
 				else if (c == SPECIAL_START) {
@@ -344,6 +372,7 @@ public class ClientWindow extends JFrame implements ActionListener, ClientReceiv
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {
+		JTextField tmp = prompt;
 		switch (e.getActionCommand()) {
 		case ACTION_SETTINGS:
 			openSettingsWindow();
@@ -353,14 +382,21 @@ public class ClientWindow extends JFrame implements ActionListener, ClientReceiv
 			connectionStatus.setVisible(false);
 			break;
 			
+		case ACTION_PASSWORD:
+			prompt.setVisible(true);
+			pwf.setVisible(false);
+			validate();
+			tmp = pwf;
+			
 		case ACTION_SEND:
-			String text = prompt.getText() + "\n";
+			String text = tmp.getText() + "\n";
+			tmp.enableInputMethods(true);
 			try {
 				term.insertString(term.getLength(), text, null);
 			} catch (BadLocationException e1) {
 				e1.printStackTrace();
 			}
-			prompt.setText("");
+			tmp.setText("");
 			queue.schedule(() -> {
 				try {
 					connection.send(text);
