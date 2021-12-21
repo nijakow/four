@@ -17,6 +17,7 @@ public abstract class Instance {
 	public Blue asBlue() { throw new RuntimeException("Conversion failed!"); }
 	public FString asFString() { throw new RuntimeException("Conversion failed!"); }
 	public FList asFList() { throw new RuntimeException("Conversion failed!"); }
+	public FMapping asFMapping() { throw new RuntimeException("Conversion failed!"); }
 	public FClosure asFClosure() { throw new RuntimeException("Conversion failed!"); }
 	public FConnection asFConnection() { throw new RuntimeException("Conversion failed!"); }
 	

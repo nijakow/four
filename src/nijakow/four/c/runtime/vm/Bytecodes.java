@@ -22,6 +22,7 @@ public class Bytecodes {
 	public static final byte BYTECODE_TYPE_CHECK = 0x12;
 	public static final byte BYTECODE_TYPE_CAST = 0x13;
 	public static final byte BYTECODE_MAKE_LIST = 0x14;
-	public static final byte BYTECODE_LOAD_INDEX = 0x15;
-	public static final byte BYTECODE_STORE_INDEX = 0x16;
+	public static final byte BYTECODE_MAKE_MAPPING = 0x15;
+	public static final byte BYTECODE_LOAD_INDEX = 0x16;
+	public static final byte BYTECODE_STORE_INDEX = 0x17;
 }
