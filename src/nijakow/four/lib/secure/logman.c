@@ -2,7 +2,7 @@ inherit "/secure/object.c";
 
 bool check_login(string name, string pass)
 {
-    any users = {
+    list users = {
         "enijakow",
         "mhahn"
     };

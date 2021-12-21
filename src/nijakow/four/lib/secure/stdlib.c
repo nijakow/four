@@ -42,22 +42,22 @@ int rand()
     return $random();
 }
 
-int length(any lst)
+int length(list lst)
 {
     return $listlen(lst);
 }
 
-void insert(any lst, int index, any value)
+void insert(list lst, int index, any value)
 {
     $listinsert(lst, index, value);
 }
 
-void append(any lst, any value)
+void append(list lst, any value)
 {
     insert(lst, length(lst), value);
 }
 
-any remove(any lst, int index)
+any remove(list lst, int index)
 {
     return $listremove(lst, index);
 }
@@ -104,12 +104,12 @@ string trim(string s)
     return substr(s, start, end + 1);
 }
 
-any splitson(string s, func predicate)
+list splitson(string s, func predicate)
 {
     int pos = 0;
     int start = 0;
     int len = strlen(s);
-    any lst = {};
+    list lst = {};
 
     while (pos < len)
     {
@@ -123,12 +123,12 @@ any splitson(string s, func predicate)
     return lst;
 }
 
-any spliton(string s, func predicate)
+list spliton(string s, func predicate)
 {
     int pos = 0;
     int start = 0;
     int len = strlen(s);
-    any lst = {};
+    list lst = {};
 
     while (pos < len)
     {
@@ -144,7 +144,7 @@ any spliton(string s, func predicate)
     return lst;
 }
 
-any split(string s)
+list split(string s)
 {
     return spliton(s, this::isspace);
 }

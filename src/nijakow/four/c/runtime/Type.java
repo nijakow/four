@@ -91,6 +91,22 @@ public abstract class Type {
 		}
 	};
 	
+	private static final Type LIST = new Type() {
+		
+		@Override
+		public Instance cast(Instance instance) {
+			if (check(instance))
+				return instance;
+			else
+				throw new RuntimeException("Can't cast!");
+		}
+		
+		@Override
+		public boolean check(Instance instance) {
+			return (instance instanceof FList) || instance.isNil();
+		}
+	};
+	
 	
 	public static Type getAny() { return ANY; }
 	public static Type getVoid() { return VOID; }
@@ -100,6 +116,7 @@ public abstract class Type {
 	public static Type getString() { return STRING; }
 	public static Type getObject() { return OBJECT; }
 	public static Type getFunc() { return FUNC; }
+	public static Type getList() { return LIST; }
 	
 	private Type() {}
 	

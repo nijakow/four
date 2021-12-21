@@ -62,6 +62,8 @@ public class Parser {
 			return Type.getObject();
 		} else if (check(TokenType.FUNC)) {
 			return Type.getFunc();
+		} else if (check(TokenType.LIST)) {
+			return Type.getList();
 		} else {
 			return null;
 		}
