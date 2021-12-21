@@ -423,7 +423,7 @@ public class ClientWindow extends JFrame implements ActionListener, ClientReceiv
 				if (tmp == prompt)
 					term.insertString(term.getLength(), text, s);
 				else
-					term.insertString(term.getLength(), StringHelper.generateFilledString('*', text.length()) + "\n", s);
+					term.insertString(term.getLength(), StringHelper.generateFilledString('*', text.length() - 1) + "\n", s);
 			} catch (BadLocationException e1) {
 				e1.printStackTrace();
 			}
