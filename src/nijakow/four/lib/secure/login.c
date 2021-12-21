@@ -33,6 +33,12 @@ void banner()
 void setname(string name)
 {
     this.name = name;
+    connection->password(this::setpass, "Password: ");
+}
+
+void setpass(string pass)
+{
+    log(name, " : ", pass, "\n");
     if (the("/secure/logman.c")->check_login(name, "")) {
         connection->write("Hello ", this.name, "!\n\n");
         object player = the("/secure/logman.c")->get_player(name);

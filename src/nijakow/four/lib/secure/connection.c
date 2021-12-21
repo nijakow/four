@@ -14,6 +14,12 @@ void prompt(func cb, ...)
     write(...);
 }
 
+void password(func cb, ...)
+{
+    callback = cb;
+    write("\{?\}", ...);
+}
+
 void write(...)
 {
     while (va_count)
@@ -36,6 +42,7 @@ void mode_bg_black()   { write("\{BG_BLACK\}"); }
 void mode_italic()     { write("\{ITALIC\}"); }
 void mode_bold()       { write("\{BOLD\}"); }
 void mode_underscore() { write("\{UNDERSCORED\}"); }
+
 
 void receive(string text)
 {
