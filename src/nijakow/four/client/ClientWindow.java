@@ -35,11 +35,6 @@ import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 
-import com.apple.eawt.Application;
-import com.apple.eawt.QuitHandler;
-import com.apple.eawt.QuitResponse;
-import com.apple.eawt.AppEvent.QuitEvent;
-
 import nijakow.four.client.net.ClientConnection;
 import nijakow.four.client.net.ClientReceiveListener;
 import nijakow.four.client.utils.StringHelper;
@@ -182,14 +177,6 @@ public class ClientWindow extends JFrame implements ActionListener, ClientReceiv
 		labelTimer = new Timer(5000, this);
 		labelTimer.setActionCommand(ACTION_STATUS_LABEL_TIMER);
 		labelTimer.setRepeats(false);
-		final Application app = Application.getApplication();
-		app.setQuitHandler(new QuitHandler() {
-			@Override
-			public void handleQuitRequestWith(QuitEvent ev, QuitResponse res) {
-				dispose();
-				res.performQuit();
-			}
-		});
 		reconnectorHandler = queue.scheduleWithFixedDelay(reconnector, 0, 5, TimeUnit.SECONDS);
 	}
 	
@@ -385,8 +372,19 @@ public class ClientWindow extends JFrame implements ActionListener, ClientReceiv
 				else
 					promptText.setText("");
 			});
+		} else if (arg.startsWith(SPECIAL_EDIT)) {
+			String splitter = arg.substring(SPECIAL_EDIT.length(), arg.length() - 1);
+			String[] args = splitter.split(SPECIAL_RAW);
+			if (args.length != 3)
+				return;
+			openEditor(args[0], args[1], args[2]);
 		} else
 			current = getStyleByName(arg);
+	}
+	
+	private void openEditor(final String id, final String title, String content) {
+		JDialog edWindow = new JDialog(this, title);
+		//JTextPane
 	}
 	
 	@Override
