@@ -9,12 +9,13 @@ public class Main {
 
 	public static void main(String[] args) throws IOException {
 		ArrayList<Integer> ports = new ArrayList<>();
-		boolean server = false, client = false;
+		boolean server = false;
+		int clients = 0;
 		for (int i = 0; i < args.length; i++) {
 			switch (args[i]) {
 			case "--client":
 			case "-c":
-				client = true;
+				clients++;
 				break;
 
 			case "--server":
@@ -82,7 +83,7 @@ public class Main {
 		int[] ps = new int[ports.size()];
 		for (int i = 0; i < ps.length; i++)
 			ps[i] = ports.get(i);
-		if (client)
+		while (clients --> 0)
 			ClientWindow.openWindow(ps);
 		if (server) {
 			Four four = new Four(ps);
