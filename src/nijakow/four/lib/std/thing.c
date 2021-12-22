@@ -161,7 +161,7 @@ void act(...)
 
 void me_act(...)
 {
-    act(get_short(), " ", ...);
+    act(capitalize(get_short()), " ", ...);
 }
 
 bool try_move_check_obj(object actor, object obj, object target, object cp)

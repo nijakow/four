@@ -21,7 +21,7 @@ void lookaround()
          obj = obj->get_sibling())
     {
         if (obj != this)
-            connection->write(obj->get_short(), ".\n");
+            connection->write(capitalize(obj->get_short()), ".\n");
     }
 }
 
@@ -72,7 +72,7 @@ void cmd_inv(string text)
          obj = obj->get_sibling())
     {
         if (obj != this)
-            connection->write(obj->get_short(), ".\n");
+            connection->write(capitalize(obj->get_short()), ".\n");
     }
 }
 

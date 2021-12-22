@@ -87,27 +87,29 @@ bool isnewline(char c)
     return (c == '\n');
 }
 
+bool isdigit(char c)
+{
+	return ((c >= '0') && (c <= '9'));
+}
+
 bool isupper(char c) { return c >= 'A' && c <= 'Z'; }
+bool islower(char c) { return c >= 'a' && c <= 'z'; }
 
 char toupper(char c)
 {
-    if (isupper(c))
-        return c;
-    return c + ('a' - 'A');
+    if (islower(c))
+        return c - ('a' - 'A');
+    return c;
 }
 
 string capitalize(string s)
 {
+    /* TODO: Skip escape sequences */
     int len = strlen(s);
     if (len == 0)
         return s;
     else
         return chr(toupper(s[0])) + substr(s, 1, len);
-}
-
-bool isdigit(char c)
-{
-	return ((c >= '0') && (c <= '9'));
 }
 
 string trim(string s)
