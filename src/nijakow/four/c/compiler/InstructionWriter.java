@@ -181,12 +181,14 @@ public class InstructionWriter {
 		byte[] bytes = new byte[out.size()];
 		for (int i = 0; i < out.size(); i++)
 			bytes[i] = out.get(i);
+		if (maxLocal + 1 < paramCount)
+			maxLocal = paramCount - 1;
 		return new ByteCode(paramCount,
 							hasVarargs,
 							maxLocal + 1,
 							bytes,
 							keys.toArray(new Key[0]),
 							constants.toArray(new Instance[0]),
-							types .toArray(new Type[0]));
+							types.toArray(new Type[0]));
 	}
 }
