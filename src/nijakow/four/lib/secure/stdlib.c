@@ -87,6 +87,24 @@ bool isnewline(char c)
     return (c == '\n');
 }
 
+bool isupper(char c) { return c >= 'A' && c <= 'Z'; }
+
+char toupper(char c)
+{
+    if (isupper(c))
+        return c;
+    return c + ('a' - 'A');
+}
+
+string capitalize(string s)
+{
+    int len = strlen(s);
+    if (len == 0)
+        return s;
+    else
+        return chr(toupper(s[0])) + substr(s, 1, len);
+}
+
 bool isdigit(char c)
 {
 	return ((c >= '0') && (c <= '9'));
