@@ -41,6 +41,39 @@ void cmd_say(string text)
     act(get_short(), " says: ", text, "\n");
 }
 
+void cmd_take(string text)
+{
+    list objects = find_thing_here(text);
+    if (length(objects) == 0) {
+        write("There is no such thing here!\n");
+    } else {  // TODO: What if already carried? Takeability/IsHeavy?
+        objects[0]->move_to(this);
+        write("Taken.\n");
+    }
+}
+
+void cmd_drop(string text)
+{
+    list objects = find_thing(text);
+    if (length(objects) == 0) {
+        write("There is no such thing here!\n");
+    } else {
+        objects[0]->move_to(get_location());
+        write("Dropped.\n");
+    }
+}
+
+void cmd_inv(string text)
+{
+    for (object obj = get_children();
+         obj != nil;
+         obj = obj->get_sibling())
+    {
+        if (obj != this)
+            connection->write(obj->get_short(), ".\n");
+    }
+}
+
 void docmd(string cmd)
 {
     string args;
@@ -61,6 +94,12 @@ void docmd(string cmd)
         cmd_go(args);
     } else if (cmd == "say") {
         cmd_say(args);
+    } else if (cmd == "take") {
+        cmd_take(args);
+    } else if (cmd == "inv") {
+        cmd_inv(args);
+    } else if (cmd == "drop") {
+        cmd_drop(args);
     } else if (cmd == "exit") {
         exit();
         return;

@@ -134,11 +134,44 @@ list names;
 bool reacts(list words)
 {
     for (int x = 0; x < length(words); x++)
-        if (!member(names, word[x]))
+        if (!member(names, words[x]))
             return false;
     return true;
 }
-void add_name(string word) { append(names, word);        }
+
+void add_names(...)
+{
+    while (va_count > 0)
+    {
+        append(names, va_next);
+    }
+}
+
+void _find_thing(list names, list elems)
+{
+    if (this->reacts(names))
+        append(elems, this);
+    for (object child = get_children();
+         child != nil;
+         child = child->get_sibling())
+    {
+        child->_find_thing(names, elems);
+    }
+}
+
+list find_thing_here(string name)
+{
+    list elems = {};
+    get_location()->_find_thing(split(name), elems);
+    return elems;
+}
+
+list find_thing(string name)
+{
+    list elems = {};
+    _find_thing(split(name), elems);
+    return elems;
+}
 
 
 /*
