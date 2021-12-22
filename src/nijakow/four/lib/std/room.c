@@ -2,15 +2,6 @@ inherit "/std/thing.c";
 
 mapping exits;
 
-/* Deprecated, marked for deletion
-void broadcast(...)
-{
-    for (object obj = get_children(); obj != nil; obj = obj->get_sibling())
-    {
-        obj->write(...);
-    }
-}
-*/
 
 object get_exit(string dir)
 {
