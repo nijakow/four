@@ -148,7 +148,7 @@ void me_act(...)
     act(get_short(), " ", ...);
 }
 
-bool go_to(object location)
+bool act_goto(object location)
 {
     object current = get_location();
     
@@ -164,6 +164,41 @@ bool go_to(object location)
         current->evt_leaving(this);
     
     return true;
+}
+
+bool act_take(object obj)
+{
+    /*
+     * TODO: Let the object veto against being taken!
+     *       (e.g. if the object is inside of a player)
+     *       in this case, the object asks the container if
+     *       it may be removed (players never allow that).
+     *                               - nijakow
+     */
+    if (this->contains_or_is(obj)) {
+        return false;
+    } else {
+        me_act("takes ", obj->get_short(), ".\n");
+        obj->move_to(this);
+        return true;
+    }
+}
+
+bool act_drop(object obj)
+{
+    /*
+     * TODO: Let the object veto against being dropped!
+     *       (e.g. if the object is inside of a player)
+     *       in this case, the object asks the container if
+     *       it may be inserted (players never allow that).
+     *                               - nijakow
+     */
+    if (!this->contains(obj)) {
+        return false;
+    } else {
+        me_act("drops ", obj->get_short(), ".\n");
+        obj->move_to(get_location());
+    }
 }
 
 

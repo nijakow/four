@@ -30,7 +30,7 @@ void cmd_go(string dir)
     object loc = get_location()->get_exit(dir);
     
     if (loc != nil) {
-    	go_to(loc);
+    	act_goto(loc);
     	say_room = true;
     } else
     	connection->write("There is no exit in this direction!\n");
@@ -46,14 +46,10 @@ void cmd_take(string text)
     list objects = find_thing_here(text);
     if (length(objects) == 0) {
         write("There is no such thing here!\n");
-    } else {  // TODO: What if already carried? Takeability/IsHeavy?
-        if (this->contains_or_is(objects[0])) {
-            write("You already have that!\n");
-        } else {
-            me_act("takes ", objects[0]->get_short(), ".\n");
-            objects[0]->move_to(this);
-            write("Taken.\n");
-        }
+    } else if (!act_take(objects[0])) {
+        write("You can't take that!\n");
+    } else {
+        write("Taken.\n");
     }
 }
 
@@ -62,14 +58,10 @@ void cmd_drop(string text)
     list objects = find_thing(text);
     if (length(objects) == 0) {
         write("There is no such thing here!\n");
-    } else {  // TODO: A player should not be able to take anything carried (or themselves)!
-        if (!this->contains(objects[0])) {
-            write("You don't have that!\n");
-        } else {
-            me_act("drops ", objects[0]->get_short(), ".\n");
-            objects[0]->move_to(get_location());
-            write("Dropped.\n");
-        }
+    } else if (!act_drop(objects[0])) {
+        write("You can't drop that!\n");
+    } else {
+        write("Dropped.\n");
     }
 }
 
@@ -130,7 +122,7 @@ void resume()
 
 void exit()
 {
-    go_to(nil);
+    act_goto(nil);
     log("Player requested logout.\n");
     connection->write("Goodbye!\n");
     connection->close();
@@ -148,7 +140,7 @@ void activate_as(string name)
 {
     set_name(name);
     add_names(name);
-    go_to(the("/world/void.c"));
+    act_goto(the("/world/void.c"));
 }
 
 void create()
