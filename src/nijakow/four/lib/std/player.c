@@ -47,8 +47,13 @@ void cmd_take(string text)
     if (length(objects) == 0) {
         write("There is no such thing here!\n");
     } else {  // TODO: What if already carried? Takeability/IsHeavy?
-        objects[0]->move_to(this);
-        write("Taken.\n");
+        if (this->contains_or_is(objects[0])) {
+            write("You already have that!\n");
+        } else {
+            me_act("takes ", objects[0]->get_short(), ".\n");
+            objects[0]->move_to(this);
+            write("Taken.\n");
+        }
     }
 }
 
@@ -58,8 +63,13 @@ void cmd_drop(string text)
     if (length(objects) == 0) {
         write("There is no such thing here!\n");
     } else {  // TODO: A player should not be able to take anything carried (or themselves)!
-        objects[0]->move_to(get_location());
-        write("Dropped.\n");
+        if (!this->contains(objects[0])) {
+            write("You don't have that!\n");
+        } else {
+            me_act("drops ", objects[0]->get_short(), ".\n");
+            objects[0]->move_to(get_location());
+            write("Dropped.\n");
+        }
     }
 }
 

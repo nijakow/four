@@ -47,6 +47,25 @@ void move_to(object new_parent)
     }
 }
 
+bool contains(object obj)
+{
+    for (object child = get_children();
+         child != nil;
+         child = child->get_sibling())
+    {
+        if (child->contains_or_is(obj))
+            return true;
+    }
+    return false;
+}
+
+bool contains_or_is(object obj)
+{
+    if (obj == this)
+        return true;
+    return contains(obj);
+}
+
 
 /*
  *    D e s c r i p t i v e   P r o p e r t i e s
@@ -122,6 +141,11 @@ void act(...)
     } else {
         this->on_act(this, ...);
     }
+}
+
+void me_act(...)
+{
+    act(get_short(), " ", ...);
 }
 
 bool go_to(object location)
