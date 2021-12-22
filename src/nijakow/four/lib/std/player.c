@@ -11,21 +11,6 @@ void write(...)
 }
 
 
-object get_location() { return get_parent(); }
-
-void go_to(object location)
-{
-    object current = get_location();
-    
-    if (location != nil)
-        location->evt_entering(this);
-    move_to(location);
-    if (current != nil)
-        current->evt_leaving(this);
-    say_room = 1;
-}
-
-
 void lookaround()
 {
     connection->write("\n");
@@ -44,24 +29,16 @@ void cmd_go(string dir)
 {
     object loc = get_location()->get_exit(dir);
     
-    if (loc != nil)
+    if (loc != nil) {
     	go_to(loc);
-    else
+    	say_room = true;
+    } else
     	connection->write("There is no exit in this direction!\n");
 }
 
-/*
- * TODO: Use the "act()" method for this!
- */
 void cmd_say(string text)
 {
-    for (object obj = get_location()->get_children();
-         obj != nil;
-         obj = obj->get_sibling())
-    {
-        if (obj != this)
-            obj->write(get_short(), " says: ", text, "\n");
-    }
+    act(get_short(), " says: ", text, "\n");
 }
 
 void docmd(string cmd)
@@ -97,7 +74,7 @@ void resume()
 {
     if (say_room) {
         lookaround();
-        say_room = 0;
+        say_room = false;
     }
     connection->prompt(this::docmd, "> ");
 }
@@ -128,5 +105,5 @@ void create()
 {
     "/std/thing.c"::create();
     connection = nil;
-    say_room = 1;
+    say_room = true;
 }

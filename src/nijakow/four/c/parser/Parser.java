@@ -132,7 +132,7 @@ public class Parser {
 			return new ASTThis();
 		} else if (check(TokenType.NIL)) {
 			return new ASTConstant(Instance.getNil());
-		} else if (check(TokenType.NIL)) {
+		} else if (check(TokenType.TRUE)) {
 			return new ASTConstant(new FInteger(1));
 		} else if (check(TokenType.FALSE)) {
 			return new ASTConstant(new FInteger(0));
