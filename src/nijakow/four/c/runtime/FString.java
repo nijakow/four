@@ -12,6 +12,11 @@ public class FString extends Instance {
 	}
 	
 	@Override
+	public int hashCode() {
+		return value.hashCode();
+	}
+
+	@Override
 	public boolean equals(Object obj) {
 		if (obj == null) return false;
 		else if (!(obj instanceof FString)) return false;

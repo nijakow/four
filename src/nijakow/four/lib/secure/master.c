@@ -2,10 +2,11 @@ inherit "/secure/stdlib.c";
 
 use $on_connect;
 
-void receive(any connection)
+void receive(any port)
 {
 	log("New connection!\n");
-	new("/secure/login.c", new("/secure/connection.c", connection));
+	object connection = new("/secure/connection.c", port);
+	new("/secure/login.c")->start(connection);
 }
 
 void create()

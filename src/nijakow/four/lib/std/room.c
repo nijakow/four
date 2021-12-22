@@ -1,5 +1,7 @@
 inherit "/std/thing.c";
 
+mapping exits;
+
 
 void evt_entering(object obj)
 {
@@ -22,10 +24,20 @@ void broadcast(...)
 
 object get_exit(string dir)
 {
-    return nil;
+    string result = exits[dir];
+    if (result != nil)
+        return the(result);
+    else
+        return nil;
+}
+
+void add_exit(string dir, string room)
+{
+    exits[dir] = room;
 }
 
 void create()
 {
     "/std/thing.c"::create();
+    exits = [];
 }

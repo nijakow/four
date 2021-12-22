@@ -55,14 +55,18 @@ void setpass(string pass)
 void setuname(string uname)
 {
     object player = the("/secure/logman.c")->get_player(name);
-    player->bind(connection);
     player->activate_as(uname);
-    player->resume();
+    player->start(connection);
 }
 
-void create(object the_connection)
+void start(object the_connection)
 {
     connection = the_connection;
     banner();
     connection->prompt(this::setname, "What's your intra name? ");
+}
+
+void create()
+{
+    connection = nil;
 }

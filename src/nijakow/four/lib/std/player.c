@@ -110,9 +110,10 @@ void exit()
     connection->close();
 }
 
-void bind(object connection)
+void start(object connection)
 {
     this.connection = connection;
+    resume();
 }
 
 bool inhibit_create_on_init() { return 1; }
