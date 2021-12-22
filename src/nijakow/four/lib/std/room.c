@@ -2,17 +2,7 @@ inherit "/std/thing.c";
 
 mapping exits;
 
-
-void evt_entering(object obj)
-{
-    broadcast(obj->get_short(), " enters.\n");
-}
-
-void evt_leaving(object obj)
-{
-    broadcast(obj->get_short(), " leaves.\n");
-}
-
+/* Deprecated, marked for deletion
 void broadcast(...)
 {
     for (object obj = get_children(); obj != nil; obj = obj->get_sibling())
@@ -20,7 +10,7 @@ void broadcast(...)
         obj->write(...);
     }
 }
-
+*/
 
 object get_exit(string dir)
 {
