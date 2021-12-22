@@ -20,7 +20,7 @@ void remove_child(object child)
     if (children == child) {
         children = child->get_sibling();
     } else {
-        for (object c = children; c != nil; c = c->get_sibling)
+        for (object c = children; c != nil; c = c->get_sibling())
         {
             if (c->get_sibling() == child) {
                 c->sibling = child->get_sibling();
@@ -52,14 +52,32 @@ void move_to(object new_parent)
  *    D e s c r i p t i v e   P r o p e r t i e s
  */
 
-string short_desc;
+bool   is_properly_named;
+string article;
+string name;
 string long_desc;
 
-string get_short() { return short_desc; }
-string get_long()  { return long_desc;  }
+string get_name()         { return name; }
+void   set_name(string n) { name = n; }
 
-void set_short(string s) { short_desc = s; }
-void set_long(string l)  { long_desc  = l; }
+string get_short()
+{
+    if (is_properly_named)
+        return get_name();
+    return article + " " + get_name();
+}
+
+string get_long()         { return long_desc;  }
+void   set_long(string l) { long_desc  = l; }
+
+string get_the_short()
+{
+    if (is_properly_named)
+        return get_name();
+    return "the " + get_name();
+}
+
+void set_properly_named() { is_properly_named = true; }
 
 
 /*
@@ -134,9 +152,11 @@ list names;
 bool reacts(list words)
 {
     for (int x = 0; x < length(words); x++)
+    {
         if (!member(names, words[x]))
             return false;
-    return true;
+    }
+    return length(words) != 0;
 }
 
 void add_names(...)
@@ -189,15 +209,17 @@ void create()
     parent = nil;
     sibling = nil;
     children = nil;
-    set_short("<error>");
+    is_properly_named = false;
+    article = "a";
+    set_name("<error>");
     set_long("<error>");
+    names = {};
 }
 
 void _init()
 {
     "/secure/object.c"::_init();
     is_container = true;
-    names = {};
     if (!inhibit_create_on_init()) {
         create();
     }

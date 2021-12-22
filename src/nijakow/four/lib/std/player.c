@@ -57,7 +57,7 @@ void cmd_drop(string text)
     list objects = find_thing(text);
     if (length(objects) == 0) {
         write("There is no such thing here!\n");
-    } else {
+    } else {  // TODO: A player should not be able to take anything carried (or themselves)!
         objects[0]->move_to(get_location());
         write("Dropped.\n");
     }
@@ -136,13 +136,16 @@ bool inhibit_create_on_init() { return 1; }
 
 void activate_as(string name)
 {
-    set_short(name);
+    set_name(name);
+    add_names(name);
     go_to(the("/world/void.c"));
 }
 
 void create()
 {
     "/std/thing.c"::create();
+    set_properly_named();
     connection = nil;
     say_room = true;
+    log("Initializing the player ", this, "\n");
 }
