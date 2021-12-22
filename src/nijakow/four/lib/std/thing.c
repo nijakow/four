@@ -125,6 +125,21 @@ bool go_to(object location)
 }
 
 
+/*
+ *    R e a c t i o n s   a n d   F i n d i n g
+ */
+
+list names;
+
+bool reacts(list words)
+{
+    for (int x = 0; x < length(words); x++)
+        if (!member(names, word[x]))
+            return false;
+    return true;
+}
+void add_name(string word) { append(names, word);        }
+
 
 /*
  *    M i s c e l l a n e o u s
@@ -149,6 +164,7 @@ void _init()
 {
     "/secure/object.c"::_init();
     is_container = true;
+    names = {};
     if (!inhibit_create_on_init()) {
         create();
     }
