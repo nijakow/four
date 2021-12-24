@@ -3,6 +3,7 @@ package nijakow.four.client;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Cursor;
+import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.GridLayout;
@@ -146,6 +147,8 @@ public class ClientWindow extends JFrame implements ActionListener, ClientReceiv
 			setLocation(x, y);
 		int width = prefs.getWindowWidth();
 		int height = prefs.getWindowHeight();
+		setMinimumSize(new Dimension(300, 200));
+		setPreferredSize(new Dimension(750, 500));
 		if (width == -1 || height == -1)
 			pack();
 		else

@@ -65,6 +65,16 @@ void cmd_drop(string text)
     }
 }
 
+void cmd_examine(string text)
+{
+    list objects = find_thing_here(text);
+    if (length(objects) == 0) {
+        write("There is no such thing here!\n");
+    } else {
+        write(objects[0]->get_long(), "\n");
+    }
+}
+
 void cmd_inv(string text)
 {
     for (object obj = get_children();
@@ -96,10 +106,12 @@ void docmd(string cmd)
         cmd_go(args);
     } else if (cmd == "say") {
         cmd_say(args);
-    } else if (cmd == "take") {
+    } else if (cmd == "take" || cmd == "get") {
         cmd_take(args);
     } else if (cmd == "inv") {
         cmd_inv(args);
+    } else if (cmd == "examine") {
+        cmd_examine(args);
     } else if (cmd == "drop") {
         cmd_drop(args);
     } else if (cmd == "exit") {
