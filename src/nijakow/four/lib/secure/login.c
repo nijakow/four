@@ -56,6 +56,11 @@ void setuname(string uname)
 {
     object player = the("/secure/logman.c")->get_player(name);
     player->activate_as(uname);
+    object sword = new("/world/sword.c");
+    sword->set_name(uname + "'s sword");
+    sword->set_properly_named();
+    sword->add_names(uname + "'s");
+    sword->move_to(player);
     player->start(connection);
 }
 
