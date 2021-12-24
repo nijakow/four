@@ -14,14 +14,18 @@ void write(...)
 void lookaround()
 {
     connection->write("\n");
-    connection->write(get_location()->get_short(), "\n");
-    connection->write(get_location()->get_long(), "\n");
-    for (object obj = get_location()->get_children();
-         obj != nil;
-         obj = obj->get_sibling())
-    {
-        if (obj != this)
-            connection->write(capitalize(obj->get_short()), ".\n");
+    if (query_light_level_here() == 0) {
+        connection->write("Is is pitch black here.\n");
+    } else {
+	    connection->write(get_location()->get_short(), "\n");
+	    connection->write(get_location()->get_long(), "\n");
+	    for (object obj = get_location()->get_children();
+	         obj != nil;
+	         obj = obj->get_sibling())
+	    {
+	        if (obj != this)
+	            connection->write(capitalize(obj->get_short()), ".\n");
+	    }
     }
 }
 

@@ -79,6 +79,29 @@ object find_common_parent(object obj)
     return nil;
 }
 
+void _add_objects(list the_list)
+{
+    append(the_list, this);
+    for (object obj = get_children();
+         obj != nil;
+         obj = obj->get_sibling())
+    {
+        obj->_add_objects(the_list);
+    }
+}
+
+list objects_here()
+{
+    list objects = {};
+    get_location()->_add_objects(objects);
+    return objects;
+}
+
+list visible_objects_here()
+{
+    return objects_here();
+}
+
 
 /*
  *    D e s c r i p t i v e   P r o p e r t i e s
@@ -252,6 +275,52 @@ bool act_drop(object obj)
 
 
 /*
+ *    L i g h t   a n d   D a r k n e s s
+ */
+
+int brightness;
+
+void set_brightness(int value)
+{
+    brightness = value;
+}
+
+int get_brightness()
+{
+    return brightness;
+}
+
+int _query_light_level(object ignore)
+{
+    int max_brightness = 0;
+    for (object obj = get_children();
+         obj != nil;
+         obj = obj->get_sibling())
+    {
+        if (obj != ignore)
+        {
+            int obrightness = obj->query_light_level();
+            if (obrightness > max_brightness)
+                max_brightness = obrightness;
+        }
+    }
+    if (get_brightness() > max_brightness)
+        return get_brightness();
+    return max_brightness;
+}
+
+int query_light_level()
+{
+    return _query_light_level(this);
+}
+
+int query_light_level_here()
+{
+    return get_location()->query_light_level();
+}
+
+
+/*
  *    R e a c t i o n s   a n d   F i n d i n g
  */
 
@@ -328,6 +397,7 @@ void _init()
 {
     "/secure/object.c"::_init();
     is_container = true;
+    brightness = 0;
     if (!inhibit_create_on_init()) {
         create();
     }
