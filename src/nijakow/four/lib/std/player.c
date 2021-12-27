@@ -124,11 +124,15 @@ void docmd(string cmd)
         exit();
         return;
     } else if (cmd == "edit") {
-    	connection->write("\{$", 42, ":", args, ":", $filetext(args), "\}");
+        connection->edit(this::stopEdit, args, $filetext(args));
     } else {
         connection->write("I didn't quite get that, sorry...\n");
     }
     resume();
+}
+
+void stopEdit(int id, string content) {
+	log(id, "\n", content);
 }
 
 void resume()

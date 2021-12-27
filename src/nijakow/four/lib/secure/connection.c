@@ -29,6 +29,7 @@ void password(func cb, ...)
 
 void edit(func cb, string title, string text)
 {
+    // TODO: generate a key individually
     string key = "42";
     mapped_callbacks[key] = cb;
     write("\{$", key, ":", title, ":", text, "\}");
@@ -63,6 +64,13 @@ void process_escaped(string ln)
     /*
      * TODO: Handle codes sent by the client!
      */
+    int index = 0;
+    if (ln[index] == '$') {
+        index++;
+        string id = substr(ln, index, (index = indexof(ln, ':')));
+        string content = substr(ln, index + 1, strlen(ln));
+        call(mapped_callbacks[id], id, content);
+    }
 }
 
 void receive(string text)
