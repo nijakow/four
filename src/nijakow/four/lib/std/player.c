@@ -136,8 +136,17 @@ string editPath;
 
 void cmd_write_file(string id, string text)
 {
-    if (text != nil)
-        $filetext_set(editPath, text);
+    if (text != nil) {
+        connection->mode_italic();
+        if(!$filetext_set(editPath, text)) {
+            connection->mode_red();
+            connection->write("Could not write \"", editPath, "\"!\n");
+        } else {
+            connection->mode_green();
+            connection->write("\"", editPath, "\" written.\n");
+        }
+        connection->mode_normal();
+    }
 }
 
 void cmd_edit_file(string text)
