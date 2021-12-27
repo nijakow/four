@@ -197,7 +197,6 @@ public class Key {
 					fiber.setAccu(new FInteger(0));
 				} else {
 					node.asFile().setContents(value);
-					// TODO insert snapshotting of filesystem
 					fiber.setAccu(new FInteger(1));
 				}
 			}
