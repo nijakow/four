@@ -67,8 +67,15 @@ void process_escaped(string ln)
     int index = 0;
     if (ln[index] == '$') {
         index++;
-        string id = substr(ln, index, (index = indexof(ln, ':')));
-        string content = substr(ln, index + 1, strlen(ln));
+        int sepIndex = indexof(ln, ':');
+        string id;
+        string content = nil;
+        if (sepIndex < 0)
+            id = substr(ln, index, strlen(ln));
+        else {
+            id = substr(ln, index, sepIndex);
+            content = substr(ln, sepIndex + 1, strlen(ln));
+        }
         call(mapped_callbacks[id], id, content);
     }
 }

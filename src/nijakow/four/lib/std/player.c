@@ -136,7 +136,8 @@ string editPath;
 
 void cmd_write_file(string id, string text)
 {
-    $filetext_set(editPath, text);
+    if (text != nil)
+        $filetext_set(editPath, text);
 }
 
 void cmd_edit_file(string text)
