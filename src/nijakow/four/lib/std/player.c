@@ -90,8 +90,6 @@ void cmd_inv(string text)
     }
 }
 
-use $filetext;
-
 void docmd(string cmd)
 {
     string args;
@@ -124,15 +122,33 @@ void docmd(string cmd)
         exit();
         return;
     } else if (cmd == "edit") {
-        connection->edit(this::stopEdit, args, $filetext(args));
+        cmd_edit_file(args);
     } else {
         connection->write("I didn't quite get that, sorry...\n");
     }
     resume();
 }
 
-void stopEdit(int id, string content) {
-	log(id, "\n", content);
+use $filetext;
+use $filetext_set;
+
+string editPath;
+
+void cmd_write_file(string id, string text)
+{
+    $filetext_set(editPath, text);
+}
+
+void cmd_edit_file(string text)
+{
+    /*
+     * TODO: Check if the requested file can be edited by the current user.
+     *       Maybe also disable editing of special security files.
+     * - mhahnFr
+     */
+    // TODO: write callback function in stdlib
+    editPath = text;
+    connection->edit(this::cmd_write_file, text, $filetext(text));
 }
 
 void resume()
