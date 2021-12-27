@@ -61,9 +61,6 @@ void mode_underscore() { write("\{UNDERSCORED\}"); }
 
 void process_escaped(string ln)
 {
-    /*
-     * TODO: Handle codes sent by the client!
-     */
     int index = 0;
     if (ln[index] == '$') {
         index++;
