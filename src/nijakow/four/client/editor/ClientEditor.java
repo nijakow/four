@@ -78,6 +78,7 @@ public class ClientEditor extends JDialog implements ActionListener {
 		pack();
 		updateSyntaxHighlighting();
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+		setLocationRelativeTo(owner);
 	}
 	
 	private void addStyles() {
