@@ -159,7 +159,7 @@ list spliton(string s, func predicate)
         }
         pos = pos + 1;
     }
-    if (pos - start > 1)
+    if (pos - start >= 1)
         append(lst, substr(s, start, pos));
     return lst;
 }
