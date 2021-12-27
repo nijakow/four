@@ -90,6 +90,8 @@ void cmd_inv(string text)
     }
 }
 
+use $filetext;
+
 void docmd(string cmd)
 {
     string args;
@@ -121,6 +123,8 @@ void docmd(string cmd)
     } else if (cmd == "exit") {
         exit();
         return;
+    } else if (cmd == "edit") {
+    	connection->write("\{$", 42, ":", args, ":", $filetext(args), "\}");
     } else {
         connection->write("I didn't quite get that, sorry...\n");
     }
