@@ -212,3 +212,24 @@ int atoi(string s)
 	}
 	return num * factor;
 }
+
+string itoa(int i)
+{
+    string pre = "";
+    string s = "";
+
+    if (i < 0) {
+        pre = "-";
+        i = -i;
+    } else if (i == 0) {
+        s = "0";
+    }
+
+    while (i != 0)
+    {
+        s = chr((i % 10) + '0') + s;
+        i = i / 10;
+    }
+
+    return pre + s;
+}

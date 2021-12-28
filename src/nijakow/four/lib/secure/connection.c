@@ -10,6 +10,7 @@ func callback;
 mapping mapped_callbacks;
 string line;
 string escline;
+int id_counter;
 
 void prompt(func cb, ...)
 {
@@ -29,8 +30,7 @@ void password(func cb, ...)
 
 void edit(func cb, string title, string text)
 {
-    // TODO: generate a key individually
-    string key = "42";
+    string key = itoa(id_counter++);
     mapped_callbacks[key] = cb;
     write("\{$", key, ":", title, ":", text, "\}");
 }
@@ -126,6 +126,7 @@ void create(any the_port)
 	line = "";
 	escline = nil;
 	mapped_callbacks = [];
+	id_counter = 0;
 	$on_receive(port, this::receive);
 	$on_disconnect(port, this::handle_disconnect);
 }
