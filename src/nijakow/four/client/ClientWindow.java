@@ -39,10 +39,10 @@ import javax.swing.text.StyledDocument;
 
 import nijakow.four.client.editor.ClientEditor;
 import nijakow.four.client.net.ClientConnection;
-import nijakow.four.client.net.ClientReceiveListener;
+import nijakow.four.client.net.ClientConnectionListener;
 import nijakow.four.client.utils.StringHelper;
 
-public class ClientWindow extends JFrame implements ActionListener, ClientReceiveListener {
+public class ClientWindow extends JFrame implements ActionListener, ClientConnectionListener {
 	private static final long serialVersionUID = 1L;
 	private String buffer;
 	private JLabel connectionStatus;
@@ -63,7 +63,7 @@ public class ClientWindow extends JFrame implements ActionListener, ClientReceiv
 	private final ScheduledExecutorService queue;
 	private final Runnable reconnector = () -> {
 		connection = ClientConnection.getClientConnection(prefs.getHostname(), prefs.getPort());
-		connection.setClientReceiveListener(this);
+		connection.setClientConnectionListener(this);
 		try {
 			connection.establishConnection();
 			EventQueue.invokeLater(() -> {
@@ -116,6 +116,7 @@ public class ClientWindow extends JFrame implements ActionListener, ClientReceiv
 		pwf.setFont(font);
 		pwf.addActionListener(this);
 		pwf.setActionCommand(Commands.ACTION_PASSWORD);
+		pwf.setEchoChar('*');
 		promptText = new JLabel();
 		connectionStatus = new JLabel();
 		getContentPane().add(connectionStatus, BorderLayout.NORTH);
@@ -371,7 +372,7 @@ public class ClientWindow extends JFrame implements ActionListener, ClientReceiv
 	}
 	
 	@Override
-	public void lineReceived(char c) {
+	public void charReceived(ClientConnection connection, char c) {
 		EventQueue.invokeLater(() -> {
 			try {
 				if (c == Commands.SPECIAL_END) {
@@ -388,6 +389,17 @@ public class ClientWindow extends JFrame implements ActionListener, ClientReceiv
 			} catch (BadLocationException e) {
 				e.printStackTrace();
 			}
+		});
+	}
+	
+	@Override
+	public void connectionLost(ClientConnection connection) {
+		EventQueue.invokeLater(() -> {
+			prompt.setText(" Connection closed. ");
+			prompt.setEnabled(false);
+			pwf.setText(" Connection lost." );
+			pwf.setEchoChar((char) 0);
+			pwf.setEnabled(false);
 		});
 	}
 	

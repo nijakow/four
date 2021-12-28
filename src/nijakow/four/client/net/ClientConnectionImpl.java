@@ -11,7 +11,7 @@ public class ClientConnectionImpl implements ClientConnection {
 	private int port;
 	private SocketFactory socketFactory;
 	private Socket socket;
-	private ClientReceiveListener listener;
+	private ClientConnectionListener listener;
 	
 	protected ClientConnectionImpl(String host, int port) {
 		this.port = port;
@@ -43,9 +43,11 @@ public class ClientConnectionImpl implements ClientConnection {
 		int c =  reader.read();
 		while (isConnected() && c != -1) {
 			if (listener != null)
-				listener.lineReceived((char) c);
+				listener.charReceived(this, (char) c);
 			c = reader.read();
 		}
+		if (listener != null)
+			listener.connectionLost(this);
 	}
 	
 	@Override
@@ -53,8 +55,7 @@ public class ClientConnectionImpl implements ClientConnection {
 		socket = socketFactory.createSocket(host, port);
 	}
 	
-	@Override
-	public void setClientReceiveListener(ClientReceiveListener listener) {
+	public void setClientConnectionListener(ClientConnectionListener listener) {
 		this.listener = listener;
 	}
 	
