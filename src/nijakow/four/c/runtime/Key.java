@@ -5,6 +5,7 @@ import java.util.Map;
 
 import nijakow.four.c.parser.ParseException;
 import nijakow.four.c.runtime.fs.FSNode;
+import nijakow.four.c.runtime.fs.File;
 import nijakow.four.c.runtime.vm.Fiber;
 
 public class Key {
@@ -223,9 +224,11 @@ public class Key {
 				FSNode node = fiber.getVM().getFilesystem().find(path);
 				try {
 					node.asFile().recompile();
-				} catch (ParseException e) {
+					fiber.setAccu(new FInteger(1));
+				} catch (ParseException | NullPointerException e) {
 					// TODO: Handle this gracefully
 					e.printStackTrace();
+					fiber.setAccu(new FInteger(0));
 				}
 			}
 		};
