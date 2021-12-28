@@ -35,7 +35,10 @@ public class File extends FSNode {
 	}
 
 	public void recompile() throws ParseException {
-		instance.updateBlueprint(compile());
+		Blueprint result = compile();
+		if (result != null)
+			isDirty = false;
+		instance.updateBlueprint(result);
 	}
 	
 	public Blueprint getBlueprint() {
