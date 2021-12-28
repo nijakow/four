@@ -158,7 +158,15 @@ void cmd_edit_file(string text)
      */
     // TODO: write callback function in stdlib
     editPath = text;
-    connection->edit(this::cmd_write_file, text, $filetext(text));
+    string content = $filetext(text);
+    if (content != nil)
+        connection->edit(this::cmd_write_file, text, content);
+    else {
+        connection->mode_red();
+        connection->mode_italic();
+        connection->write("Could not read \"", text, "\"!\n");
+        connection->mode_normal();
+    }
 }
 
 void resume()
