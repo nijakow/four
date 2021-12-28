@@ -3,6 +3,7 @@ package nijakow.four.c.runtime;
 import java.util.HashMap;
 import java.util.Map;
 
+import nijakow.four.c.parser.ParseException;
 import nijakow.four.c.runtime.fs.FSNode;
 import nijakow.four.c.runtime.vm.Fiber;
 
@@ -201,15 +202,31 @@ public class Key {
 				}
 			}
 		};
-		get("$touch").code = new BuiltinCode() {
+		get("$filetext").code = new BuiltinCode() {
+
+			@Override
+			void run(Fiber fiber, Instance self, Instance[] args) {
+				String path = args[0].asFString().asString();
+				FSNode node = fiber.getVM().getFilesystem().find(path);
+				if (node == null || node.asFile() == null) {
+					fiber.setAccu(Instance.getNil());
+				} else {
+					fiber.setAccu(new FString(node.asFile().getContents()));
+				}
+			}
+		};
+		get("$recompile").code = new BuiltinCode() {
 			
 			@Override
 			void run(Fiber fiber, Instance self, Instance[] args) {
 				String path = args[0].asFString().asString();
-				if (fiber.getVM().getFilesystem().touchf(path) != null)
-					fiber.setAccu(new FInteger(1));
-				else
-					fiber.setAccu(new FInteger(0));
+				FSNode node = fiber.getVM().getFilesystem().find(path);
+				try {
+					node.asFile().recompile();
+				} catch (ParseException e) {
+					// TODO: Handle this gracefully
+					e.printStackTrace();
+				}
 			}
 		};
 	}

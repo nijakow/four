@@ -123,6 +123,8 @@ void docmd(string cmd)
         return;
     } else if (cmd == "edit") {
         cmd_edit_file(args);
+    } else if (cmd == "recompile") {
+        cmd_recompile_file(args);
     } else {
         connection->write("I didn't quite get that, sorry...\n");
     }
@@ -167,6 +169,13 @@ void cmd_edit_file(string text)
         connection->write("Could not read \"", text, "\"!\n");
         connection->mode_normal();
     }
+}
+
+use $recompile;
+
+void cmd_recompile_file(string text)
+{
+    $recompile(trim(text));
 }
 
 void resume()
