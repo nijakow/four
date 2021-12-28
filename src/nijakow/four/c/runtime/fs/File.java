@@ -33,6 +33,10 @@ public class File extends FSNode {
 		ASTFile file = parser.parse();
 		return file.compile(name, getFilesystem());
 	}
+
+	public void recompile() throws ParseException {
+		instance.updateBlueprint(compile());
+	}
 	
 	public Blueprint getBlueprint() {
 		if (blueprint == null || isDirty) {
@@ -50,6 +54,14 @@ public class File extends FSNode {
 	public Blue getInstance() {
 		if (instance == null)
 			instance = getBlueprint().createBlue();
+		else if (isDirty) {
+			try {
+				recompile();
+			} catch (ParseException e) {
+				e.printStackTrace();
+				return null;  // TODO: Delegate this error to the system
+			}
+		}
 		return instance;
 	}
 }

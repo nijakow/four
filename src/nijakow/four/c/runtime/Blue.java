@@ -81,4 +81,9 @@ public class Blue extends Instance {
 	public Blue clone() {
 		return new Blue(this);
 	}
+
+    public void updateBlueprint(Blueprint blueprint) {
+		this.initialized = false;
+		this.blueprint = blueprint;
+    }
 }
