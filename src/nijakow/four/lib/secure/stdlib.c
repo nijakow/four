@@ -43,7 +43,7 @@ int rand()
 
 int length(any seq)
 {
-    return length(seq);
+    return $length(seq);
 }
 
 void insert(list lst, int index, any value)
