@@ -39,9 +39,10 @@ public class File extends FSNode {
 			getInstance();
 		else {
 			Blueprint result = compile();
-			if (result != null)
+			if (result != null) {
 				isDirty = false;
-			instance.updateBlueprint(result);
+				instance.updateBlueprint(result);
+			}
 		}
 	}
 	
