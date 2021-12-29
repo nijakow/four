@@ -67,8 +67,8 @@ public class File extends FSNode {
 				recompile();
 				isDirty = false;
 			} catch (ParseException e) {
+				// TODO: Delegate this error to the system
 				e.printStackTrace();
-				return null;  // TODO: Delegate this error to the system
 			}
 		}
 		return instance;
