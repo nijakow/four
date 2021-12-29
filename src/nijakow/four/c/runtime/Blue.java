@@ -20,7 +20,7 @@ public class Blue extends Instance {
 	
 	public Blue(Blueprint blueprint) {
 		this();
-		this.blueprint = blueprint;
+		updateBlueprint(blueprint);
 	}
 	
 	private Blue(Blue other) {
@@ -47,7 +47,12 @@ public class Blue extends Instance {
 	public Blue asBlue() {
 		return this;
 	}
-	
+
+	public void defineSlot(Key key) {
+		if (!slots.containsKey(key))
+			slots.put(key, Instance.getNil());
+	}
+
 	@Override
 	public void loadSlot(Fiber fiber, Key key) {
 		if (!slots.containsKey(key))
@@ -85,5 +90,6 @@ public class Blue extends Instance {
     public void updateBlueprint(Blueprint blueprint) {
 		this.initialized = false;
 		this.blueprint = blueprint;
+		blueprint.defineSlotsOnInstance(this);  // TODO: Remove all undefined slots
     }
 }

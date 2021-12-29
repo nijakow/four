@@ -67,4 +67,10 @@ public class Blueprint {
 		return new Blue(this);
 	}
 
+	public void defineSlotsOnInstance(Blue instance) {
+		for (Pair<Type, Key> slot : slots)
+			instance.defineSlot(slot.getSecond());
+		for (Blueprint bp : supers)
+			bp.defineSlotsOnInstance(instance);
+	}
 }

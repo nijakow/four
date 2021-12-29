@@ -185,7 +185,10 @@ use $recompile;
 
 void cmd_recompile_file(string text)
 {
-    if (!$recompile(trim(text))) {
+    string file = trim(text);
+    if ($recompile(file)) {
+        the(file);  // This automatically reinitializes the file
+    } else {
         connection->mode_red();
         connection->mode_italic();
         connection->write("Could not recompile \"", text, "\"!\n");

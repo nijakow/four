@@ -383,9 +383,6 @@ bool inhibit_create_on_init() { return 0; }
 void create()
 {
     "/secure/object.c"::create();
-    parent = nil;
-    sibling = nil;
-    children = nil;
     is_properly_named = false;
     article = "a";
     set_name("<error>");
