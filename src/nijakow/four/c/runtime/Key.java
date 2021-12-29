@@ -42,7 +42,11 @@ public class Key {
 			
 			@Override
 			void run(Fiber fiber, Instance self, Instance[] args) {
-				fiber.setAccu(args[0].asFString().getBlue(fiber.getVM().getFilesystem()));
+				Blue blue = args[0].asFString().getBlue(fiber.getVM().getFilesystem());
+				if (blue == null)
+					fiber.setAccu(Instance.getNil());
+				else
+					fiber.setAccu(blue);
 			}
 		};
 		get("$is_initialized").code = new BuiltinCode() {
