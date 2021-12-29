@@ -28,11 +28,12 @@ void password(func cb, ...)
     write("\}");
 }
 
-void edit(func cb, string title, string text)
+any edit(func cb, string title, string text)
 {
     string key = itoa(id_counter++);
     mapped_callbacks[key] = cb;
     write("\{$", key, ":", title, ":", text, "\}");
+    return key;
 }
 
 void write(...)

@@ -136,18 +136,20 @@ void docmd(string cmd)
 use $filetext;
 use $filetext_set;
 
-string editPath;
+mapping mapped_pathnames;
 
-void cmd_write_file(string id, string text)
+void cmd_write_file(any id, string text)
 {
-    if (text != nil) {
+    string path = mapped_pathnames[id];
+    mapped_pathnames[id] = nil;
+    if (path != nil && text != nil) {
         connection->mode_italic();
-        if(!$filetext_set(editPath, text)) {
+        if(!$filetext_set(path, text)) {
             connection->mode_red();
-            connection->write("Could not write \"", editPath, "\"!\n");
+            connection->write("Could not write \"", path, "\"!\n");
         } else {
             connection->mode_green();
-            connection->write("\"", editPath, "\" written.\n");
+            connection->write("\"", path, "\" written.\n");
         }
         connection->mode_normal();
     }
@@ -163,15 +165,15 @@ void cmd_edit_file(string text)
      * - mhahnFr
      */
     // TODO: write callback function in stdlib
-    editPath = text;
     string content = $filetext(text);
     if (content == nil) {
         if ($touch(text))
             content = "";
     }
-    if (content != nil)
-        connection->edit(this::cmd_write_file, text, content);
-    else {
+    if (content != nil) {
+        any id = connection->edit(this::cmd_write_file, text, content);
+        mapped_pathnames[id] = text;
+    } else {
         connection->mode_red();
         connection->mode_italic();
         connection->write("Could not read \"", text, "\"!\n");
@@ -241,5 +243,6 @@ void create()
     set_properly_named();
     connection = nil;
     say_room = true;
+    mapped_pathnames = [];
     log("Initializing the player ", this, "\n");
 }
