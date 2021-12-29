@@ -47,29 +47,23 @@ public class File extends FSNode {
 	}
 	
 	public Blueprint getBlueprint() {
-		if (blueprint == null || isDirty) {
+		if (blueprint == null) {
 			try {
 				blueprint = compile();
+				isDirty = false;
 			} catch (ParseException e) {
 				e.printStackTrace();
 				return null;  // TODO: Delegate this error to the system
 			}
 		}
-		isDirty = false;
 		return blueprint;
 	}
 	
 	public Blue getInstance() {
-		if (instance == null)
-			instance = getBlueprint().createBlue();
-		else if (isDirty) {
-			try {
-				recompile();
-				isDirty = false;
-			} catch (ParseException e) {
-				// TODO: Delegate this error to the system
-				e.printStackTrace();
-			}
+		if (instance == null) {
+			Blueprint bp = getBlueprint();
+			if (bp != null)
+				instance = bp.createBlue();
 		}
 		return instance;
 	}

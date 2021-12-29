@@ -13,10 +13,13 @@ use $length;
 object the(string id)
 {
     object obj = $the_object(id);
-    
-    if (!$is_initialized(obj)) {
-        $set_initialized(obj);
-        obj->_init();
+
+    if (obj != nil)
+    {
+        if (!$is_initialized(obj)) {
+            $set_initialized(obj);
+            obj->_init();
+        }
     }
     return obj;
 }
