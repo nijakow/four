@@ -161,6 +161,7 @@ public class Tokenizer {
 		case "else": return new Token(this, pos, TokenType.ELSE);
 		case "while": return new Token(this, pos, TokenType.WHILE);
 		case "for": return new Token(this, pos, TokenType.FOR);
+		case "foreach": return new Token(this, pos, TokenType.FOREACH);
 		case "break": return new Token(this, pos, TokenType.BREAK);
 		case "continue": return new Token(this, pos, TokenType.CONTINUE);
 		case "return": return new Token(this, pos, TokenType.RETURN);

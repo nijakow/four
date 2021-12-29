@@ -16,22 +16,26 @@ public class Key {
 		this.code = null;
 	}
 
-	@Override
+    @Override
 	public String toString() {
 		return "'" + this.name;
 	}
-	
+
 	public Code getCode() {
 		return code;
-	}	
-	
+	}
+
 	private static Map<String, Key> KEYS = new HashMap<>();
 	public static Key get(String name) {
 		if (!KEYS.containsKey(name))
 			KEYS.put(name, new Key(name));
 		return KEYS.get(name);
 	}
-	
+
+	public static Key newGensym() {
+		return new Key("<GENSYM>");
+	}
+
 	static {
 		get("$the_object").code = new BuiltinCode() {
 			

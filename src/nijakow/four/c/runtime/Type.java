@@ -131,7 +131,7 @@ public abstract class Type {
 	
 	public void expect(Instance instance) {
 		if (!check(instance))
-			throw new RuntimeException("Expected different type!");
+			throw new RuntimeException("Expected different type! Got: " + instance);
 	}
 	
 	public ListType listType() {

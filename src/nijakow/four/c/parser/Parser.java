@@ -3,37 +3,7 @@ package nijakow.four.c.parser;
 import java.util.ArrayList;
 import java.util.List;
 
-import nijakow.four.c.ast.ASTAssignment;
-import nijakow.four.c.ast.ASTBinOp;
-import nijakow.four.c.ast.ASTBlock;
-import nijakow.four.c.ast.ASTBreak;
-import nijakow.four.c.ast.ASTCall;
-import nijakow.four.c.ast.ASTConstant;
-import nijakow.four.c.ast.ASTContinue;
-import nijakow.four.c.ast.ASTDecl;
-import nijakow.four.c.ast.ASTDefaultDef;
-import nijakow.four.c.ast.ASTDot;
-import nijakow.four.c.ast.ASTExpression;
-import nijakow.four.c.ast.ASTFile;
-import nijakow.four.c.ast.ASTFor;
-import nijakow.four.c.ast.ASTFunctionDef;
-import nijakow.four.c.ast.ASTIdent;
-import nijakow.four.c.ast.ASTIf;
-import nijakow.four.c.ast.ASTIncrement;
-import nijakow.four.c.ast.ASTIndex;
-import nijakow.four.c.ast.ASTInheritanceDef;
-import nijakow.four.c.ast.ASTInstanceVarDef;
-import nijakow.four.c.ast.ASTInstruction;
-import nijakow.four.c.ast.ASTList;
-import nijakow.four.c.ast.ASTMapping;
-import nijakow.four.c.ast.ASTReturn;
-import nijakow.four.c.ast.ASTScope;
-import nijakow.four.c.ast.ASTThis;
-import nijakow.four.c.ast.ASTUnaryOp;
-import nijakow.four.c.ast.ASTVaCount;
-import nijakow.four.c.ast.ASTVaNext;
-import nijakow.four.c.ast.ASTVarDecl;
-import nijakow.four.c.ast.ASTWhile;
+import nijakow.four.c.ast.*;
 import nijakow.four.c.runtime.FInteger;
 import nijakow.four.c.runtime.Instance;
 import nijakow.four.c.runtime.Key;
@@ -232,7 +202,15 @@ public class Parser {
 		
 		return new ASTBlock(instructions.toArray(new ASTInstruction[0]));
 	}
-	
+
+	private Pair<Type, Key> parseVarAndType() throws ParseException {
+		Type type = parseType();
+		if (type == null)
+			return null;
+		Key name = expectKey();
+		return new Pair<>(type, name);
+	}
+
 	private ASTVarDecl parseVarDecl() throws ParseException {
 		Type type = parseType();
 		if (type != null) {
@@ -280,6 +258,14 @@ public class Parser {
 			ASTExpression update = parseExpression();
 			expect(TokenType.RPAREN);
 			return new ASTFor(init, condition, update, parseInstruction());
+		} else if (check(TokenType.FOREACH)) {
+			expect(TokenType.LPAREN);
+			Pair<Type, Key> vt = parseVarAndType();
+			expect(TokenType.COLON);
+			ASTExpression init = parseExpression();
+			expect(TokenType.RPAREN);
+			ASTInstruction body = parseInstruction();
+			return new ASTForeach(vt.getFirst(), vt.getSecond(), init, body);
 		} else if (check(TokenType.BREAK)) {
 			expect(TokenType.SEMICOLON);
 			return new ASTBreak();
