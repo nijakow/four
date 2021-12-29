@@ -8,5 +8,4 @@ void create()
     set_long("You are floating in a dark, empty space.");
     add_exit("up", "/realms/nijakow/workroom.c");
     add_exit("north", "/world/cafeteria.c");
-    new("/world/sword.c")->move_to(this);
 }

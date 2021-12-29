@@ -125,6 +125,8 @@ void docmd(string cmd)
         cmd_edit_file(args);
     } else if (cmd == "recompile") {
         cmd_recompile_file(args);
+    } else if (cmd == "new") {
+        cmd_instantiate(args);
     } else {
         connection->write("I didn't quite get that, sorry...\n");
     }
@@ -151,6 +153,8 @@ void cmd_write_file(string id, string text)
     }
 }
 
+use $touch;
+
 void cmd_edit_file(string text)
 {
     /*
@@ -161,6 +165,10 @@ void cmd_edit_file(string text)
     // TODO: write callback function in stdlib
     editPath = text;
     string content = $filetext(text);
+    if (content == nil) {
+        if ($touch(text))
+            content = "";
+    }
     if (content != nil)
         connection->edit(this::cmd_write_file, text, content);
     else {
@@ -180,6 +188,18 @@ void cmd_recompile_file(string text)
         connection->mode_italic();
         connection->write("Could not recompile \"", text, "\"!\n");
         connection->mode_normal();
+    }
+}
+
+void cmd_instantiate(string text)
+{
+    object obj = new(text);
+    if (obj != nil) {
+        obj->move_to(get_location());
+        connection->write("You summon ", obj->get_short(), ".");
+        me_act("summons ", obj->get_short(), ".");
+    } else {
+        connection->write("Could not create an instance!\n");
     }
 }
 

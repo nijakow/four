@@ -23,7 +23,10 @@ object the(string id)
 
 any new(string blueprint, ...)
 {
-    return the(blueprint)->clone(...);
+    object obj = the(blueprint);
+    if (obj != nil)
+        return obj->clone(...);
+    return nil;
 }
 
 any call(any f, ...)

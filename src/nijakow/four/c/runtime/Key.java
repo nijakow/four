@@ -213,6 +213,19 @@ public class Key {
 				}
 			}
 		};
+		get("$touch").code = new BuiltinCode() {
+
+			@Override
+			void run(Fiber fiber, Instance self, Instance[] args) {
+				String path = args[0].asFString().asString();
+				FSNode node = fiber.getVM().getFilesystem().touchf(path);
+				if (node == null || node.asFile() == null) {
+					fiber.setAccu(new FInteger(0));
+				} else {
+					fiber.setAccu(new FInteger(1));
+				}
+			}
+		};
 		get("$recompile").code = new BuiltinCode() {
 			
 			@Override
