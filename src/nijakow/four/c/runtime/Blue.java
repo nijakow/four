@@ -48,17 +48,15 @@ public class Blue extends Instance {
 		return this;
 	}
 
-	public void defineSlot(Key key) {
-		if (!slots.containsKey(key))
-			slots.put(key, Instance.getNil());
-	}
-
 	@Override
 	public void loadSlot(Fiber fiber, Key key) {
-		if (!slots.containsKey(key))
+		Pair<Type, Key> info = blueprint.getSlotInfo(key);
+		if (info == null)
 			super.loadSlot(fiber, key);
-		else
+		else if (slots.containsKey(key))
 			fiber.setAccu(slots.get(key));
+		else
+			fiber.setAccu(Instance.getNil());
 	}
 	
 	@Override
@@ -90,6 +88,5 @@ public class Blue extends Instance {
     public void updateBlueprint(Blueprint blueprint) {
 		this.initialized = false;
 		this.blueprint = blueprint;
-		blueprint.defineSlotsOnInstance(this);  // TODO: Remove all undefined slots
     }
 }
