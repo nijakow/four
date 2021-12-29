@@ -198,8 +198,8 @@ void cmd_instantiate(string text)
     object obj = new(text);
     if (obj != nil) {
         obj->move_to(get_location());
-        connection->write("You summon ", obj->get_short(), ".");
-        me_act("summons ", obj->get_short(), ".");
+        connection->write("You summon ", obj->get_short(), ".\n");
+        me_act("summons ", obj->get_short(), ".\n");
     } else {
         connection->write("Could not create an instance!\n");
     }
