@@ -7,6 +7,7 @@ use $on_disconnect;
 
 any port;
 func callback;
+func fallback;
 mapping mapped_callbacks;
 string line;
 string escline;
@@ -34,6 +35,11 @@ any edit(func cb, string title, string text)
     mapped_callbacks[key] = cb;
     write("\{$", key, ":", title, ":", text, "\}");
     return key;
+}
+
+void set_fallback(func fb)
+{
+    fallback = fb;
 }
 
 void write(...)
@@ -101,7 +107,16 @@ void receive(string text)
         	    callback = nil;
                 call(_cb, trim(line2));
             } else {
-                log("The system can't provide an input handler -- TODO: Reset to failsafe!\n");
+                log("The system can't provide an input handler! Calling fallback...\n");
+                mode_normal();
+                mode_red();
+                mode_italic();
+                mode_underscore();
+                write("\nWARNING: Fallback handler triggered! Please retype your input.\n");
+                mode_normal();
+                if (fallback != nil) {
+                    call(fallback);
+                }
             }
         } else {
             line = line + chr(text[i]);
@@ -124,6 +139,7 @@ void create(any the_port)
 	"/secure/object.c"::create();
 	port = the_port;
 	callback = nil;
+	fallback = nil;
 	line = "";
 	escline = nil;
 	mapped_callbacks = [];

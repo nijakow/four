@@ -225,6 +225,7 @@ void exit()
 void start(object connection)
 {
     this.connection = connection;
+    connection->set_fallback(this::resume);
     resume();
 }
 
