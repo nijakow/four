@@ -60,6 +60,7 @@ public class File extends FSNode {
 		else if (isDirty) {
 			try {
 				recompile();
+				isDirty = false;
 			} catch (ParseException e) {
 				e.printStackTrace();
 				return null;  // TODO: Delegate this error to the system

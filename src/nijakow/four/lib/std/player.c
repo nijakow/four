@@ -175,7 +175,12 @@ use $recompile;
 
 void cmd_recompile_file(string text)
 {
-    $recompile(trim(text));
+    if (!$recompile(trim(text))) {
+        connection->mode_red();
+        connection->mode_italic();
+        connection->write("Could not recompile \"", text, "\"!\n");
+        connection->mode_normal();
+    }
 }
 
 void resume()
