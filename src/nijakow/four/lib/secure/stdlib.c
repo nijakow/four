@@ -5,10 +5,9 @@ use $set_initialized;
 use $call;
 use $listinsert;
 use $listremove;
-use $listlen;
-use $strlen;
 use $substr;
 use $chr;
+use $length;
 
 
 object the(string id)
@@ -42,9 +41,9 @@ int rand()
     return $random();
 }
 
-int length(list lst)
+int length(any seq)
 {
-    return $listlen(lst);
+    return length(seq);
 }
 
 void insert(list lst, int index, any value)
@@ -64,7 +63,7 @@ any remove(list lst, int index)
 
 int strlen(string str)
 {
-    return $strlen(str);
+    return $length(str);
 }
 
 string substr(string str, int i0, int i1)

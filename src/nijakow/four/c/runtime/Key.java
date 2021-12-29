@@ -133,13 +133,6 @@ public class Key {
 				fiber.setAccu(new FString("" + (char) args[0].asInt()));
 			}
 		};
-		get("$strlen").code = new BuiltinCode() {
-			
-			@Override
-			void run(Fiber fiber, Instance self, Instance[] args) {
-				fiber.setAccu(new FInteger(args[0].asFString().asString().length()));
-			}
-		};
 		get("$substr").code = new BuiltinCode() {
 			
 			@Override
@@ -150,11 +143,11 @@ public class Key {
 				fiber.setAccu(new FString(str.substring(start, end)));
 			}
 		};
-		get("$listlen").code = new BuiltinCode() {
-			
+		get("$length").code = new BuiltinCode() {
+
 			@Override
 			void run(Fiber fiber, Instance self, Instance[] args) {
-				fiber.setAccu(new FInteger(args[0].asFList().getSize()));
+				fiber.setAccu(new FInteger(args[0].length()));
 			}
 		};
 		get("$listinsert").code = new BuiltinCode() {

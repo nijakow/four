@@ -35,7 +35,12 @@ public class FList extends Instance {
 		list.set(index.asInt(), value);
 		return this;
 	}
-	
+
+	@Override
+	public int length() {
+		return getSize();
+	}
+
 	public int getSize() {
 		return list.size();
 	}

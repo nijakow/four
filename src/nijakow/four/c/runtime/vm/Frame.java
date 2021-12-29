@@ -156,6 +156,8 @@ public class Frame {
 				// Do nothing
 			} else if (operation == OperatorType.UMINUS) {
 				fiber.setAccu(new FInteger(-fiber.getAccu().asInt()));
+			} else if (operation == OperatorType.LENGTH) {
+				fiber.setAccu(new FInteger(fiber.getAccu().length()));
 			} else {
 				Instance a1 = fiber.pop();
 				Instance a2 = fiber.getAccu();

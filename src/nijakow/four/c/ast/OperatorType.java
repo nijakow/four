@@ -7,4 +7,5 @@ public enum OperatorType {
 	SHL, SHR, BITAND, BITXOR, BITOR, BITNOT,
 	LOGAND, LOGOR, LOGNOT,
 	EQ, INEQ, LEQ, LESS, GEQ, GREATER,
+	LENGTH /* Special operator for array bounds */
 }

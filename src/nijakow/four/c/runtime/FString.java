@@ -61,6 +61,11 @@ public class FString extends Instance {
 		}
 	}
 
+	@Override
+	public int length() {
+		return value.length();
+	}
+
 	public Blue getBlue(Filesystem fs) {
 		return fs.getBlue(value);
 	}

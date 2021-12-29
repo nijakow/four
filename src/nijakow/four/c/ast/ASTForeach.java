@@ -21,17 +21,10 @@ public class ASTForeach extends ASTInstruction {
 
 	@Override
 	void compile(FCompiler compiler) {
-		/*
-		 * TODO, FIXME, XXX:
-		 * The compiled bytecode assumes that the "length" function
-		 * exists. This is a very ugly solution, and it should
-		 * be fixed. However, the implementation works just fine
-		 * in the current configuration.       - nijakow
-		 */
 		final Key indexVarName = Key.newGensym();
 		final Type indexVarType = Type.getInt();
 		final Key listVarName = Key.newGensym();
-		final Type listVarType = Type.getAny().listType();
+		final Type listVarType = Type.getAny();
 
 		compiler = compiler.subscope();
 
@@ -54,9 +47,7 @@ public class ASTForeach extends ASTInstruction {
 		compiler.compileLoadVariable(indexVarName);
 		compiler.compilePush();
 		compiler.compileLoadVariable(listVarName);
-		compiler.compilePush();
-		compiler.compileLoadThis();
-		compiler.compileDotCall(Key.get("length"), 1, false);
+		compiler.compileOp(OperatorType.LENGTH);
 		compiler.compileOp(OperatorType.LESS);
 		end.compileJumpIfNot();
 		compiler.compileLoadVariable(listVarName);
