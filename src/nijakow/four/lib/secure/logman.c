@@ -6,7 +6,7 @@ bool check_login(string name, string pass)
         "enijakow",
         "mhahn"
     };
-    
+
     return member(users, name);
 }
 
