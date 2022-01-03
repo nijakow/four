@@ -45,7 +45,12 @@ public class Four implements Runnable {
 		start();
 		
 		while (true) {
-			vm.tick();
+			try {
+				vm.tick();
+			} catch (Exception e) {
+				e.printStackTrace();
+				System.err.println("This error was not fatal. Execution will continue.");
+			}
 			long wish = vm.notificationWish();
 			if (wish > 0) {
 				try {
