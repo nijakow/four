@@ -4,11 +4,7 @@ import java.util.LinkedList;
 import java.util.PriorityQueue;
 import java.util.Queue;
 
-import nijakow.four.c.runtime.Blue;
-import nijakow.four.c.runtime.FClosure;
-import nijakow.four.c.runtime.FConnection;
-import nijakow.four.c.runtime.Instance;
-import nijakow.four.c.runtime.Key;
+import nijakow.four.c.runtime.*;
 import nijakow.four.c.runtime.fs.Filesystem;
 import nijakow.four.net.Server;
 import nijakow.four.util.ComparablePair;
@@ -18,7 +14,7 @@ public class VM {
 	private final Server server;
 	private final Queue<Fiber> fibers = new LinkedList<>();
 	private final PriorityQueue<ComparablePair<Long, Callback>> pendingCallbacks = new PriorityQueue<>();
-	
+	private Callback errorCallback = null;
 	
 	public VM(Filesystem fs, Server server) {
 		this.fs = fs;
@@ -39,6 +35,15 @@ public class VM {
 
 	public void setConnectCallback(Callback callback) {
 		this.server.onConnect((theConnection) -> callback.invoke(new FConnection(theConnection)));
+	}
+
+	public void setErrorCallback(Callback callback) {
+		this.errorCallback = callback;
+	}
+
+	public void reportError(String type, String name, String message) {
+		if (this.errorCallback != null)
+			this.errorCallback.invoke(new FString(type), new FString(name), new FString(message));
 	}
 	
 	public long notificationWish() {

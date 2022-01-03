@@ -16,7 +16,6 @@ public class Four implements Runnable {
 	private boolean wasStarted = false;
 	
 	public Four(int[] ports) throws IOException {
-		//this.fs = new FSBuilder(this.getClass().getResourceAsStream("mudlib.c")).build();
 		this.fs = new Filesystem(new ResourceLoader());
 		this.server = new Server();
 		this.vm = new VM(this.fs, this.server);
@@ -50,6 +49,7 @@ public class Four implements Runnable {
 			} catch (Exception e) {
 				e.printStackTrace();
 				System.err.println("This error was not fatal. Execution will continue.");
+				vm.reportError("exception", e.getClass().getName(), e.getMessage());
 			}
 			long wish = vm.notificationWish();
 			if (wish > 0) {
