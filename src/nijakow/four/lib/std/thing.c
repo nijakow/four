@@ -90,10 +90,19 @@ void _add_objects(list the_list)
     }
 }
 
+list all_children()
+{
+    list objects = {};
+    _add_objects(objects);
+    return objects;
+}
+
 list objects_here()
 {
     list objects = {};
-    get_location()->_add_objects(objects);
+    object loc = get_location();
+    if (loc != nil)
+        loc->_add_objects(objects);
     return objects;
 }
 
@@ -158,27 +167,12 @@ bool check_object_leaving(object actor, object obj, object target)   { return tr
  *    A c t i o n s   a n d   M o v e m e n t
  */
 
-void on_act(object actor, ...)
-{
-    if (actor != this)
-        write(...);
-    for (object child = get_children();
-         child != nil;
-         child = child->get_sibling())
-    {
-        if (child->check_transparent())
-            child->on_act(actor, ...);
-    }
-}
-
 void act(...)
 {
-    object location = get_location();  // TODO: Check Transparency!
-    
-    if (location != nil) {
-        location->on_act(this, ...);
-    } else {
-        this->on_act(this, ...);
+    foreach (object obj : objects_here())
+    {
+        if (obj != this)
+            obj->write(...);
     }
 }
 
@@ -293,19 +287,12 @@ int get_brightness()
 int _query_light_level(object ignore)
 {
     int max_brightness = 0;
-    for (object obj = get_children();
-         obj != nil;
-         obj = obj->get_sibling())
+    foreach (object obj : all_children())
     {
-        if (obj != ignore)
-        {
-            int obrightness = obj->query_light_level();
-            if (obrightness > max_brightness)
-                max_brightness = obrightness;
-        }
+        int the_brightness = obj->get_brightness();
+        if (the_brightness > max_brightness)
+            max_brightness = the_brightness;
     }
-    if (get_brightness() > max_brightness)
-        return get_brightness();
     return max_brightness;
 }
 
@@ -356,17 +343,22 @@ void _find_thing(list names, list elems)
     }
 }
 
-list find_thing_here(string name)
-{
-    list elems = {};
-    get_location()->_find_thing(split(name), elems);
-    return elems;
-}
-
 list find_thing(string name)
 {
     list elems = {};
     _find_thing(split(name), elems);
+    return elems;
+}
+
+list find_thing_here(string name)
+{
+    list names = split(name);
+    list elems = {};
+    foreach (object obj : visible_objects_here())
+    {
+        if (obj->reacts(names))
+            append(elems, obj);
+    }
     return elems;
 }
 
