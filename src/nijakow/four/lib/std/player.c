@@ -227,8 +227,6 @@ void start(object connection)
     resume();
 }
 
-bool inhibit_create_on_init() { return 1; }
-
 void activate_as(string name)
 {
     set_name(name);

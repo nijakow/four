@@ -371,8 +371,6 @@ list find_thing_here(string name)
 
 void write(...) {}
 
-bool inhibit_create_on_init() { return 0; }
-
 
 void create()
 {
@@ -389,7 +387,5 @@ void _init()
     "/secure/object.c"::_init();
     is_container = true;
     brightness = 0;
-    if (!inhibit_create_on_init()) {
-        create();
-    }
+    create();
 }
