@@ -18,7 +18,7 @@ void lookaround()
         connection->write("Is is pitch black here.\n");
     } else {
 	    connection->write(get_location()->get_short(), "\n");
-	    connection->write(get_location()->get_long(), "\n");
+	    connection->write(get_location()->get_desc(), "\n");
 	    for (object obj = get_location()->get_children();
 	         obj != nil;
 	         obj = obj->get_sibling())

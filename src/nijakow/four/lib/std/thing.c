@@ -119,7 +119,7 @@ list visible_objects_here()
 bool   is_properly_named;
 string article;
 string name;
-string long_desc;
+string desc;
 
 string get_name()         { return name; }
 void   set_name(string n) { name = n; }
@@ -131,8 +131,10 @@ string get_short()
     return article + " " + get_name();
 }
 
-string get_long()         { return long_desc;  }
-void   set_long(string l) { long_desc  = l; }
+string get_long() { return get_short(); }
+
+string get_desc()         { return desc;  }
+void   set_desc(string l) { desc  = l; }
 
 string get_the_short()
 {
@@ -378,7 +380,7 @@ void create()
     is_properly_named = false;
     article = "a";
     set_name("<error>");
-    set_long("<error>");
+    set_desc("<error>");
     names = {};
 }
 
