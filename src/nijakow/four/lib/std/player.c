@@ -1,6 +1,7 @@
 inherit "/std/thing.c";
 
 object connection;
+mapping cmds;
 bool say_room;
 
 
@@ -27,6 +28,11 @@ void lookaround()
 	            connection->write(capitalize(obj->get_short()), ".\n");
 	    }
     }
+}
+
+void cmd_look(string text)
+{
+    lookaround();
 }
 
 void cmd_go(string dir)
@@ -88,49 +94,6 @@ void cmd_inv(string text)
         if (obj != this)
             connection->write(capitalize(obj->get_short()), ".\n");
     }
-}
-
-void docmd(string cmd)
-{
-    string args;
-    
-    int i = indexof(cmd, ' ');
-    
-    if (i != -1) {
-        args = substr(cmd, i + 1, strlen(cmd));
-        cmd = substr(cmd, 0, i);
-    } else {
-        args = "";
-    }
-    
-    if (cmd == "") {
-    } else if (cmd == "look") {
-        lookaround();
-    } else if (cmd == "go") {
-        cmd_go(args);
-    } else if (cmd == "say") {
-        cmd_say(args);
-    } else if (cmd == "take" || cmd == "get") {
-        cmd_take(args);
-    } else if (cmd == "inv") {
-        cmd_inv(args);
-    } else if (cmd == "examine") {
-        cmd_examine(args);
-    } else if (cmd == "drop") {
-        cmd_drop(args);
-    } else if (cmd == "exit") {
-        exit();
-        return;
-    } else if (cmd == "edit") {
-        cmd_edit_file(args);
-    } else if (cmd == "recompile") {
-        cmd_recompile_file(args);
-    } else if (cmd == "new") {
-        cmd_instantiate(args);
-    } else {
-        connection->write("I didn't quite get that, sorry...\n");
-    }
-    resume();
 }
 
 use $filetext;
@@ -208,6 +171,33 @@ void cmd_instantiate(string text)
     }
 }
 
+void docmd(string cmd)
+{
+    string args;
+
+    int i = indexof(cmd, ' ');
+
+    if (i != -1) {
+        args = substr(cmd, i + 1, strlen(cmd));
+        cmd = substr(cmd, 0, i);
+    } else {
+        args = "";
+    }
+
+    func f = cmds[cmd];
+
+    if (f != nil) {
+        call(f, args);
+    } else if (cmd == "") {
+    } else if (cmd == "exit") {
+        exit();
+        return;
+    } else {
+        connection->write("I didn't quite get that, sorry...\n");
+    }
+    resume();
+}
+
 void resume()
 {
     if (say_room) {
@@ -215,6 +205,11 @@ void resume()
         say_room = false;
     }
     connection->prompt(this::docmd, "> ");
+}
+
+void add_cmd(string name, func cb)
+{
+    cmds[name] = cb;
 }
 
 void exit()
@@ -243,10 +238,24 @@ void activate_as(string name)
 
 void create()
 {
+    log("Initializing the player ", this, "\n");
     "/std/thing.c"::create();
+
     set_properly_named();
     connection = nil;
+    cmds = [];
     say_room = true;
     mapped_pathnames = [];
-    log("Initializing the player ", this, "\n");
+
+    add_cmd("look", this::cmd_look);
+    add_cmd("examine", this::cmd_examine);
+    add_cmd("go", this::cmd_go);
+    add_cmd("say", this::cmd_say);
+    add_cmd("take", this::cmd_take);
+    add_cmd("get", this::cmd_get);
+    add_cmd("drop", this::cmd_drop);
+    add_cmd("inv", this::cmd_inv);
+    add_cmd("edit", this::cmd_edit_file);
+    add_cmd("recompile", this::cmd_recompile_file);
+    add_cmd("new", this::cmd_instantiate);
 }
