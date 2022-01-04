@@ -237,7 +237,7 @@ bool inhibit_create_on_init() { return 1; }
 void activate_as(string name)
 {
     set_name(name);
-    add_names(name);
+    add_IDs(name);
     act_goto(the("/world/void.c"));
 }
 

@@ -313,23 +313,23 @@ int query_light_level_here()
  *    R e a c t i o n s   a n d   F i n d i n g
  */
 
-list names;
+list ids;
 
 bool reacts(list words)
 {
     for (int x = 0; x < length(words); x++)
     {
-        if (!member(names, words[x]))
+        if (!member(ids, words[x]))
             return false;
     }
     return length(words) != 0;
 }
 
-void add_names(...)
+void add_IDs(...)
 {
     while (va_count > 0)
     {
-        append(names, va_next);
+        append(ids, va_next);
     }
 }
 
@@ -381,7 +381,7 @@ void create()
     article = "a";
     set_name("<error>");
     set_desc("<error>");
-    names = {};
+    ids = {};
 }
 
 void _init()

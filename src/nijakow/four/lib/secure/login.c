@@ -59,7 +59,7 @@ void setuname(string uname)
     object sword = new("/world/lantern.c");
     sword->set_name(uname + "'s lantern");
     sword->set_properly_named();
-    sword->add_names(uname + "'s");
+    sword->add_IDs(uname + "'s");
     sword->move_to(player);
     player->start(connection);
 }
