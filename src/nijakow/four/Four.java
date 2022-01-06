@@ -1,5 +1,6 @@
 package nijakow.four;
 
+import java.io.File;
 import java.io.IOException;
 
 import nijakow.four.c.runtime.Blue;
@@ -10,11 +11,13 @@ import nijakow.four.c.runtime.vm.VM;
 import nijakow.four.net.Server;
 
 public class Four implements Runnable {
+	public static final String LIB_FOLDER_NAME = "lib" + File.separator;
+	public static String WORKING_DIR = LIB_FOLDER_NAME;
 	private final Filesystem fs;
 	private final Server server;
 	private final VM vm;
 	private boolean wasStarted = false;
-	
+
 	public Four(int[] ports) throws IOException {
 		this.fs = new Filesystem(new ResourceLoader());
 		this.server = new Server();

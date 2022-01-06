@@ -21,7 +21,11 @@ public class Directory extends FSNode {
 		children.put(name, dir);
 		return dir;
 	}
-	
+
+	public void insertNode(FSNode node) {
+		children.put(node.getName(), node);
+	}
+
 	public File touch(String name) {
 		File file = new File(getFilesystem(), this, name);
 		children.put(name, file);

@@ -1,5 +1,6 @@
 package nijakow.four;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -13,6 +14,14 @@ public class Main {
 		int clients = 0;
 		for (int i = 0; i < args.length; i++) {
 			switch (args[i]) {
+			case "-d":
+			case "--directory":
+				Four.WORKING_DIR = args[++i];
+				if (!Four.WORKING_DIR.endsWith(File.separator))
+					Four.WORKING_DIR += File.separator;
+				Four.WORKING_DIR += Four.LIB_FOLDER_NAME;
+				break;
+
 			case "--client":
 			case "-c":
 				clients++;
@@ -57,6 +66,10 @@ public class Main {
 				
 			case "-h":
 			default:
+				System.out.println("--directory");
+				System.out.println("-d");
+				System.out.println("         Specifies the path to the resource directory with the lib folder");
+				System.out.println();
 				System.out.println("--port");
 				System.out.println("-p");
 				System.out.println("         Specifies a (or multiple) port(s) to use");
