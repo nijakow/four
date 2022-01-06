@@ -12,6 +12,7 @@ import nijakow.four.net.Server;
 
 public class Four implements Runnable {
 	public static final String LIB_FOLDER_NAME = "lib" + File.separator;
+	public static final String SECURE_FOLDER_NAME = "secure";
 	public static String WORKING_DIR = LIB_FOLDER_NAME;
 	private final Filesystem fs;
 	private final Server server;
