@@ -46,14 +46,15 @@ import nijakow.four.client.utils.StringHelper;
 
 public class ClientWindow extends JFrame implements ActionListener, ClientConnectionListener {
 	private static final long serialVersionUID = 1L;
+	private final JLabel promptText;
+	private final JScrollPane pane;
+	private final JTextField prompt;
+	private final JPasswordField pwf;
+	private final JTextPane area;
+	private final StyledDocument term;
+	private final List<ClientEditor> editors;
 	private String buffer;
 	private JLabel connectionStatus;
-	private JLabel promptText;
-	private JScrollPane pane;
-	private JTextField prompt;
-	private JPasswordField pwf;
-	private JTextPane area;
-	private StyledDocument term;
 	private PreferencesHelper prefs;
 	private ClientConnection connection;
 	private Timer labelTimer;
@@ -61,7 +62,6 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 	private boolean bother;
 	private boolean wasSpecial;
 	private Style current;
-	private List<ClientEditor> editors;
 	private ScheduledFuture<?> reconnectorHandler;
 	private final ScheduledExecutorService queue;
 	private final Runnable reconnector = () -> {
@@ -284,11 +284,11 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 		case Commands.STYLE_NORMAL:
 			ret = null;
 			break;
-			
+
 		case Commands.STYLE_BLUE:
 			StyleConstants.setForeground(ret, Color.blue);
 			break;
-			
+
 		case Commands.STYLE_RED:
 			StyleConstants.setForeground(ret, Color.red);
 			break;
@@ -300,7 +300,7 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 		case Commands.STYLE_YELLOW:
 			StyleConstants.setForeground(ret, Color.yellow);
 			break;
-			
+
 		case Commands.STYLE_BLACK:
 			StyleConstants.setForeground(ret, Color.black);
 			break;
@@ -308,31 +308,31 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 		case Commands.STYLE_ITALIC:
 			StyleConstants.setItalic(ret, true);
 			break;
-			
+
 		case Commands.STYLE_BOLD:
 			StyleConstants.setBold(ret, true);
 			break;
-			
+
 		case Commands.STYLE_UNDERSCORED:
 			StyleConstants.setUnderline(ret, true);
 			break;
-			
+
 		case Commands.STYLE_BG_BLACK:
 			StyleConstants.setBackground(ret, Color.black);
 			break;
-			
+
 		case Commands.STYLE_BG_BLUE:
 			StyleConstants.setBackground(ret, Color.blue);
 			break;
-			
+
 		case Commands.STYLE_BG_GREEN:
 			StyleConstants.setBackground(ret, Color.green);
 			break;
-			
+
 		case Commands.STYLE_BG_RED:
 			StyleConstants.setBackground(ret, Color.red);
 			break;
-			
+
 		case Commands.STYLE_BG_YELLOW:
 			StyleConstants.setBackground(ret, Color.yellow);
 			break;
@@ -347,7 +347,7 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 				prompt.setVisible(false);
 				pwf.requestFocusInWindow();
 				if (arg.length() > Commands.SPECIAL_PROMPT.length() + 1)
-					promptText.setText(arg.substring(Commands.SPECIAL_PWD.length(), arg.length()));
+					promptText.setText(arg.substring(Commands.SPECIAL_PWD.length()));
 				else
 					promptText.setText("");
 				validate();
@@ -355,12 +355,12 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 		} else if (arg.startsWith(Commands.SPECIAL_PROMPT)) {
 			EventQueue.invokeLater(() -> {
 				if (arg.length() > Commands.SPECIAL_PROMPT.length() + 1)
-					promptText.setText(arg.substring(Commands.SPECIAL_PWD.length(), arg.length()));
+					promptText.setText(arg.substring(Commands.SPECIAL_PWD.length()));
 				else
 					promptText.setText("");
 			});
 		} else if (arg.startsWith(Commands.SPECIAL_EDIT)) {
-			String splitter = arg.substring(Commands.SPECIAL_EDIT.length(), arg.length());
+			String splitter = arg.substring(Commands.SPECIAL_EDIT.length());
 			int i0 = splitter.indexOf(Commands.SPECIAL_RAW);
 			if (i0 < 0) return;
 			String id = splitter.substring(0, i0);
