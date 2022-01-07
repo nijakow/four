@@ -30,7 +30,7 @@ import javax.swing.text.StyledDocument;
 import nijakow.four.client.Commands;
 import nijakow.four.client.net.ClientConnection;
 
-public class ClientEditor extends JDialog implements ActionListener {
+public class ClientEditor extends JFrame implements ActionListener {
 	private static final long serialVersionUID = 1L;
 	private JTextPane pane;
 	private StyledDocument doc;
@@ -39,7 +39,7 @@ public class ClientEditor extends JDialog implements ActionListener {
 	private final ExecutorService queue;
 
 	public ClientEditor(JFrame owner, ClientConnection c, ScheduledExecutorService queue, String[] args) {
-		super(owner, args[1]);
+		super(args[1]);
 		id = args[0];
 		this.queue = queue;
 		connection = c;
@@ -69,16 +69,15 @@ public class ClientEditor extends JDialog implements ActionListener {
 		buttons.add(reject);
 		buttons.add(accept);
 		getContentPane().add(buttons, BorderLayout.SOUTH);
-		addWindowListener(new WindowAdapter() {
-			@Override
-			public void windowClosing(WindowEvent e) {
-				send(false);
-			}
-		});
 		pack();
 		updateSyntaxHighlighting();
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		setLocationRelativeTo(owner);
+	}
+
+	public void dispose() {
+		send(false);
+		super.dispose();
 	}
 	
 	private void addStyles() {
@@ -145,7 +144,7 @@ public class ClientEditor extends JDialog implements ActionListener {
 			send(true);
 			dispose();
 			break;
-			
+
 		case Commands.ACTION_EDIT_REJECT:
 			send(false);
 			dispose();

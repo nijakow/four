@@ -12,6 +12,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -59,6 +61,7 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 	private boolean bother;
 	private boolean wasSpecial;
 	private Style current;
+	private List<ClientEditor> editors;
 	private ScheduledFuture<?> reconnectorHandler;
 	private final ScheduledExecutorService queue;
 	private final Runnable reconnector = () -> {
@@ -148,6 +151,7 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 			setLocation(x, y);
 		int width = prefs.getWindowWidth();
 		int height = prefs.getWindowHeight();
+		editors = new LinkedList<>();
 		setMinimumSize(new Dimension(300, 200));
 		setPreferredSize(new Dimension(750, 500));
 		if (width == -1 || height == -1)
@@ -191,6 +195,9 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 	public void dispose() {
 		prefs.setWindowDimensions(getX(), getY(), getWidth(), getHeight());
 		prefs.flush();
+		for (ClientEditor ed : editors) {
+			ed.dispose();
+		}
 		closeConnection();
 		super.dispose();
 	}
@@ -368,7 +375,15 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 	}
 	
 	private void openEditor(String[] args) {
-		new ClientEditor(this, connection, queue, args).setVisible(true);
+		ClientEditor editor = new ClientEditor(this, connection, queue, args);
+		editor.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosed(WindowEvent e) {
+				editors.remove(editor);
+			}
+		});
+		editors.add(editor);
+		editor.setVisible(true);
 	}
 	
 	@Override
