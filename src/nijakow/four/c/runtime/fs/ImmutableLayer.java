@@ -10,6 +10,28 @@ public class ImmutableLayer extends Layer {
         return this;
     }
 
+    public Layer createMutable() {
+        DefaultLayer mutableLayer = new DefaultLayer(getFilesystem());
+        for (FSNode node : getChildren()) {
+            mutableLayer.insertNode(copyOf(node, mutableLayer));
+        }
+        return mutableLayer;
+    }
+
+    private FSNode copyOf(FSNode node, FSNode newParent) {
+        FSNode copy;
+        if (node instanceof Directory) {
+            copy = new Directory(getFilesystem(), newParent, node.getName());
+            for (FSNode n : ((Directory) node).getChildren()) {
+                copy.asDir().insertNode(copyOf(n, copy));
+            }
+        } else {
+            copy = new File(getFilesystem(), newParent, node.getName());
+            copy.asFile().setContents(node.asFile().getContents());
+        }
+        return copy;
+    }
+
     @Override
     public Directory mkdir(String name) {
         throw new RuntimeException("Must not create directories inside of immutable layer!");

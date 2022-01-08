@@ -27,4 +27,7 @@ public class DefaultLayer extends Layer {
         }
         return copy;
     }
+
+    @Override
+    public Layer createMutable() { return this; }
 }

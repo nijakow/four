@@ -50,6 +50,18 @@ public class Filesystem {
 		layers.add(WORKING_INDEX, new DefaultLayer(this));
 	}
 
+	public void backToSnapshot(int count) {
+		if (layers.size() <= 3) {
+			throw new IllegalStateException("No snapshots made!");
+		} else if (count < 1 || count > layers.size() - 3) {
+			throw new IndexOutOfBoundsException("No such snapshot!");
+		}
+		for (int i = 0; i < count; i++) {
+			layers.remove(WORKING_INDEX);
+		}
+		layers.add(WORKING_INDEX, layers.get(WORKING_INDEX).createMutable());
+	}
+
 	public Directory getRoot() {
 		return layers.get(WORKING_INDEX);
 	}

@@ -6,4 +6,6 @@ public abstract class Layer extends Directory {
     }
 
     public abstract ImmutableLayer createImmutable();
+
+    public abstract Layer createMutable();
 }
