@@ -250,7 +250,7 @@ void create()
     add_cmd("go", this::cmd_go);
     add_cmd("say", this::cmd_say);
     add_cmd("take", this::cmd_take);
-    add_cmd("get", this::cmd_get);
+    add_cmd("get", this::cmd_take);
     add_cmd("drop", this::cmd_drop);
     add_cmd("inv", this::cmd_inv);
     add_cmd("edit", this::cmd_edit_file);
