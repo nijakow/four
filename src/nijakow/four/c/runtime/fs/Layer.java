@@ -1,8 +1,4 @@
-package nijakow.four.c.runtime.fs.layers;
-
-import nijakow.four.c.runtime.fs.Directory;
-import nijakow.four.c.runtime.fs.File;
-import nijakow.four.c.runtime.fs.Filesystem;
+package nijakow.four.c.runtime.fs;
 
 public abstract class Layer extends Directory {
     protected Layer(Filesystem fs) {

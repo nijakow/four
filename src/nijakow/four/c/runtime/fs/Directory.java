@@ -1,7 +1,6 @@
 package nijakow.four.c.runtime.fs;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class Directory extends FSNode {
 	private final Map<String, FSNode> children = new HashMap<>();
@@ -16,6 +15,8 @@ public class Directory extends FSNode {
 		return children.get(name);
 	}
 	
+	protected Collection<FSNode> getChildren() { return children.values(); }
+
 	public Directory mkdir(String name) {
 		Directory dir = new Directory(getFilesystem(), this, name);
 		children.put(name, dir);

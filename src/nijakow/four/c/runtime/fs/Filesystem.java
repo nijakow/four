@@ -3,9 +3,6 @@ package nijakow.four.c.runtime.fs;
 import nijakow.four.Four;
 import nijakow.four.c.runtime.Blue;
 import nijakow.four.c.runtime.Blueprint;
-import nijakow.four.c.runtime.fs.layers.DefaultLayer;
-import nijakow.four.c.runtime.fs.layers.ImmutableLayer;
-import nijakow.four.c.runtime.fs.layers.Layer;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -48,7 +45,9 @@ public class Filesystem {
 	}
 
 	public void makeSnapshot() {
-		// TODO This method should create a snapshot of the current working layer
+		layers.add(WORKING_INDEX + 1, layers.get(WORKING_INDEX).createImmutable());
+		layers.remove(layers.get(WORKING_INDEX));
+		layers.add(WORKING_INDEX, new DefaultLayer(this));
 	}
 
 	public Directory getRoot() {
