@@ -100,7 +100,6 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 		final Font font = new Font("Monospaced", Font.PLAIN, 14);
 		
 		// TODO macOS customization
-		// TODO C editor
 		// TODO iterate through ports
 		buffer = "";
 		bother = true;
@@ -119,8 +118,8 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 		pwf.setFont(font);
 		pwf.addActionListener(this);
 		pwf.setActionCommand(Commands.ACTION_PASSWORD);
-		pwf.setEchoChar('*');
 		promptText = new JLabel();
+		promptText.setFont(font);
 		connectionStatus = new JLabel();
 		getContentPane().add(connectionStatus, BorderLayout.NORTH);
 		JButton settings = new JButton("Settings");
@@ -442,7 +441,7 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 			String text = tmp.getText() + "\n";
 			tmp.enableInputMethods(true);
 			try {
-				term.insertString(term.getLength(), promptText.getText() + " ", null);
+				term.insertString(term.getLength(), promptText.getText(), null);
 				final Style s = term.getStyle(Commands.STYLE_INPUT);
 				if (tmp == prompt)
 					term.insertString(term.getLength(), text, s);
