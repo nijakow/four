@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Directory extends FSNode {
-	private Map<String, FSNode> children = new HashMap<>();
+	private final Map<String, FSNode> children = new HashMap<>();
 	
 	public Directory(Filesystem fs, FSNode parent, String name) {
 		super(fs, parent, name);
@@ -22,7 +22,7 @@ public class Directory extends FSNode {
 		return dir;
 	}
 
-	public void insertNode(FSNode node) {
+	protected void insertNode(FSNode node) {
 		children.put(node.getName(), node);
 	}
 

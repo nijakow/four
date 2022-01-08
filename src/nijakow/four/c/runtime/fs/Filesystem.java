@@ -63,7 +63,18 @@ public class Filesystem {
 		}
 		return node;
 	}
-	
+
+	public File writeFile(String filePath, String content) {
+		File file = find(filePath).asFile();
+		if (file == null)
+			return null;
+		if (file.getRoot() instanceof ImmutableLayer) {
+			file = touchf(filePath).asFile();
+		}
+		file.setContents(content);
+		return file;
+	}
+
 	public FSNode touchf(String fname) {
 		return getRoot().find(fname, true);
 	}
