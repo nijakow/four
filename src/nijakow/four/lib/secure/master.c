@@ -1,6 +1,7 @@
 inherit "/secure/stdlib.c";
 
 use $on_connect;
+use $on_error;
 
 void receive(any port)
 {
@@ -9,7 +10,13 @@ void receive(any port)
 	new("/secure/login.c")->start(connection);
 }
 
+void handle_error(string key, string type, string msg)
+{
+    log("Received an error: ", key, " ", type, " ", msg, "\n");
+}
+
 void create()
 {
+    $on_error(this::handle_error);
 	$on_connect(this::receive);
 }

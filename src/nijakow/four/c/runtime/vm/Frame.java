@@ -132,7 +132,7 @@ public class Frame {
 		case Bytecodes.BYTECODE_SCOPE:
 			key = code.keyAt(code.u16(ip));
 			ip += 2;
-			fiber.setAccu(new FClosure(self, fiber.getAccu().extractMethod(fiber.getVM(), key)));
+			fiber.setAccu(new FClosure(self, fiber.getAccu(), key));
 			break;
 		case Bytecodes.BYTECODE_JUMP:
 			ip = code.u16(ip);

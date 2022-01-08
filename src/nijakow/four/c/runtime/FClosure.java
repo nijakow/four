@@ -4,11 +4,13 @@ import nijakow.four.c.runtime.vm.Fiber;
 
 public class FClosure extends Instance {
 	private final Instance self;
-	private final Code code;
+	private final Instance instance;
+	private final Key key;
 	
-	public FClosure(Blue self, Code code) {
+	public FClosure(Blue self, Instance instance, Key key) {
 		this.self = self;
-		this.code = code;
+		this.instance = instance;
+		this.key = key;
 	}
 	
 	@Override
@@ -18,6 +20,6 @@ public class FClosure extends Instance {
 
 	@Override
 	public void invoke(Fiber fiber, int args) {
-		code.invoke(fiber, args, this.self);
+		instance.extractMethod(fiber.getVM(), key).invoke(fiber, args, this.self);
 	}
 }

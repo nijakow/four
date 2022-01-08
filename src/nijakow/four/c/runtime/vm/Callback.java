@@ -10,7 +10,7 @@ public class Callback {
 	private final FClosure closure;
 	
 	public Callback(VM vm, Blue subject, Key message) {
-		this(vm, new FClosure(subject, subject.extractMethod(vm, message)));
+		this(vm, new FClosure(subject, subject, message));
 	}
 	
 	public Callback(VM vm, FClosure closure) {
