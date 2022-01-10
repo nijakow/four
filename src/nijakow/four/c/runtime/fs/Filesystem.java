@@ -8,6 +8,9 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class Filesystem {
+	public static final String LIB_FOLDER_NAME = "lib" + java.io.File.separator;
+	public static final String SECURE_FOLDER_NAME = "secure";
+	public static String WORKING_DIR = LIB_FOLDER_NAME;
 	private static final int WORKING_INDEX = 1;
 	private final List<Layer> layers;
 	private final ResourceLoader loader;
@@ -33,7 +36,7 @@ public class Filesystem {
 	private void loadShippedFiles(Layer secure, Layer std) {
 		for (java.io.File file : loader.listFolderContents("")) {
 			if (file.isDirectory()) {
-				if (file.getName().equals(Four.SECURE_FOLDER_NAME)) {
+				if (file.getName().equals(SECURE_FOLDER_NAME)) {
 					secure.insertNode(loadDirectory(file.getName(), file.getName(), secure));
 				} else {
 					std.insertNode(loadDirectory(file.getName(), file.getName(), std));
@@ -65,7 +68,7 @@ public class Filesystem {
 	public Directory getRoot() {
 		return layers.get(WORKING_INDEX);
 	}
-	
+
 	public FSNode find(String text) {
 		FSNode node = null;
 		for (Layer layer : layers) {
