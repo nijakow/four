@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import nijakow.four.c.runtime.fs.Filesystem;
 import nijakow.four.client.ClientWindow;
 
 public class Main {
@@ -16,10 +17,10 @@ public class Main {
 			switch (args[i]) {
 			case "-d":
 			case "--directory":
-				Four.WORKING_DIR = args[++i];
-				if (!Four.WORKING_DIR.endsWith(File.separator))
-					Four.WORKING_DIR += File.separator;
-				Four.WORKING_DIR += Four.LIB_FOLDER_NAME;
+				Filesystem.WORKING_DIR = args[++i];
+				if (!Filesystem.WORKING_DIR.endsWith(File.separator))
+					Filesystem.WORKING_DIR += File.separator;
+				Filesystem.WORKING_DIR += Filesystem.LIB_FOLDER_NAME;
 				break;
 
 			case "--client":

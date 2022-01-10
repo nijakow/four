@@ -9,7 +9,7 @@ import nijakow.four.Four;
 
 public class ResourceLoader {
 	public String getResourceText(String path) {
-		try (InputStreamReader reader = new InputStreamReader(new FileInputStream(Four.WORKING_DIR + path))) {
+		try (InputStreamReader reader = new InputStreamReader(new FileInputStream(Filesystem.WORKING_DIR + path))) {
 			StringBuilder builder = new StringBuilder();
 			int c;
 			while ((c = reader.read()) != -1) {
@@ -22,6 +22,6 @@ public class ResourceLoader {
 	}
 
 	public File[] listFolderContents(String path) {
-		return new File(Four.WORKING_DIR + path).listFiles();
+		return new File(Filesystem.WORKING_DIR + path).listFiles();
 	}
 }
