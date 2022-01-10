@@ -64,6 +64,27 @@ public class Filesystem {
 		layers.add(WORKING_INDEX, layers.get(WORKING_INDEX).createMutable());
 	}
 
+	public void deleteSnapshot(int number) {
+		if (layers.size() <= 3) {
+			throw new IllegalStateException("No snapshots made!");
+		} else if (number < 1 || number > layers.size() - 3) {
+			throw new IndexOutOfBoundsException("No such snapshot!");
+		}
+		// for each file in that layer: if it has not been overridden, add it to the next layer
+		for (File file : layers.get(number).getAllFiles()) {
+			boolean found = false;
+			for (int i = WORKING_INDEX; i < WORKING_INDEX + number; i++) {
+				if (layers.get(i).containsFile(file)) {
+					found = true;
+					break;
+				}
+			}
+			if (!found) {
+				// Copy to nearest newer layer
+			}
+		}
+	}
+
 	public Directory getRoot() {
 		return layers.get(WORKING_INDEX);
 	}
