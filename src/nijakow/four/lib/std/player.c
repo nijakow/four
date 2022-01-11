@@ -81,7 +81,7 @@ void cmd_examine(string text)
     if (length(objects) == 0) {
         write("There is no such thing here!\n");
     } else {
-        write(objects[0]->get_long(), "\n");
+        write(objects[0]->get_desc(), "\n");
     }
 }
 
@@ -151,6 +151,7 @@ void cmd_recompile_file(string text)
     string file = trim(text);
     if ($recompile(file)) {
         the(file);  // This automatically reinitializes the file
+        connection->write("Recompilation successful.\n");
     } else {
         connection->mode_red();
         connection->mode_italic();
