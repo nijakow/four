@@ -25,7 +25,7 @@ public class Filesystem {
 		layers.add(std);
 		layers.add(WORKING_INDEX, new DefaultLayer(this));
 	}
-	
+
 	public Filesystem() { this(null); }
 
 	private void loadSnapshots() {
@@ -43,6 +43,29 @@ public class Filesystem {
 			} else {
 				std.insertNode(loadFile(file.getName(), std));
 			}
+		}
+	}
+
+	private Directory loadDirectory(String path, String name,  FSNode parent) {
+		Directory directory = new Directory(this, parent, name);
+		for (java.io.File file : loader.listFolderContents(path)) {
+			if (file.isDirectory()) {
+				directory.insertNode(loadDirectory(path + java.io.File.separator + file.getName(), file.getName(), directory));
+			} else {
+				directory.insertNode(loadFile(file.getName(), directory));
+			}
+		}
+		return directory;
+	}
+
+	private File loadFile(String path, Directory parent) {
+		String source = loader.getResourceText(parent.getFullName() + "/" + path);
+		if (source != null) {
+			FSNode node = parent.find(path, true);
+			node.asFile().setContents(source);
+			return node.asFile();
+		} else {
+			return null;
 		}
 	}
 
@@ -85,7 +108,7 @@ public class Filesystem {
 		}
 	}
 
-	public Directory getRoot() {
+	public Directory getWorkingLayer() {
 		return layers.get(WORKING_INDEX);
 	}
 
@@ -98,6 +121,10 @@ public class Filesystem {
 		return node;
 	}
 
+	public FSNode touchf(String fname) {
+		return getWorkingLayer().find(fname, true);
+	}
+
 	public File writeFile(String filePath, String content) {
 		File file = find(filePath).asFile();
 		if (file == null)
@@ -107,33 +134,6 @@ public class Filesystem {
 		}
 		file.setContents(content);
 		return file;
-	}
-
-	public FSNode touchf(String fname) {
-		return getRoot().find(fname, true);
-	}
-
-	private Directory loadDirectory(String path, String name,  FSNode parent) {
-		Directory directory = new Directory(this, parent, name);
-		for (java.io.File file : loader.listFolderContents(path)) {
-			if (file.isDirectory()) {
-				directory.insertNode(loadDirectory(path + java.io.File.separator + file.getName(), file.getName(), directory));
-			} else {
-				directory.insertNode(loadFile(file.getName(), directory));
-			}
-		}
-		return directory;
-	}
-
-	private File loadFile(String path, Directory parent) {
-		String source = loader.getResourceText(parent.getFullName() + "/" + path);
-		if (source != null) {
-			FSNode node = parent.find(path, true);
-			node.asFile().setContents(source);
-			return node.asFile();
-		} else {
-			return null;
-		}
 	}
 
 	public Blue getBlue(String path) {
