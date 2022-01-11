@@ -14,7 +14,7 @@ public class Four implements Runnable {
 	private final Server server;
 	private final VM vm;
 	private boolean wasStarted = false;
-	
+
 	public Four(int[] ports) throws IOException {
 		this.fs = new Filesystem(new ResourceLoader());
 		this.server = new Server();

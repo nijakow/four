@@ -24,7 +24,7 @@ public class File extends FSNode {
 	protected FSNode findChild(String name) { return null; }
 	
 	public String getContents() { return contents; }
-	public File setContents(String newContents) { contents = newContents; this.isDirty = true; return this; }
+	File setContents(String newContents) { contents = newContents; this.isDirty = true; return this; }
 	
 	public Blueprint compile() throws ParseException {
 		final String name = getFullName();

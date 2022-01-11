@@ -201,12 +201,11 @@ public class Key {
 			void run(Fiber fiber, Instance self, Instance[] args) {
 				String path = args[0].asFString().asString();
 				String value = args[1].asFString().asString();
-				FSNode node = fiber.getVM().getFilesystem().find(path);
+				FSNode node = fiber.getVM().getFilesystem().writeFile(path, value);
 				if (node == null || node.asFile() == null) {
 					fiber.setAccu(Instance.getNil());
 					fiber.setAccu(new FInteger(0));
 				} else {
-					node.asFile().setContents(value);
 					fiber.setAccu(new FInteger(1));
 				}
 			}
