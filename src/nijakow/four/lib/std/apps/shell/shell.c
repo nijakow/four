@@ -54,6 +54,20 @@ void cmd_ls(list argv)
     resume();
 }
 
+void cmd_cat(list argv)
+{
+    for (int i = 1; i < length(argv); i++)
+    {
+        string the_path = resolve(pwd(), argv[i]);
+        if (the_path == nil) {
+            arg_error();
+            break;
+        } else {
+            connection()->write(cat(the_path));
+        }
+    }
+}
+
 void receive(string line)
 {
     list argv = split(line);
@@ -67,6 +81,8 @@ void receive(string line)
         cmd_cd(argv);
     else if (argv[0] == "ls")
         cmd_ls(argv);
+    else if (argv[0] == "cat")
+        cmd_cat(argv);
     else {
         connection()->write(argv[0], ": not a command!\n");
         resume();

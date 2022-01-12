@@ -10,6 +10,7 @@ use $chr;
 use $length;
 use $statics;
 use $filechildren;
+use $filetext;
 
 
 object the(string id)
@@ -304,4 +305,9 @@ list ls(string path)
 bool is_dir(string path)
 {
     return ls(path) != nil;
+}
+
+string cat(string path)
+{
+    return $filetext(path);
 }

@@ -265,7 +265,7 @@ public class Key {
 			} else {
 				FList lst = new FList();
 				for (FSNode child : node.asDir().getChildren()) {
-					lst.insert(-1, new FString(child.getFullName()));
+					lst.insert(-1, new FString(child.getName()));
 				}
 				fiber.setAccu(lst);
 			}
