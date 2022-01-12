@@ -96,13 +96,16 @@ void cmd_edit_file__write(any id, string text)
 
 void cmd_touch_file(list argv)
 {
-    if (length(argv) != 2)
-        connection()->write("Could not create file!\n");
+    if (length(argv) <= 1)
+        arg_error();
     else {
-        if (!touch(argv[1]))
-            connection()->write("Could not create file!\n");
-        else
-            connection()->write(argv[1], " created.\n");
+        for (int x = 1; x < length(argv); x++)
+        {
+            if (!touch(argv[1]))
+                connection()->write("Could not create file!\n");
+            else
+                connection()->write(argv[1], " created.\n");
+        }
     }
     resume();
 }
@@ -114,20 +117,23 @@ void cmd_edit_file(list argv)
      *       Maybe also disable editing of special security files.
      * - mhahnFr
      */
-    if (length(argv) != 2)
+    if (length(argv) <= 1)
         arg_error();
     else {
-        string path = resolve(pwd(), argv[1]);
-        string content = cat(path);
-        if (content == nil) {
-            if (touch(path))
-                content = "";
-        }
-        if (content != nil) {
-            any id = connection()->edit(this::cmd_edit_file__write, path, content);
-            mapped_pathnames[id] = path;
-        } else {
-            file_not_found_error();
+        for (int i = 1; i < length(argv); i++)
+        {
+            string path = resolve(pwd(), argv[i]);
+            string content = cat(path);
+            if (content == nil) {
+                if (touch(path))
+                    content = "";
+            }
+            if (content != nil) {
+                any id = connection()->edit(this::cmd_edit_file__write, path, content);
+                mapped_pathnames[id] = path;
+            } else {
+                file_not_found_error();
+            }
         }
     }
     resume();
@@ -138,7 +144,8 @@ void cmd_recompile_file(list argv)
     if (length(argv) <= 1)
         arg_error();
     else {
-        for (int i = 1; i < length(argv); i++) {
+        for (int i = 1; i < length(argv); i++)
+        {
             string file = resolve(pwd(), argv[i]);
             if (recompile(file)) {
                 the(file);  // This automatically reinitializes the file
