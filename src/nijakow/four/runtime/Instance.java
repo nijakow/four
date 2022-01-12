@@ -13,13 +13,13 @@ public abstract class Instance {
 	public boolean asBoolean() { return !isNil(); }
 	public int asInt() { return hashCode(); }
 	public String asString() { return toString(); }
-	public Key asKey() { throw new RuntimeException("Conversion failed!"); }
-	public Blue asBlue() { throw new RuntimeException("Conversion failed!"); }
-	public FString asFString() { throw new RuntimeException("Conversion failed!"); }
-	public FList asFList() { throw new RuntimeException("Conversion failed!"); }
+	public Key asKey() throws FourRuntimeException { throw new FourRuntimeException("Conversion failed:" + this + " to Key!"); }
+	public Blue asBlue() throws CastException { throw new CastException(Type.getObject(), this); }
+	public FString asFString() throws CastException { throw new CastException(Type.getString(), this); }
+	public FList asFList() throws CastException { throw new CastException(Type.getList(), this); }
 	public FMapping asFMapping() throws CastException { throw new CastException(Type.getMapping(), this); }
-	public FClosure asFClosure() { throw new RuntimeException("Conversion failed!"); }
-	public FConnection asFConnection() { throw new RuntimeException("Conversion failed!"); }
+	public FClosure asFClosure() throws CastException { throw new CastException(Type.getFunc(), this); }
+	public FConnection asFConnection() throws FourRuntimeException { throw new FourRuntimeException("Conversion failed:" + this + " to FConnection!"); }
 	
 	public Instance plus(Instance y) { throw new RuntimeException("Addition failed!"); }
 	
@@ -27,7 +27,7 @@ public abstract class Instance {
 	public Instance putIndex(Instance index, Instance value) throws CastException { throw new RuntimeException("Invalid index!"); }
 	public int length() { return 0; }
 
-	public void invoke(Fiber fiber, int args) {
+	public void invoke(Fiber fiber, int args) throws FourRuntimeException {
 		throw new RuntimeException("Oof. Can't invoke this object!");
 	}
 	
@@ -39,7 +39,7 @@ public abstract class Instance {
 		throw new RuntimeException("Oof. Slot not found.");
 	}
 	
-	public void send(Fiber fiber, Key key, int args) {
+	public void send(Fiber fiber, Key key, int args) throws FourRuntimeException {
 		throw new RuntimeException("Oof. Method not found: " + key);
 	}
 	

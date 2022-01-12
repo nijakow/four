@@ -34,14 +34,20 @@ public class VM {
 	}
 
 	public void setConnectCallback(Callback callback) {
-		this.server.onConnect((theConnection) -> callback.invoke(new FConnection(theConnection)));
+		this.server.onConnect((theConnection) -> {
+			try {
+				callback.invoke(new FConnection(theConnection));
+			} catch (FourRuntimeException e) {
+				e.printStackTrace(); // TODO: Handle this gracefully (use smth different than Consumer)
+			}
+		});
 	}
 
 	public void setErrorCallback(Callback callback) {
 		this.errorCallback = callback;
 	}
 
-	public void reportError(String type, String name, String message) {
+	public void reportError(String type, String name, String message) throws FourRuntimeException {
 		if (this.errorCallback != null)
 			this.errorCallback.invoke(new FString(type), new FString(name), new FString(message));
 	}
@@ -59,7 +65,7 @@ public class VM {
 		}
 	}
 
-	private void wakeCallbacks() {
+	private void wakeCallbacks() throws FourRuntimeException {
 		long time = System.currentTimeMillis();
 		
 		while (!pendingCallbacks.isEmpty() && pendingCallbacks.peek().getFirst() <= time) {
@@ -80,15 +86,19 @@ public class VM {
 					fiber.tick();
 				} catch (FourRuntimeException e) {
 					e.printStackTrace();
-					reportError("four", e.getClass().getName(), e.getMessage());
-					System.out.println("The exception was caught, execution will continue.");
+					try {
+						reportError("four", e.getClass().getName(), e.getMessage());
+						System.out.println("The exception was caught, execution will continue.");
+					} catch (FourRuntimeException ex) {
+						ex.printStackTrace();
+					}
 				}
 				x++;
 			}
 		}
 	}
 	
-	public void tick() {
+	public void tick() throws FourRuntimeException {
 		wakeCallbacks();
 		runAllActiveFibers();
 	}
@@ -97,7 +107,7 @@ public class VM {
 		return new Fiber(this);
 	}
 	
-	public void startFiber(Blue self, Key key, Instance[] args) {
+	public void startFiber(Blue self, Key key, Instance[] args) throws FourRuntimeException {
 		Fiber fiber = spawnFiber();
 		for (Instance arg : args)
 			fiber.push(arg);
@@ -105,11 +115,11 @@ public class VM {
 		fibers.add(fiber);
 	}
 	
-	public void startFiber(Blue self, Key key) {
+	public void startFiber(Blue self, Key key) throws FourRuntimeException {
 		startFiber(self, key, new Instance[0]);
 	}
 	
-	public void startFiber(FClosure closure, Instance[] args) {
+	public void startFiber(FClosure closure, Instance[] args) throws FourRuntimeException {
 		Fiber fiber = spawnFiber();
 		for (Instance arg : args)
 			fiber.push(arg);

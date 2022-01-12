@@ -105,7 +105,7 @@ public class Blue extends Instance {
 	}
 	
 	@Override
-	public void send(Fiber fiber, Key key, int args) {
+	public void send(Fiber fiber, Key key, int args) throws FourRuntimeException {
 		Code code = blueprint.getMethod(key);
 		if (code == null)
 			super.send(fiber, key, args);

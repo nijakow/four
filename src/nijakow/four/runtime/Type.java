@@ -62,7 +62,7 @@ public abstract class Type {
 	private static final Type OBJECT = new Type() {
 		
 		@Override
-		public Instance cast(Instance instance) {
+		public Instance cast(Instance instance) throws CastException {
 			if (check(instance))
 				return instance;
 			else

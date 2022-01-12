@@ -81,7 +81,7 @@ public class FString extends Instance {
 	}
 
 	@Override
-	public void send(Fiber fiber, Key key, int args) {
+	public void send(Fiber fiber, Key key, int args) throws FourRuntimeException {
 		Blue blue = getBlue(fiber.getVM().getFilesystem());
 		blue.send(fiber, key, args);
 	}

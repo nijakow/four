@@ -19,7 +19,7 @@ public class FClosure extends Instance {
 	}
 
 	@Override
-	public void invoke(Fiber fiber, int args) {
+	public void invoke(Fiber fiber, int args) throws FourRuntimeException {
 		instance.extractMethod(fiber.getVM(), key).invoke(fiber, args, this.self);
 	}
 }

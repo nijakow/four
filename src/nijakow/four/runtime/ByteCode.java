@@ -58,7 +58,7 @@ public class ByteCode implements Code {
 	}
 
 	@Override
-	public void invoke(Fiber fiber, int args, Instance self) {
+	public void invoke(Fiber fiber, int args, Instance self) throws CastException {
 		fiber.enter(self.asBlue(), this, args);
 	}
 }

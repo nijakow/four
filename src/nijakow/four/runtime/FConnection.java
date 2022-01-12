@@ -10,11 +10,23 @@ public class FConnection extends Instance {
 	public FConnection asFConnection() { return this; }
 	
 	public void onReceive(Callback cb) {
-		connection.onInput((s) -> cb.invoke(new FString(s)));
+		connection.onInput((s) -> {
+			try {
+				cb.invoke(new FString(s));
+			} catch (FourRuntimeException e) {
+				e.printStackTrace();  // TODO: Handle this gracefully
+			}
+		});
 	}
 	
 	public void onDisconnect(Callback cb) {
-		connection.onDisconnect(() -> cb.invoke());
+		connection.onDisconnect(() -> {
+			try {
+				cb.invoke();
+			} catch (FourRuntimeException e) {
+				e.printStackTrace();  // TODO: Handle this gracefully
+			}
+		});
 	}
 	
 	public void send(Instance instance) {

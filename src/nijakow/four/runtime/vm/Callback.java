@@ -1,9 +1,6 @@
 package nijakow.four.runtime.vm;
 
-import nijakow.four.runtime.Blue;
-import nijakow.four.runtime.FClosure;
-import nijakow.four.runtime.Instance;
-import nijakow.four.runtime.Key;
+import nijakow.four.runtime.*;
 
 public class Callback {
 	private final VM vm;
@@ -18,7 +15,7 @@ public class Callback {
 		this.closure = closure;
 	}
 
-	public void invoke(Instance... args) {
+	public void invoke(Instance... args) throws FourRuntimeException {
 		vm.startFiber(closure, args);
 	}
 }
