@@ -30,22 +30,22 @@ public abstract class Instance {
 	public int length() { return 0; }
 
 	public void invoke(Fiber fiber, int args) throws FourRuntimeException {
-		throw new RuntimeException("Oof. Can't invoke this object!");
+		throw new FourRuntimeException("Oof. Can't invoke this object!");
 	}
 	
 	public void loadSlot(Fiber fiber, Key key) throws FourRuntimeException {
-		throw new RuntimeException("Oof. Slot not found: " + key);
+		throw new FourRuntimeException("Oof. Slot not found: " + key);
 	}
 	
 	public void storeSlot(Fiber fiber, Key key, Instance value) throws FourRuntimeException {
-		throw new RuntimeException("Oof. Slot not found.");
+		throw new FourRuntimeException("Oof. Slot not found.");
 	}
 	
 	public void send(Fiber fiber, Key key, int args) throws FourRuntimeException {
-		throw new RuntimeException("Oof. Method not found: " + key);
+		throw new FourRuntimeException("Oof. Method not found: " + key);
 	}
 	
-	public Code extractMethod(VM vm, Key key) throws CompilationException, ParseException {
-		throw new RuntimeException("Oof. Can't extract method.");
+	public Code extractMethod(VM vm, Key key) throws FourRuntimeException {
+		throw new FourRuntimeException("Oof. Can't extract method.");
 	}
 }
