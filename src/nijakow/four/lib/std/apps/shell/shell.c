@@ -60,11 +60,15 @@ void cmd_cat(list argv)
     {
         string the_path = resolve(pwd(), argv[i]);
         if (the_path == nil) {
-            arg_error();
+            file_not_found_error();
             break;
-        } else {
-            connection()->write(cat(the_path));
         }
+        string the_text = cat(the_path);
+        if (the_text == nil) {
+            file_not_found_error();
+            break;
+        }
+        connection()->write(the_text);
     }
     resume();
 }
