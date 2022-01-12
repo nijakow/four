@@ -27,7 +27,7 @@ void _select_choose(string line)
 
 void _select_resume()
 {
-    write("\nYour selection is ambiguous:\n");
+    connection->write("\nYour selection is ambiguous:\n");
     for (int i = 0; i < length(select_object_list); i++)
     {
         connection->write("  ", (i + 1), ": ", select_object_list[i].get_long(), "\n");
@@ -96,11 +96,11 @@ void cmd_say(string text)
 void cmd_take_act(object obj)
 {
     if (obj == nil)
-        write("There is no such thing here!\n");
+        connection->write("There is no such thing here!\n");
     else if (!act_take(obj))
-        write("You can't take that!\n");
+        connection->write("You can't take that!\n");
     else
-        write("Taken.\n");
+        connection->write("Taken.\n");
     resume();
 }
 
@@ -113,11 +113,11 @@ void cmd_drop(string text)
 {
     list objects = find_thing(text);
     if (length(objects) == 0) {
-        write("There is no such thing here!\n");
+        connection->write("There is no such thing here!\n");
     } else if (!act_drop(objects[0])) {
-        write("You can't drop that!\n");
+        connection->write("You can't drop that!\n");
     } else {
-        write("Dropped.\n");
+        connection->write("Dropped.\n");
     }
     resume();
 }
@@ -126,9 +126,9 @@ void cmd_examine(string text)
 {
     list objects = find_thing_here(text);
     if (length(objects) == 0) {
-        write("There is no such thing here!\n");
+        connection->write("There is no such thing here!\n");
     } else {
-        write(objects[0]->get_desc(), "\n");
+        connection->write(objects[0]->get_desc(), "\n");
     }
     resume();
 }
