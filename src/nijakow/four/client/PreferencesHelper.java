@@ -44,7 +44,7 @@ public class PreferencesHelper {
 	}
 	
 	public boolean getLineBreaking() {
-		return prefs.getBoolean(LINE_BREAKING, false);
+		return prefs.getBoolean(LINE_BREAKING, true);
 	}
 	
 	public void setLineBreaking(boolean breaking) {
