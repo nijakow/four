@@ -305,7 +305,8 @@ public class Parser {
 				Key name = expectKey();
 				if (check(TokenType.LPAREN)) {
 					Pair<Pair<Type, Key>[], Boolean> args = parseArgdefs();
-					ASTInstruction body = parseInstruction();
+					expect(TokenType.LCURLY);
+					ASTInstruction body = parseBlock();
 					defs.add(new ASTFunctionDef(type, name, args.getFirst(), args.getSecond(), body));
 				} else {
 					defs.add(new ASTInstanceVarDef(type, name));

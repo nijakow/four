@@ -1,5 +1,6 @@
 package nijakow.four.c.ast;
 
+import nijakow.four.c.compiler.CompilationException;
 import nijakow.four.c.compiler.FCompiler;
 import nijakow.four.c.compiler.Label;
 
@@ -15,7 +16,7 @@ public class ASTBinOp extends ASTExpression {
 	}
 
 	@Override
-	void compile(FCompiler compiler) {
+	void compile(FCompiler compiler) throws CompilationException {
 		switch (type) {
 		case LOGAND: {
 			Label label = compiler.openLabel();

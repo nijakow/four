@@ -36,6 +36,6 @@ public class ParseException extends FourException {
 			sb.append(c);
 			if (x == 0) sb.append(" <-- ");
 		}
-		return this.message + " => " + sb.toString();
+		return this.message + " => " + sb.toString().replaceAll("\\s+", " ");
 	}
 }

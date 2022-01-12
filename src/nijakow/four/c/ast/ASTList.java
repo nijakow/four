@@ -1,5 +1,6 @@
 package nijakow.four.c.ast;
 
+import nijakow.four.c.compiler.CompilationException;
 import nijakow.four.c.compiler.FCompiler;
 import nijakow.four.runtime.ListType;
 
@@ -13,7 +14,7 @@ public class ASTList extends ASTExpression {
 	}
 
 	@Override
-	void compile(FCompiler compiler) {
+	void compile(FCompiler compiler) throws CompilationException {
 		for (ASTExpression expr : exprs) {
 			expr.compile(compiler);
 			compiler.compilePush();

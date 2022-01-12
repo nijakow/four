@@ -1,6 +1,7 @@
 package nijakow.four.runtime.fs;
 
 import nijakow.four.c.ast.ASTFile;
+import nijakow.four.c.compiler.CompilationException;
 import nijakow.four.c.parser.ParseException;
 import nijakow.four.c.parser.Parser;
 import nijakow.four.c.parser.StringCharStream;
@@ -26,7 +27,7 @@ public class File extends FSNode {
 	public String getContents() { return contents; }
 	File setContents(String newContents) { contents = newContents; this.isDirty = true; return this; }
 	
-	public Blueprint compile() throws ParseException {
+	public Blueprint compile() throws ParseException, CompilationException {
 		final String name = getFullName();
 		System.out.println("Compiling file " + name);
 		Parser parser = new Parser(new Tokenizer(new StringCharStream(contents)));
@@ -34,7 +35,7 @@ public class File extends FSNode {
 		return file.compile(name, getFilesystem());
 	}
 
-	public void recompile() throws ParseException {
+	public void recompile() throws ParseException, CompilationException {
 		if (instance == null)
 			getInstance();
 		else {
@@ -51,7 +52,7 @@ public class File extends FSNode {
 			try {
 				blueprint = compile();
 				isDirty = false;
-			} catch (ParseException e) {
+			} catch (ParseException | CompilationException e) {
 				e.printStackTrace();
 				return null;  // TODO: Delegate this error to the system
 			}

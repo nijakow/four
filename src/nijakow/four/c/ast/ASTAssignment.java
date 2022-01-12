@@ -1,5 +1,6 @@
 package nijakow.four.c.ast;
 
+import nijakow.four.c.compiler.CompilationException;
 import nijakow.four.c.compiler.FCompiler;
 
 public class ASTAssignment extends ASTExpression {
@@ -12,7 +13,7 @@ public class ASTAssignment extends ASTExpression {
 	}
 
 	@Override
-	void compile(FCompiler compiler) {
+	void compile(FCompiler compiler) throws CompilationException {
 		left.compileAssignment(compiler, right);
 	}
 }

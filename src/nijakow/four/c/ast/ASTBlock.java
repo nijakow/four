@@ -1,5 +1,6 @@
 package nijakow.four.c.ast;
 
+import nijakow.four.c.compiler.CompilationException;
 import nijakow.four.c.compiler.FCompiler;
 
 public class ASTBlock extends ASTInstruction {
@@ -10,7 +11,7 @@ public class ASTBlock extends ASTInstruction {
 	}
 
 	@Override
-	void compile(FCompiler compiler) {
+	void compile(FCompiler compiler) throws CompilationException {
 		compiler = compiler.subscope();
 		for (ASTInstruction instruction : instructions) {
 			instruction.compile(compiler);

@@ -1,5 +1,6 @@
 package nijakow.four.c.ast;
 
+import nijakow.four.c.compiler.CompilationException;
 import nijakow.four.c.compiler.FCompiler;
 import nijakow.four.runtime.Key;
 
@@ -13,19 +14,19 @@ public class ASTDot extends ASTExpression {
 	}
 
 	@Override
-	void compile(FCompiler compiler) {
+	void compile(FCompiler compiler) throws CompilationException {
 		expr.compile(compiler);
 		compiler.compileDot(key);
 	}
 
 	@Override
-	public void compileCall(FCompiler compiler, int args, boolean hasVarargs) {
+	public void compileCall(FCompiler compiler, int args, boolean hasVarargs) throws CompilationException {
 		expr.compile(compiler);
 		compiler.compileDotCall(key, args, hasVarargs);
 	}
 
 	@Override
-	public void compileAssignment(FCompiler compiler, ASTExpression right) {
+	public void compileAssignment(FCompiler compiler, ASTExpression right) throws CompilationException {
 		right.compile(compiler);
 		compiler.compilePush();
 		expr.compile(compiler);

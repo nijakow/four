@@ -3,6 +3,7 @@ package nijakow.four.runtime;
 import java.util.HashMap;
 import java.util.Map;
 
+import nijakow.four.c.compiler.CompilationException;
 import nijakow.four.c.parser.ParseException;
 import nijakow.four.runtime.fs.FSNode;
 import nijakow.four.runtime.vm.Fiber;
@@ -276,7 +277,7 @@ public class Key {
 				try {
 					node.asFile().recompile();
 					fiber.setAccu(new FInteger(1));
-				} catch (ParseException | NullPointerException e) {
+				} catch (ParseException | NullPointerException | CompilationException e) {
 					// TODO: Handle this gracefully
 					e.printStackTrace();
 					fiber.setAccu(new FInteger(0));

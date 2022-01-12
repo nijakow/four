@@ -1,5 +1,6 @@
 package nijakow.four.c.ast;
 
+import nijakow.four.c.compiler.CompilationException;
 import nijakow.four.c.compiler.FCompiler;
 import nijakow.four.runtime.Key;
 
@@ -13,7 +14,7 @@ public class ASTScope extends ASTExpression {
 	}
 
 	@Override
-	public void compile(FCompiler compiler) {
+	public void compile(FCompiler compiler) throws CompilationException {
 		expr.compile(compiler);
 		compiler.compileScope(member);
 	}

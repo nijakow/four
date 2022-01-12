@@ -1,5 +1,6 @@
 package nijakow.four.c.ast;
 
+import nijakow.four.c.compiler.CompilationException;
 import nijakow.four.c.compiler.FCompiler;
 import nijakow.four.runtime.Instance;
 
@@ -11,7 +12,7 @@ public class ASTReturn extends ASTInstruction {
 	}
 
 	@Override
-	void compile(FCompiler compiler) {
+	void compile(FCompiler compiler) throws CompilationException {
 		if (this.value == null) {
 			compiler.compileLoadConstant(Instance.getNil());
 		} else {

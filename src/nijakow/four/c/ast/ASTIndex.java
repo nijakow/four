@@ -1,5 +1,6 @@
 package nijakow.four.c.ast;
 
+import nijakow.four.c.compiler.CompilationException;
 import nijakow.four.c.compiler.FCompiler;
 
 public class ASTIndex extends ASTExpression {
@@ -12,7 +13,7 @@ public class ASTIndex extends ASTExpression {
 	}
 
 	@Override
-	void compile(FCompiler compiler) {
+	void compile(FCompiler compiler) throws CompilationException {
 		expr.compile(compiler);
 		compiler.compilePush();
 		index.compile(compiler);
@@ -20,7 +21,7 @@ public class ASTIndex extends ASTExpression {
 	}
 
 	@Override
-	public void compileAssignment(FCompiler compiler, ASTExpression right) {
+	public void compileAssignment(FCompiler compiler, ASTExpression right) throws CompilationException {
 		expr.compile(compiler);
 		compiler.compilePush();
 		index.compile(compiler);

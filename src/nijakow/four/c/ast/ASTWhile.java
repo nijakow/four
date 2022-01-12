@@ -1,5 +1,6 @@
 package nijakow.four.c.ast;
 
+import nijakow.four.c.compiler.CompilationException;
 import nijakow.four.c.compiler.FCompiler;
 import nijakow.four.c.compiler.Label;
 
@@ -13,7 +14,7 @@ public class ASTWhile extends ASTInstruction {
 	}
 
 	@Override
-	void compile(FCompiler compiler) {
+	void compile(FCompiler compiler) throws CompilationException {
 		compiler = compiler.subscope();
 		Label breakLabel = compiler.openBreakLabel();
 		Label continueLabel = compiler.openContinueLabel();

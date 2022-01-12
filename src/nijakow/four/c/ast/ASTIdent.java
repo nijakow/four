@@ -1,5 +1,6 @@
 package nijakow.four.c.ast;
 
+import nijakow.four.c.compiler.CompilationException;
 import nijakow.four.c.compiler.FCompiler;
 import nijakow.four.runtime.Key;
 
@@ -16,7 +17,7 @@ public class ASTIdent extends ASTExpression {
 	}
 
 	@Override
-	public void compileCall(FCompiler compiler, int args, boolean hasVarargs) {
+	public void compileCall(FCompiler compiler, int args, boolean hasVarargs) throws CompilationException {
 		if (compiler.isLocal(identifier)) {
 			super.compileCall(compiler, args, hasVarargs);
 		} else {
@@ -26,7 +27,7 @@ public class ASTIdent extends ASTExpression {
 	}
 
 	@Override
-	public void compileAssignment(FCompiler compiler, ASTExpression right) {
+	public void compileAssignment(FCompiler compiler, ASTExpression right) throws CompilationException {
 		right.compile(compiler);
 		compiler.compileStoreVariable(identifier);
 	}
