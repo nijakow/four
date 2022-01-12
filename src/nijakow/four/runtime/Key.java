@@ -297,8 +297,12 @@ public class Key {
 				String path = args[0].asFString().asString();
 				FSNode node = fiber.getVM().getFilesystem().find(path);
 				try {
-					node.asFile().recompile();
-					fiber.setAccu(new FInteger(1));
+					if (node == null || node.asFile() == null)
+						fiber.setAccu(new FInteger(0));
+					else {
+						node.asFile().recompile();
+						fiber.setAccu(new FInteger(1));
+					}
 				} catch (ParseException | NullPointerException | CompilationException e) {
 					// TODO: Handle this gracefully
 					e.printStackTrace();

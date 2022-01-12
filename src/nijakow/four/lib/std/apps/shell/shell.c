@@ -129,11 +129,12 @@ void cmd_recompile_file(list argv)
             string file = resolve(pwd(), argv[i]);
             if (recompile(file)) {
                 the(file);  // This automatically reinitializes the file
-                connection()->write("Recompilation successful.\n");
+                connection()->mode_green();
+                connection()->write(file, ": ok.\n");
+                connection()->mode_normal();
             } else {
                 connection()->mode_red();
-                connection()->mode_italic();
-                connection()->write("Could not recompile \"", text, "\"!\n");
+                connection()->write(file, ": error.\n");
                 connection()->mode_normal();
             }
         }
