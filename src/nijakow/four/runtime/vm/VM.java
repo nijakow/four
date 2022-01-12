@@ -25,12 +25,12 @@ public class VM {
 		return fs;
 	}
 	
-	public Callback createCallback(FClosure closure) {
-		return new Callback(this, closure);
+	public Callback createCallback(SharedFiberState state, FClosure closure) {
+		return new Callback(this, state, closure);
 	}
 	
-	public Callback createCallback(Blue subject, Key message) {
-		return new Callback(this, subject, message);
+	public Callback createCallback(SharedFiberState state, Blue subject, Key message) {
+		return new Callback(this, state, subject, message);
 	}
 
 	public void setConnectCallback(Callback callback) {
@@ -101,6 +101,11 @@ public class VM {
 	public Fiber spawnFiber() {
 		return new Fiber(this);
 	}
+
+	public Fiber spawnFiber(SharedFiberState state) {
+		if (state == null) return spawnFiber();
+		else return new Fiber(this, state);
+	}
 	
 	public void startFiber(Blue self, Key key, Instance[] args) throws FourRuntimeException {
 		Fiber fiber = spawnFiber();
@@ -114,16 +119,16 @@ public class VM {
 		startFiber(self, key, new Instance[0]);
 	}
 	
-	public void startFiber(FClosure closure, Instance[] args) throws FourRuntimeException {
-		Fiber fiber = spawnFiber();
+	public void startFiber(SharedFiberState state, FClosure closure, Instance[] args) throws FourRuntimeException {
+		Fiber fiber = spawnFiber(state);
 		for (Instance arg : args)
 			fiber.push(arg);
 		closure.invoke(fiber, args.length);
 		fibers.add(fiber);
 	}
 	
-	public void invokeIn(Blue subject, Key message, long millis) {
+	public void invokeIn(SharedFiberState state, Blue subject, Key message, long millis) {
 		long time = System.currentTimeMillis();
-		pendingCallbacks.add(new ComparablePair<>(time + millis, createCallback(subject, message)));
+		pendingCallbacks.add(new ComparablePair<>(time + millis, createCallback(state, subject, message)));
 	}
 }

@@ -123,35 +123,35 @@ public class Key {
 			
 			@Override
 			void run(Fiber fiber, Instance self, Instance[] args) throws FourRuntimeException {
-				fiber.getVM().invokeIn(args[0].asBlue(), args[1].asKey(), args[2].asInt());
+				fiber.getVM().invokeIn(fiber.getSharedState(), args[0].asBlue(), args[1].asKey(), args[2].asInt());
 			}
 		};
 		get("$on_connect").code = new BuiltinCode() {
 			
 			@Override
 			void run(Fiber fiber, Instance self, Instance[] args) throws CastException {
-				fiber.getVM().setConnectCallback(fiber.getVM().createCallback(args[0].asFClosure()));
+				fiber.getVM().setConnectCallback(fiber.getVM().createCallback(null, args[0].asFClosure()));
 			}
 		};
 		get("$on_receive").code = new BuiltinCode() {
 			
 			@Override
 			void run(Fiber fiber, Instance self, Instance[] args) throws FourRuntimeException {
-				args[0].asFConnection().onReceive(fiber.getVM().createCallback(args[1].asFClosure()));
+				args[0].asFConnection().onReceive(fiber.getVM().createCallback(fiber.getSharedState(), args[1].asFClosure()));
 			}
 		};
 		get("$on_disconnect").code = new BuiltinCode() {
 			
 			@Override
 			void run(Fiber fiber, Instance self, Instance[] args) throws FourRuntimeException {
-				args[0].asFConnection().onDisconnect(fiber.getVM().createCallback(args[1].asFClosure()));
+				args[0].asFConnection().onDisconnect(fiber.getVM().createCallback(fiber.getSharedState(), args[1].asFClosure()));
 			}
 		};
 		get("$on_error").code = new BuiltinCode() {
 
 			@Override
 			void run(Fiber fiber, Instance self, Instance[] args) throws CastException {
-				fiber.getVM().setErrorCallback(fiber.getVM().createCallback(args[0].asFClosure()));
+				fiber.getVM().setErrorCallback(fiber.getVM().createCallback(fiber.getSharedState(), args[0].asFClosure()));
 			}
 		};
 		get("$write").code = new BuiltinCode() {

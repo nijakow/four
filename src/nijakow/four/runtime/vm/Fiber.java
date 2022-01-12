@@ -9,13 +9,20 @@ import nijakow.four.runtime.Instance;
 
 public class Fiber {
 	private final VM vm;
+	private final SharedFiberState state;
 	private Instance accumulator;
 	private final Stack<Instance> stack = new Stack<>();
 	private Frame top = null;
 
-	Fiber(VM vm) { this.vm = vm; }
+	Fiber(VM vm) { this(vm, new SharedFiberState()); }
+	Fiber(VM vm, SharedFiberState state) {
+		this.vm = vm;
+		this.state = state;
+	}
 	
 	public VM getVM() { return vm; }
+
+	public SharedFiberState getSharedState() { return state; }
 	
 	public Instance getAccu() {
 		return accumulator;
