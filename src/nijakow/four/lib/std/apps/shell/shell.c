@@ -5,6 +5,11 @@ void arg_error()
     connection()->write("Argument error!\n");
 }
 
+void file_not_found_error()
+{
+    connection()->write("File not found!\n");
+}
+
 void cmd_pwd(list argv)
 {
     if (length(argv) == 1)
@@ -16,8 +21,14 @@ void cmd_pwd(list argv)
 
 void cmd_cd(list argv)
 {
-    if (length(argv) == 2)
-        chdir(argv[1]);
+    if (length(argv) == 2) {
+        string newpwd = resolve(pwd(), argv[1]);
+        if (newpwd != nil) {
+            chdir(newpwd);
+        } else {
+            file_not_found_error();
+        }
+    }
     else
         arg_error();
     resume();
@@ -42,7 +53,10 @@ void receive(string line)
 
 void resume()
 {
-    connection()->prompt(this::receive, "$ ");
+    string ps1 = pwd();
+    if (ps1 != nil) ps1 = ps1 + " $ ";
+    else ps1 = "$ ";
+    connection()->prompt(this::receive, ps1);
 }
 
 void create(object connection, func finish_cb)

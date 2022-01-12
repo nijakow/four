@@ -6,7 +6,9 @@ public class ListType extends Type {
 	public ListType(Type type) {
 		this.parent = type;
 	}
-	
+
+	public String getName() { return "list of " + parent.getName(); }
+
 	public Type getParent() { return parent; }
 
 	@Override

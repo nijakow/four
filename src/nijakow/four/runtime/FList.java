@@ -46,6 +46,7 @@ public class FList extends Instance {
 	}
 	
 	public Instance at(int i) {
+		if (i < 0) i = list.size() + i;
 		return list.get(i);
 	}
 	

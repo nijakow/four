@@ -57,7 +57,9 @@ public class FString extends Instance {
 	@Override
 	public Instance index(Instance index) {
 		try {
-			return new FInteger(value.charAt(index.asInt()));
+			int i = index.asInt();
+			if (i < 0) i = value.length() + i;
+			return new FInteger(value.charAt(i));
 		} catch (StringIndexOutOfBoundsException e) {
 			return new FInteger(0);
 		}
