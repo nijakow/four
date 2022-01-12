@@ -104,6 +104,7 @@ void cmd_touch_file(list argv)
         else
             connection()->write(argv[1], " created.\n");
     }
+    resume();
 }
 
 void cmd_edit_file(list argv)
