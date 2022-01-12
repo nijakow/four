@@ -145,56 +145,6 @@ void cmd_inv(string text)
     resume();
 }
 
-use $filetext;
-use $filetext_set;
-
-mapping mapped_pathnames;
-
-void cmd_write_file(any id, string text)
-{
-    string path = mapped_pathnames[id];
-    mapped_pathnames[id] = nil;
-    if (path != nil && text != nil) {
-        connection->mode_italic();
-        if(!$filetext_set(path, text)) {
-            connection->mode_red();
-            connection->write("Could not write \"", path, "\"!\n");
-        } else {
-            connection->mode_green();
-            connection->write("\"", path, "\" written.\n");
-        }
-        connection->mode_normal();
-    }
-    resume();
-}
-
-use $touch;
-
-void cmd_edit_file(string text)
-{
-    /*
-     * TODO: Check if the requested file can be edited by the current user.
-     *       Maybe also disable editing of special security files.
-     * - mhahnFr
-     */
-    // TODO: write callback function in stdlib
-    string content = $filetext(text);
-    if (content == nil) {
-        if ($touch(text))
-            content = "";
-    }
-    if (content != nil) {
-        any id = connection->edit(this::cmd_write_file, text, content);
-        mapped_pathnames[id] = text;
-    } else {
-        connection->mode_red();
-        connection->mode_italic();
-        connection->write("Could not read \"", text, "\"!\n");
-        connection->mode_normal();
-    }
-    resume();
-}
-
 use $recompile;
 
 void cmd_recompile_file(string text)
@@ -302,7 +252,6 @@ void create()
     connection = nil;
     cmds = [];
     say_room = true;
-    mapped_pathnames = [];
 
     add_cmd("look", this::cmd_look);
     add_cmd("examine", this::cmd_examine);
@@ -312,7 +261,6 @@ void create()
     add_cmd("get", this::cmd_take);
     add_cmd("drop", this::cmd_drop);
     add_cmd("inv", this::cmd_inv);
-    add_cmd("edit", this::cmd_edit_file);
     add_cmd("recompile", this::cmd_recompile_file);
     add_cmd("new", this::cmd_instantiate);
     add_cmd("shell", this::cmd_shell);
