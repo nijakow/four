@@ -47,6 +47,7 @@ public class Four implements Runnable {
 		} catch (FourRuntimeException e) {
 			e.printStackTrace();
 			System.err.println("Fatal error! Stopping...");
+			return;
 		}
 
 		while (true) {
