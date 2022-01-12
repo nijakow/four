@@ -56,8 +56,8 @@ void lookaround()
     if (query_light_level_here() == 0) {
         connection->write("Is is pitch black here.\n");
     } else {
-	    say(get_location()->get_short(), "\n");
-	    say(get_location()->get_desc(), "\n");
+	    connection->write(get_location()->get_short(), "\n");
+	    connection->write(get_location()->get_desc(), "\n");
 	    for (object obj = get_location()->get_children();
 	         obj != nil;
 	         obj = obj->get_sibling())
@@ -77,7 +77,7 @@ void cmd_look(string text)
 void cmd_go(string dir)
 {
     object loc = get_location()->get_exit(dir);
-    
+
     if (loc != nil) {
     	act_goto(loc);
     	say_room = true;

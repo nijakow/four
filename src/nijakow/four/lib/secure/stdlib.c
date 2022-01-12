@@ -8,7 +8,6 @@ use $listremove;
 use $substr;
 use $chr;
 use $length;
-use $statics;
 
 
 object the(string id)
@@ -238,24 +237,4 @@ string itoa(int i)
     }
 
     return pre + s;
-}
-
-void say(...)
-{
-    $statics()["connection"]->write(...);
-}
-
-void prompt(...)
-{
-    $statics()["connection"]->do_prompt(...);
-}
-
-void password(...)
-{
-    $statics()["connection"]->do_password(...);
-}
-
-void edit(...)
-{
-    return $statics()["connection"]->do_edit(...);
 }
