@@ -11,6 +11,8 @@ use $length;
 use $statics;
 use $filechildren;
 use $filetext;
+use $filetext_set;
+use $touch;
 
 
 object the(string id)
@@ -310,4 +312,14 @@ bool is_dir(string path)
 string cat(string path)
 {
     return $filetext(path);
+}
+
+bool echo_into(string path, string text)
+{
+    return $filetext_set(path, text);
+}
+
+bool touch(string path)
+{
+    return $touch(path);
 }

@@ -1,5 +1,8 @@
 inherit "/std/cli.c";
 
+mapping mapped_pathnames;
+
+
 void arg_error()
 {
     connection()->write("Argument error!\n");
@@ -73,6 +76,50 @@ void cmd_cat(list argv)
     resume();
 }
 
+void cmd_edit_file__write(any id, string text)
+{
+    string path = mapped_pathnames[id];
+    mapped_pathnames[id] = nil;
+    if (path != nil && text != nil) {
+        connection()->mode_italic();
+        if(!echo_into(path, text)) {
+            connection()->mode_red();
+            connection()->write("Could not write \"", path, "\"!\n");
+        } else {
+            connection()->mode_green();
+            connection()->write("\"", path, "\" written.\n");
+        }
+        connection()->mode_normal();
+    }
+    resume();
+}
+
+void cmd_edit_file(list argv)
+{
+    /*
+     * TODO: Check if the requested file can be edited by the current user.
+     *       Maybe also disable editing of special security files.
+     * - mhahnFr
+     */
+    if (length(argv) != 2)
+        arg_error();
+    else {
+        string path = resolve(pwd(), argv[1]);
+        string content = cat(path);
+        if (content == nil) {
+            if (touch(path))
+                content = "";
+        }
+        if (content != nil) {
+            any id = connection()->edit(this::cmd_edit_file__write, path, content);
+            mapped_pathnames[id] = path;
+        } else {
+            file_not_found_error();
+        }
+    }
+    resume();
+}
+
 void receive(string line)
 {
     list argv = split(line);
@@ -88,6 +135,8 @@ void receive(string line)
         cmd_ls(argv);
     else if (argv[0] == "cat")
         cmd_cat(argv);
+    else if (argv[0] == "edit")
+        cmd_edit_file(argv);
     else {
         connection()->write(argv[0], ": not a command!\n");
         resume();
@@ -105,4 +154,5 @@ void resume()
 void create(object connection, func finish_cb)
 {
     "/std/cli.c"::create(connection, finish_cb);
+    mapped_pathnames = [];
 }
