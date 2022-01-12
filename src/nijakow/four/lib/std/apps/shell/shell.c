@@ -125,14 +125,10 @@ void cmd_edit_file(list argv)
             string path = resolve(pwd(), argv[i]);
             string content = cat(path);
             if (content == nil) {
-                if (touch(path))
-                    content = "";
-            }
-            if (content != nil) {
+                file_not_found_error();
+            } else {
                 any id = connection()->edit(this::cmd_edit_file__write, path, content);
                 mapped_pathnames[id] = path;
-            } else {
-                file_not_found_error();
             }
         }
     }
