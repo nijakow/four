@@ -158,9 +158,16 @@ void cmd_instantiate(string text)
     resume();
 }
 
+void resume_from_shell()
+{
+    me_act("slowly starts gaining consciousness again.\n");
+    resume();
+}
+
 void cmd_shell(string text)
 {
-    new("/std/apps/shell/shell.c", connection, this::resume)->start();
+    me_act("drifts off into the fabric of space and time.\n");
+    new("/std/apps/shell/shell.c", connection, this::resume_from_shell)->start();
 }
 
 void docmd(string cmd)
