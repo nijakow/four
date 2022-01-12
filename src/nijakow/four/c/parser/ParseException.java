@@ -3,17 +3,21 @@ package nijakow.four.c.parser;
 import nijakow.four.FourException;
 
 public class ParseException extends FourException {
-	private final Token token;
+	private final StreamPosition position;
 	private final String message;
 	
-	public ParseException(Token token, String message) {
-		this.token = token;
+	public ParseException(StreamPosition position, String message) {
+		this.position = position;
 		this.message = message;
+	}
+
+	public ParseException(Token token, String message) {
+		this(token.getPosition(), message);
 	}
 
 	@Override
 	public String getMessage() {
-		StreamPosition pos = token.getPosition();
+		StreamPosition pos = position;
 		String text = pos.getText();
 		StringBuilder sb = new StringBuilder();
 		int min = -30;

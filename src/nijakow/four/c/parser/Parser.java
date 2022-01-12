@@ -12,10 +12,10 @@ import nijakow.four.util.Pair;
 
 
 public class Parser {
-	private Tokenizer tokenizer;
+	private final Tokenizer tokenizer;
 
 	private void error(String message) throws ParseException {
-		throw new ParseException(tokenizer.nextToken(), message);
+		throw new ParseException(tokenizer.getPosition(), message);
 	}
 	
 	private Type parseType() throws ParseException {
@@ -261,6 +261,8 @@ public class Parser {
 		} else if (check(TokenType.FOREACH)) {
 			expect(TokenType.LPAREN);
 			Pair<Type, Key> vt = parseVarAndType();
+			if (vt == null || vt.getFirst() == null || vt.getSecond() == null)
+				error("Expected a variable and a type!");
 			expect(TokenType.COLON);
 			ASTExpression init = parseExpression();
 			expect(TokenType.RPAREN);
@@ -315,13 +317,13 @@ public class Parser {
 		return new ASTFile(defs.toArray(new ASTDecl[0]));
 	}
 	
-	private boolean checkKeep(TokenType type) {
+	private boolean checkKeep(TokenType type) throws ParseException {
 		Token t = tokenizer.nextToken();
 		t.fail();
 		return t.is(type);
 	}
 	
-	private boolean check(TokenType type) {
+	private boolean check(TokenType type) throws ParseException {
 		Token t = tokenizer.nextToken();
 		if (t.is(type)) return true;
 		t.fail();

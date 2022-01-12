@@ -9,6 +9,10 @@ import nijakow.four.runtime.FString;
 public class Tokenizer {	
 	private CharStream stream;
 	private Stack<Token> pushbacks;
+
+	public StreamPosition getPosition() {
+		return stream.getPosition();
+	}
 	
 	private boolean isSpecial(int c) {
 		return !(Character.isAlphabetic(c) || Character.isDigit(c) || c == '_' || c == '$');
@@ -68,7 +72,7 @@ public class Tokenizer {
 		return builder.toString();
 	}
 	
-	public Token nextToken() {
+	public Token nextToken() throws ParseException {
 		if (!pushbacks.isEmpty())
 			return pushbacks.pop();
 		
@@ -122,7 +126,7 @@ public class Tokenizer {
 		else if (peeks("\'")) {
 			char c = (char) parseChar('\'');
 			if (stream.next() != '\'')
-				throw new RuntimeException("Expected \"\'\"!");
+				throw new ParseException(pos, "Expected \"\'\"!");
 			return new Token(this, pos, TokenType.CONSTANT, new FInteger(c));
 		}
 		
