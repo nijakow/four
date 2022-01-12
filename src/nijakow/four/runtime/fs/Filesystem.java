@@ -111,6 +111,17 @@ public class Filesystem {
 		return layers.get(WORKING_INDEX);
 	}
 
+	public List<FSNode> listChildren(String name) {
+		List<FSNode> list = new LinkedList<>();
+		for (Layer layer : layers) {
+			FSNode dir = layer.find(name);
+			if (dir != null && dir.asDir() != null) {
+				list.addAll(dir.asDir().getChildren());
+			}
+		}
+		return list;
+	}
+
 	public FSNode find(String text) {
 		FSNode node = null;
 		for (Layer layer : layers) {

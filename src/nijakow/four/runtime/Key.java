@@ -1,6 +1,7 @@
 package nijakow.four.runtime;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import nijakow.four.c.compiler.CompilationException;
@@ -258,17 +259,17 @@ public class Key {
 
 			@Override
 			void run(Fiber fiber, Instance self, Instance[] args) throws CastException {
-			String path = args[0].asFString().asString();
-			FSNode node = fiber.getVM().getFilesystem().find(path);
-			if (node == null || node.asDir() == null) {
-				fiber.setAccu(Instance.getNil());
-			} else {
-				FList lst = new FList();
-				for (FSNode child : node.asDir().getChildren()) {
-					lst.insert(-1, new FString(child.getName()));
+				String path = args[0].asFString().asString();
+				List<FSNode> contents = fiber.getVM().getFilesystem().listChildren(path);
+				if (contents.isEmpty()) {
+					fiber.setAccu(Instance.getNil());
+				} else {
+					FList lst = new FList();
+					for (FSNode node : contents) {
+						lst.insert(-1, new FString(node.getName()));
+					}
+					fiber.setAccu(lst);
 				}
-				fiber.setAccu(lst);
-			}
 			}
 		};
 		get("$touch").code = new BuiltinCode() {
