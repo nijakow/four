@@ -3,6 +3,7 @@ package nijakow.four;
 import java.io.IOException;
 
 import nijakow.four.runtime.Blue;
+import nijakow.four.runtime.FourRuntimeException;
 import nijakow.four.runtime.Key;
 import nijakow.four.runtime.fs.Filesystem;
 import nijakow.four.runtime.fs.ResourceLoader;
@@ -24,7 +25,7 @@ public class Four implements Runnable {
 			server.serveOn(port);
 	}
 	
-	public void start() {
+	public void start() throws FourRuntimeException {
 		if (!wasStarted) {
 			wasStarted = true;
 			
@@ -32,7 +33,7 @@ public class Four implements Runnable {
 				Blue master = fs.getBlue("/secure/master.c");
 				
 				if (master == null) {
-					throw new RuntimeException("/secure/master.c is not defined!");
+					throw new FourRuntimeException("/secure/master.c is not defined!");
 				}
 				
 				vm.startFiber(master, Key.get("create"));
@@ -41,8 +42,13 @@ public class Four implements Runnable {
 	}
 	
 	public void run() {
-		start();
-		
+		try {
+			start();
+		} catch (FourRuntimeException e) {
+			e.printStackTrace();
+			System.err.println("Fatal error! Stopping...");
+		}
+
 		while (true) {
 			try {
 				vm.tick();
