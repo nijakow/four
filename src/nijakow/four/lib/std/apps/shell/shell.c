@@ -66,6 +66,7 @@ void cmd_cat(list argv)
             connection()->write(cat(the_path));
         }
     }
+    resume();
 }
 
 void receive(string line)
