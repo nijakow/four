@@ -310,6 +310,11 @@ bool is_dir(string path)
     return ls(path) != nil;
 }
 
+bool is_file(string path)
+{
+    return cat(path) != nil;
+}
+
 string cat(string path)
 {
     return $filetext(path);
