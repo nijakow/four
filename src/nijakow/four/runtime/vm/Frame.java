@@ -4,16 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import nijakow.four.c.ast.OperatorType;
-import nijakow.four.runtime.Blue;
-import nijakow.four.runtime.ByteCode;
-import nijakow.four.runtime.FClosure;
-import nijakow.four.runtime.FInteger;
-import nijakow.four.runtime.FList;
-import nijakow.four.runtime.FMapping;
-import nijakow.four.runtime.Instance;
-import nijakow.four.runtime.Key;
-import nijakow.four.runtime.ListType;
-import nijakow.four.runtime.Type;
+import nijakow.four.runtime.*;
 
 public class Frame {
 	private final Frame previous;
@@ -61,7 +52,7 @@ public class Frame {
 		}
 	}
 	
-	public void tick(Fiber fiber) {
+	public void tick(Fiber fiber) throws FourRuntimeException {
 		if (!code.boundsCheck(ip)) {
 			fiber.setTop(previous);
 			return;

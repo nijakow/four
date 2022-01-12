@@ -7,11 +7,11 @@ public class FList extends Instance {
 	private final ListType type;
 	private final List<Instance> list = new ArrayList<>();
 	
-	public FList(Instance... instances) {
+	public FList(Instance... instances) throws CastException {
 		this(Type.getList(), instances);
 	}
 	
-	public FList(ListType type, Instance... instances) {
+	public FList(ListType type, Instance... instances) throws CastException {
 		this.type = type;
 		for (Instance i : instances) {
 			type.getParent().expect(i);
@@ -30,7 +30,7 @@ public class FList extends Instance {
 	}
 	
 	@Override
-	public Instance putIndex(Instance index, Instance value) {
+	public Instance putIndex(Instance index, Instance value) throws CastException {
 		type.getParent().expect(value);
 		list.set(index.asInt(), value);
 		return this;

@@ -4,6 +4,7 @@ import java.util.Stack;
 
 import nijakow.four.runtime.Blue;
 import nijakow.four.runtime.ByteCode;
+import nijakow.four.runtime.FourRuntimeException;
 import nijakow.four.runtime.Instance;
 
 public class Fiber {
@@ -55,7 +56,7 @@ public class Fiber {
 		return top == null;
 	}
 	
-	public void tick() {
+	public void tick() throws FourRuntimeException {
 		top.tick(this);
 	}
 }

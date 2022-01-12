@@ -10,11 +10,11 @@ public class ListType extends Type {
 	public Type getParent() { return parent; }
 
 	@Override
-	public Instance cast(Instance instance) {
+	public Instance cast(Instance instance) throws CastException {
 		if (check(instance))
 			return instance;
 		else
-			throw new RuntimeException("Can't cast!");
+			throw new CastException(this, instance);
 	}
 	
 	@Override

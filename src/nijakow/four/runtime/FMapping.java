@@ -38,8 +38,4 @@ public class FMapping extends Instance {
 		}
 		return this;
 	}
-	
-	public FList keys() {
-		return new FList(map.keySet().toArray(new Instance[0]));
-	}
 }

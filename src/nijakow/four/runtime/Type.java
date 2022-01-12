@@ -78,11 +78,11 @@ public abstract class Type {
 	private static final Type FUNC = new Type() {
 		
 		@Override
-		public Instance cast(Instance instance) {
+		public Instance cast(Instance instance) throws CastException {
 			if (check(instance))
 				return instance;
 			else
-				throw new RuntimeException("Can't cast!");
+				throw new CastException(this, instance);
 		}
 		
 		@Override
@@ -94,11 +94,11 @@ public abstract class Type {
 	private static final Type MAPPING = new Type() {
 		
 		@Override
-		public Instance cast(Instance instance) {
+		public Instance cast(Instance instance) throws CastException {
 			if (check(instance))
 				return instance;
 			else
-				throw new RuntimeException("Can't cast!");
+				throw new CastException(this, instance);
 		}
 		
 		@Override
@@ -125,13 +125,13 @@ public abstract class Type {
 	protected Type() {}
 	
 	
-	public abstract Instance cast(Instance instance);
+	public abstract Instance cast(Instance instance) throws CastException;
 	
 	public abstract boolean check(Instance instance);
 	
-	public void expect(Instance instance) {
+	public void expect(Instance instance) throws CastException {
 		if (!check(instance))
-			throw new RuntimeException("Expected different type! Got: " + instance);
+			throw new CastException(this, instance);
 	}
 	
 	public ListType listType() {

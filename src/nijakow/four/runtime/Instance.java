@@ -24,7 +24,7 @@ public abstract class Instance {
 	public Instance plus(Instance y) { throw new RuntimeException("Addition failed!"); }
 	
 	public Instance index(Instance index) { throw new RuntimeException("Invalid index!"); }
-	public Instance putIndex(Instance index, Instance value) { throw new RuntimeException("Invalid index!"); }
+	public Instance putIndex(Instance index, Instance value) throws CastException { throw new RuntimeException("Invalid index!"); }
 	public int length() { return 0; }
 
 	public void invoke(Fiber fiber, int args) {

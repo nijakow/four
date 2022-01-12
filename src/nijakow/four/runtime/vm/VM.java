@@ -76,7 +76,13 @@ public class VM {
 					// TODO: Throw an error!
 					break;
 				}
-				fiber.tick();
+				try {
+					fiber.tick();
+				} catch (FourRuntimeException e) {
+					e.printStackTrace();
+					reportError("four", e.getClass().getName(), e.getMessage());
+					System.out.println("The exception was caught, execution will continue.");
+				}
 				x++;
 			}
 		}
