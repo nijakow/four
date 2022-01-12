@@ -145,23 +145,6 @@ void cmd_inv(string text)
     resume();
 }
 
-use $recompile;
-
-void cmd_recompile_file(string text)
-{
-    string file = trim(text);
-    if ($recompile(file)) {
-        the(file);  // This automatically reinitializes the file
-        connection->write("Recompilation successful.\n");
-    } else {
-        connection->mode_red();
-        connection->mode_italic();
-        connection->write("Could not recompile \"", text, "\"!\n");
-        connection->mode_normal();
-    }
-    resume();
-}
-
 void cmd_instantiate(string text)
 {
     object obj = new(text);
@@ -261,7 +244,6 @@ void create()
     add_cmd("get", this::cmd_take);
     add_cmd("drop", this::cmd_drop);
     add_cmd("inv", this::cmd_inv);
-    add_cmd("recompile", this::cmd_recompile_file);
     add_cmd("new", this::cmd_instantiate);
     add_cmd("shell", this::cmd_shell);
 }

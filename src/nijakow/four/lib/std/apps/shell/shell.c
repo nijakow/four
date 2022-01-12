@@ -120,6 +120,27 @@ void cmd_edit_file(list argv)
     resume();
 }
 
+void cmd_recompile_file(list argv)
+{
+    if (length(argv) <= 1)
+        arg_error();
+    else {
+        for (int i = 1; i < length(argv); i++) {
+            string file = resolve(pwd(), argv[i]);
+            if (recompile(file)) {
+                the(file);  // This automatically reinitializes the file
+                connection()->write("Recompilation successful.\n");
+            } else {
+                connection()->mode_red();
+                connection()->mode_italic();
+                connection()->write("Could not recompile \"", text, "\"!\n");
+                connection()->mode_normal();
+            }
+        }
+    }
+    resume();
+}
+
 void receive(string line)
 {
     list argv = split(line);
@@ -137,6 +158,8 @@ void receive(string line)
         cmd_cat(argv);
     else if (argv[0] == "edit")
         cmd_edit_file(argv);
+    else if (argv[0] == "cc")
+        cmd_recompile_file(argv);
     else {
         connection()->write(argv[0], ": not a command!\n");
         resume();

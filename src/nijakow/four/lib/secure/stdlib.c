@@ -13,6 +13,7 @@ use $filechildren;
 use $filetext;
 use $filetext_set;
 use $touch;
+use $recompile;
 
 
 object the(string id)
@@ -322,4 +323,9 @@ bool echo_into(string path, string text)
 bool touch(string path)
 {
     return $touch(path);
+}
+
+bool recompile(string path)
+{
+    return $recompile(path);
 }
