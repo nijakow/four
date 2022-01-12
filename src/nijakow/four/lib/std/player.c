@@ -71,6 +71,7 @@ void lookaround()
 void cmd_look(string text)
 {
     lookaround();
+    resume();
 }
 
 void cmd_go(string dir)
@@ -80,13 +81,16 @@ void cmd_go(string dir)
     if (loc != nil) {
     	act_goto(loc);
     	say_room = true;
-    } else
+    } else {
     	connection->write("There is no exit in this direction!\n");
+    }
+    resume();
 }
 
 void cmd_say(string text)
 {
     act(get_short(), " says: ", text, "\n");
+    resume();
 }
 
 void cmd_take_act(object obj)
