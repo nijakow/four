@@ -94,6 +94,18 @@ void cmd_edit_file__write(any id, string text)
     resume();
 }
 
+void cmd_touch_file(list argv)
+{
+    if (length(argv) != 2)
+        connection()->write("Could not create file!\n");
+    else {
+        if (!touch(argv[1]))
+            connection()->write("Could not create file!\n");
+        else
+            connection()->write(argv[1], " created.\n");
+    }
+}
+
 void cmd_edit_file(list argv)
 {
     /*
@@ -161,6 +173,8 @@ void receive(string line)
         cmd_edit_file(argv);
     else if (argv[0] == "cc")
         cmd_recompile_file(argv);
+    else if (argv[0] == "touch")
+        cmd_touch_file(argv);
     else {
         connection()->write(argv[0], ": not a command!\n");
         resume();
