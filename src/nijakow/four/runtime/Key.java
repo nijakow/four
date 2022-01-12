@@ -254,17 +254,21 @@ public class Key {
 				}
 			}
 		};
-		get("$filetext").code = new BuiltinCode() {
+		get("$filechildren").code = new BuiltinCode() {
 
 			@Override
 			void run(Fiber fiber, Instance self, Instance[] args) throws CastException {
-				String path = args[0].asFString().asString();
-				FSNode node = fiber.getVM().getFilesystem().find(path);
-				if (node == null || node.asFile() == null) {
-					fiber.setAccu(Instance.getNil());
-				} else {
-					fiber.setAccu(new FString(node.asFile().getContents()));
+			String path = args[0].asFString().asString();
+			FSNode node = fiber.getVM().getFilesystem().find(path);
+			if (node == null || node.asDir() == null) {
+				fiber.setAccu(Instance.getNil());
+			} else {
+				FList lst = new FList();
+				for (FSNode child : node.asDir().getChildren()) {
+					lst.insert(-1, new FString(child.getFullName()));
 				}
+				fiber.setAccu(lst);
+			}
 			}
 		};
 		get("$touch").code = new BuiltinCode() {

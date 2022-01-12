@@ -51,6 +51,7 @@ public class FList extends Instance {
 	}
 	
 	public void insert(int i, Instance value) {
+		if (i < 0) i = list.size() + i + 1;
 		list.add(i, value);
 	}
 	

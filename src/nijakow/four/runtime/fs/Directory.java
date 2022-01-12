@@ -15,7 +15,7 @@ public class Directory extends FSNode {
 		return children.get(name);
 	}
 	
-	protected Collection<FSNode> getChildren() { return children.values(); }
+	public Collection<FSNode> getChildren() { return children.values(); }
 
 	protected boolean contains(FSNode node) {
 		if (children.containsValue(node)) {

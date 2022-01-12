@@ -9,6 +9,7 @@ use $substr;
 use $chr;
 use $length;
 use $statics;
+use $filechildren;
 
 
 object the(string id)
@@ -293,4 +294,14 @@ string resolve(string base, string path)
         base = resolv1(base, dir);
     }
     return base;
+}
+
+list ls(string path)
+{
+    return $filechildren(path);
+}
+
+bool is_dir(string path)
+{
+    return ls(path) != nil;
 }

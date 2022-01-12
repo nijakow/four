@@ -12,25 +12,45 @@ void file_not_found_error()
 
 void cmd_pwd(list argv)
 {
-    if (length(argv) == 1)
-        connection()->write(pwd(), "\n");
-    else
+    if (length(argv) != 1)
         arg_error();
+    else
+        connection()->write(pwd(), "\n");
     resume();
 }
 
 void cmd_cd(list argv)
 {
-    if (length(argv) == 2) {
+    if (length(argv) != 2)
+        arg_error();
+    else {
         string newpwd = resolve(pwd(), argv[1]);
-        if (newpwd != nil) {
+        if (newpwd != nil && is_dir(newpwd)) {
             chdir(newpwd);
         } else {
             file_not_found_error();
         }
     }
-    else
+    resume();
+}
+
+void cmd_ls(list argv)
+{
+    list files;
+
+    if (length(argv) == 1) {
+        files = ls(pwd());
+        if (files != nil)
+            foreach (string name : files)
+                connection()->write(name, "\n");
+    } else if (length(argv) == 2) {
+        files = ls(resolve(pwd(), argv[1]));
+        if (files != nil)
+            foreach (string name : files)
+                connection()->write(name, "\n");
+    } else {
         arg_error();
+    }
     resume();
 }
 
@@ -45,6 +65,8 @@ void receive(string line)
         cmd_pwd(argv);
     else if (argv[0] == "cd")
         cmd_cd(argv);
+    else if (argv[0] == "ls")
+        cmd_ls(argv);
     else {
         connection()->write(argv[0], ": not a command!\n");
         resume();
