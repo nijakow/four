@@ -1,6 +1,8 @@
 package nijakow.four.c.parser;
 
-public class ParseException extends Exception {
+import nijakow.four.FourException;
+
+public class ParseException extends FourException {
 	private final Token token;
 	private final String message;
 	
