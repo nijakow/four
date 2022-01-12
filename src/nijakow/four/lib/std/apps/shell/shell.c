@@ -177,9 +177,9 @@ void receive(string line)
     else if (argv[0] == "touch")
         cmd_touch_file(argv);
     else {
-        object cmd = new("/bin/" + argv[0], connection(), this::resume);
+        object cmd = new("/bin/" + argv[0] + ".c", connection(), this::resume);
         if (cmd != nil) {
-            cmd->start();
+            cmd->start(argv);
         } else {
             connection()->write(argv[0], ": not a command!\n");
             resume();
