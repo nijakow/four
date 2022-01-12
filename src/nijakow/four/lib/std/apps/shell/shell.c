@@ -167,7 +167,7 @@ object lookup_cmd_instance(list argv)
     object cmd;
     cmd = new("/bin/" + argv[0] + ".c", connection(), this::resume);
     if (cmd == nil)
-        cmd = new(resolve(pwd(), "./" + argv[0]), connection(), this::resume);
+        cmd = new(resolve(pwd(), argv[0]), connection(), this::resume);
     return cmd;
 }
 
