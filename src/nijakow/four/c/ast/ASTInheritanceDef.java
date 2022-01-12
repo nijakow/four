@@ -1,5 +1,6 @@
 package nijakow.four.c.ast;
 
+import nijakow.four.c.compiler.CompilationException;
 import nijakow.four.c.parser.ParseException;
 import nijakow.four.runtime.Blueprint;
 import nijakow.four.runtime.fs.Filesystem;
@@ -12,10 +13,10 @@ public class ASTInheritanceDef extends ASTDecl {
 	}
 
 	@Override
-	public void compileInto(Blueprint blueprint, Filesystem fs) throws ParseException {
+	public void compileInto(Blueprint blueprint, Filesystem fs) throws ParseException, CompilationException {
 		Blueprint bp = fs.getBlueprint(path);
 		if (bp == null)
-			throw new RuntimeException("Blueprint parent not found!");
+			compilationError("Blueprint parent not found!");
 		blueprint.addSuper(bp);
 	}
 }

@@ -11,7 +11,7 @@ public abstract class ASTExpression extends ASTInstruction {
 	}
 
 	public void compileAssignment(FCompiler compiler, ASTExpression right) throws CompilationException {
-		throw new RuntimeException("Oof.");
+		compilationError("Oof.");
 	}
 
 }
