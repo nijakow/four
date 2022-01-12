@@ -240,7 +240,7 @@ string itoa(int i)
     return pre + s;
 }
 
-string current_directory()
+string pwd()
 {
     if ($statics()["pwd"] == nil)
         chdir("/");

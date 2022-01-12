@@ -227,7 +227,7 @@ void cmd_instantiate(string text)
 
 void cmd_shell(string text)
 {
-    new("/std/apps/shell.c")->start(connection, this::resume);
+    new("/std/apps/shell/shell.c", connection, this::resume)->start();
 }
 
 void docmd(string cmd)
