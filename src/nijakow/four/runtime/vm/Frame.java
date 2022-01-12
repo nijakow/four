@@ -29,7 +29,7 @@ public class Frame {
 		varargs.add(0, value);
 	}
 	
-	private Instance operate(OperatorType type, Instance x, Instance y) {
+	private Instance operate(OperatorType type, Instance x, Instance y) throws FourRuntimeException {
 		switch (type) {
 		case PLUS: return x.plus(y);
 		case MINUS: return new FInteger(x.asInt() - y.asInt());
@@ -48,7 +48,7 @@ public class Frame {
 		case BITOR: return new FInteger(x.asInt() | y.asInt());
 		case BITXOR: return new FInteger(x.asInt() ^ y.asInt()); 
 		default: 
-			throw new RuntimeException("Whoopsie, didn't catch the op type!");
+			throw new FourRuntimeException("Whoopsie, didn't catch the op type!");
 		}
 	}
 	
@@ -196,7 +196,7 @@ public class Frame {
 			break;
 		}
 		default:
-			throw new RuntimeException("Unknown bytecode!");
+			throw new FourRuntimeException("Unknown bytecode!");
 		}
 	}
 }
