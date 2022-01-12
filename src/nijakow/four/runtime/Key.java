@@ -289,7 +289,6 @@ public class Key {
 					fiber.setAccu(new FInteger(1));
 				} catch (ParseException | NullPointerException | CompilationException e) {
 					// TODO: Handle this gracefully
-					System.out.println("Autsch!!! xD");
 					e.printStackTrace();
 					fiber.setAccu(new FInteger(0));
 				}
