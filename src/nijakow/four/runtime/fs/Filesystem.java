@@ -4,6 +4,7 @@ import nijakow.four.c.compiler.CompilationException;
 import nijakow.four.c.parser.ParseException;
 import nijakow.four.runtime.Blue;
 import nijakow.four.runtime.Blueprint;
+import nijakow.four.runtime.FourRuntimeException;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -76,34 +77,25 @@ public class Filesystem {
 		}
 	}
 
-	public void makeSnapshot() {
+	public Snapshot makeSnapshot() {
 		layers.add(WORKING_INDEX + 1, layers.get(WORKING_INDEX).createImmutable());
 		layers.remove(layers.get(WORKING_INDEX));
 		layers.add(WORKING_INDEX, new DefaultLayer(this));
+		return new Snapshot(layers.size() - 3, layers.get(WORKING_INDEX + 1));
 	}
 
-	public void backToSnapshot(int count) {
-		if (layers.size() <= 3) {
-			throw new IllegalStateException("No snapshots made!");
-		} else if (count < 1 || count > layers.size() - 3) {
-			throw new IndexOutOfBoundsException("No such snapshot!");
-		}
-		for (int i = 0; i < count; i++) {
+	private void backToSnapshot(Snapshot snapshot) {
+		for (int i = 0; i < snapshot.getNumber(); i++) {
 			layers.remove(WORKING_INDEX);
 		}
 		layers.add(WORKING_INDEX, layers.get(WORKING_INDEX).createMutable());
 	}
 
-	public void deleteSnapshot(int number) {
-		if (layers.size() <= 3) {
-			throw new IllegalStateException("No snapshots made!");
-		} else if (number < 1 || number > layers.size() - 3) {
-			throw new IndexOutOfBoundsException("No such snapshot!");
-		}
+	public void deleteSnapshot(Snapshot snapshot) throws FourRuntimeException {
 		// for each file in that layer: if it has not been overridden, add it to the next layer
-		for (File file : layers.get(number).getAllFiles()) {
+		for (File file : layers.get(snapshot.getNumber()).getAllFiles()) {
 			boolean found = false;
-			for (int i = WORKING_INDEX; i < WORKING_INDEX + number; i++) {
+			for (int i = WORKING_INDEX; i < WORKING_INDEX + snapshot.getNumber(); i++) {
 				if (layers.get(i).containsFile(file)) {
 					found = true;
 					break;
