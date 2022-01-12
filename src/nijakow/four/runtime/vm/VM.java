@@ -73,25 +73,20 @@ public class VM {
 		}
 	}
 	
-	private void runAllActiveFibers() {
+	private void runAllActiveFibers() throws FourRuntimeException {
 		while (!fibers.isEmpty()) {			
 			int x = 0;
 			Fiber fiber = fibers.poll();
 			while (!fiber.isTerminated()) {
 				if (x >= 10000000) {
-					// TODO: Throw an error!
-					break;
+					throw new FourRuntimeException("Process timed out!");
 				}
 				try {
 					fiber.tick();
 				} catch (FourRuntimeException e) {
 					e.printStackTrace();
-					try {
-						reportError("four", e.getClass().getName(), e.getMessage());
-						System.out.println("The exception was caught, execution will continue.");
-					} catch (FourRuntimeException ex) {
-						ex.printStackTrace();
-					}
+					reportError("four", e.getClass().getName(), e.getMessage());
+					System.out.println("The exception was caught, execution will continue.");
 				}
 				x++;
 			}

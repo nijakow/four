@@ -13,7 +13,7 @@ public class PreferencesHelper {
 	public static final String HOSTNAME = "hostname";
 	public static final String PORT_NUMBER = "portNumber";
 	public static final String LINE_BREAKING = "lineBreaking";
-	private Preferences prefs;
+	private final Preferences prefs;
 	
 	public PreferencesHelper() {
 		prefs = Preferences.userNodeForPackage(Four.class);

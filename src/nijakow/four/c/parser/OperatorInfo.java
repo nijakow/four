@@ -6,7 +6,7 @@ public class OperatorInfo {
 	private final OperatorType type;
 	private final int unary;
 	private final int binary;
-	private boolean leftToRight;
+	private final boolean leftToRight;
 	
 	public OperatorInfo(OperatorType type, int unary, int binary, boolean leftToRight) {
 		this.type = type;

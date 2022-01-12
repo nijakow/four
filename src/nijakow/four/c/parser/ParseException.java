@@ -21,7 +21,7 @@ public class ParseException extends FourException {
 		String text = pos.getText();
 		StringBuilder sb = new StringBuilder();
 		int min = -30;
-		int max = +30;
+		int max = 30;
 		for (int x = min; x <= max; x++) {
 			if (x == 0) sb.append(" --> ");
 			char c;

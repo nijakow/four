@@ -1,7 +1,5 @@
 package nijakow.four.runtime;
 
-import nijakow.four.FourException;
-
 public class CastException extends FourRuntimeException {
 
     public CastException(Type type, Instance instance) {

@@ -12,7 +12,7 @@ public class Blue extends Instance {
 	private final long id;
 	private boolean initialized = false;
 	private Blueprint blueprint;
-	private Map<Key, Instance> slots = new HashMap<>();
+	private final Map<Key, Instance> slots = new HashMap<>();
 	private Blue parent, sibling, children;
 	
 	private Blue() {
@@ -117,8 +117,8 @@ public class Blue extends Instance {
 	public Code extractMethod(VM vm, Key key) {
 		return blueprint.getMethod(key);
 	}
-	
-	public Blue clone() {
+
+	public Blue cloneBlue() {
 		return new Blue(this);
 	}
 

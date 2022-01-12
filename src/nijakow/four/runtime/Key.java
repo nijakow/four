@@ -27,7 +27,7 @@ public class Key {
 		return code;
 	}
 
-	private static Map<String, Key> KEYS = new HashMap<>();
+	private static final Map<String, Key> KEYS = new HashMap<>();
 	public static Key get(String name) {
 		if (!KEYS.containsKey(name))
 			KEYS.put(name, new Key(name));
@@ -100,7 +100,7 @@ public class Key {
 			
 			@Override
 			void run(Fiber fiber, Instance self, Instance[] args) throws CastException {
-				fiber.setAccu(args[0].asBlue().clone());
+				fiber.setAccu(args[0].asBlue().cloneBlue());
 			}
 		};
 		get("$call").code = new BuiltinCode() {
@@ -116,8 +116,7 @@ public class Key {
 			
 			@Override
 			void run(Fiber fiber, Instance self, Instance[] args) {
-				for (int x = 0; x < args.length; x++)
-					System.out.print(args[x].asString());
+				for (Instance arg : args) System.out.print(arg.asString());
 			}
 		};
 		get("$pause").code = new BuiltinCode() {

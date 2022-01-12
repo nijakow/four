@@ -9,9 +9,9 @@ import nijakow.four.util.Pair;
 
 public class Blueprint {
 	private final String filename;
-	private List<Blueprint> supers = new ArrayList<>();
-	private List<Pair<Type, Key>> slots = new ArrayList<>();
-	private Map<Key, Code> methods = new HashMap<>();
+	private final List<Blueprint> supers = new ArrayList<>();
+	private final List<Pair<Type, Key>> slots = new ArrayList<>();
+	private final Map<Key, Code> methods = new HashMap<>();
 
 	public Blueprint(String filename) {
 		this.filename = filename;

@@ -7,8 +7,8 @@ import nijakow.four.runtime.FInteger;
 import nijakow.four.runtime.FString;
 
 public class Tokenizer {	
-	private CharStream stream;
-	private Stack<Token> pushbacks;
+	private final CharStream stream;
+	private final Stack<Token> pushbacks;
 
 	public StreamPosition getPosition() {
 		return stream.getPosition();

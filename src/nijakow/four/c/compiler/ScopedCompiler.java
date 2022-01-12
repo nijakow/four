@@ -15,7 +15,7 @@ import nijakow.four.util.Pair;
 class ScopedCompilerLabel implements Label {
 	private final ScopedCompiler compiler;
 	private final InstructionWriter writer;
-	private List<Consumer<Integer>> pending = new ArrayList<>();
+	private final List<Consumer<Integer>> pending = new ArrayList<>();
 	private Integer offset = null;
 	
 	ScopedCompilerLabel(ScopedCompiler compiler, InstructionWriter writer) {

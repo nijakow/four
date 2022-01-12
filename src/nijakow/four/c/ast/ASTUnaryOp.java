@@ -2,7 +2,6 @@ package nijakow.four.c.ast;
 
 import nijakow.four.c.compiler.CompilationException;
 import nijakow.four.c.compiler.FCompiler;
-import nijakow.four.c.compiler.Label;
 
 public class ASTUnaryOp extends ASTExpression {
 	private final OperatorType type;

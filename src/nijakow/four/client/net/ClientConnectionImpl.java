@@ -7,9 +7,9 @@ import java.net.Socket;
 import javax.net.SocketFactory;
 
 public class ClientConnectionImpl implements ClientConnection {
-	private String host;
-	private int port;
-	private SocketFactory socketFactory;
+	private final String host;
+	private final int port;
+	private final SocketFactory socketFactory;
 	private Socket socket;
 	private ClientConnectionListener listener;
 	

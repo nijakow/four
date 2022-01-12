@@ -10,7 +10,7 @@ import nijakow.four.runtime.Instance;
 public class Fiber {
 	private final VM vm;
 	private Instance accumulator;
-	private Stack<Instance> stack = new Stack<>();
+	private final Stack<Instance> stack = new Stack<>();
 	private Frame top = null;
 
 	Fiber(VM vm) { this.vm = vm; }
