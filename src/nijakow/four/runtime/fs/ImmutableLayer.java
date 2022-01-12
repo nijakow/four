@@ -17,12 +17,12 @@ public class ImmutableLayer extends Layer {
     }
 
     @Override
-    public Directory mkdir(String name) {
-        throw new RuntimeException("Must not create directories inside of immutable layer!");
+    public Directory mkdir(String name) throws ImmutableException {
+        throw new ImmutableException("Must not create directories inside of immutable layer!");
     }
 
     @Override
-    public File touch(String name) {
-        throw new RuntimeException("Must not create files inside of immutable layer!");
+    public File touch(String name) throws ImmutableException {
+        throw new ImmutableException("Must not create files inside of immutable layer!");
     }
 }

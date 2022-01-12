@@ -6,6 +6,7 @@ import java.util.Map;
 import nijakow.four.c.compiler.CompilationException;
 import nijakow.four.c.parser.ParseException;
 import nijakow.four.runtime.fs.FSNode;
+import nijakow.four.runtime.fs.ImmutableException;
 import nijakow.four.runtime.vm.Fiber;
 
 public class Key {
@@ -233,7 +234,12 @@ public class Key {
 			void run(Fiber fiber, Instance self, Instance[] args) {
 				String path = args[0].asFString().asString();
 				String value = args[1].asFString().asString();
-				FSNode node = fiber.getVM().getFilesystem().writeFile(path, value);
+				FSNode node;
+				try {
+					node = fiber.getVM().getFilesystem().writeFile(path, value);
+				} catch (ImmutableException e) {
+					node = null;
+				}
 				if (node == null || node.asFile() == null) {
 					fiber.setAccu(Instance.getNil());
 					fiber.setAccu(new FInteger(0));
@@ -260,7 +266,12 @@ public class Key {
 			@Override
 			void run(Fiber fiber, Instance self, Instance[] args) {
 				String path = args[0].asFString().asString();
-				FSNode node = fiber.getVM().getFilesystem().touchf(path);
+				FSNode node;
+				try {
+					node = fiber.getVM().getFilesystem().touchf(path);
+				} catch (ImmutableException e) {
+					node = null;
+				}
 				if (node == null || node.asFile() == null) {
 					fiber.setAccu(new FInteger(0));
 				} else {

@@ -35,7 +35,7 @@ public abstract class FSNode {
 	
 	protected abstract FSNode findChild(String name);
 	
-	private FSNode find1(String name, boolean create, boolean isDir) {
+	private FSNode find1(String name, boolean create, boolean isDir) throws ImmutableException {
 		if (name.isEmpty() || ".".equals(name)) {
 			return this;
 		} else if ("..".equals(name)) {
@@ -53,7 +53,7 @@ public abstract class FSNode {
 		}
 	}
 	
-	private FSNode findN(String text, boolean create) {
+	private FSNode findN(String text, boolean create) throws ImmutableException {
 		int indexOfSlash = text.indexOf('/');
 		
 		if (indexOfSlash < 0) {
@@ -70,7 +70,7 @@ public abstract class FSNode {
 		return null;
 	}
 	
-	public FSNode find(String text, boolean create) {
+	public FSNode find(String text, boolean create) throws ImmutableException {
 		if (text.startsWith("/")) {
 			return getRoot().findN(text, create);
 		} else {
@@ -78,5 +78,11 @@ public abstract class FSNode {
 		}
 	}
 	
-	public FSNode find(String text) { return find(text, false); }
+	public FSNode find(String text) {
+		try {
+			return find(text, false);
+		} catch (ImmutableException e) {
+			return null;
+		}
+	}
 }

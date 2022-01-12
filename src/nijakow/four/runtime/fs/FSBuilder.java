@@ -6,7 +6,7 @@ import java.util.Scanner;
 public class FSBuilder {
 	private final InputStream stream;
 	
-	private void processFile(Filesystem fs, Scanner scanner) {
+	private void processFile(Filesystem fs, Scanner scanner) throws Exception {
 		File file = null;
 		StringBuilder text = new StringBuilder();
 		
@@ -32,7 +32,7 @@ public class FSBuilder {
 		}
 	}
 	
-	public Filesystem build() {
+	public Filesystem build() throws Exception {
 		Filesystem fs = new Filesystem();
 		processFile(fs, new Scanner(stream));
 		return fs;

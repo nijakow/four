@@ -67,7 +67,7 @@ public class Directory extends FSNode {
 		return list;
 	}
 
-	public Directory mkdir(String name) {
+	public Directory mkdir(String name) throws ImmutableException {
 		Directory dir = new Directory(getFilesystem(), this, name);
 		children.put(name, dir);
 		return dir;
@@ -77,7 +77,7 @@ public class Directory extends FSNode {
 		children.put(node.getName(), node);
 	}
 
-	public File touch(String name) {
+	public File touch(String name) throws ImmutableException {
 		File file = new File(getFilesystem(), this, name);
 		children.put(name, file);
 		return file;

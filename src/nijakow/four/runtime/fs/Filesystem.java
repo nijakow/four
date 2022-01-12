@@ -19,7 +19,12 @@ public class Filesystem {
 		layers = new LinkedList<>();
 		Layer secure = new ImmutableLayer(this);
 		Layer std = new ImmutableLayer(this);
-		loadShippedFiles(secure, std);
+		try {
+			loadShippedFiles(secure, std);
+		} catch (ImmutableException e) {
+			e.printStackTrace();
+			System.err.println("This should not have happened!");
+		}
 		layers.add(secure);
 		loadSnapshots();
 		layers.add(std);
@@ -32,7 +37,7 @@ public class Filesystem {
 		// TODO This method should read a file containing previously created layers
 	}
 
-	private void loadShippedFiles(Layer secure, Layer std) {
+	private void loadShippedFiles(Layer secure, Layer std) throws ImmutableException {
 		for (java.io.File file : loader.listFolderContents("")) {
 			if (file.isDirectory()) {
 				if (file.getName().equals(SECURE_FOLDER_NAME)) {
@@ -46,7 +51,7 @@ public class Filesystem {
 		}
 	}
 
-	private Directory loadDirectory(String path, String name,  FSNode parent) {
+	private Directory loadDirectory(String path, String name,  FSNode parent) throws ImmutableException {
 		Directory directory = new Directory(this, parent, name);
 		for (java.io.File file : loader.listFolderContents(path)) {
 			if (file.isDirectory()) {
@@ -58,7 +63,7 @@ public class Filesystem {
 		return directory;
 	}
 
-	private File loadFile(String path, Directory parent) {
+	private File loadFile(String path, Directory parent) throws ImmutableException {
 		String source = loader.getResourceText(parent.getFullName() + "/" + path);
 		if (source != null) {
 			FSNode node = parent.find(path, true);
@@ -121,11 +126,11 @@ public class Filesystem {
 		return node;
 	}
 
-	public FSNode touchf(String fname) {
+	public FSNode touchf(String fname) throws ImmutableException {
 		return getWorkingLayer().find(fname, true);
 	}
 
-	public File writeFile(String filePath, String content) {
+	public File writeFile(String filePath, String content) throws ImmutableException {
 		File file = find(filePath).asFile();
 		if (file == null)
 			return null;
