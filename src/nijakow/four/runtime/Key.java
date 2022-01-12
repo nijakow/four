@@ -39,6 +39,13 @@ public class Key {
 	}
 
 	static {
+		get("$statics").code = new BuiltinCode() {
+
+			@Override
+			void run(Fiber fiber, Instance self, Instance[] args) throws CastException, CompilationException, ParseException {
+				fiber.setAccu(fiber.getSharedState().getStatics());
+			}
+		};
 		get("$the_object").code = new BuiltinCode() {
 			
 			@Override

@@ -56,8 +56,8 @@ void lookaround()
     if (query_light_level_here() == 0) {
         connection->write("Is is pitch black here.\n");
     } else {
-	    connection->write(get_location()->get_short(), "\n");
-	    connection->write(get_location()->get_desc(), "\n");
+	    say(get_location()->get_short(), "\n");
+	    say(get_location()->get_desc(), "\n");
 	    for (object obj = get_location()->get_children();
 	         obj != nil;
 	         obj = obj->get_sibling())

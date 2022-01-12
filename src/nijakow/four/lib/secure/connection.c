@@ -4,6 +4,7 @@ use $write;
 use $close;
 use $on_receive;
 use $on_disconnect;
+use $statics;
 
 any port;
 func callback;
@@ -13,7 +14,7 @@ string line;
 string escline;
 int id_counter;
 
-void prompt(func cb, ...)
+void do_prompt(func cb, ...)
 {
     callback = cb;
     write("\{.");
@@ -21,7 +22,7 @@ void prompt(func cb, ...)
     write("\}");
 }
 
-void password(func cb, ...)
+void do_password(func cb, ...)
 {
     callback = cb;
     write("\{?");
@@ -29,7 +30,7 @@ void password(func cb, ...)
     write("\}");
 }
 
-any edit(func cb, string title, string text)
+any do_edit(func cb, string title, string text)
 {
     string key = itoa(id_counter++);
     mapped_callbacks[key] = cb;
@@ -146,4 +147,5 @@ void create(any the_port)
 	id_counter = 0;
 	$on_receive(port, this::receive);
 	$on_disconnect(port, this::handle_disconnect);
+	$statics()["connection"] = this;
 }
