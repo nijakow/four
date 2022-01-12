@@ -162,8 +162,13 @@ void receive(string line)
     else if (argv[0] == "cc")
         cmd_recompile_file(argv);
     else {
-        connection()->write(argv[0], ": not a command!\n");
-        resume();
+        object cmd = new("/bin/" + argv[0], connection(), this::resume);
+        if (cmd != nil) {
+            cmd->start();
+        } else {
+            connection()->write(argv[0], ": not a command!\n");
+            resume();
+        }
     }
 }
 
