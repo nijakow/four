@@ -2,9 +2,9 @@ package nijakow.four.c.ast;
 
 import nijakow.four.c.compiler.FCompiler;
 import nijakow.four.c.compiler.Label;
-import nijakow.four.c.runtime.FInteger;
-import nijakow.four.c.runtime.Key;
-import nijakow.four.c.runtime.Type;
+import nijakow.four.runtime.FInteger;
+import nijakow.four.runtime.Key;
+import nijakow.four.runtime.Type;
 
 public class ASTForeach extends ASTInstruction {
 	private final Type type;

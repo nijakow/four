@@ -1,7 +1,7 @@
 package nijakow.four.c.ast;
 
 import nijakow.four.c.compiler.FCompiler;
-import nijakow.four.c.runtime.Key;
+import nijakow.four.runtime.Key;
 
 public class ASTScope extends ASTExpression {
 	private final ASTExpression expr;

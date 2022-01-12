@@ -1,7 +1,7 @@
 package nijakow.four.c.ast;
 
 import nijakow.four.c.compiler.FCompiler;
-import nijakow.four.c.runtime.ListType;
+import nijakow.four.runtime.ListType;
 
 public class ASTList extends ASTExpression {
 	private final ListType type;

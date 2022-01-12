@@ -1,7 +1,7 @@
 package nijakow.four.c.ast;
 
 import nijakow.four.c.compiler.FCompiler;
-import nijakow.four.c.runtime.Instance;
+import nijakow.four.runtime.Instance;
 
 public class ASTConstant extends ASTExpression {
 	private final Instance value;

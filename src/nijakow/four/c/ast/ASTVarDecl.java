@@ -1,8 +1,8 @@
 package nijakow.four.c.ast;
 
 import nijakow.four.c.compiler.FCompiler;
-import nijakow.four.c.runtime.Key;
-import nijakow.four.c.runtime.Type;
+import nijakow.four.runtime.Key;
+import nijakow.four.runtime.Type;
 
 public class ASTVarDecl extends ASTInstruction {
 	private final Type type;

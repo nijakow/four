@@ -5,12 +5,12 @@ import java.util.List;
 import java.util.function.Consumer;
 
 import nijakow.four.c.ast.OperatorType;
-import nijakow.four.c.runtime.ByteCode;
-import nijakow.four.c.runtime.Instance;
-import nijakow.four.c.runtime.Key;
-import nijakow.four.c.runtime.ListType;
-import nijakow.four.c.runtime.Type;
-import nijakow.four.c.runtime.vm.Bytecodes;
+import nijakow.four.runtime.ByteCode;
+import nijakow.four.runtime.Instance;
+import nijakow.four.runtime.Key;
+import nijakow.four.runtime.ListType;
+import nijakow.four.runtime.Type;
+import nijakow.four.runtime.vm.Bytecodes;
 
 public class InstructionWriter {	
 	private final List<Byte> out = new ArrayList<>();

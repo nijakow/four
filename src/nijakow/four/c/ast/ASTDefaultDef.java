@@ -1,9 +1,9 @@
 package nijakow.four.c.ast;
 
-import nijakow.four.c.runtime.Blueprint;
-import nijakow.four.c.runtime.Code;
-import nijakow.four.c.runtime.Key;
-import nijakow.four.c.runtime.fs.Filesystem;
+import nijakow.four.runtime.Blueprint;
+import nijakow.four.runtime.Code;
+import nijakow.four.runtime.Key;
+import nijakow.four.runtime.fs.Filesystem;
 
 public class ASTDefaultDef extends ASTDefinition {
 

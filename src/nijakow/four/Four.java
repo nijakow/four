@@ -2,11 +2,11 @@ package nijakow.four;
 
 import java.io.IOException;
 
-import nijakow.four.c.runtime.Blue;
-import nijakow.four.c.runtime.Key;
-import nijakow.four.c.runtime.fs.Filesystem;
-import nijakow.four.c.runtime.fs.ResourceLoader;
-import nijakow.four.c.runtime.vm.VM;
+import nijakow.four.runtime.Blue;
+import nijakow.four.runtime.Key;
+import nijakow.four.runtime.fs.Filesystem;
+import nijakow.four.runtime.fs.ResourceLoader;
+import nijakow.four.runtime.vm.VM;
 import nijakow.four.net.Server;
 
 public class Four implements Runnable {

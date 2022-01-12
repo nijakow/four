@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import nijakow.four.c.runtime.fs.Filesystem;
+import nijakow.four.runtime.fs.Filesystem;
 import nijakow.four.client.ClientWindow;
 
 public class Main {
