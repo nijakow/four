@@ -12,6 +12,44 @@ void write(...)
 }
 
 
+list select_object_list;
+func select_cb;
+
+void _select_choose(string line)
+{
+    int choice = atoi(line);
+
+    if ((choice == nil) || (choice < 1) || (choice > length(select_object_list)))
+        _select_resume();
+    else
+        call(select_cb, select_object_list[choice - 1]);
+}
+
+void _select_resume()
+{
+    write("\nYour selection is ambiguous:\n");
+    for (int i = 0; i < length(select_object_list); i++)
+    {
+        connection->write("  ", (i + 1), ": ", select_object_list[i].get_long(), "\n");
+    }
+    connection->prompt(this::_select_choose, "Please choose: ");
+}
+
+void select_and_call(string text, func cb)
+{
+    list objects = find_thing_here(text);
+    if (length(objects) == 0) {
+        call(cb, nil);
+    } else if (length(objects) == 1) {
+        call(cb, objects[0]);
+    } else {
+        select_object_list = objects;
+        select_cb          = cb;
+        _select_resume();
+    }
+}
+
+
 void lookaround()
 {
     connection->write("\n");
@@ -51,16 +89,20 @@ void cmd_say(string text)
     act(get_short(), " says: ", text, "\n");
 }
 
+void cmd_take_act(object obj)
+{
+    if (obj == nil)
+        write("There is no such thing here!\n");
+    else if (!act_take(obj))
+        write("You can't take that!\n");
+    else
+        write("Taken.\n");
+    resume();
+}
+
 void cmd_take(string text)
 {
-    list objects = find_thing_here(text);
-    if (length(objects) == 0) {
-        write("There is no such thing here!\n");
-    } else if (!act_take(objects[0])) {
-        write("You can't take that!\n");
-    } else {
-        write("Taken.\n");
-    }
+    select_and_call(text, this::cmd_take_act);
 }
 
 void cmd_drop(string text)
@@ -73,6 +115,7 @@ void cmd_drop(string text)
     } else {
         write("Dropped.\n");
     }
+    resume();
 }
 
 void cmd_examine(string text)
@@ -83,6 +126,7 @@ void cmd_examine(string text)
     } else {
         write(objects[0]->get_desc(), "\n");
     }
+    resume();
 }
 
 void cmd_inv(string text)
@@ -94,6 +138,7 @@ void cmd_inv(string text)
         if (obj != this)
             connection->write(capitalize(obj->get_short()), ".\n");
     }
+    resume();
 }
 
 use $filetext;
@@ -116,6 +161,7 @@ void cmd_write_file(any id, string text)
         }
         connection->mode_normal();
     }
+    resume();
 }
 
 use $touch;
@@ -142,6 +188,7 @@ void cmd_edit_file(string text)
         connection->write("Could not read \"", text, "\"!\n");
         connection->mode_normal();
     }
+    resume();
 }
 
 use $recompile;
@@ -158,6 +205,7 @@ void cmd_recompile_file(string text)
         connection->write("Could not recompile \"", text, "\"!\n");
         connection->mode_normal();
     }
+    resume();
 }
 
 void cmd_instantiate(string text)
@@ -170,6 +218,7 @@ void cmd_instantiate(string text)
     } else {
         connection->write("Could not create an instance!\n");
     }
+    resume();
 }
 
 void docmd(string cmd)
@@ -190,13 +239,14 @@ void docmd(string cmd)
     if (f != nil) {
         call(f, args);
     } else if (cmd == "") {
+        resume();
     } else if (cmd == "exit") {
         exit();
         return;
     } else {
         connection->write("I didn't quite get that, sorry...\n");
+        resume();
     }
-    resume();
 }
 
 void resume()
