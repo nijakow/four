@@ -1,14 +1,13 @@
 package nijakow.four.c.parser;
 
-import nijakow.four.FourException;
+import nijakow.four.runtime.FourRuntimeException;
 
-public class ParseException extends FourException {
+public class ParseException extends FourRuntimeException {
 	private final StreamPosition position;
-	private final String message;
 	
 	public ParseException(StreamPosition position, String message) {
+		super(message);
 		this.position = position;
-		this.message = message;
 	}
 
 	public ParseException(Token token, String message) {
@@ -36,6 +35,6 @@ public class ParseException extends FourException {
 			sb.append(c);
 			if (x == 0) sb.append(" <-- ");
 		}
-		return this.message + " => " + sb.toString().replaceAll("\\s+", " ");
+		return super.getMessage() + " => " + sb.toString().replaceAll("\\s+", " ");
 	}
 }

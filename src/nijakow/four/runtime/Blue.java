@@ -86,7 +86,7 @@ public class Blue extends Instance {
 	}
 
 	@Override
-	public void loadSlot(Fiber fiber, Key key) {
+	public void loadSlot(Fiber fiber, Key key) throws FourRuntimeException {
 		Pair<Type, Key> info = blueprint.getSlotInfo(key);
 		if (info == null)
 			super.loadSlot(fiber, key);

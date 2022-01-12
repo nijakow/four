@@ -1,5 +1,7 @@
 package nijakow.four.runtime.fs;
 
+import nijakow.four.c.compiler.CompilationException;
+import nijakow.four.c.parser.ParseException;
 import nijakow.four.runtime.Blue;
 import nijakow.four.runtime.Blueprint;
 
@@ -141,7 +143,19 @@ public class Filesystem {
 		return file;
 	}
 
-	public Blue getBlue(String path) {
+	public Blue getBlueWithErrors(String path) throws ParseException, CompilationException {
+		FSNode node = find(path);
+		if (node == null) return null;
+		return node.asFile().getInstanceWithErrors();
+	}
+
+	public Blueprint getBlueprint(String path) throws ParseException, CompilationException {
+		FSNode node = find(path);
+		if (node == null) return null;
+		return node.asFile().getBlueprintWithErrors();
+	}
+
+	/*public Blue getBlue(String path) {
 		FSNode node = find(path);
 		if (node == null) return null;
 		return node.asFile().getInstance();
@@ -151,5 +165,5 @@ public class Filesystem {
 		FSNode node = find(path);
 		if (node == null) return null;
 		return node.asFile().getBlueprint();
-	}
+	}*/
 }

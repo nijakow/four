@@ -30,7 +30,7 @@ public class Four implements Runnable {
 			wasStarted = true;
 			
 			{
-				Blue master = fs.getBlue("/secure/master.c");
+				Blue master = fs.getBlueWithErrors("/secure/master.c");
 				
 				if (master == null) {
 					throw new FourRuntimeException("/secure/master.c is not defined!");

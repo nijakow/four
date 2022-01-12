@@ -42,8 +42,8 @@ public class Key {
 		get("$the_object").code = new BuiltinCode() {
 			
 			@Override
-			void run(Fiber fiber, Instance self, Instance[] args) throws CastException {
-				Blue blue = args[0].asFString().getBlue(fiber.getVM().getFilesystem());
+			void run(Fiber fiber, Instance self, Instance[] args) throws CastException, CompilationException, ParseException {
+				Blue blue = args[0].asFString().getBlueWithErrors(fiber.getVM().getFilesystem());
 				if (blue == null)
 					fiber.setAccu(Instance.getNil());
 				else
@@ -289,6 +289,7 @@ public class Key {
 					fiber.setAccu(new FInteger(1));
 				} catch (ParseException | NullPointerException | CompilationException e) {
 					// TODO: Handle this gracefully
+					System.out.println("Autsch!!! xD");
 					e.printStackTrace();
 					fiber.setAccu(new FInteger(0));
 				}

@@ -1,5 +1,7 @@
 package nijakow.four.runtime;
 
+import nijakow.four.c.compiler.CompilationException;
+import nijakow.four.c.parser.ParseException;
 import nijakow.four.runtime.vm.Fiber;
 import nijakow.four.runtime.vm.VM;
 
@@ -31,11 +33,11 @@ public abstract class Instance {
 		throw new RuntimeException("Oof. Can't invoke this object!");
 	}
 	
-	public void loadSlot(Fiber fiber, Key key) {
+	public void loadSlot(Fiber fiber, Key key) throws FourRuntimeException {
 		throw new RuntimeException("Oof. Slot not found: " + key);
 	}
 	
-	public void storeSlot(Fiber fiber, Key key, Instance value) {
+	public void storeSlot(Fiber fiber, Key key, Instance value) throws FourRuntimeException {
 		throw new RuntimeException("Oof. Slot not found.");
 	}
 	
@@ -43,7 +45,7 @@ public abstract class Instance {
 		throw new RuntimeException("Oof. Method not found: " + key);
 	}
 	
-	public Code extractMethod(VM vm, Key key) {
+	public Code extractMethod(VM vm, Key key) throws CompilationException, ParseException {
 		throw new RuntimeException("Oof. Can't extract method.");
 	}
 }

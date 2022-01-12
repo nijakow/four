@@ -37,7 +37,7 @@ public class File extends FSNode {
 
 	public void recompile() throws ParseException, CompilationException {
 		if (instance == null)
-			getInstance();
+			getInstanceWithErrors();
 		else {
 			Blueprint result = compile();
 			if (result != null) {
@@ -46,26 +46,37 @@ public class File extends FSNode {
 			}
 		}
 	}
-	
-	public Blueprint getBlueprint() {
+
+	protected Blueprint getBlueprintWithErrors() throws ParseException, CompilationException {
 		if (blueprint == null) {
-			try {
-				blueprint = compile();
-				isDirty = false;
-			} catch (ParseException | CompilationException e) {
-				e.printStackTrace();
-				return null;  // TODO: Delegate this error to the system
-			}
+			blueprint = compile();
+			isDirty = false;
 		}
 		return blueprint;
 	}
-	
-	public Blue getInstance() {
+
+	public Blue getInstanceWithErrors() throws ParseException, CompilationException {
 		if (instance == null) {
-			Blueprint bp = getBlueprint();
-			if (bp != null)
-				instance = bp.createBlue();
+			instance = getBlueprintWithErrors().createBlue();
 		}
 		return instance;
 	}
+	/*
+	public Blueprint getBlueprint() {
+		try {
+			return getBlueprintWithErrors();
+		} catch (ParseException | CompilationException e) {
+			e.printStackTrace();
+			return null;  // TODO: Delegate this error to the system
+		}
+	}
+
+	public Blue getInstance() {
+		try {
+			return getInstanceWithErrors();
+		} catch (ParseException | CompilationException e) {
+			e.printStackTrace();
+			return null;  // TODO: Delegate this error to the system
+		}
+	}*/
 }
