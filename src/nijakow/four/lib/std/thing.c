@@ -4,47 +4,20 @@ inherit "/secure/object.c";
  *    T r e e   S t r u c t u r e 
  */
 
-object parent;
-object sibling;
-object children;
+use $get_parent;
+use $get_sibling;
+use $get_children;
+use $move_to;
 
-object get_parent()   { return parent;  }
-object get_sibling()  { return sibling; }
-object get_children() { return children; }
+object get_parent()   { return $get_parent();  }
+object get_sibling()  { return $get_sibling(); }
+object get_children() { return $get_children(); }
 
 object get_location() { return get_parent(); }
 
-
-void remove_child(object child)
-{
-    if (children == child) {
-        children = child->get_sibling();
-    } else {
-        for (object c = children; c != nil; c = c->get_sibling())
-        {
-            if (c->get_sibling() == child) {
-                c->sibling = child->get_sibling();
-                break;
-            }
-        }
-    }
-}
-
 void move_to(object new_parent)
 {
-    if (parent != new_parent)
-    {
-        if (parent != nil) {
-            parent->remove_child(this);
-            parent = nil;
-        }
-    
-        if (new_parent != nil) {
-            parent = new_parent;
-            sibling = new_parent->children;
-            new_parent->children = this;
-        }
-    }
+    $move_to(new_parent);
 }
 
 bool contains(object obj)

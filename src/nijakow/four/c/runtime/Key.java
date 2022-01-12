@@ -56,6 +56,38 @@ public class Key {
 				fiber.setAccu(args[0].asBlue().isInitialized() ? new FInteger(1) : new FInteger(0));
 			}
 		};
+		get("$get_parent").code = new BuiltinCode() {
+
+			@Override
+			void run(Fiber fiber, Instance self, Instance[] args) {
+				Blue v = self.asBlue().getParent();
+				fiber.setAccu(v == null ? Instance.getNil() : v);
+			}
+		};
+		get("$get_sibling").code = new BuiltinCode() {
+
+			@Override
+			void run(Fiber fiber, Instance self, Instance[] args) {
+				Blue v = self.asBlue().getSibling();
+				fiber.setAccu(v == null ? Instance.getNil() : v);
+			}
+		};
+		get("$get_children").code = new BuiltinCode() {
+
+			@Override
+			void run(Fiber fiber, Instance self, Instance[] args) {
+				Blue v = self.asBlue().getChildren();
+				fiber.setAccu(v == null ? Instance.getNil() : v);
+			}
+		};
+		get("$move_to").code = new BuiltinCode() {
+
+			@Override
+			void run(Fiber fiber, Instance self, Instance[] args) {
+				self.asBlue().moveTo(args[0].isNil() ? null : args[0].asBlue());
+				fiber.setAccu(self);
+			}
+		};
 		get("$set_initialized").code = new BuiltinCode() {
 			
 			@Override

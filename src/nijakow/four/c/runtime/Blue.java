@@ -13,9 +13,11 @@ public class Blue extends Instance {
 	private boolean initialized = false;
 	private Blueprint blueprint;
 	private Map<Key, Instance> slots = new HashMap<>();
+	private Blue parent, sibling, children;
 	
 	private Blue() {
 		this.id = ID_COUNTER++;
+		parent = sibling = children = null;
 	}
 	
 	public Blue(Blueprint blueprint) {
@@ -28,6 +30,41 @@ public class Blue extends Instance {
 		this.blueprint = other.blueprint;
 		for (Key k : other.slots.keySet())
 			slots.put(k, other.slots.get(k));
+	}
+
+	public Blue getParent() { return parent; }
+	public Blue getSibling() { return sibling; }
+	public Blue getChildren() { return children; }
+
+
+	private void removeChild(Blue child) {
+		if (children == child) children = children.getSibling();
+		else {
+			Blue c = getChildren();
+			while (c != null) {
+				if (c.getSibling() == child) {
+					c.sibling = c.getSibling().getSibling();
+				} else {
+					c = c.getSibling();
+				}
+			}
+		}
+	}
+
+	protected void unlink() {
+		if (parent == null) return;
+		parent.removeChild(this);
+		parent = null;
+		sibling = null;
+	}
+
+	public void moveTo(Blue blue) {
+		unlink();
+		if (blue != null) {
+			parent = blue;
+			sibling = blue.getChildren();
+			blue.children = this;
+		}
 	}
 
 	public boolean isInitialized() { return initialized; }
