@@ -225,6 +225,11 @@ void cmd_instantiate(string text)
     resume();
 }
 
+void cmd_shell(string text)
+{
+    new("/std/apps/shell.c")->start(connection, this::resume);
+}
+
 void docmd(string cmd)
 {
     string args;
@@ -311,4 +316,5 @@ void create()
     add_cmd("edit", this::cmd_edit_file);
     add_cmd("recompile", this::cmd_recompile_file);
     add_cmd("new", this::cmd_instantiate);
+    add_cmd("shell", this::cmd_shell);
 }

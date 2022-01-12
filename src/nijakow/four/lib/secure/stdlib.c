@@ -8,6 +8,7 @@ use $listremove;
 use $substr;
 use $chr;
 use $length;
+use $statics;
 
 
 object the(string id)
@@ -237,4 +238,16 @@ string itoa(int i)
     }
 
     return pre + s;
+}
+
+string current_directory()
+{
+    if ($statics()["pwd"] == nil)
+        chdir("/");
+    return $statics()["pwd"];
+}
+
+void chdir(string dir)
+{
+    $statics()["pwd"] = dir;
 }
