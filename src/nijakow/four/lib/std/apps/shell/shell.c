@@ -155,6 +155,15 @@ void cmd_recompile_file(list argv)
     resume();
 }
 
+object lookup_cmd_instance(list argv)
+{
+    object cmd;
+    cmd = new("/bin/" + argv[0] + ".c", connection(), this::resume);
+    if (cmd == nil)
+        cmd = new(resolve(pwd(), "./" + argv[0]), connection(), this::resume);
+    return cmd;
+}
+
 void receive(string line)
 {
     list argv = split(line);
@@ -177,7 +186,7 @@ void receive(string line)
     else if (argv[0] == "touch")
         cmd_touch_file(argv);
     else {
-        object cmd = new("/bin/" + argv[0] + ".c", connection(), this::resume);
+        object cmd = lookup_cmd_instance(argv);
         if (cmd != nil) {
             cmd->start(argv);
         } else {

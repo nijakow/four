@@ -8,3 +8,4 @@
 !Makefile
 bin/
 production/
+!src/nijakow/four/lib/*
