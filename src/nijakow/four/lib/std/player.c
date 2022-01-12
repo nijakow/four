@@ -296,7 +296,6 @@ void activate_as(string name)
 
 void create()
 {
-    log("Initializing the player ", this, "\n");
     "/std/thing.c"::create();
 
     set_properly_named();

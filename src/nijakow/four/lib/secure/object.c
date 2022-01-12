@@ -22,5 +22,4 @@ void create()
 
 void _init()
 {
-    log("Initializing ", this, "...\n");
 }

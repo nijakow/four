@@ -5,7 +5,6 @@ use $on_error;
 
 void receive(any port)
 {
-	log("New connection!\n");
 	object connection = new("/secure/connection.c", port);
 	new("/secure/login.c")->start(connection);
 }

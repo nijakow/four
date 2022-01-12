@@ -126,7 +126,6 @@ void receive(string text)
 
 void handle_disconnect()
 {
-	log("Disconnect!\n");
 }
 
 void close()
