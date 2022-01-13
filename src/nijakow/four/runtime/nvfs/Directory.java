@@ -26,6 +26,11 @@ public class Directory extends File<SharedDirectoryState> implements FileParent 
     }
 
     @Override
+    public Directory asDirectory() {
+        return this;
+    }
+
+    @Override
     public FileParent replaceThis(File me, File newMe) {
         if (me == null) {
             // We already have a null slot in here!

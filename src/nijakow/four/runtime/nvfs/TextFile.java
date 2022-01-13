@@ -8,8 +8,13 @@ public class TextFile extends File<SharedTextFileState> {
     }
 
     TextFile(FileParent parent, TextFile previousThis, String contents) {
-        super(parent, previousThis, previousThis.getState());
+        super(parent, previousThis, previousThis == null ? null : previousThis.getState());
         this.contents = contents;
+    }
+
+    @Override
+    public TextFile asTextFile() {
+        return this;
     }
 
     @Override
@@ -19,5 +24,9 @@ public class TextFile extends File<SharedTextFileState> {
 
     public TextFile setContents(String newContents) {
         return new TextFile(getParent(), this, newContents);
+    }
+
+    public String getContents() {
+        return contents;
     }
 }
