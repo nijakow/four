@@ -14,6 +14,19 @@ public class NVFileSystem implements FileParent {
         return this;
     }
 
+    @Override
+    public File asFile() {
+        return root;
+    }
+
+    private Directory getRoot() {
+        return root;
+    }
+
+    public File lookup(String file) {
+        return getRoot().lookup(file);
+    }
+
     public TextFile touch(String name) {
         return root.touch(name);
     }

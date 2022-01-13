@@ -31,6 +31,11 @@ public class Directory extends File<SharedDirectoryState> implements FileParent 
     }
 
     @Override
+    public File asFile() {
+        return this;
+    }
+
+    @Override
     public FileParent replaceThis(File me, File newMe) {
         if (me == null) {
             // We already have a null slot in here!
@@ -71,5 +76,12 @@ public class Directory extends File<SharedDirectoryState> implements FileParent 
 
     public Directory mkdir(String name) {
         return new Directory(duplicateWithEntry(name));
+    }
+
+    @Override
+    public File resolve1(String name) {
+        File f = files.get(name);
+        if (f != null) return f;
+        else return super.resolve1(name);
     }
 }

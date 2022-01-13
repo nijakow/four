@@ -27,4 +27,24 @@ public abstract class File<T extends SharedFileState> {
     public Directory asDirectory() { return null; }
 
     void rm() { getParent().replaceThis(this, null); }
+
+    public File resolve1(String name) {
+        if ("".equals(name)) return this;
+        else if (".".equals(name)) return this;
+        else if ("..".equals(name)) return getParent().asFile();
+        else return null;
+    }
+
+    public File lookup(String path) {
+        File current = this;
+        String[] tokens = path.split("/");
+
+        for (String token : tokens) {
+            if (current == null)
+                break;
+            current = current.resolve1(token);
+        }
+
+        return current;
+    }
 }
