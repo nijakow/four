@@ -290,8 +290,13 @@ public class Key {
 			void run(Fiber fiber, Instance self, Instance[] args) throws CastException {
 				String path = args[0].asFString().asString();
 				try {
-					fiber.getVM().getFilesystem().resolve(path).asTextFile().compile();
-					fiber.setAccu(new FInteger(1));
+					TextFile file = fiber.getVM().getFilesystem().resolveTextFile(path);
+					if (file == null)
+						fiber.setAccu(new FInteger(0));
+					else {
+						file.compile();
+						fiber.setAccu(new FInteger(1));
+					}
 				} catch (ParseException | NullPointerException | CompilationException e) {
 					// TODO: Handle this gracefully
 					e.printStackTrace();
