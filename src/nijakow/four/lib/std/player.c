@@ -158,6 +158,12 @@ void cmd_instantiate(string text)
     resume();
 }
 
+void cmd_devhint(string text)
+{
+    connection->write("You are at \{BOLD\}", get_location(), "\{RESET\}.\n");
+    resume();
+}
+
 void resume_from_shell()
 {
     me_act("slowly starts gaining consciousness again.\n");
@@ -252,5 +258,6 @@ void create()
     add_cmd("drop", this::cmd_drop);
     add_cmd("inv", this::cmd_inv);
     add_cmd("new", this::cmd_instantiate);
+    add_cmd("devhint", this::cmd_devhint);
     add_cmd("shell", this::cmd_shell);
 }
