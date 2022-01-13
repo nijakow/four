@@ -40,8 +40,8 @@ public abstract class File<T extends SharedFileState> {
         else return null;
     }
 
-    public File lookup(String path) {
-        if (path.startsWith("/")) return getRoot().lookup(path.substring(1));
+    public File resolve(String path) {
+        if (path.startsWith("/")) return getRoot().resolve(path.substring(1));
 
         File current = this;
         String[] tokens = path.split("/");
