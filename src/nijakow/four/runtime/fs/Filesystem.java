@@ -112,10 +112,12 @@ public class Filesystem {
 	}
 
 	public List<FSNode> listChildren(String name) {
-		List<FSNode> list = new LinkedList<>();
+		List<FSNode> list = null;
 		for (Layer layer : layers) {
 			FSNode dir = layer.find(name);
 			if (dir != null && dir.asDir() != null) {
+				if (list == null)
+					list = new LinkedList<>();
 				list.addAll(dir.asDir().getChildren());
 			}
 		}

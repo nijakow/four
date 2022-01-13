@@ -174,9 +174,7 @@ void cmd_mkdir(list argv)
     else {
         for (int i = 1; i < length(argv); i++) {
            if (!mkdir(pwd(), argv[i]))
-                connection()->write("Error\n");
-            else
-                connection()->write("made\n");
+                connection()->write(argv[i], ": error.\n");
         }
     }
     resume();

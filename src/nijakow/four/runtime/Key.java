@@ -248,7 +248,6 @@ public class Key {
 					node = null;
 				}
 				if (node == null || node.asFile() == null) {
-					fiber.setAccu(Instance.getNil());
 					fiber.setAccu(new FInteger(0));
 				} else {
 					fiber.setAccu(new FInteger(1));
@@ -261,7 +260,7 @@ public class Key {
 			void run(Fiber fiber, Instance self, Instance[] args) throws CastException {
 				String path = args[0].asFString().asString();
 				List<FSNode> contents = fiber.getVM().getFilesystem().listChildren(path);
-				if (contents.isEmpty()) {
+				if (contents == null) {
 					fiber.setAccu(Instance.getNil());
 				} else {
 					FList lst = new FList();
@@ -297,7 +296,6 @@ public class Key {
 				String name = args[1].asFString().asString();
 				FSNode node = fiber.getVM().getFilesystem().mkdir(curPath, name);
 				if (node == null) {
-					fiber.setAccu(Instance.getNil());
 					fiber.setAccu(new FInteger(0));
 				} else {
 					fiber.setAccu(new FInteger(1));
