@@ -1,6 +1,10 @@
 package nijakow.four.runtime.nvfs;
 
+import nijakow.four.util.Pair;
+
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Directory extends File<SharedDirectoryState> implements FileParent {
@@ -76,6 +80,14 @@ public class Directory extends File<SharedDirectoryState> implements FileParent 
 
     public Directory mkdir(String name) {
         return new Directory(duplicateWithEntry(name));
+    }
+
+    public Pair<String, File>[] ls() {
+        List<Pair<String, File>> elements = new ArrayList<>();
+        for (String key : files.keySet()) {
+            elements.add(new Pair<>(key, files.get(key)));
+        }
+        return elements.toArray(new Pair[0]);
     }
 
     @Override
