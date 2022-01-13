@@ -97,7 +97,9 @@ public class NVFileSystem implements FileParent {
     }
 
     public Blue getBlue(String name) throws CompilationException, ParseException {
-        TextFile file = resolve(name).asTextFile();
+        TextFile file = resolveTextFile(name);
+        if (file == null)
+            return null;
         file.compile();
         return resolve(name).asTextFile().getInstance();
     }
