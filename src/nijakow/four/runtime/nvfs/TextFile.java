@@ -6,6 +6,7 @@ import nijakow.four.c.parser.ParseException;
 import nijakow.four.c.parser.Parser;
 import nijakow.four.c.parser.StringCharStream;
 import nijakow.four.c.parser.Tokenizer;
+import nijakow.four.runtime.Blue;
 import nijakow.four.runtime.Blueprint;
 
 public class TextFile extends File<SharedTextFileState> {
@@ -39,11 +40,14 @@ public class TextFile extends File<SharedTextFileState> {
         return contents;
     }
 
+    public Blue getInstance() { return getState().getBlue(); }
+
     public Blueprint compile() throws ParseException, CompilationException {
         if (blueprint == null) {
             Parser parser = new Parser(new Tokenizer(new StringCharStream(contents)));
             ASTFile file = parser.parse();
             blueprint = file.compile(getName(), name -> lookup(name).asTextFile().compile());
+            getState().updateBlueprint(blueprint);
         }
         return blueprint;
     }
