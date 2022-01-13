@@ -30,8 +30,16 @@ public class NVFileSystem implements FileParent {
         return root;
     }
 
-    public File resolve(String file) {
-        return getRoot().resolve(file);
+    public File resolve(String file) { return getRoot().resolve(file); }
+
+    public TextFile resolveTextFile(String file) {
+        File f = getRoot().resolve(file);
+        return (f == null) ? null : f.asTextFile();
+    }
+
+    public Directory resolveDirectory(String file) {
+        File f = getRoot().resolve(file);
+        return (f == null) ? null : f.asDirectory();
     }
 
     private Pair<String, String> splitPath(String path) {

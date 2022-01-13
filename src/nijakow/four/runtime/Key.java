@@ -2,7 +2,9 @@ package nijakow.four.runtime;
 
 import nijakow.four.c.compiler.CompilationException;
 import nijakow.four.c.parser.ParseException;
+import nijakow.four.runtime.nvfs.Directory;
 import nijakow.four.runtime.nvfs.File;
+import nijakow.four.runtime.nvfs.TextFile;
 import nijakow.four.runtime.vm.Fiber;
 import nijakow.four.util.Pair;
 
@@ -226,11 +228,11 @@ public class Key {
 			@Override
 			void run(Fiber fiber, Instance self, Instance[] args) throws CastException {
 				String path = args[0].asFString().asString();
-				File node = fiber.getVM().getFilesystem().resolve(path);
-				if (node == null || node.asTextFile() == null) {
+				TextFile node = fiber.getVM().getFilesystem().resolveTextFile(path);
+				if (node == null) {
 					fiber.setAccu(Instance.getNil());
 				} else {
-					fiber.setAccu(new FString(node.asTextFile().getContents()));
+					fiber.setAccu(new FString(node.getContents()));
 				}
 			}
 		};
@@ -250,7 +252,9 @@ public class Key {
 			@Override
 			void run(Fiber fiber, Instance self, Instance[] args) throws CastException {
 				String path = args[0].asFString().asString();
-				Pair<String, File>[] contents = fiber.getVM().getFilesystem().resolve(path).asDirectory().ls();
+				Directory dir = fiber.getVM().getFilesystem().resolveDirectory(path);
+				Pair<String, File>[] contents = null;
+				if (dir != null) contents = dir.ls();
 				if (contents == null) {
 					fiber.setAccu(Instance.getNil());
 				} else {
