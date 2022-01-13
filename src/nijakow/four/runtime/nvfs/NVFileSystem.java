@@ -34,5 +34,7 @@ public class NVFileSystem implements FileParent {
         System.out.println("Creating");
         TextFile scratch = dir.touch("scratch.txt");
         System.out.println(fs.root + "  " + scratch + "  " + dir.getState());
+        scratch.rm();
+        System.out.println(fs.root);
     }
 }

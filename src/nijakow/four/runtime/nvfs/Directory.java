@@ -39,6 +39,14 @@ public class Directory extends File<SharedDirectoryState> implements FileParent 
                     files.put(name, newMe);
             }
             return this;
+        } else if (newMe == null) {
+            Map<String, File> copy = new HashMap<>();
+            for (String name : files.keySet()) {
+                final File f = copy.get(name);
+                if (f == me) continue;
+                copy.put(name, f);
+            }
+            return new Directory(getParent(), this, copy);
         } else {
             Map<String, File> copy = new HashMap<>();
             for (String name : files.keySet()) {

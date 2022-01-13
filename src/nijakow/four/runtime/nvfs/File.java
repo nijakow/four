@@ -25,4 +25,6 @@ public abstract class File<T extends SharedFileState> {
 
     public TextFile asTextFile() { return null; }
     public Directory asDirectory() { return null; }
+
+    void rm() { getParent().replaceThis(this, null); }
 }
