@@ -2,10 +2,7 @@ package nijakow.four.runtime.nvfs;
 
 import nijakow.four.util.Pair;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Directory extends File<SharedDirectoryState> implements FileParent {
     private final Map<String, File> files;
@@ -46,10 +43,13 @@ public class Directory extends File<SharedDirectoryState> implements FileParent 
 
     @Override
     public void remove(File file) {
+        List<String> names = new LinkedList<>();
         for (String name : files.keySet()) {
             if (files.get(name) == file)
-                files.remove(name);
+                names.add(name);
         }
+        for (String name : names)
+            files.remove(name);
     }
 
     public Pair<String, File>[] ls() {

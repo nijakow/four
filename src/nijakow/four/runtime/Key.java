@@ -278,10 +278,25 @@ public class Key {
 		get("$mkdir").code = new BuiltinCode() {
 			@Override
 			void run(Fiber fiber, Instance self, Instance[] args) throws FourRuntimeException {
+				String path = args[0].asFString().asString();
+				if (fiber.getVM().getFilesystem().mkdir(path) != null) {
+					fiber.setAccu(new FInteger(1));
+				} else {
+					fiber.setAccu(new FInteger(0));
+				}
+			}
+		};
+		get("$rm").code = new BuiltinCode() {
+			@Override
+			void run(Fiber fiber, Instance self, Instance[] args) throws FourRuntimeException {
 				String curPath = args[0].asFString().asString();
-				String name = args[1].asFString().asString();
-				fiber.getVM().getFilesystem().resolve(curPath).asDirectory().mkdir(name);
-				fiber.setAccu(new FInteger(1));
+				File file = fiber.getVM().getFilesystem().resolve(curPath);
+				if (file != null) {
+					file.rm();
+					fiber.setAccu(new FInteger(1));
+				} else {
+					fiber.setAccu(new FInteger(0));
+				}
 			}
 		};
 		get("$recompile").code = new BuiltinCode() {

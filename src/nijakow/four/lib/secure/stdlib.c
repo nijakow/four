@@ -15,6 +15,7 @@ use $filetext_set;
 use $touch;
 use $recompile;
 use $mkdir;
+use $rm;
 
 
 object the(string id)
@@ -331,9 +332,14 @@ bool touch(string path)
     return $touch(path);
 }
 
-bool mkdir(string curPath, string name)
+bool mkdir(string path)
 {
-    return $mkdir(curPath, name);
+    return $mkdir(path);
+}
+
+bool rm(string path)
+{
+    return $rm(path);
 }
 
 bool recompile(string path)
