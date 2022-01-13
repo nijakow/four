@@ -131,6 +131,23 @@ public class Filesystem {
 		return node;
 	}
 
+	public FSNode mkdir(String curDir, String dirName) {
+		try {
+			FSNode parent = getWorkingLayer().find(curDir);
+			if (parent == null || parent.asDir() == null) {
+				parent = find(curDir);
+				if (parent == null || parent.asDir() == null)
+					return null;
+				parent = layers.get(WORKING_INDEX).reconstructStructureFor(parent);
+			}
+			return parent.asDir().mkdir(dirName);
+		} catch (ImmutableException e) {
+			e.printStackTrace();
+			System.err.println("This should never happen!");
+			return null;
+		}
+	}
+
 	public FSNode touchf(String fname) throws ImmutableException {
 		return getWorkingLayer().find(fname, true);
 	}

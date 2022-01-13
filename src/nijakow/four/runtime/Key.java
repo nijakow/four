@@ -290,6 +290,20 @@ public class Key {
 				}
 			}
 		};
+		get("$mkdir").code = new BuiltinCode() {
+			@Override
+			void run(Fiber fiber, Instance self, Instance[] args) throws FourRuntimeException {
+				String curPath = args[0].asFString().asString();
+				String name = args[1].asFString().asString();
+				FSNode node = fiber.getVM().getFilesystem().mkdir(curPath, name);
+				if (node == null) {
+					fiber.setAccu(Instance.getNil());
+					fiber.setAccu(new FInteger(0));
+				} else {
+					fiber.setAccu(new FInteger(1));
+				}
+			}
+		};
 		get("$recompile").code = new BuiltinCode() {
 			
 			@Override

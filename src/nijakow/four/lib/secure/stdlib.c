@@ -14,6 +14,7 @@ use $filetext;
 use $filetext_set;
 use $touch;
 use $recompile;
+use $mkdir;
 
 
 object the(string id)
@@ -328,6 +329,11 @@ bool echo_into(string path, string text)
 bool touch(string path)
 {
     return $touch(path);
+}
+
+bool mkdir(string curPath, string name)
+{
+    return $mkdir(curPath, name);
 }
 
 bool recompile(string path)

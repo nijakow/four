@@ -167,6 +167,21 @@ object lookup_cmd_instance(list argv)
     return cmd;
 }
 
+void cmd_mkdir(list argv)
+{
+    if (length(argv) <= 1)
+        arg_error();
+    else {
+        for (int i = 1; i < length(argv); i++) {
+           if (!mkdir(pwd(), argv[i]))
+                connection()->write("Error\n");
+            else
+                connection()->write("made\n");
+        }
+    }
+    resume();
+}
+
 void receive(string line)
 {
     list argv = split(line);
@@ -188,6 +203,8 @@ void receive(string line)
         cmd_recompile_file(argv);
     else if (argv[0] == "touch")
         cmd_touch_file(argv);
+    else if (argv[0] == "mkdir")
+        cmd_mkdir(argv);
     else {
         object cmd = lookup_cmd_instance(argv);
         if (cmd != nil) {
