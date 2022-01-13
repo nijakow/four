@@ -43,7 +43,7 @@ public class Directory extends File<SharedDirectoryState> implements FileParent 
             Map<String, File> copy = new HashMap<>();
             for (String name : files.keySet()) {
                 final File f = copy.get(name);
-                copy.put(name, ((f == me) || (f == null)) ? newMe : f);
+                copy.put(name, (f == me) ? newMe : f);
             }
             return new Directory(getParent(), this, copy);
         }
@@ -54,10 +54,14 @@ public class Directory extends File<SharedDirectoryState> implements FileParent 
         for (String key : files.keySet())
             copy.put(key, files.get(key));
         copy.put(name, null);
-        return new Directory(getParent(), copy);
+        return new Directory(getParent(), this, copy);
     }
 
     public TextFile touch(String name) {
         return new TextFile(duplicateWithEntry(name), "");
+    }
+
+    public Directory mkdir(String name) {
+        return new Directory(duplicateWithEntry(name));
     }
 }
