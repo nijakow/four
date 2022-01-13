@@ -4,6 +4,7 @@ import nijakow.four.c.compiler.CompilationException;
 import nijakow.four.c.parser.ParseException;
 import nijakow.four.runtime.Blue;
 import nijakow.four.runtime.Blueprint;
+import nijakow.four.runtime.FourClassLoader;
 import nijakow.four.runtime.FourRuntimeException;
 
 import java.util.LinkedList;
@@ -175,6 +176,10 @@ public class Filesystem {
 		FSNode node = find(path);
 		if (node == null) return null;
 		return node.asFile().getBlueprintWithErrors();
+	}
+
+    public FourClassLoader asClassLoader() {
+		return path -> this.getBlueprint(path);
 	}
 
 	/*public Blue getBlue(String path) {

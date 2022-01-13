@@ -32,7 +32,7 @@ public class File extends FSNode {
 		System.out.println("Compiling file " + name);
 		Parser parser = new Parser(new Tokenizer(new StringCharStream(contents)));
 		ASTFile file = parser.parse();
-		return file.compile(name, getFilesystem());
+		return file.compile(name, getFilesystem().asClassLoader());
 	}
 
 	public void recompile() throws ParseException, CompilationException {

@@ -19,7 +19,12 @@ public class NVFileSystem implements FileParent {
         return root;
     }
 
-    private Directory getRoot() {
+    @Override
+    public String getMyName(File me) {
+        return "";
+    }
+
+    public Directory getRoot() {
         return root;
     }
 

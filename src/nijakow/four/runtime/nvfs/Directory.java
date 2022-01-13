@@ -79,6 +79,14 @@ public class Directory extends File<SharedDirectoryState> implements FileParent 
     }
 
     @Override
+    public String getMyName(File me) {
+        for (String key : files.keySet())
+            if (files.get(key) == me)
+                return getParent().getMyName(this) + "/" + key;
+        return "???";
+    }
+
+    @Override
     public File resolve1(String name) {
         File f = files.get(name);
         if (f != null) return f;

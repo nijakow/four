@@ -3,6 +3,7 @@ package nijakow.four.c.ast;
 import nijakow.four.c.compiler.CompilationException;
 import nijakow.four.c.parser.ParseException;
 import nijakow.four.runtime.Blueprint;
+import nijakow.four.runtime.FourClassLoader;
 import nijakow.four.runtime.fs.Filesystem;
 
 public class ASTFile extends AST {
@@ -12,7 +13,7 @@ public class ASTFile extends AST {
 		this.defs = defs;
 	}
 
-	public Blueprint compile(String filename, Filesystem fs) throws ParseException, CompilationException {
+	public Blueprint compile(String filename, FourClassLoader fs) throws ParseException, CompilationException {
 		Blueprint blueprint = new Blueprint(filename);
 		
 		for (ASTDecl decl : defs) {

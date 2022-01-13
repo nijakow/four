@@ -2,10 +2,7 @@ package nijakow.four.c.ast;
 
 import nijakow.four.c.compiler.CompilationException;
 import nijakow.four.c.compiler.ScopedCompiler;
-import nijakow.four.runtime.Blueprint;
-import nijakow.four.runtime.Code;
-import nijakow.four.runtime.Key;
-import nijakow.four.runtime.Type;
+import nijakow.four.runtime.*;
 import nijakow.four.runtime.fs.Filesystem;
 import nijakow.four.util.Pair;
 
@@ -22,7 +19,7 @@ public class ASTFunctionDef extends ASTDefinition {
 	}
 
 	@Override
-	public void compileInto(Blueprint blueprint, Filesystem fs) throws CompilationException {
+	public void compileInto(Blueprint blueprint, FourClassLoader fs) throws CompilationException {
 		ScopedCompiler compiler = new ScopedCompiler(getType());	// TODO: body.openCompilation();
 		for (Pair<Type, Key> arg : args) {
 			compiler.addParam(arg.getFirst(), arg.getSecond());
