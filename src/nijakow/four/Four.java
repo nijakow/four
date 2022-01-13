@@ -1,23 +1,22 @@
 package nijakow.four;
 
-import java.io.IOException;
-
+import nijakow.four.net.Server;
 import nijakow.four.runtime.Blue;
 import nijakow.four.runtime.FourRuntimeException;
 import nijakow.four.runtime.Key;
-import nijakow.four.runtime.fs.Filesystem;
-import nijakow.four.runtime.fs.ResourceLoader;
+import nijakow.four.runtime.nvfs.NVFileSystem;
 import nijakow.four.runtime.vm.VM;
-import nijakow.four.net.Server;
+
+import java.io.IOException;
 
 public class Four implements Runnable {
-	private final Filesystem fs;
+	private final NVFileSystem fs;
 	private final Server server;
 	private final VM vm;
 	private boolean wasStarted = false;
 
-	public Four(int[] ports) throws IOException {
-		this.fs = new Filesystem(new ResourceLoader());
+	public Four(NVFileSystem fs, int[] ports) throws IOException {
+		this.fs = fs;
 		this.server = new Server();
 		this.vm = new VM(this.fs, this.server);
 		
@@ -30,7 +29,8 @@ public class Four implements Runnable {
 			wasStarted = true;
 			
 			{
-				Blue master = fs.getBlueWithErrors("/secure/master.c");
+				fs.resolve("/secure/master.c").asTextFile().compile();
+				Blue master = fs.getBlue("/secure/master.c");
 				
 				if (master == null) {
 					throw new FourRuntimeException("/secure/master.c is not defined!");

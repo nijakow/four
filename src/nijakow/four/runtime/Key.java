@@ -1,14 +1,13 @@
 package nijakow.four.runtime;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import nijakow.four.c.compiler.CompilationException;
 import nijakow.four.c.parser.ParseException;
-import nijakow.four.runtime.fs.FSNode;
-import nijakow.four.runtime.fs.ImmutableException;
+import nijakow.four.runtime.nvfs.File;
 import nijakow.four.runtime.vm.Fiber;
+import nijakow.four.util.Pair;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class Key {
 	private final String name;
@@ -51,7 +50,7 @@ public class Key {
 			
 			@Override
 			void run(Fiber fiber, Instance self, Instance[] args) throws CastException, CompilationException, ParseException {
-				Blue blue = args[0].asFString().getBlueWithErrors(fiber.getVM().getFilesystem());
+				Blue blue = args[0].asFString().getBlue(fiber.getVM().getFilesystem());
 				if (blue == null)
 					fiber.setAccu(Instance.getNil());
 				else
@@ -227,11 +226,11 @@ public class Key {
 			@Override
 			void run(Fiber fiber, Instance self, Instance[] args) throws CastException {
 				String path = args[0].asFString().asString();
-				FSNode node = fiber.getVM().getFilesystem().find(path);
-				if (node == null || node.asFile() == null) {
+				File node = fiber.getVM().getFilesystem().resolve(path);
+				if (node == null || node.asTextFile() == null) {
 					fiber.setAccu(Instance.getNil());
 				} else {
-					fiber.setAccu(new FString(node.asFile().getContents()));
+					fiber.setAccu(new FString(node.asTextFile().getContents()));
 				}
 			}
 		};
@@ -241,17 +240,9 @@ public class Key {
 			void run(Fiber fiber, Instance self, Instance[] args) throws CastException {
 				String path = args[0].asFString().asString();
 				String value = args[1].asFString().asString();
-				FSNode node;
-				try {
-					node = fiber.getVM().getFilesystem().writeFile(path, value);
-				} catch (ImmutableException e) {
-					node = null;
-				}
-				if (node == null || node.asFile() == null) {
-					fiber.setAccu(new FInteger(0));
-				} else {
-					fiber.setAccu(new FInteger(1));
-				}
+				File node;
+				node = fiber.getVM().getFilesystem().resolve(path).asTextFile().setContents(value);
+				fiber.setAccu(new FInteger(1));
 			}
 		};
 		get("$filechildren").code = new BuiltinCode() {
@@ -259,13 +250,13 @@ public class Key {
 			@Override
 			void run(Fiber fiber, Instance self, Instance[] args) throws CastException {
 				String path = args[0].asFString().asString();
-				List<FSNode> contents = fiber.getVM().getFilesystem().listChildren(path);
+				Pair<String, File>[] contents = fiber.getVM().getFilesystem().resolve(path).asDirectory().ls();
 				if (contents == null) {
 					fiber.setAccu(Instance.getNil());
 				} else {
 					FList lst = new FList();
-					for (FSNode node : contents) {
-						lst.insert(-1, new FString(node.getName()));
+					for (Pair<String, File> node : contents) {
+						lst.insert(-1, new FString(node.getFirst()));
 					}
 					fiber.setAccu(lst);
 				}
@@ -276,17 +267,8 @@ public class Key {
 			@Override
 			void run(Fiber fiber, Instance self, Instance[] args) throws CastException {
 				String path = args[0].asFString().asString();
-				FSNode node;
-				try {
-					node = fiber.getVM().getFilesystem().touchf(path);
-				} catch (ImmutableException e) {
-					node = null;
-				}
-				if (node == null || node.asFile() == null) {
-					fiber.setAccu(new FInteger(0));
-				} else {
-					fiber.setAccu(new FInteger(1));
-				}
+				fiber.getVM().getFilesystem().touch(path);
+				fiber.setAccu(new FInteger(1));
 			}
 		};
 		get("$mkdir").code = new BuiltinCode() {
@@ -294,12 +276,8 @@ public class Key {
 			void run(Fiber fiber, Instance self, Instance[] args) throws FourRuntimeException {
 				String curPath = args[0].asFString().asString();
 				String name = args[1].asFString().asString();
-				FSNode node = fiber.getVM().getFilesystem().mkdir(curPath, name);
-				if (node == null) {
-					fiber.setAccu(new FInteger(0));
-				} else {
-					fiber.setAccu(new FInteger(1));
-				}
+				fiber.getVM().getFilesystem().resolve(curPath).asDirectory().mkdir(name);
+				fiber.setAccu(new FInteger(1));
 			}
 		};
 		get("$recompile").code = new BuiltinCode() {
@@ -307,14 +285,9 @@ public class Key {
 			@Override
 			void run(Fiber fiber, Instance self, Instance[] args) throws CastException {
 				String path = args[0].asFString().asString();
-				FSNode node = fiber.getVM().getFilesystem().find(path);
 				try {
-					if (node == null || node.asFile() == null)
-						fiber.setAccu(new FInteger(0));
-					else {
-						node.asFile().recompile();
-						fiber.setAccu(new FInteger(1));
-					}
+					fiber.getVM().getFilesystem().resolve(path).asTextFile().compile();
+					fiber.setAccu(new FInteger(1));
 				} catch (ParseException | NullPointerException | CompilationException e) {
 					// TODO: Handle this gracefully
 					e.printStackTrace();

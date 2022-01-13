@@ -3,7 +3,6 @@ package nijakow.four.c.ast;
 import nijakow.four.c.compiler.CompilationException;
 import nijakow.four.c.compiler.ScopedCompiler;
 import nijakow.four.runtime.*;
-import nijakow.four.runtime.fs.Filesystem;
 import nijakow.four.util.Pair;
 
 public class ASTFunctionDef extends ASTDefinition {

@@ -10,16 +10,12 @@ import nijakow.four.runtime.Blue;
 import nijakow.four.runtime.Blueprint;
 
 public class TextFile extends File<SharedTextFileState> {
-    private final String contents;
+    private String contents = "";
     private Blueprint blueprint;
+    private boolean isDirty = true;
 
-    TextFile(FileParent parent, String contents) {
-        this(parent, null, contents);
-    }
-
-    TextFile(FileParent parent, TextFile previousThis, String contents) {
-        super(parent, previousThis, previousThis == null ? null : previousThis.getState());
-        this.contents = contents;
+    TextFile(FileParent parent) {
+        super(parent);
     }
 
     @Override
@@ -32,15 +28,17 @@ public class TextFile extends File<SharedTextFileState> {
         return new SharedTextFileState();
     }
 
-    public TextFile setContents(String newContents) {
-        return new TextFile(getParent(), this, newContents);
+    public TextFile setContents(String contents) {
+        this.contents = contents;
+        this.isDirty = true;
+        return this;
     }
 
-    public String getContents() {
-        return contents;
-    }
+    public String getContents() { return contents; }
 
-    public Blue getInstance() { return getState().getBlue(); }
+    public Blue getInstance() {
+        return getState().getBlue();
+    }
 
     public Blueprint compile() throws ParseException, CompilationException {
         if (blueprint == null) {
@@ -48,6 +46,7 @@ public class TextFile extends File<SharedTextFileState> {
             ASTFile file = parser.parse();
             blueprint = file.compile(getName(), name -> resolve(name).asTextFile().compile());
             getState().updateBlueprint(blueprint);
+            isDirty = false;
         }
         return blueprint;
     }

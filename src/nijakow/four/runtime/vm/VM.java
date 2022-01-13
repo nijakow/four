@@ -1,27 +1,27 @@
 package nijakow.four.runtime.vm;
 
+import nijakow.four.net.Server;
+import nijakow.four.runtime.*;
+import nijakow.four.runtime.nvfs.NVFileSystem;
+import nijakow.four.util.ComparablePair;
+
 import java.util.LinkedList;
 import java.util.PriorityQueue;
 import java.util.Queue;
 
-import nijakow.four.runtime.*;
-import nijakow.four.runtime.fs.Filesystem;
-import nijakow.four.net.Server;
-import nijakow.four.util.ComparablePair;
-
 public class VM {
-	private final Filesystem fs;
+	private final NVFileSystem fs;
 	private final Server server;
 	private final Queue<Fiber> fibers = new LinkedList<>();
 	private final PriorityQueue<ComparablePair<Long, Callback>> pendingCallbacks = new PriorityQueue<>();
 	private Callback errorCallback = null;
 	
-	public VM(Filesystem fs, Server server) {
+	public VM(NVFileSystem fs, Server server) {
 		this.fs = fs;
 		this.server = server;
 	}
 	
-	public Filesystem getFilesystem() {
+	public NVFileSystem getFilesystem() {
 		return fs;
 	}
 	

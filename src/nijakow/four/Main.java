@@ -1,26 +1,27 @@
 package nijakow.four;
 
-import java.io.File;
+import nijakow.four.c.compiler.CompilationException;
+import nijakow.four.c.parser.ParseException;
+import nijakow.four.client.ClientWindow;
+import nijakow.four.runtime.nvfs.NVFileSystem;
+
 import java.io.IOException;
 import java.util.ArrayList;
 
-import nijakow.four.runtime.fs.Filesystem;
-import nijakow.four.client.ClientWindow;
-
 public class Main {
 
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws IOException, CompilationException, ParseException {
+		NVFileSystem fileSystem = new NVFileSystem();
+
 		ArrayList<Integer> ports = new ArrayList<>();
+
 		boolean server = false;
 		int clients = 0;
 		for (int i = 0; i < args.length; i++) {
 			switch (args[i]) {
 			case "-d":
 			case "--directory":
-				Filesystem.WORKING_DIR = args[++i];
-				if (!Filesystem.WORKING_DIR.endsWith(File.separator))
-					Filesystem.WORKING_DIR += File.separator;
-				Filesystem.WORKING_DIR += Filesystem.LIB_FOLDER_NAME;
+				fileSystem.load(new java.io.File(args[++i]));
 				break;
 
 			case "--client":
@@ -100,7 +101,7 @@ public class Main {
 		while (clients --> 0)
 			ClientWindow.openWindow(ps);
 		if (server) {
-			Four four = new Four(ps);
+			Four four = new Four(fileSystem, ps);
 			four.run();
 		}
 	}

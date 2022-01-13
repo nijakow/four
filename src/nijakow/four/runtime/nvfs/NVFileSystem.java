@@ -1,6 +1,9 @@
 package nijakow.four.runtime.nvfs;
 
-import nijakow.four.runtime.fs.Filesystem;
+import nijakow.four.c.compiler.CompilationException;
+import nijakow.four.c.parser.ParseException;
+import nijakow.four.runtime.Blue;
+import nijakow.four.util.Pair;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -10,14 +13,7 @@ public class NVFileSystem implements FileParent {
     private Directory root;
 
     public NVFileSystem() {
-        new Directory(this);
-    }
-
-    @Override
-    public FileParent replaceThis(File me, File newMe) {
-        System.out.println("NVFileSystem changed: " + newMe);
-        root = newMe.asDirectory();
-        return this;
+        this.root = new Directory(this);
     }
 
     @Override
@@ -38,13 +34,26 @@ public class NVFileSystem implements FileParent {
         return getRoot().resolve(file);
     }
 
-    public TextFile touch(String name) {
-        return getRoot().touch(name);
+    private Pair<String, String> splitPath(String path) {
+        int i = path.lastIndexOf('/');
+        if (i < 0) {
+            return new Pair("", path);
+        } else {
+            return new Pair(path.substring(0, i), path.substring(i + 1));
+        }
     }
 
-    public Directory mkdir(String name) {
-        return getRoot().mkdir(name);
+    public TextFile touch(String file) {
+        Pair<String, String> path = splitPath(file);
+        return resolve(path.getFirst()).asDirectory().touch(path.getSecond());
     }
+
+    public Directory mkdir(String file) {
+        Pair<String, String> path = splitPath(file);
+        return resolve(path.getFirst()).asDirectory().mkdir(path.getSecond());
+    }
+
+    public void remove(File file) { getRoot().remove(file); }
 
     private String getResourceText(java.io.File file) {
         try (InputStreamReader reader = new InputStreamReader(new FileInputStream(file))) {
@@ -59,12 +68,12 @@ public class NVFileSystem implements FileParent {
         }
     }
 
-    public void load(java.io.File file, String path) {
+    public void load(java.io.File file, String path) throws CompilationException, ParseException {
         final String name = file.getName();
         final String newPath = path + "/" + name;
 
         if (file.isDirectory()) {
-            resolve(path).asDirectory().mkdir(name);
+            mkdir(newPath);
             for (java.io.File f : file.listFiles()) {
                 load(f, newPath);
             }
@@ -73,7 +82,21 @@ public class NVFileSystem implements FileParent {
         }
     }
 
-    public void load(java.io.File file) {
-        load(file, "");
+    public void load(java.io.File file) throws CompilationException, ParseException {
+        for (java.io.File f : file.listFiles()) {
+            load(f, "");
+        }
+    }
+
+    public Blue getBlue(String name) {
+        TextFile file = resolve(name).asTextFile();
+        try {
+            file.compile();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        } catch (CompilationException e) {
+            e.printStackTrace();
+        }
+        return resolve(name).asTextFile().getInstance();
     }
 }

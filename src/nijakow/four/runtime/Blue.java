@@ -15,7 +15,7 @@ public class Blue extends Instance {
 	private final Map<Key, Instance> slots = new HashMap<>();
 	private Blue parent, sibling, children;
 	
-	private Blue() {
+	public Blue() {
 		this.id = ID_COUNTER++;
 		parent = sibling = children = null;
 	}
@@ -72,7 +72,7 @@ public class Blue extends Instance {
 	
 	@Override
 	public String toString() {
-		return blueprint.toString() + "#" + id;
+		return ((blueprint == null) ? "<no blueprint>" : blueprint.toString()) + "#" + id;
 	}
 	
 	@Override
@@ -106,7 +106,7 @@ public class Blue extends Instance {
 	
 	@Override
 	public void send(Fiber fiber, Key key, int args) throws FourRuntimeException {
-		Code code = blueprint.getMethod(key);
+		Code code = blueprint == null ? null : blueprint.getMethod(key);
 		if (code == null)
 			super.send(fiber, key, args);
 		else

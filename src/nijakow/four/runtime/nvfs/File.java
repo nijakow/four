@@ -1,21 +1,12 @@
 package nijakow.four.runtime.nvfs;
 
 public abstract class File<T extends SharedFileState> {
-    private final FileParent parent;
-    private final T state;
+    private FileParent parent;
+    private T state;
 
-    protected File(FileParent parent, File previousThis, T state) {
-        this.parent = parent.replaceThis(previousThis, this);
-        this.state = (state == null) ? createFileState() : state;
-    }
-
-    protected File(FileParent parent, File previousThis) {
-        this(parent, previousThis, null);
-    }
-
-    protected File(FileParent parent, T state) {
+    protected File(FileParent parent) {
         this.parent = parent;
-        this.state = state;
+        this.state = createFileState();
     }
 
     protected FileParent getParent() { return parent; }
@@ -27,7 +18,7 @@ public abstract class File<T extends SharedFileState> {
     public TextFile asTextFile() { return null; }
     public Directory asDirectory() { return null; }
 
-    void rm() { getParent().replaceThis(this, null); }
+    void rm() { getParent().remove(this); }
 
     public String getName() {
         return getParent().getMyName(this);
@@ -41,7 +32,8 @@ public abstract class File<T extends SharedFileState> {
     }
 
     public File resolve(String path) {
-        if (path.startsWith("/")) return getRoot().resolve(path.substring(1));
+        if (path.startsWith("/"))
+            return getRoot().resolve(path.substring(1));
 
         File current = this;
         String[] tokens = path.split("/");
