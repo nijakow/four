@@ -29,7 +29,6 @@ public class Four implements Runnable {
 			wasStarted = true;
 			
 			{
-				fs.resolve("/secure/master.c").asTextFile().compile();
 				Blue master = fs.getBlue("/secure/master.c");
 				
 				if (master == null) {

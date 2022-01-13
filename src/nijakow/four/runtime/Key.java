@@ -50,7 +50,7 @@ public class Key {
 			
 			@Override
 			void run(Fiber fiber, Instance self, Instance[] args) throws CastException, CompilationException, ParseException {
-				Blue blue = args[0].asFString().getBlue(fiber.getVM().getFilesystem());
+				Blue blue = fiber.getVM().getFilesystem().getBlue(args[0].asFString().asString());
 				if (blue == null)
 					fiber.setAccu(Instance.getNil());
 				else

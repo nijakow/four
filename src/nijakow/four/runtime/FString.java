@@ -70,24 +70,8 @@ public class FString extends Instance {
 		return value.length();
 	}
 
-	public Blue getBlue(NVFileSystem fs) {
+	private Blue getBlue(NVFileSystem fs) throws CompilationException, ParseException {
 		return fs.getBlue(value);
-	}
-
-	@Override
-	public void loadSlot(Fiber fiber, Key key) throws FourRuntimeException {
-		getBlue(fiber.getVM().getFilesystem()).loadSlot(fiber, key);
-	}
-
-	@Override
-	public void storeSlot(Fiber fiber, Key key, Instance value) throws FourRuntimeException {
-		getBlue(fiber.getVM().getFilesystem()).storeSlot(fiber, key, value);
-	}
-
-	@Override
-	public void send(Fiber fiber, Key key, int args) throws FourRuntimeException {
-		Blue blue = getBlue(fiber.getVM().getFilesystem());
-		blue.send(fiber, key, args);
 	}
 
 	@Override

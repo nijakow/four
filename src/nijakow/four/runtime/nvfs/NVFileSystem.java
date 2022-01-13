@@ -88,15 +88,9 @@ public class NVFileSystem implements FileParent {
         }
     }
 
-    public Blue getBlue(String name) {
+    public Blue getBlue(String name) throws CompilationException, ParseException {
         TextFile file = resolve(name).asTextFile();
-        try {
-            file.compile();
-        } catch (ParseException e) {
-            e.printStackTrace();
-        } catch (CompilationException e) {
-            e.printStackTrace();
-        }
+        file.compile();
         return resolve(name).asTextFile().getInstance();
     }
 }
