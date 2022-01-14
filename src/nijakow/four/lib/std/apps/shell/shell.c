@@ -101,10 +101,14 @@ void cmd_touch_file(list argv)
     else {
         for (int x = 1; x < length(argv); x++)
         {
-            if (!touch(argv[1]))
-                connection()->write("Could not create file!\n");
-            else
-                connection()->write(argv[1], " created.\n");
+            string path = resolve(pwd(), argv[x]);
+            if (path != nil)
+            {
+                if (!touch(path))
+                    connection()->write("Could not create file!\n");
+                else
+                    connection()->write(argv[x], " created.\n");
+            }
         }
     }
     resume();
