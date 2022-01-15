@@ -20,7 +20,11 @@ public abstract class File<T extends SharedFileState> {
 
     public void rm() { getParent().remove(this); }
     public void moveTo(FileParent parent, String name) {
-        if (parent == null || parent.add(name, this)) {
+        if (parent == null)
+            rm();
+        else if (parent == getParent())
+            getParent().rename(this, name);
+        else if (parent.add(this, name)) {
             rm();
             this.parent = parent;
         }

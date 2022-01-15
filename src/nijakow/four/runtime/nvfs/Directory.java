@@ -42,13 +42,20 @@ public class Directory extends File<SharedDirectoryState> implements FileParent 
     }
 
     @Override
-    public boolean add(String name, File file) {
+    public boolean add(File file, String name) {
         files.put(name, file);
         return true;
     }
 
     @Override
-    public void remove(File file) {
+    public boolean rename(File file, String name) {
+        remove(file);
+        files.put(name, file);
+        return true;
+    }
+
+    @Override
+    public boolean remove(File file) {
         List<String> names = new LinkedList<>();
         for (String name : files.keySet()) {
             if (files.get(name) == file)
@@ -56,6 +63,7 @@ public class Directory extends File<SharedDirectoryState> implements FileParent 
         }
         for (String name : names)
             files.remove(name);
+        return true;
     }
 
     public Pair<String, File>[] ls() {

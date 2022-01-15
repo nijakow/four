@@ -88,8 +88,13 @@ public class NVFileSystem implements FileParent {
     }
 
     @Override
-    public boolean add(String name, File file) { return false; }
-    public void remove(File file) { getRoot().remove(file); }
+    public boolean add(File file, String name) { return false; }
+
+    @Override
+    public boolean rename(File file, String name) { return false; }
+
+    @Override
+    public boolean remove(File file) { return getRoot().remove(file); }
 
     private String getResourceText(java.io.File file) {
         try (InputStreamReader reader = new InputStreamReader(new FileInputStream(file))) {

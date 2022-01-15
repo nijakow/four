@@ -106,8 +106,6 @@ void cmd_touch_file(list argv)
             {
                 if (!touch(path))
                     connection()->write("Could not create file!\n");
-                else
-                    connection()->write(argv[x], " created.\n");
             }
         }
     }

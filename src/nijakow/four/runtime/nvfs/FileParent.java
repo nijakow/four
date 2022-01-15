@@ -5,6 +5,7 @@ public interface FileParent {
     File asFile();
     String getMyName(File me);
     String getMyFullName(File me);
-    boolean add(String name, File file);
-    void remove(File file);
+    boolean add(File file, String name);
+    boolean rename(File file, String name);
+    boolean remove(File file);
 }
