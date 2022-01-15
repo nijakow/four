@@ -70,8 +70,18 @@ public class NVFileSystem implements FileParent {
         File f = resolve(file);
         File target = resolve(loc);
 
-        if (f != null && target != null) {
-            f.moveTo(target.asDirectory(), f.getName());
+        if (f != null) {
+            if (target != null) {
+                if (target.asDirectory() == null)
+                    return false;
+                f.moveTo(target.asDirectory(), f.getName());
+            } else {
+                Pair<String, String> path = splitPath(loc);
+                target = resolve(path.getFirst());
+                if (target == null || target.asDirectory() == null)
+                    return false;
+                f.moveTo(target.asDirectory(), path.getSecond());
+            }
             return true;
         }
         return false;
