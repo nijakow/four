@@ -7,6 +7,11 @@ object connection() { return the_connection; }
 
 void exit() { call(finish_cb); }
 
+void exec(func our_cb, string name, ...)
+{
+    new(name, the_connection, our_cb, ...)->start();
+}
+
 void start()
 {
     resume();
