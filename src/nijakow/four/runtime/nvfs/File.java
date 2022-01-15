@@ -19,9 +19,19 @@ public abstract class File<T extends SharedFileState> {
     public Directory asDirectory() { return null; }
 
     public void rm() { getParent().remove(this); }
+    public void moveTo(FileParent parent, String name) {
+        if (parent == null || parent.add(name, this)) {
+            rm();
+            this.parent = parent;
+        }
+    }
 
     public String getName() {
         return getParent().getMyName(this);
+    }
+
+    public String getFullName() {
+        return getParent().getMyFullName(this);
     }
 
     public File resolve1(String name) {

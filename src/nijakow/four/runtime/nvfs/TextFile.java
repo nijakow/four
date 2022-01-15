@@ -42,10 +42,10 @@ public class TextFile extends File<SharedTextFileState> {
 
     public Blueprint compile() throws ParseException, CompilationException {
         if (blueprint == null || isDirty) {
-            System.out.println("Compiling " + getName() + "...");
+            System.out.println("Compiling " + getFullName() + "...");
             Parser parser = new Parser(new Tokenizer(new StringCharStream(contents)));
             ASTFile file = parser.parse();
-            blueprint = file.compile(getName(), name -> resolve(name).asTextFile().compile());
+            blueprint = file.compile(getFullName(), name -> resolve(name).asTextFile().compile());
             getState().updateBlueprint(blueprint);
             isDirty = false;
         }

@@ -26,6 +26,11 @@ public class NVFileSystem implements FileParent {
         return "";
     }
 
+    @Override
+    public String getMyFullName(File me) {
+        return "";
+    }
+
     public Directory getRoot() {
         return root;
     }
@@ -61,6 +66,19 @@ public class NVFileSystem implements FileParent {
         return resolve(path.getFirst()).asDirectory().mkdir(path.getSecond());
     }
 
+    public void mv(String file, String loc) {
+        File f = resolve(file);
+        File target = resolve(loc);
+
+        if (f != null && target != null) {
+            if (target != null) {
+                f.moveTo(target.asDirectory(), f.getName());
+            }
+        }
+    }
+
+    @Override
+    public boolean add(String name, File file) { return false; }
     public void remove(File file) { getRoot().remove(file); }
 
     private String getResourceText(java.io.File file) {
