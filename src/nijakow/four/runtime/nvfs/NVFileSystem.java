@@ -3,13 +3,15 @@ package nijakow.four.runtime.nvfs;
 import nijakow.four.c.compiler.CompilationException;
 import nijakow.four.c.parser.ParseException;
 import nijakow.four.runtime.Blue;
+import nijakow.four.serialization.base.ISerializable;
+import nijakow.four.serialization.base.ISerializer;
 import nijakow.four.util.Pair;
 
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-public class NVFileSystem implements FileParent {
+public class NVFileSystem implements FileParent, ISerializable {
     private Directory root;
 
     public NVFileSystem() {
@@ -135,5 +137,20 @@ public class NVFileSystem implements FileParent {
             return null;
         file.compile();
         return resolve(name).asTextFile().getInstance();
+    }
+
+    @Override
+    public String getSerializationClassID() {
+        return "NVFSFileSystem";
+    }
+
+    @Override
+    public int getSerializationClassRevision() {
+        return 0;
+    }
+
+    @Override
+    public void serialize(ISerializer serializer) {
+        getRoot().serialize(serializer);
     }
 }

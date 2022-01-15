@@ -1,12 +1,26 @@
 package nijakow.four.runtime;
 
-import nijakow.four.c.compiler.CompilationException;
-import nijakow.four.c.parser.ParseException;
 import nijakow.four.runtime.vm.Fiber;
 import nijakow.four.runtime.vm.VM;
+import nijakow.four.serialization.base.ISerializable;
+import nijakow.four.serialization.base.ISerializer;
 
-public abstract class Instance {
-	private static final Instance NIL = new Instance() {};
+public abstract class Instance implements ISerializable {
+	private static final Instance NIL = new Instance() {
+		@Override
+		public String getSerializationClassID() {
+			return "nil";
+		}
+
+		@Override
+		public int getSerializationClassRevision() {
+			return 0;
+		}
+
+		@Override
+		public void serialize(ISerializer serializer) {
+		}
+	};
 
 	public static Instance getNil() { return NIL; }
 	
@@ -47,5 +61,20 @@ public abstract class Instance {
 	
 	public Code extractMethod(VM vm, Key key) throws FourRuntimeException {
 		throw new FourRuntimeException("Oof. Can't extract method in " + this);
+	}
+
+	@Override
+	public String getSerializationClassID() {
+		return "Instance";	// FIXME: This is just a dummy!
+	}
+
+	@Override
+	public int getSerializationClassRevision() {
+		return 0;	// FIXME: This is just a dummy!
+	}
+
+	@Override
+	public void serialize(ISerializer serializer) {
+		// FIXME: This is just a dummy!
 	}
 }

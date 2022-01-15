@@ -1,6 +1,8 @@
 package nijakow.four.runtime.nvfs;
 
-public abstract class File<T extends SharedFileState> {
+import nijakow.four.serialization.base.ISerializable;
+
+public abstract class File<T extends SharedFileState> implements ISerializable {
     private FileParent parent;
     private T state;
 

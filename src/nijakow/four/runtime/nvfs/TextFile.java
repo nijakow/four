@@ -8,6 +8,7 @@ import nijakow.four.c.parser.StringCharStream;
 import nijakow.four.c.parser.Tokenizer;
 import nijakow.four.runtime.Blue;
 import nijakow.four.runtime.Blueprint;
+import nijakow.four.serialization.base.ISerializer;
 
 public class TextFile extends File<SharedTextFileState> {
     private String contents = "";
@@ -50,5 +51,21 @@ public class TextFile extends File<SharedTextFileState> {
             isDirty = false;
         }
         return blueprint;
+    }
+
+    @Override
+    public String getSerializationClassID() {
+        return "NVFSFile";
+    }
+
+    @Override
+    public int getSerializationClassRevision() {
+        return 0;
+    }
+
+    @Override
+    public void serialize(ISerializer serializer) {
+        serializer.writeString(getContents());
+        serializer.writeObject(getInstance());
     }
 }

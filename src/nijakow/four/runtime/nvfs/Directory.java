@@ -1,5 +1,7 @@
 package nijakow.four.runtime.nvfs;
 
+import nijakow.four.serialization.base.IMappingSerializer;
+import nijakow.four.serialization.base.ISerializer;
 import nijakow.four.util.Pair;
 
 import java.util.*;
@@ -95,5 +97,23 @@ public class Directory extends File<SharedDirectoryState> implements FileParent 
         File f = files.get(name);
         if (f != null) return f;
         else return super.resolve1(name);
+    }
+
+    @Override
+    public String getSerializationClassID() {
+        return "NVFSDirectory";
+    }
+
+    @Override
+    public int getSerializationClassRevision() {
+        return 0;
+    }
+
+    @Override
+    public void serialize(ISerializer serializer) {
+        IMappingSerializer mapser = serializer.openMapping();
+        for (String key : files.keySet()) {
+            mapser.openEntry(key).writeObject(files.get(key));
+        }
     }
 }
