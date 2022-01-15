@@ -1,8 +1,8 @@
-inherit "/secure/object.c";
-inherit "/std/thing/movement.c";
-inherit "/std/thing/descriptions.c";
-inherit "/std/thing/actions.c";
-inherit "/std/thing/light.c";
+inherits "/secure/object.c";
+inherits "/std/thing/movement.c";
+inherits "/std/thing/descriptions.c";
+inherits "/std/thing/actions.c";
+inherits "/std/thing/light.c";
 
 
 /*

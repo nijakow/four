@@ -1,4 +1,4 @@
-inherit "/secure/stdlib.c";
+inherits "/secure/stdlib.c";
 
 /*
  * This is the basic object

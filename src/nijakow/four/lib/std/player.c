@@ -1,4 +1,4 @@
-inherit "/std/thing.c";
+inherits "/std/thing.c";
 
 object connection;
 mapping cmds;

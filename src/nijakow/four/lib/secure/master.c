@@ -1,4 +1,4 @@
-inherit "/secure/stdlib.c";
+inherits "/secure/stdlib.c";
 
 use $on_connect;
 use $on_error;

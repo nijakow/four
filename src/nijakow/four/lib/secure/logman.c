@@ -1,4 +1,4 @@
-inherit "/secure/object.c";
+inherits "/secure/object.c";
 
 bool check_login(string name, string pass)
 {

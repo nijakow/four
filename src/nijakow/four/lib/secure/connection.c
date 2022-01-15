@@ -1,4 +1,4 @@
-inherit "/secure/object.c";
+inherits "/secure/object.c";
 
 use $write;
 use $close;

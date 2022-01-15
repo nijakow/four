@@ -297,7 +297,7 @@ public class Parser {
 				Key name = expectKey();
 				defs.add(new ASTDefaultDef(name));
 				expect(TokenType.SEMICOLON);
-			} else if (check(TokenType.INHERIT)) {
+			} else if (check(TokenType.INHERITS)) {
 				defs.add(new ASTInheritanceDef(((Instance) expect(TokenType.CONSTANT).getPayload()).asString()));
 				expect(TokenType.SEMICOLON);
 			} else {

@@ -1,5 +1,4 @@
-inherit "/std/room.c";
-
+inherits "/std/room.c";
 
 void create()
 {

@@ -1,4 +1,4 @@
-inherit "/std/cli.c";
+inherits "/std/cli.c";
 
 mapping mapped_pathnames;
 
