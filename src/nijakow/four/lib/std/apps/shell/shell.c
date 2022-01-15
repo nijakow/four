@@ -197,6 +197,20 @@ void cmd_rm(list argv)
     resume();
 }
 
+void cmd_mv(list argv)
+{
+    if (length(argv) != 3)
+        arg_error();
+    else {
+        string from = resolve(pwd(), argv[1]);
+        string to   = resolve(pwd(), argv[2]);
+        if (from == nil || to == nil || !mv(from, to)) {
+            file_not_found_error();
+        }
+    }
+    resume();
+}
+
 void receive(string line)
 {
     list argv = split(line);
@@ -222,6 +236,8 @@ void receive(string line)
         cmd_mkdir(argv);
     else if (argv[0] == "rm")
         cmd_rm(argv);
+    else if (argv[0] == "mv")
+        cmd_mv(argv);
     else {
         object cmd = lookup_cmd_instance(argv);
         if (cmd != nil) {

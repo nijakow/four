@@ -299,6 +299,16 @@ public class Key {
 				}
 			}
 		};
+		get("$mv").code = new BuiltinCode() {
+
+			@Override
+			void run(Fiber fiber, Instance self, Instance[] args) throws CastException {
+				if (fiber.getVM().getFilesystem().mv(args[0].asFString().asString(), args[1].asFString().asString()))
+					fiber.setAccu(new FInteger(1));
+				else
+					fiber.setAccu(new FInteger(0));
+			}
+		};
 		get("$recompile").code = new BuiltinCode() {
 			
 			@Override

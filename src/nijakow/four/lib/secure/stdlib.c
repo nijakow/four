@@ -16,7 +16,7 @@ use $touch;
 use $recompile;
 use $mkdir;
 use $rm;
-
+use $mv;
 
 object the(string id)
 {
@@ -340,6 +340,11 @@ bool mkdir(string path)
 bool rm(string path)
 {
     return $rm(path);
+}
+
+bool mv(string from, string to)
+{
+    return $mv(from, to);
 }
 
 bool recompile(string path)
