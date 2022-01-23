@@ -257,6 +257,6 @@ void resume()
 
 void create(object connection, func finish_cb)
 {
-    "/std/cli.c"::create(connection, finish_cb);
+    "/std/cli.c"=>create(connection, finish_cb);
     mapped_pathnames = [];
 }

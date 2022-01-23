@@ -222,7 +222,12 @@ public class ScopedCompiler implements FCompiler {
 	public void compileIndexAssign() {
 		writer.writeIndexAssign();
 	}
-	
+
+	@Override
+	public void compileRepurpose(Key key) {
+		writer.writeRepurpose(key);
+	}
+
 	@Override
 	public void compileScope(Key key) {
 		writer.writeScope(key);

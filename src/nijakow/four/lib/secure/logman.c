@@ -17,4 +17,5 @@ object get_player(string name)
 
 void create()
 {
+    "/secure/object.c"=>create();
 }

@@ -19,7 +19,7 @@ void add_exit(string dir, string room)
 
 void create()
 {
-    "/std/thing.c"::create();
+    "/std/thing.c"=>create();
     set_properly_named();
     exits = [];
 }

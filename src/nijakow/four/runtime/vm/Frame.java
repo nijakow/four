@@ -120,10 +120,15 @@ public class Frame {
 			}
 			fiber.getAccu().send(fiber, key, args);
 			break;
-		case Bytecodes.BYTECODE_SCOPE:
+		case Bytecodes.BYTECODE_REPURPOSE:
 			key = code.keyAt(code.u16(ip));
 			ip += 2;
 			fiber.setAccu(new FClosure(self, fiber.getAccu(), key));
+			break;
+		case Bytecodes.BYTECODE_SCOPE:
+			key = code.keyAt(code.u16(ip));
+			ip += 2;
+			fiber.setAccu(new FClosure(fiber.getAccu().asBlue(), fiber.getAccu(), key));
 			break;
 		case Bytecodes.BYTECODE_JUMP:
 			ip = code.u16(ip);

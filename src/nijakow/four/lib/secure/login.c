@@ -74,5 +74,6 @@ void start(object the_connection)
 
 void create()
 {
+    "/secure/object.c"=>create();
     connection = nil;
 }

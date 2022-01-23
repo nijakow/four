@@ -206,7 +206,7 @@ void forward_write(...)
 
 void create(object connection, func finish_cb, object me)
 {
-    "/std/cli.c"::create(connection, finish_cb);
+    "/std/cli.c"=>create(connection, finish_cb);
     connection->set_fallback(this::resume);
     me->submit_lines_to(this::forward_write);
     this.cmds = [];

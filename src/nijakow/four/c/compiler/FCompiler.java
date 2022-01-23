@@ -34,6 +34,7 @@ public interface FCompiler {
 	void compileDotAssign(Key key);
 	void compileIndex();
 	void compileIndexAssign();
+	void compileRepurpose(Key key);
 	void compileScope(Key key);
 
 	void compileCall(int args, boolean hasVarargs);

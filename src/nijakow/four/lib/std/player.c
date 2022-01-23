@@ -21,6 +21,6 @@ void activate_as(string name)
 
 void create()
 {
-    "/std/thing.c"::create();
+    "/std/thing.c"=>create();
     set_properly_named();
 }
