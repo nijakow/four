@@ -14,15 +14,15 @@ void write(...) {}
 
 void create()
 {
-    "/secure/object.c"=>create();
-    "/std/thing/movement.c"=>create();
-    "/std/thing/descriptions.c"=>create();
-    "/std/thing/actions.c"=>create();
-    "/std/thing/light.c"=>create();
+    "/secure/object.c"::create();
+    "/std/thing/movement.c"::create();
+    "/std/thing/descriptions.c"::create();
+    "/std/thing/actions.c"::create();
+    "/std/thing/light.c"::create();
 }
 
 void _init()
 {
-    "/secure/object.c"=>_init();
+    "/secure/object.c"::_init();
     create();
 }

@@ -207,9 +207,9 @@ void add_cmd(string name, func cb)
 
 void create(object connection, func finish_cb, object me)
 {
-    "/std/cli.c"=>create(connection, finish_cb);
+    "/std/cli.c"::create(connection, finish_cb);
     connection->set_fallback(this::resume);
-    me->submit_lines_to(connection::write);
+    me->submit_lines_to(connection->write);
     this.cmds = [];
     this.me = me;
     this.should_print_desc = true;

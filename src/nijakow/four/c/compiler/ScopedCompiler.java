@@ -224,11 +224,6 @@ public class ScopedCompiler implements FCompiler {
 	}
 
 	@Override
-	public void compileRepurpose(Key key) {
-		writer.writeRepurpose(key);
-	}
-
-	@Override
 	public void compileScope(Key key) {
 		writer.writeScope(key);
 	}

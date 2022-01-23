@@ -156,11 +156,6 @@ public class InstructionWriter {
 		u8(args);
 	}
 
-	public void writeRepurpose(Key key) {
-		u8(Bytecodes.BYTECODE_REPURPOSE);
-		key(key);
-	}
-
 	public void writeScope(Key key) {
 		u8(Bytecodes.BYTECODE_SCOPE);
 		key(key);

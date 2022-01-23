@@ -135,7 +135,7 @@ void close()
 
 void create(any the_port)
 {
-	"/secure/object.c"=>create();
+	"/secure/object.c"::create();
 	port = the_port;
 	callback = nil;
 	fallback = nil;

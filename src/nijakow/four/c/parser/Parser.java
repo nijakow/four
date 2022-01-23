@@ -168,8 +168,6 @@ public class Parser {
 			} else if (check(TokenType.LBRACK)) {
 				expr = new ASTIndex(expr, parseExpression());
 				expect(TokenType.RBRACK);
-			} else if (check(TokenType.RDOUBLEARROW)) {
-				expr = new ASTRepurpose(expr, expectKey());
 			} else if (check(TokenType.SCOPE)) {
 				expr = new ASTScope(expr, expectKey());
 			} else if (check(TokenType.ASSIGNMENT)) {

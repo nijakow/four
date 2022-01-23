@@ -89,7 +89,7 @@ public class Blue extends Instance {
 	public void loadSlot(Fiber fiber, Key key) throws FourRuntimeException {
 		Pair<Type, Key> info = blueprint.getSlotInfo(key);
 		if (info == null)
-			super.loadSlot(fiber, key);
+			fiber.setAccu(new FClosure(this, this, key));
 		else if (slots.containsKey(key))
 			fiber.setAccu(slots.get(key));
 		else

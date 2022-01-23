@@ -19,7 +19,7 @@ void start()
 
 void create(object connection, func finish_cb)
 {
-    "/secure/object.c"=>create();
+    "/secure/object.c"::create();
     this.the_connection = connection;
     this.finish_cb      = finish_cb;
 }
