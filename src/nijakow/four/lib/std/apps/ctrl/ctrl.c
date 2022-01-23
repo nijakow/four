@@ -50,6 +50,73 @@ void cmd_say(string text)
     resume();
 }
 
+void cmd_take_act(object obj)
+{
+    if (obj == nil)
+        connection()->write("There is no such thing here!\n");
+    else if (!me->act_take(obj))
+        connection()->write("You can't take that!\n");
+    else
+        connection()->write("Taken.\n");
+    resume();
+}
+
+void cmd_take(string text)
+{
+    select_and_call(text, this::cmd_take_act);
+}
+
+void cmd_drop_act(object obj)
+{
+    if (obj == nil)
+        connection()->write("There is no such thing here!\n");
+    else if (!me->act_drop(obj))
+        connection()->write("You can't drop that!\n");
+    else
+        connection()->write("Dropped.\n");
+    resume();
+}
+
+void cmd_drop(string text)
+{
+    select_and_call(text, this::cmd_drop_act);
+}
+
+void cmd_examine_act(object obj)
+{
+    if (obj == nil)
+        connection()->write("There is no such thing here!\n");
+    else
+        connection()->write(obj->get_desc(), "\n");
+    resume();
+}
+
+void cmd_examine(string text)
+{
+    select_and_call(text, this::cmd_examine_act);
+}
+
+void cmd_inv(string text)
+{
+    for (object obj = me->get_children();
+         obj != nil;
+         obj = obj->get_sibling())
+    {
+        if (obj != me)
+            connection()->write(capitalize(obj->get_short()), ".\n");
+    }
+    resume();
+}
+
+void resume_from_shell()
+{
+    resume();
+}
+
+void cmd_shell(string text)
+{
+    exec("/std/apps/shell/shell.c", connection, this::resume_from_shell);
+}
 
 void docmd(string cmd, string args)
 {
