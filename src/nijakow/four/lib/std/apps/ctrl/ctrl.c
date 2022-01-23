@@ -3,7 +3,7 @@ inherits "/std/cli.c";
 mapping cmds;
 object me;
 
-void get_location()
+object get_location()
 {
     return me->get_location();
 }
@@ -11,7 +11,7 @@ void get_location()
 void lookaround()
 {
     connection()->write("\n");
-    if (query_light_level_here() == 0) {
+    if (me->query_light_level_here() == 0) {
         connection()->write("Is is pitch black here.\n");
     } else {
 	    connection()->write(get_location()->get_short(), "\n");
@@ -20,7 +20,7 @@ void lookaround()
 	         obj != nil;
 	         obj = obj->get_sibling())
 	    {
-	        if (obj != this)
+	        if (obj != me)
 	            connection()->write(capitalize(obj->get_short()), ".\n");
 	    }
     }
@@ -115,7 +115,7 @@ void resume_from_shell()
 
 void cmd_shell(string text)
 {
-    exec("/std/apps/shell/shell.c", connection, this::resume_from_shell);
+    exec("/std/apps/shell/shell.c", connection(), this::resume_from_shell);
 }
 
 void docmd(string cmd, string args)
@@ -129,12 +129,12 @@ void docmd(string cmd, string args)
     } else if (cmd == "exit") {
         exit();
     } else {
-        connection->write("I didn't quite get that, sorry...\n");
+        connection()->write("I didn't quite get that, sorry...\n");
         resume();
     }
 }
 
-void receive(string line)
+void receive(string cmd)
 {
     string args;
 
@@ -163,9 +163,18 @@ void add_cmd(string name, func cb)
 void create(object connection, func finish_cb, object me)
 {
     "/std/cli.c"::create(connection, finish_cb);
+    connection->set_fallback(this::resume);
     this.cmds = [];
     this.me = me;
     add_cmd("look", this::cmd_look);
+    add_cmd("examine", this::cmd_examine);
     add_cmd("go", this::cmd_go);
     add_cmd("say", this::cmd_say);
+    add_cmd("take", this::cmd_take);
+    add_cmd("get", this::cmd_take);
+    add_cmd("drop", this::cmd_drop);
+    add_cmd("inv", this::cmd_inv);
+    // add_cmd("new", this::cmd_instantiate);
+    // add_cmd("devhint", this::cmd_devhint);
+    add_cmd("shell", this::cmd_shell);
 }

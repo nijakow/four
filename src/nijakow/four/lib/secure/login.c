@@ -61,7 +61,8 @@ void setuname(string uname)
     sword->set_properly_named();
     sword->add_IDs(uname + "'s");
     sword->move_to(player);
-    player->start(connection);
+    player->act_goto(the("/world/void.c"));
+    new("/std/apps/ctrl/ctrl.c", connection, nil, player)->start();  // TODO: Finish_cb
 }
 
 void start(object the_connection)
