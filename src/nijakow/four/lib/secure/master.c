@@ -6,7 +6,7 @@ use $on_error;
 void receive(any port)
 {
 	object connection = new("/secure/connection.c", port);
-	new("/secure/login.c")->start(connection);
+	new("/secure/login.c", connection, nil)->start();
 }
 
 void handle_error(string key, string type, string msg)

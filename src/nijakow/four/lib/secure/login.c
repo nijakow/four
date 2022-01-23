@@ -1,55 +1,53 @@
-inherits "/secure/object.c";
-
-object connection;
+inherits "/std/cli.c";
 
 string name;
 string pass;
 
 void banner()
 {
-    connection->write("\n");
-    connection->write("                                  /####/  #################\n");
-    connection->write("                                /####/    #####/     ######\n");
-    connection->write("                              /####/      ###/       ######\n");
-    connection->write("                            /####/        #/         /####/\n");
-    connection->write("                          /####/          /        /####/\n");
-    connection->write("                        /####/                   /####/\n");
-    connection->write("                      /####/                   /####/\n");
-    connection->write("                    /####/                   /####/\n");
-    connection->write("                  /####/                   /####/         /\n");
-    connection->write("                  #####################   ######         /#\n");
-    connection->write("                  #####################   ######       /###\n");
-    connection->write("                  #####################   ######     /#####\n");
-    connection->write("                                 ######   #################\n");
-    connection->write("                                 ######\n");
-    connection->write("                                 ######\n");
-    connection->write("                                 ######\n");
-    connection->write("\n");
-    connection->mode_italic();
-    connection->write("  Welcome to the 42 MUD!\n");
-    connection->mode_normal();
-    connection->write("\n");
+    connection()->write("\n");
+    connection()->write("                                  /####/  #################\n");
+    connection()->write("                                /####/    #####/     ######\n");
+    connection()->write("                              /####/      ###/       ######\n");
+    connection()->write("                            /####/        #/         /####/\n");
+    connection()->write("                          /####/          /        /####/\n");
+    connection()->write("                        /####/                   /####/\n");
+    connection()->write("                      /####/                   /####/\n");
+    connection()->write("                    /####/                   /####/\n");
+    connection()->write("                  /####/                   /####/         /\n");
+    connection()->write("                  #####################   ######         /#\n");
+    connection()->write("                  #####################   ######       /###\n");
+    connection()->write("                  #####################   ######     /#####\n");
+    connection()->write("                                 ######   #################\n");
+    connection()->write("                                 ######\n");
+    connection()->write("                                 ######\n");
+    connection()->write("                                 ######\n");
+    connection()->write("\n");
+    connection()->mode_italic();
+    connection()->write("  Welcome to the 42 MUD!\n");
+    connection()->mode_normal();
+    connection()->write("\n");
 }
 
 void setname(string name)
 {
     this.name = name;
-    connection->password(this::setpass, "Password: ");
+    connection()->password(this::setpass, "Password: ");
 }
 
 void setpass(string pass)
 {
     if (!the("/secure/logman.c")->check_login(name, pass)) {
-        connection->write("\n");
-        connection->mode_red();
-        connection->mode_underscore();
-        connection->write("Username or password not recognized.\nConnection terminated.\n");
-        connection->mode_normal();
-        connection->close();
+        connection()->write("\n");
+        connection()->mode_red();
+        connection()->mode_underscore();
+        connection()->write("Username or password not recognized.\nConnection terminated.\n");
+        connection()->mode_normal();
+        connection()->close();
         return;
     }
-    connection->write("\nWelcome to the 42 MUD, ", this.name, "!\n\n");
-    connection->prompt(this::setuname, "By what name will your character be known? ");
+    connection()->write("\nWelcome to the 42 MUD, ", this.name, "!\n\n");
+    connection()->prompt(this::setuname, "By what name will your character be known? ");
 }
 
 void setuname(string uname)
@@ -62,18 +60,11 @@ void setuname(string uname)
     sword->add_IDs(uname + "'s");
     sword->move_to(player);
     player->act_goto(the("/world/void.c"));
-    new("/std/apps/ctrl/ctrl.c", connection, nil, player)->start();  // TODO: Finish_cb
+    exec(nil, "/std/apps/ctrl/ctrl.c", player);
 }
 
-void start(object the_connection)
+void start()
 {
-    connection = the_connection;
     banner();
-    connection->prompt(this::setname, "What's your intra name? ");
-}
-
-void create()
-{
-    "/secure/object.c"=>create();
-    connection = nil;
+    connection()->prompt(this::setname, "What's your intra name? ");
 }
