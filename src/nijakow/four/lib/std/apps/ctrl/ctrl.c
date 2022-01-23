@@ -2,6 +2,7 @@ inherits "/std/cli.c";
 
 mapping cmds;
 object me;
+bool should_print_desc;
 
 
 object get_location()
@@ -76,6 +77,7 @@ void cmd_go(string dir)
     object loc = get_location()->get_exit(dir);
 
     if (loc != nil) {
+        this.should_print_desc = true;
     	me->act_goto(loc);
     } else {
     	connection()->write("There is no exit in this direction!\n");
@@ -191,6 +193,10 @@ void receive(string cmd)
 
 void resume()
 {
+    if (this.should_print_desc) {
+        this.should_print_desc = false;
+        lookaround();
+    }
     connection()->prompt(this::receive, "> ");
 }
 
@@ -199,18 +205,14 @@ void add_cmd(string name, func cb)
     cmds[name] = cb;
 }
 
-void forward_write(...)
-{
-    connection()->write(...);
-}
-
 void create(object connection, func finish_cb, object me)
 {
     "/std/cli.c"=>create(connection, finish_cb);
     connection->set_fallback(this::resume);
-    me->submit_lines_to(this::forward_write);
+    me->submit_lines_to(connection::write);
     this.cmds = [];
     this.me = me;
+    this.should_print_desc = true;
     add_cmd("look", this::cmd_look);
     add_cmd("examine", this::cmd_examine);
     add_cmd("go", this::cmd_go);
@@ -219,7 +221,5 @@ void create(object connection, func finish_cb, object me)
     add_cmd("get", this::cmd_take);
     add_cmd("drop", this::cmd_drop);
     add_cmd("inv", this::cmd_inv);
-    // add_cmd("new", this::cmd_instantiate);
-    // add_cmd("devhint", this::cmd_devhint);
     add_cmd("shell", this::cmd_shell);
 }
