@@ -7,9 +7,15 @@ object connection() { return the_connection; }
 
 void exit() { call(finish_cb); }
 
-void exec(func our_cb, string name, ...)
+bool exec(func our_cb, string name, ...)
 {
-    new(name, the_connection, our_cb, ...)->start();
+    object obj = new(name, the_connection, our_cb, ...);
+    if (obj != nil) {
+        obj->start();
+        return true;
+    } else {
+        return false;
+    }
 }
 
 void start()

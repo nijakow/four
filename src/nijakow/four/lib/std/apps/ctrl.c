@@ -170,8 +170,10 @@ void docmd(string cmd, string args)
     } else if (cmd == "exit") {
         connection()->close();
     } else {
-        connection()->write("I didn't quite get that, sorry...\n");
-        resume();
+        if (!exec(this::resume, "/usr/cmds/" + cmd + ".c", me, args)) {
+            connection()->write("I didn't quite get that, sorry...\n");
+            resume();
+        }
     }
 }
 
@@ -217,8 +219,6 @@ void create(object connection, func finish_cb, object me)
     add_cmd("examine", this::cmd_examine);
     add_cmd("go", this::cmd_go);
     add_cmd("say", this::cmd_say);
-    add_cmd("take", this::cmd_take);
-    add_cmd("get", this::cmd_take);
     add_cmd("drop", this::cmd_drop);
     add_cmd("inv", this::cmd_inv);
     add_cmd("shell", this::cmd_shell);
