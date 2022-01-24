@@ -1,10 +1,10 @@
 package nijakow.four.runtime;
 
-import nijakow.four.serialization.base.IArraySerializer;
 import nijakow.four.serialization.base.ISerializer;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 public class FMapping extends Instance {
 	private final Map<Instance, Instance> map = new HashMap<>();
@@ -49,8 +49,10 @@ public class FMapping extends Instance {
 
 	@Override
 	public void serialize(ISerializer serializer) {
-		IArraySerializer arraySerializer = serializer.openArray();
-		for (Instance i : map.keySet())
+		ISerializer arraySerializer = serializer.openEntry();
+		Set<Instance> keys = map.keySet();
+		arraySerializer.writeInt(keys.size());
+		for (Instance i : keys)
 			arraySerializer.openEntry().writeObject(i).writeObject(map.get(i)).close();
 		arraySerializer.close();
 	}

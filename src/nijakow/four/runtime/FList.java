@@ -1,6 +1,5 @@
 package nijakow.four.runtime;
 
-import nijakow.four.serialization.base.IArraySerializer;
 import nijakow.four.serialization.base.ISerializer;
 
 import java.util.ArrayList;
@@ -69,7 +68,8 @@ public class FList extends Instance {
 
 	@Override
 	public void serialize(ISerializer serializer) {
-		IArraySerializer arraySerializer = serializer.openArray();
+		ISerializer arraySerializer = serializer.openProperty("list.values");
+		arraySerializer.writeInt(list.size());
 		for (Instance i : list)
 			arraySerializer.openEntry().writeObject(i).close();
 		arraySerializer.close();
