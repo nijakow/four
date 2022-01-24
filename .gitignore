@@ -6,6 +6,8 @@
 !*.md
 !.gitignore
 !Makefile
+.idea
+.eclipse
 bin/
 production/
 !src/nijakow/four/lib/*
