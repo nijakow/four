@@ -1,7 +1,7 @@
 package nijakow.four.share.lang.c.ast;
 
-import nijakow.four.share.lang.c.compiler.CompilationException;
-import nijakow.four.share.lang.c.compiler.FCompiler;
+import nijakow.four.share.lang.base.CompilationException;
+import nijakow.four.share.lang.base.FCompiler;
 
 public class ASTUnaryOp extends ASTExpression {
 	private final OperatorType type;

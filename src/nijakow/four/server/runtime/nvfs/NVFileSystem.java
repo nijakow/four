@@ -1,6 +1,6 @@
 package nijakow.four.server.runtime.nvfs;
 
-import nijakow.four.share.lang.c.compiler.CompilationException;
+import nijakow.four.share.lang.base.CompilationException;
 import nijakow.four.share.lang.c.parser.ParseException;
 import nijakow.four.server.runtime.nvfs.files.Directory;
 import nijakow.four.server.runtime.nvfs.files.File;

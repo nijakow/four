@@ -1,4 +1,4 @@
-package nijakow.four.share.lang.c.compiler;
+package nijakow.four.server.compiler;
 
 import java.util.ArrayList;
 import java.util.List;

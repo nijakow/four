@@ -1,4 +1,4 @@
-package nijakow.four.share.lang.c.compiler;
+package nijakow.four.share.lang.base;
 
 public interface Label {
 	

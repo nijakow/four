@@ -1,8 +1,8 @@
 package nijakow.four.share.lang.c.ast;
 
-import nijakow.four.share.lang.c.compiler.CompilationException;
-import nijakow.four.share.lang.c.compiler.FCompiler;
-import nijakow.four.share.lang.c.compiler.Label;
+import nijakow.four.share.lang.base.CompilationException;
+import nijakow.four.share.lang.base.FCompiler;
+import nijakow.four.share.lang.base.Label;
 
 public class ASTFor extends ASTInstruction {
 	private final ASTInstruction initialization;

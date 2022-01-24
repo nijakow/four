@@ -1,9 +1,11 @@
-package nijakow.four.share.lang.c.compiler;
+package nijakow.four.server.compiler;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
+import nijakow.four.share.lang.base.FCompiler;
+import nijakow.four.share.lang.base.Label;
 import nijakow.four.share.lang.c.ast.OperatorType;
 import nijakow.four.server.runtime.vm.code.Code;
 import nijakow.four.server.runtime.objects.Instance;

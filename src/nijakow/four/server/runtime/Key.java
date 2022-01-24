@@ -1,6 +1,6 @@
 package nijakow.four.server.runtime;
 
-import nijakow.four.share.lang.c.compiler.CompilationException;
+import nijakow.four.share.lang.base.CompilationException;
 import nijakow.four.share.lang.c.parser.ParseException;
 import nijakow.four.server.runtime.exceptions.CastException;
 import nijakow.four.server.runtime.exceptions.FourRuntimeException;

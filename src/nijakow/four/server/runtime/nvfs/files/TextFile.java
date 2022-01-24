@@ -1,7 +1,7 @@
 package nijakow.four.server.runtime.nvfs.files;
 
 import nijakow.four.share.lang.c.ast.ASTFile;
-import nijakow.four.share.lang.c.compiler.CompilationException;
+import nijakow.four.share.lang.base.CompilationException;
 import nijakow.four.share.lang.c.parser.ParseException;
 import nijakow.four.share.lang.c.parser.Parser;
 import nijakow.four.share.lang.c.parser.StringCharStream;

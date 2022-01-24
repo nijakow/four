@@ -1,6 +1,6 @@
 package nijakow.four;
 
-import nijakow.four.share.lang.c.compiler.CompilationException;
+import nijakow.four.share.lang.base.CompilationException;
 import nijakow.four.share.lang.c.parser.ParseException;
 import nijakow.four.client.ClientWindow;
 import nijakow.four.server.Four;

@@ -1,6 +1,6 @@
 package nijakow.four.share.lang.c.ast;
 
-import nijakow.four.share.lang.c.compiler.FCompiler;
+import nijakow.four.share.lang.base.FCompiler;
 import nijakow.four.server.runtime.objects.Instance;
 
 public class ASTConstant extends ASTExpression {

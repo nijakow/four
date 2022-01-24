@@ -1,4 +1,4 @@
-package nijakow.four.server;
+package nijakow.four.share;
 
 public class FourException extends Exception {
     public FourException() { this(""); }

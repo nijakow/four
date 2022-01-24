@@ -1,4 +1,4 @@
-package nijakow.four.share.lang.c.compiler;
+package nijakow.four.share.lang.base;
 
 import nijakow.four.share.lang.c.ast.AST;
 import nijakow.four.server.runtime.exceptions.FourRuntimeException;

@@ -1,6 +1,6 @@
 package nijakow.four.share.lang.c.ast;
 
-import nijakow.four.share.lang.c.compiler.CompilationException;
+import nijakow.four.share.lang.base.CompilationException;
 import nijakow.four.server.runtime.objects.Blueprint;
 import nijakow.four.server.runtime.vm.code.Code;
 import nijakow.four.server.runtime.FourClassLoader;

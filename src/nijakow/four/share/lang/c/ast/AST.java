@@ -1,6 +1,6 @@
 package nijakow.four.share.lang.c.ast;
 
-import nijakow.four.share.lang.c.compiler.CompilationException;
+import nijakow.four.share.lang.base.CompilationException;
 
 public abstract class AST {
 

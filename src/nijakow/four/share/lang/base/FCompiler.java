@@ -1,4 +1,4 @@
-package nijakow.four.share.lang.c.compiler;
+package nijakow.four.share.lang.base;
 
 import nijakow.four.share.lang.c.ast.OperatorType;
 import nijakow.four.server.runtime.objects.Instance;

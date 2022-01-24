@@ -1,6 +1,6 @@
 package nijakow.four.server.runtime.exceptions;
 
-import nijakow.four.server.FourException;
+import nijakow.four.share.FourException;
 
 public class FourRuntimeException extends FourException {
 
