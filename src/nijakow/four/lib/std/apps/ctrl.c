@@ -168,7 +168,7 @@ void docmd(string cmd, string args)
     } else if (cmd == "") {
         resume();
     } else if (cmd == "exit") {
-        exit();
+        connection()->close();
     } else {
         connection()->write("I didn't quite get that, sorry...\n");
         resume();
