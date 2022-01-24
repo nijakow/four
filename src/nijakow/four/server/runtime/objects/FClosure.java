@@ -3,7 +3,7 @@ package nijakow.four.server.runtime.objects;
 import nijakow.four.server.runtime.Key;
 import nijakow.four.server.runtime.exceptions.FourRuntimeException;
 import nijakow.four.server.runtime.vm.Fiber;
-import nijakow.four.serialization.base.ISerializer;
+import nijakow.four.server.serialization.base.ISerializer;
 
 public class FClosure extends Instance {
 	private final Instance self;

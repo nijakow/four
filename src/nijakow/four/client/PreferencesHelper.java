@@ -3,7 +3,7 @@ package nijakow.four.client;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
-import nijakow.four.Four;
+import nijakow.four.server.Four;
 
 public class PreferencesHelper {
 	public static final String WINDOW_POS_X = "windowPosX";

@@ -5,7 +5,7 @@ import nijakow.four.server.runtime.*;
 import nijakow.four.server.runtime.exceptions.FourRuntimeException;
 import nijakow.four.server.runtime.nvfs.NVFileSystem;
 import nijakow.four.server.runtime.objects.*;
-import nijakow.four.util.ComparablePair;
+import nijakow.four.share.util.ComparablePair;
 
 import java.util.LinkedList;
 import java.util.PriorityQueue;

@@ -1,7 +1,7 @@
 package nijakow.four.server.runtime;
 
-import nijakow.four.lang.c.compiler.CompilationException;
-import nijakow.four.lang.c.parser.ParseException;
+import nijakow.four.share.lang.c.compiler.CompilationException;
+import nijakow.four.share.lang.c.parser.ParseException;
 import nijakow.four.server.runtime.exceptions.CastException;
 import nijakow.four.server.runtime.exceptions.FourRuntimeException;
 import nijakow.four.server.runtime.nvfs.files.Directory;
@@ -11,8 +11,8 @@ import nijakow.four.server.runtime.objects.*;
 import nijakow.four.server.runtime.vm.Fiber;
 import nijakow.four.server.runtime.vm.code.BuiltinCode;
 import nijakow.four.server.runtime.vm.code.Code;
-import nijakow.four.serialization.textserializer.Serializer;
-import nijakow.four.util.Pair;
+import nijakow.four.server.serialization.textserializer.Serializer;
+import nijakow.four.share.util.Pair;
 
 import java.util.HashMap;
 import java.util.Map;

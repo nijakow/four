@@ -1,8 +1,9 @@
 package nijakow.four;
 
-import nijakow.four.lang.c.compiler.CompilationException;
-import nijakow.four.lang.c.parser.ParseException;
+import nijakow.four.share.lang.c.compiler.CompilationException;
+import nijakow.four.share.lang.c.parser.ParseException;
 import nijakow.four.client.ClientWindow;
+import nijakow.four.server.Four;
 import nijakow.four.server.runtime.nvfs.NVFileSystem;
 
 import java.io.IOException;

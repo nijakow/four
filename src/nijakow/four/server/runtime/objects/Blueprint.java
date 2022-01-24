@@ -8,7 +8,7 @@ import java.util.Map;
 import nijakow.four.server.runtime.vm.code.Code;
 import nijakow.four.server.runtime.Key;
 import nijakow.four.server.runtime.types.Type;
-import nijakow.four.util.Pair;
+import nijakow.four.share.util.Pair;
 
 public class Blueprint {
 	private final String filename;

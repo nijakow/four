@@ -1,16 +1,16 @@
 package nijakow.four.server.runtime.nvfs.files;
 
-import nijakow.four.lang.c.ast.ASTFile;
-import nijakow.four.lang.c.compiler.CompilationException;
-import nijakow.four.lang.c.parser.ParseException;
-import nijakow.four.lang.c.parser.Parser;
-import nijakow.four.lang.c.parser.StringCharStream;
-import nijakow.four.lang.c.parser.Tokenizer;
+import nijakow.four.share.lang.c.ast.ASTFile;
+import nijakow.four.share.lang.c.compiler.CompilationException;
+import nijakow.four.share.lang.c.parser.ParseException;
+import nijakow.four.share.lang.c.parser.Parser;
+import nijakow.four.share.lang.c.parser.StringCharStream;
+import nijakow.four.share.lang.c.parser.Tokenizer;
 import nijakow.four.server.runtime.nvfs.FileParent;
 import nijakow.four.server.runtime.nvfs.shared.SharedTextFileState;
 import nijakow.four.server.runtime.objects.Blue;
 import nijakow.four.server.runtime.objects.Blueprint;
-import nijakow.four.serialization.base.ISerializer;
+import nijakow.four.server.serialization.base.ISerializer;
 
 public class TextFile extends File<SharedTextFileState> {
     private String contents = "";

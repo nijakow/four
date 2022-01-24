@@ -2,8 +2,8 @@ package nijakow.four.server.runtime.nvfs.files;
 
 import nijakow.four.server.runtime.nvfs.FileParent;
 import nijakow.four.server.runtime.nvfs.shared.SharedFileState;
-import nijakow.four.serialization.base.ISerializable;
-import nijakow.four.serialization.base.ISerializer;
+import nijakow.four.server.serialization.base.ISerializable;
+import nijakow.four.server.serialization.base.ISerializer;
 
 public abstract class File<T extends SharedFileState> implements ISerializable {
     private FileParent parent;

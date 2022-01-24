@@ -1,12 +1,12 @@
 package nijakow.four.server.runtime.objects;
 
-import nijakow.four.lang.c.compiler.CompilationException;
-import nijakow.four.lang.c.parser.ParseException;
+import nijakow.four.share.lang.c.compiler.CompilationException;
+import nijakow.four.share.lang.c.parser.ParseException;
 import nijakow.four.server.runtime.vm.code.Code;
 import nijakow.four.server.runtime.Key;
 import nijakow.four.server.runtime.nvfs.NVFileSystem;
 import nijakow.four.server.runtime.vm.VM;
-import nijakow.four.serialization.base.ISerializer;
+import nijakow.four.server.serialization.base.ISerializer;
 
 public class FString extends Instance {
 	private final String value;

@@ -9,8 +9,8 @@ import nijakow.four.server.runtime.types.Type;
 import nijakow.four.server.runtime.exceptions.FourRuntimeException;
 import nijakow.four.server.runtime.vm.Fiber;
 import nijakow.four.server.runtime.vm.VM;
-import nijakow.four.serialization.base.ISerializer;
-import nijakow.four.util.Pair;
+import nijakow.four.server.serialization.base.ISerializer;
+import nijakow.four.share.util.Pair;
 
 public class Blue extends Instance {
 	private static long ID_COUNTER = 0;

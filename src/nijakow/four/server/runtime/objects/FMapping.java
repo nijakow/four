@@ -1,6 +1,6 @@
 package nijakow.four.server.runtime.objects;
 
-import nijakow.four.serialization.base.ISerializer;
+import nijakow.four.server.serialization.base.ISerializer;
 
 import java.util.HashMap;
 import java.util.Map;

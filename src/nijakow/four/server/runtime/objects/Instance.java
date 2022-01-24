@@ -7,8 +7,8 @@ import nijakow.four.server.runtime.exceptions.CastException;
 import nijakow.four.server.runtime.exceptions.FourRuntimeException;
 import nijakow.four.server.runtime.vm.Fiber;
 import nijakow.four.server.runtime.vm.VM;
-import nijakow.four.serialization.base.ISerializable;
-import nijakow.four.serialization.base.ISerializer;
+import nijakow.four.server.serialization.base.ISerializable;
+import nijakow.four.server.serialization.base.ISerializer;
 
 public abstract class Instance implements ISerializable {
 	private static final Instance NIL = new Instance() {

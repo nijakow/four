@@ -3,7 +3,7 @@ package nijakow.four.server.runtime.objects;
 import nijakow.four.server.runtime.types.ListType;
 import nijakow.four.server.runtime.types.Type;
 import nijakow.four.server.runtime.exceptions.CastException;
-import nijakow.four.serialization.base.ISerializer;
+import nijakow.four.server.serialization.base.ISerializer;
 
 import java.util.ArrayList;
 import java.util.List;

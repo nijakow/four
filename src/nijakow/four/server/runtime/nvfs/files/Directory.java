@@ -2,8 +2,8 @@ package nijakow.four.server.runtime.nvfs.files;
 
 import nijakow.four.server.runtime.nvfs.FileParent;
 import nijakow.four.server.runtime.nvfs.shared.SharedDirectoryState;
-import nijakow.four.serialization.base.ISerializer;
-import nijakow.four.util.Pair;
+import nijakow.four.server.serialization.base.ISerializer;
+import nijakow.four.share.util.Pair;
 
 import java.util.*;
 

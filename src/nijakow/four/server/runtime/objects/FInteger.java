@@ -1,6 +1,6 @@
 package nijakow.four.server.runtime.objects;
 
-import nijakow.four.serialization.base.ISerializer;
+import nijakow.four.server.serialization.base.ISerializer;
 
 public class FInteger extends Instance {
 	private final int value;
