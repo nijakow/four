@@ -97,7 +97,7 @@ public class ClientEditor extends JFrame implements ActionListener {
 					   getDefaultStyleContext().
 					   getStyle(StyleContext.DEFAULT_STYLE);
 			doc.setCharacterAttributes(0, doc.getLength(), defaultStyle, true);
-			String keywords = "\\b(new|inherit|use|this|if|else|while|for|break|continue|switch|case|return)\\b";
+			String keywords = "\\b(new|inherits|use|this|if|else|while|for|break|continue|switch|case|return)\\b";
 			Matcher matcher = Pattern.compile(keywords).matcher(pane.getText());
 			while (matcher.find())
 				doc.setCharacterAttributes(matcher.start(), matcher.end() - matcher.start(),
