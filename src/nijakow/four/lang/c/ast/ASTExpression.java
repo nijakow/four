@@ -1,0 +1,17 @@
+package nijakow.four.lang.c.ast;
+
+import nijakow.four.lang.c.compiler.CompilationException;
+import nijakow.four.lang.c.compiler.FCompiler;
+
+public abstract class ASTExpression extends ASTInstruction {
+
+	public void compileCall(FCompiler compiler, int args, boolean hasVarargs) throws CompilationException {
+		this.compile(compiler);
+		compiler.compileCall(args, hasVarargs);
+	}
+
+	public void compileAssignment(FCompiler compiler, ASTExpression right) throws CompilationException {
+		compilationError("Oof.");
+	}
+
+}

@@ -1,7 +1,7 @@
 package nijakow.four.runtime;
 
-import nijakow.four.c.compiler.CompilationException;
-import nijakow.four.c.parser.ParseException;
+import nijakow.four.lang.c.compiler.CompilationException;
+import nijakow.four.lang.c.parser.ParseException;
 import nijakow.four.runtime.exceptions.CastException;
 import nijakow.four.runtime.exceptions.FourRuntimeException;
 import nijakow.four.runtime.nvfs.files.Directory;

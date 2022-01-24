@@ -1,11 +1,11 @@
 package nijakow.four.runtime.nvfs.files;
 
-import nijakow.four.c.ast.ASTFile;
-import nijakow.four.c.compiler.CompilationException;
-import nijakow.four.c.parser.ParseException;
-import nijakow.four.c.parser.Parser;
-import nijakow.four.c.parser.StringCharStream;
-import nijakow.four.c.parser.Tokenizer;
+import nijakow.four.lang.c.ast.ASTFile;
+import nijakow.four.lang.c.compiler.CompilationException;
+import nijakow.four.lang.c.parser.ParseException;
+import nijakow.four.lang.c.parser.Parser;
+import nijakow.four.lang.c.parser.StringCharStream;
+import nijakow.four.lang.c.parser.Tokenizer;
 import nijakow.four.runtime.nvfs.FileParent;
 import nijakow.four.runtime.nvfs.shared.SharedTextFileState;
 import nijakow.four.runtime.objects.Blue;

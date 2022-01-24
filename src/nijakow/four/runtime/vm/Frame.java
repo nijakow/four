@@ -3,7 +3,7 @@ package nijakow.four.runtime.vm;
 import java.util.ArrayList;
 import java.util.List;
 
-import nijakow.four.c.ast.OperatorType;
+import nijakow.four.lang.c.ast.OperatorType;
 import nijakow.four.runtime.*;
 import nijakow.four.runtime.exceptions.FourRuntimeException;
 import nijakow.four.runtime.objects.*;

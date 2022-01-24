@@ -1,7 +1,7 @@
 package nijakow.four.runtime.objects;
 
-import nijakow.four.c.compiler.CompilationException;
-import nijakow.four.c.parser.ParseException;
+import nijakow.four.lang.c.compiler.CompilationException;
+import nijakow.four.lang.c.parser.ParseException;
 import nijakow.four.runtime.vm.code.Code;
 import nijakow.four.runtime.Key;
 import nijakow.four.runtime.nvfs.NVFileSystem;
