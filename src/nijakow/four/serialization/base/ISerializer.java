@@ -1,10 +1,10 @@
 package nijakow.four.serialization.base;
 
-public interface ISerializer {
-    ISerializer openField();
+public interface ISerializer extends IBasicSerializer {
+    ISerializer openProperty(String name);
     IArraySerializer openArray();
     IMappingSerializer openMapping();
-    void writeObject(ISerializable serializable);
-    void writeInt(int value);
-    void writeString(String value);
+    ISerializer writeObject(ISerializable serializable);
+    ISerializer writeInt(int value);
+    ISerializer writeString(String value);
 }

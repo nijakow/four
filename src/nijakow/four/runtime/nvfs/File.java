@@ -1,6 +1,7 @@
 package nijakow.four.runtime.nvfs;
 
 import nijakow.four.serialization.base.ISerializable;
+import nijakow.four.serialization.base.ISerializer;
 
 public abstract class File<T extends SharedFileState> implements ISerializable {
     private FileParent parent;
@@ -9,6 +10,11 @@ public abstract class File<T extends SharedFileState> implements ISerializable {
     protected File(FileParent parent) {
         this.parent = parent;
         this.state = createFileState();
+    }
+
+    protected void serializeCore(ISerializer serializer) {
+        serializer.openProperty("file.name").writeString(getName()).close();
+        serializer.openProperty("file.path").writeString(getFullName()).close();
     }
 
     protected FileParent getParent() { return parent; }

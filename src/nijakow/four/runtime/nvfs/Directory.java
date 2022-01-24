@@ -30,7 +30,6 @@ public class Directory extends File<SharedDirectoryState> implements FileParent 
     }
 
 
-
     public TextFile touch(String name) {
         TextFile file = new TextFile(this);
         files.put(name, file);
@@ -111,9 +110,11 @@ public class Directory extends File<SharedDirectoryState> implements FileParent 
 
     @Override
     public void serialize(ISerializer serializer) {
-        IMappingSerializer mapser = serializer.openMapping();
+        serializeCore(serializer);
+        IMappingSerializer mapser = serializer.openProperty("").openMapping();
         for (String key : files.keySet()) {
-            mapser.openEntry(key).writeObject(files.get(key));
+            mapser.openEntry(key).writeObject(files.get(key)).close();
         }
+        mapser.close().close();
     }
 }

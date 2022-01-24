@@ -1,5 +1,5 @@
 package nijakow.four.serialization.base;
 
-public interface IMappingSerializer {
+public interface IMappingSerializer extends IBasicSerializer {
     ISerializer openEntry(String name);
 }

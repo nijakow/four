@@ -55,7 +55,7 @@ public class TextFile extends File<SharedTextFileState> {
 
     @Override
     public String getSerializationClassID() {
-        return "NVFSFile";
+        return "NVFSTextFile";
     }
 
     @Override
@@ -65,7 +65,10 @@ public class TextFile extends File<SharedTextFileState> {
 
     @Override
     public void serialize(ISerializer serializer) {
-        serializer.writeString(getContents());
-        serializer.writeObject(getInstance());
+        serializeCore(serializer);
+        serializer.openProperty("file.contents").writeString(getContents()).close();
+        Blue instance = getInstance();
+        if (instance != null)
+            serializer.openProperty("file.instance").writeObject(instance).close();
     }
 }
