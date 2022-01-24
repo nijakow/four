@@ -6,6 +6,7 @@ import nijakow.four.runtime.nvfs.Directory;
 import nijakow.four.runtime.nvfs.File;
 import nijakow.four.runtime.nvfs.TextFile;
 import nijakow.four.runtime.vm.Fiber;
+import nijakow.four.serialization.textserializer.Serializer;
 import nijakow.four.util.Pair;
 
 import java.util.HashMap;
@@ -328,6 +329,15 @@ public class Key {
 					e.printStackTrace();
 					fiber.setAccu(new FInteger(0));
 				}
+			}
+		};
+		get("$dump").code = new BuiltinCode() {
+
+			@Override
+			void run(Fiber fiber, Instance self, Instance[] args) throws CastException {
+				Serializer serializer = new Serializer();
+				fiber.getVM().getFilesystem().serialize(serializer);
+				System.out.println(serializer.asString());
 			}
 		};
 	}

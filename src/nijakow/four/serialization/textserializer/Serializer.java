@@ -14,11 +14,14 @@ public class Serializer implements ISerializer {
     private Serializer(Serializer parent, BranchingStringBuilder sb) {
         this.parent = parent;
         this.builder = sb;
-        builder.append('E');
+        builder.append('{');
     }
+
+    public String asString() { return builder.asString(); }
 
     @Override
     public ISerializer close() {
+        builder.append('}');
         return parent;
     }
 
@@ -54,6 +57,7 @@ public class Serializer implements ISerializer {
         builder.append('S');
         builder.append(value.length());
         builder.append(':');
-        return null;
+        builder.append(value);
+        return this;
     }
 }
