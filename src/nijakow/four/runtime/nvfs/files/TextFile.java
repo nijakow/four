@@ -1,4 +1,4 @@
-package nijakow.four.runtime.nvfs;
+package nijakow.four.runtime.nvfs.files;
 
 import nijakow.four.c.ast.ASTFile;
 import nijakow.four.c.compiler.CompilationException;
@@ -6,6 +6,8 @@ import nijakow.four.c.parser.ParseException;
 import nijakow.four.c.parser.Parser;
 import nijakow.four.c.parser.StringCharStream;
 import nijakow.four.c.parser.Tokenizer;
+import nijakow.four.runtime.nvfs.FileParent;
+import nijakow.four.runtime.nvfs.shared.SharedTextFileState;
 import nijakow.four.runtime.objects.Blue;
 import nijakow.four.runtime.objects.Blueprint;
 import nijakow.four.serialization.base.ISerializer;

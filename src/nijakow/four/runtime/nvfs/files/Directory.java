@@ -1,5 +1,7 @@
-package nijakow.four.runtime.nvfs;
+package nijakow.four.runtime.nvfs.files;
 
+import nijakow.four.runtime.nvfs.FileParent;
+import nijakow.four.runtime.nvfs.shared.SharedDirectoryState;
 import nijakow.four.serialization.base.ISerializer;
 import nijakow.four.util.Pair;
 

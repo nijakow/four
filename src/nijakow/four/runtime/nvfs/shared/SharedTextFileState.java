@@ -1,4 +1,4 @@
-package nijakow.four.runtime.nvfs;
+package nijakow.four.runtime.nvfs.shared;
 
 import nijakow.four.runtime.objects.Blue;
 import nijakow.four.runtime.objects.Blueprint;

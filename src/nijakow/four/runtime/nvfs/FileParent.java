@@ -1,5 +1,7 @@
 package nijakow.four.runtime.nvfs;
 
+import nijakow.four.runtime.nvfs.files.File;
+
 public interface FileParent {
     File getRoot();
     File asFile();

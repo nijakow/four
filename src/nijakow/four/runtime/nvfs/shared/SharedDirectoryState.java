@@ -1,4 +1,4 @@
-package nijakow.four.runtime.nvfs;
+package nijakow.four.runtime.nvfs.shared;
 
 public class SharedDirectoryState extends SharedFileState {
 }
