@@ -2,8 +2,8 @@ package nijakow.four.lang.c.ast;
 
 import nijakow.four.lang.c.compiler.CompilationException;
 import nijakow.four.lang.c.parser.ParseException;
-import nijakow.four.runtime.objects.Blueprint;
-import nijakow.four.runtime.FourClassLoader;
+import nijakow.four.server.runtime.objects.Blueprint;
+import nijakow.four.server.runtime.FourClassLoader;
 
 public class ASTFile extends AST {
 	private final ASTDecl[] defs;

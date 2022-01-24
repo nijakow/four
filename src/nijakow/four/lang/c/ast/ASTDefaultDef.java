@@ -1,10 +1,10 @@
 package nijakow.four.lang.c.ast;
 
 import nijakow.four.lang.c.compiler.CompilationException;
-import nijakow.four.runtime.objects.Blueprint;
-import nijakow.four.runtime.vm.code.Code;
-import nijakow.four.runtime.FourClassLoader;
-import nijakow.four.runtime.Key;
+import nijakow.four.server.runtime.objects.Blueprint;
+import nijakow.four.server.runtime.vm.code.Code;
+import nijakow.four.server.runtime.FourClassLoader;
+import nijakow.four.server.runtime.Key;
 
 public class ASTDefaultDef extends ASTDefinition {
 

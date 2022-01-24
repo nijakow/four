@@ -2,7 +2,7 @@ package nijakow.four.lang.c.ast;
 
 import nijakow.four.lang.c.compiler.CompilationException;
 import nijakow.four.lang.c.compiler.FCompiler;
-import nijakow.four.runtime.objects.Instance;
+import nijakow.four.server.runtime.objects.Instance;
 
 public class ASTReturn extends ASTInstruction {
 	private final ASTExpression value;

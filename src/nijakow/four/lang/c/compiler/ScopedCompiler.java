@@ -5,11 +5,11 @@ import java.util.List;
 import java.util.function.Consumer;
 
 import nijakow.four.lang.c.ast.OperatorType;
-import nijakow.four.runtime.vm.code.Code;
-import nijakow.four.runtime.objects.Instance;
-import nijakow.four.runtime.Key;
-import nijakow.four.runtime.types.ListType;
-import nijakow.four.runtime.types.Type;
+import nijakow.four.server.runtime.vm.code.Code;
+import nijakow.four.server.runtime.objects.Instance;
+import nijakow.four.server.runtime.Key;
+import nijakow.four.server.runtime.types.ListType;
+import nijakow.four.server.runtime.types.Type;
 import nijakow.four.util.Pair;
 
 class ScopedCompilerLabel implements Label {

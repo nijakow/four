@@ -1,7 +1,7 @@
 package nijakow.four.lang.c.ast;
 
-import nijakow.four.runtime.Key;
-import nijakow.four.runtime.types.Type;
+import nijakow.four.server.runtime.Key;
+import nijakow.four.server.runtime.types.Type;
 
 public abstract class ASTDefinition extends ASTDecl {
 	private final Type type;

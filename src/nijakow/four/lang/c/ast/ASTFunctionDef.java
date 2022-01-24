@@ -2,10 +2,10 @@ package nijakow.four.lang.c.ast;
 
 import nijakow.four.lang.c.compiler.CompilationException;
 import nijakow.four.lang.c.compiler.ScopedCompiler;
-import nijakow.four.runtime.*;
-import nijakow.four.runtime.objects.Blueprint;
-import nijakow.four.runtime.types.Type;
-import nijakow.four.runtime.vm.code.Code;
+import nijakow.four.server.runtime.*;
+import nijakow.four.server.runtime.objects.Blueprint;
+import nijakow.four.server.runtime.types.Type;
+import nijakow.four.server.runtime.vm.code.Code;
 import nijakow.four.util.Pair;
 
 public class ASTFunctionDef extends ASTDefinition {

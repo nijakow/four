@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import nijakow.four.lang.c.ast.*;
-import nijakow.four.runtime.objects.FInteger;
-import nijakow.four.runtime.objects.Instance;
-import nijakow.four.runtime.Key;
-import nijakow.four.runtime.types.Type;
+import nijakow.four.server.runtime.objects.FInteger;
+import nijakow.four.server.runtime.objects.Instance;
+import nijakow.four.server.runtime.Key;
+import nijakow.four.server.runtime.types.Type;
 import nijakow.four.util.Pair;
 
 

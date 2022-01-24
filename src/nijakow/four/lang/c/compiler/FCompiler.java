@@ -1,10 +1,10 @@
 package nijakow.four.lang.c.compiler;
 
 import nijakow.four.lang.c.ast.OperatorType;
-import nijakow.four.runtime.objects.Instance;
-import nijakow.four.runtime.Key;
-import nijakow.four.runtime.types.ListType;
-import nijakow.four.runtime.types.Type;
+import nijakow.four.server.runtime.objects.Instance;
+import nijakow.four.server.runtime.Key;
+import nijakow.four.server.runtime.types.ListType;
+import nijakow.four.server.runtime.types.Type;
 
 public interface FCompiler {
 	Label openLabel();

@@ -3,7 +3,7 @@ package nijakow.four;
 import nijakow.four.lang.c.compiler.CompilationException;
 import nijakow.four.lang.c.parser.ParseException;
 import nijakow.four.client.ClientWindow;
-import nijakow.four.runtime.nvfs.NVFileSystem;
+import nijakow.four.server.runtime.nvfs.NVFileSystem;
 
 import java.io.IOException;
 import java.util.ArrayList;

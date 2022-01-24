@@ -2,7 +2,7 @@ package nijakow.four.lang.c.ast;
 
 import nijakow.four.lang.c.compiler.CompilationException;
 import nijakow.four.lang.c.compiler.FCompiler;
-import nijakow.four.runtime.types.ListType;
+import nijakow.four.server.runtime.types.ListType;
 
 public class ASTList extends ASTExpression {
 	private final ListType type;
