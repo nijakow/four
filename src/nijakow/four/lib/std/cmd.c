@@ -6,7 +6,7 @@ string the_arg;
 string arg() { return the_arg; }
 
 object me() { return player; }
-object get_location() { return me->get_location(); }
+object get_location() { return me()->get_location(); }
 
 
 list select_object_list;
@@ -43,6 +43,25 @@ void select_and_call(string text, func cb)
         select_object_list = objects;
         select_cb          = cb;
         _select_resume();
+    }
+}
+
+
+void lookaround()
+{
+    connection()->write("\n");
+    if (me()->query_light_level_here() == 0) {
+        connection()->write("Is is pitch black here.\n");
+    } else {
+	    connection()->write(get_location()->get_short(), "\n");
+	    connection()->write(get_location()->get_desc(), "\n");
+	    for (object obj = get_location()->get_children();
+	         obj != nil;
+	         obj = obj->get_sibling())
+	    {
+	        if (obj != me())
+	            connection()->write(capitalize(obj->get_short()), ".\n");
+	    }
     }
 }
 
