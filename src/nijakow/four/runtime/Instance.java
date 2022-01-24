@@ -13,11 +13,6 @@ public abstract class Instance implements ISerializable {
 		}
 
 		@Override
-		public int getSerializationClassRevision() {
-			return 0;
-		}
-
-		@Override
 		public void serialize(ISerializer serializer) {
 		}
 	};
@@ -66,11 +61,6 @@ public abstract class Instance implements ISerializable {
 	@Override
 	public String getSerializationClassID() {
 		return "Instance";	// FIXME: This is just a dummy!
-	}
-
-	@Override
-	public int getSerializationClassRevision() {
-		return 0;	// FIXME: This is just a dummy!
 	}
 
 	@Override

@@ -25,6 +25,7 @@ public class Key {
 		return "'" + this.name;
 	}
 
+	public String getName() { return name; }
 	public Code getCode() {
 		return code;
 	}

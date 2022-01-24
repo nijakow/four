@@ -59,16 +59,11 @@ public class TextFile extends File<SharedTextFileState> {
     }
 
     @Override
-    public int getSerializationClassRevision() {
-        return 0;
-    }
-
-    @Override
     public void serialize(ISerializer serializer) {
         serializeCore(serializer);
-        serializer.openProperty("file.contents").writeString(getContents()).close();
+        serializer.openProperty("textfile.contents").writeString(getContents()).close();
         Blue instance = getInstance();
         if (instance != null)
-            serializer.openProperty("file.instance").writeObject(instance).close();
+            serializer.openProperty("textfile.instance").writeObject(instance).close();
     }
 }

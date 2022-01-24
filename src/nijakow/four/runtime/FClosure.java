@@ -1,6 +1,7 @@
 package nijakow.four.runtime;
 
 import nijakow.four.runtime.vm.Fiber;
+import nijakow.four.serialization.base.ISerializer;
 
 public class FClosure extends Instance {
 	private final Instance self;
@@ -21,5 +22,17 @@ public class FClosure extends Instance {
 	@Override
 	public void invoke(Fiber fiber, int args) throws FourRuntimeException {
 		instance.extractMethod(fiber.getVM(), key).invoke(fiber, args, this.self);
+	}
+
+	@Override
+	public String getSerializationClassID() {
+		return "instance.closure";
+	}
+
+	@Override
+	public void serialize(ISerializer serializer) {
+		serializer.openProperty("instance.self").writeObject(self).close();
+		serializer.openProperty("instance.instance").writeObject(instance).close();
+		serializer.openProperty("instance.selector").writeString(key.getName()).close();
 	}
 }

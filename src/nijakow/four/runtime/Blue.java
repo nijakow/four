@@ -5,6 +5,7 @@ import java.util.Map;
 
 import nijakow.four.runtime.vm.Fiber;
 import nijakow.four.runtime.vm.VM;
+import nijakow.four.serialization.base.ISerializer;
 import nijakow.four.util.Pair;
 
 public class Blue extends Instance {
@@ -126,4 +127,18 @@ public class Blue extends Instance {
 		this.initialized = false;
 		this.blueprint = blueprint;
     }
+
+	@Override
+	public String getSerializationClassID() {
+		return "instance.blue";
+	}
+
+	@Override
+	public void serialize(ISerializer serializer) {
+		ISerializer mapser = serializer.openProperty("blue.slots");
+		for (Key key : slots.keySet()) {
+			mapser.openProperty(key.getName()).writeObject(slots.get(key)).close();
+		}
+		mapser.close();
+	}
 }

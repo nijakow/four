@@ -145,11 +145,6 @@ public class NVFileSystem implements FileParent, ISerializable {
     }
 
     @Override
-    public int getSerializationClassRevision() {
-        return 0;
-    }
-
-    @Override
     public void serialize(ISerializer serializer) {
         getRoot().serialize(serializer);
     }
