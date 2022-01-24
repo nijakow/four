@@ -1,5 +1,6 @@
-package nijakow.four.runtime;
+package nijakow.four.runtime.objects;
 
+import nijakow.four.runtime.exceptions.FourRuntimeException;
 import nijakow.four.runtime.vm.Callback;
 import nijakow.four.net.IConnection;
 

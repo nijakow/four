@@ -1,10 +1,13 @@
-package nijakow.four.runtime;
+package nijakow.four.runtime.objects;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import nijakow.four.runtime.vm.code.Code;
+import nijakow.four.runtime.Key;
+import nijakow.four.runtime.types.Type;
 import nijakow.four.util.Pair;
 
 public class Blueprint {

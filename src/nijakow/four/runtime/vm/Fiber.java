@@ -2,10 +2,10 @@ package nijakow.four.runtime.vm;
 
 import java.util.Stack;
 
-import nijakow.four.runtime.Blue;
-import nijakow.four.runtime.ByteCode;
-import nijakow.four.runtime.FourRuntimeException;
-import nijakow.four.runtime.Instance;
+import nijakow.four.runtime.objects.Blue;
+import nijakow.four.runtime.vm.code.ByteCode;
+import nijakow.four.runtime.exceptions.FourRuntimeException;
+import nijakow.four.runtime.objects.Instance;
 
 public class Fiber {
 	private final VM vm;

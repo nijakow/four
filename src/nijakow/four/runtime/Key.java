@@ -2,10 +2,15 @@ package nijakow.four.runtime;
 
 import nijakow.four.c.compiler.CompilationException;
 import nijakow.four.c.parser.ParseException;
+import nijakow.four.runtime.exceptions.CastException;
+import nijakow.four.runtime.exceptions.FourRuntimeException;
 import nijakow.four.runtime.nvfs.Directory;
 import nijakow.four.runtime.nvfs.File;
 import nijakow.four.runtime.nvfs.TextFile;
+import nijakow.four.runtime.objects.*;
 import nijakow.four.runtime.vm.Fiber;
+import nijakow.four.runtime.vm.code.BuiltinCode;
+import nijakow.four.runtime.vm.code.Code;
 import nijakow.four.serialization.textserializer.Serializer;
 import nijakow.four.util.Pair;
 
@@ -46,14 +51,14 @@ public class Key {
 		get("$statics").code = new BuiltinCode() {
 
 			@Override
-			void run(Fiber fiber, Instance self, Instance[] args) throws CastException, CompilationException, ParseException {
+			public void run(Fiber fiber, Instance self, Instance[] args) throws CastException, CompilationException, ParseException {
 				fiber.setAccu(fiber.getSharedState().getStatics());
 			}
 		};
 		get("$the_object").code = new BuiltinCode() {
 			
 			@Override
-			void run(Fiber fiber, Instance self, Instance[] args) throws CastException, CompilationException, ParseException {
+			public void run(Fiber fiber, Instance self, Instance[] args) throws CastException, CompilationException, ParseException {
 				Blue blue = fiber.getVM().getFilesystem().getBlue(args[0].asFString().asString());
 				if (blue == null)
 					fiber.setAccu(Instance.getNil());
@@ -64,14 +69,14 @@ public class Key {
 		get("$is_initialized").code = new BuiltinCode() {
 			
 			@Override
-			void run(Fiber fiber, Instance self, Instance[] args) throws CastException {
+			public void run(Fiber fiber, Instance self, Instance[] args) throws CastException {
 				fiber.setAccu(args[0].asBlue().isInitialized() ? new FInteger(1) : new FInteger(0));
 			}
 		};
 		get("$get_parent").code = new BuiltinCode() {
 
 			@Override
-			void run(Fiber fiber, Instance self, Instance[] args) throws CastException {
+			public void run(Fiber fiber, Instance self, Instance[] args) throws CastException {
 				Blue v = self.asBlue().getParent();
 				fiber.setAccu(v == null ? Instance.getNil() : v);
 			}
@@ -79,7 +84,7 @@ public class Key {
 		get("$get_sibling").code = new BuiltinCode() {
 
 			@Override
-			void run(Fiber fiber, Instance self, Instance[] args) throws CastException {
+			public void run(Fiber fiber, Instance self, Instance[] args) throws CastException {
 				Blue v = self.asBlue().getSibling();
 				fiber.setAccu(v == null ? Instance.getNil() : v);
 			}
@@ -87,7 +92,7 @@ public class Key {
 		get("$get_children").code = new BuiltinCode() {
 
 			@Override
-			void run(Fiber fiber, Instance self, Instance[] args) throws CastException {
+			public void run(Fiber fiber, Instance self, Instance[] args) throws CastException {
 				Blue v = self.asBlue().getChildren();
 				fiber.setAccu(v == null ? Instance.getNil() : v);
 			}
@@ -95,7 +100,7 @@ public class Key {
 		get("$move_to").code = new BuiltinCode() {
 
 			@Override
-			void run(Fiber fiber, Instance self, Instance[] args) throws CastException {
+			public void run(Fiber fiber, Instance self, Instance[] args) throws CastException {
 				self.asBlue().moveTo(args[0].isNil() ? null : args[0].asBlue());
 				fiber.setAccu(self);
 			}
@@ -103,21 +108,21 @@ public class Key {
 		get("$set_initialized").code = new BuiltinCode() {
 			
 			@Override
-			void run(Fiber fiber, Instance self, Instance[] args) throws CastException {
+			public void run(Fiber fiber, Instance self, Instance[] args) throws CastException {
 				args[0].asBlue().setInitialized();
 			}
 		};
 		get("$clone_instance").code = new BuiltinCode() {
 			
 			@Override
-			void run(Fiber fiber, Instance self, Instance[] args) throws CastException {
+			public void run(Fiber fiber, Instance self, Instance[] args) throws CastException {
 				fiber.setAccu(args[0].asBlue().cloneBlue());
 			}
 		};
 		get("$call").code = new BuiltinCode() {
 			
 			@Override
-			void run(Fiber fiber, Instance self, Instance[] args) throws FourRuntimeException {
+			public void run(Fiber fiber, Instance self, Instance[] args) throws FourRuntimeException {
 				for (int x = 1; x < args.length; x++)
 					fiber.push(args[x]);
 				args[0].asFClosure().invoke(fiber, args.length - 1);
@@ -126,49 +131,49 @@ public class Key {
 		get("$log").code = new BuiltinCode() {
 			
 			@Override
-			void run(Fiber fiber, Instance self, Instance[] args) {
+			public void run(Fiber fiber, Instance self, Instance[] args) {
 				for (Instance arg : args) System.out.print(arg.asString());
 			}
 		};
 		get("$pause").code = new BuiltinCode() {
 			
 			@Override
-			void run(Fiber fiber, Instance self, Instance[] args) throws FourRuntimeException {
+			public void run(Fiber fiber, Instance self, Instance[] args) throws FourRuntimeException {
 				fiber.getVM().invokeIn(fiber.getSharedState(), args[0].asBlue(), args[1].asKey(), args[2].asInt());
 			}
 		};
 		get("$on_connect").code = new BuiltinCode() {
 			
 			@Override
-			void run(Fiber fiber, Instance self, Instance[] args) throws CastException {
+			public void run(Fiber fiber, Instance self, Instance[] args) throws CastException {
 				fiber.getVM().setConnectCallback(fiber.getVM().createCallback(null, args[0].asFClosure()));
 			}
 		};
 		get("$on_receive").code = new BuiltinCode() {
 			
 			@Override
-			void run(Fiber fiber, Instance self, Instance[] args) throws FourRuntimeException {
+			public void run(Fiber fiber, Instance self, Instance[] args) throws FourRuntimeException {
 				args[0].asFConnection().onReceive(fiber.getVM().createCallback(fiber.getSharedState(), args[1].asFClosure()));
 			}
 		};
 		get("$on_disconnect").code = new BuiltinCode() {
 			
 			@Override
-			void run(Fiber fiber, Instance self, Instance[] args) throws FourRuntimeException {
+			public void run(Fiber fiber, Instance self, Instance[] args) throws FourRuntimeException {
 				args[0].asFConnection().onDisconnect(fiber.getVM().createCallback(fiber.getSharedState(), args[1].asFClosure()));
 			}
 		};
 		get("$on_error").code = new BuiltinCode() {
 
 			@Override
-			void run(Fiber fiber, Instance self, Instance[] args) throws CastException {
+			public void run(Fiber fiber, Instance self, Instance[] args) throws CastException {
 				fiber.getVM().setErrorCallback(fiber.getVM().createCallback(fiber.getSharedState(), args[0].asFClosure()));
 			}
 		};
 		get("$write").code = new BuiltinCode() {
 			
 			@Override
-			void run(Fiber fiber, Instance self, Instance[] args) throws FourRuntimeException {
+			public void run(Fiber fiber, Instance self, Instance[] args) throws FourRuntimeException {
 				for (int x = 1; x < args.length; x++)
 					args[0].asFConnection().send(args[x]);
 			}
@@ -176,21 +181,21 @@ public class Key {
 		get("$close").code = new BuiltinCode() {
 			
 			@Override
-			void run(Fiber fiber, Instance self, Instance[] args) throws FourRuntimeException {
+			public void run(Fiber fiber, Instance self, Instance[] args) throws FourRuntimeException {
 				args[0].asFConnection().close();
 			}
 		};
 		get("$chr").code = new BuiltinCode() {
 			
 			@Override
-			void run(Fiber fiber, Instance self, Instance[] args) {
+			public void run(Fiber fiber, Instance self, Instance[] args) {
 				fiber.setAccu(new FString("" + (char) args[0].asInt()));
 			}
 		};
 		get("$substr").code = new BuiltinCode() {
 			
 			@Override
-			void run(Fiber fiber, Instance self, Instance[] args) throws CastException {
+			public void run(Fiber fiber, Instance self, Instance[] args) throws CastException {
 				String str = args[0].asFString().asString();
 				int start = args[1].asInt();
 				int end = args[2].asInt();
@@ -200,35 +205,35 @@ public class Key {
 		get("$length").code = new BuiltinCode() {
 
 			@Override
-			void run(Fiber fiber, Instance self, Instance[] args) {
+			public void run(Fiber fiber, Instance self, Instance[] args) {
 				fiber.setAccu(new FInteger(args[0].length()));
 			}
 		};
 		get("$listinsert").code = new BuiltinCode() {
 			
 			@Override
-			void run(Fiber fiber, Instance self, Instance[] args) throws CastException {
+			public void run(Fiber fiber, Instance self, Instance[] args) throws CastException {
 				args[0].asFList().insert(args[1].asInt(), args[2]);
 			}
 		};
 		get("$listremove").code = new BuiltinCode() {
 			
 			@Override
-			void run(Fiber fiber, Instance self, Instance[] args) throws CastException {
+			public void run(Fiber fiber, Instance self, Instance[] args) throws CastException {
 				fiber.setAccu(args[0].asFList().remove(args[1].asInt()));
 			}
 		};
 		get("$random").code = new BuiltinCode() {
 			
 			@Override
-			void run(Fiber fiber, Instance self, Instance[] args) {
+			public void run(Fiber fiber, Instance self, Instance[] args) {
 				fiber.setAccu(new FInteger((int) (Math.random() * Integer.MAX_VALUE)));
 			}
 		};
 		get("$filetext").code = new BuiltinCode() {
 			
 			@Override
-			void run(Fiber fiber, Instance self, Instance[] args) throws CastException {
+			public void run(Fiber fiber, Instance self, Instance[] args) throws CastException {
 				String path = args[0].asFString().asString();
 				TextFile node = fiber.getVM().getFilesystem().resolveTextFile(path);
 				if (node == null) {
@@ -241,7 +246,7 @@ public class Key {
 		get("$filetext_set").code = new BuiltinCode() {
 			
 			@Override
-			void run(Fiber fiber, Instance self, Instance[] args) throws CastException {
+			public void run(Fiber fiber, Instance self, Instance[] args) throws CastException {
 				String path = args[0].asFString().asString();
 				String value = args[1].asFString().asString();
 				File node;
@@ -252,7 +257,7 @@ public class Key {
 		get("$filechildren").code = new BuiltinCode() {
 
 			@Override
-			void run(Fiber fiber, Instance self, Instance[] args) throws CastException {
+			public void run(Fiber fiber, Instance self, Instance[] args) throws CastException {
 				String path = args[0].asFString().asString();
 				Directory dir = fiber.getVM().getFilesystem().resolveDirectory(path);
 				Pair<String, File>[] contents = null;
@@ -271,7 +276,7 @@ public class Key {
 		get("$touch").code = new BuiltinCode() {
 
 			@Override
-			void run(Fiber fiber, Instance self, Instance[] args) throws CastException {
+			public void run(Fiber fiber, Instance self, Instance[] args) throws CastException {
 				String path = args[0].asFString().asString();
 				fiber.getVM().getFilesystem().touch(path);
 				fiber.setAccu(new FInteger(1));
@@ -279,7 +284,7 @@ public class Key {
 		};
 		get("$mkdir").code = new BuiltinCode() {
 			@Override
-			void run(Fiber fiber, Instance self, Instance[] args) throws FourRuntimeException {
+			public void run(Fiber fiber, Instance self, Instance[] args) throws FourRuntimeException {
 				String path = args[0].asFString().asString();
 				if (fiber.getVM().getFilesystem().mkdir(path) != null) {
 					fiber.setAccu(new FInteger(1));
@@ -290,7 +295,7 @@ public class Key {
 		};
 		get("$rm").code = new BuiltinCode() {
 			@Override
-			void run(Fiber fiber, Instance self, Instance[] args) throws FourRuntimeException {
+			public void run(Fiber fiber, Instance self, Instance[] args) throws FourRuntimeException {
 				String curPath = args[0].asFString().asString();
 				File file = fiber.getVM().getFilesystem().resolve(curPath);
 				if (file != null) {
@@ -304,7 +309,7 @@ public class Key {
 		get("$mv").code = new BuiltinCode() {
 
 			@Override
-			void run(Fiber fiber, Instance self, Instance[] args) throws CastException {
+			public void run(Fiber fiber, Instance self, Instance[] args) throws CastException {
 				if (fiber.getVM().getFilesystem().mv(args[0].asFString().asString(), args[1].asFString().asString()))
 					fiber.setAccu(new FInteger(1));
 				else
@@ -314,7 +319,7 @@ public class Key {
 		get("$recompile").code = new BuiltinCode() {
 			
 			@Override
-			void run(Fiber fiber, Instance self, Instance[] args) throws CastException {
+			public void run(Fiber fiber, Instance self, Instance[] args) throws CastException {
 				String path = args[0].asFString().asString();
 				try {
 					TextFile file = fiber.getVM().getFilesystem().resolveTextFile(path);
@@ -334,7 +339,7 @@ public class Key {
 		get("$dump").code = new BuiltinCode() {
 
 			@Override
-			void run(Fiber fiber, Instance self, Instance[] args) throws CastException {
+			public void run(Fiber fiber, Instance self, Instance[] args) throws CastException {
 				Serializer serializer = new Serializer();
 				fiber.getVM().getFilesystem().serialize(serializer);
 				System.out.println(serializer.asString());

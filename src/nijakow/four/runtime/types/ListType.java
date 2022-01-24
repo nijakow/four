@@ -1,4 +1,8 @@
-package nijakow.four.runtime;
+package nijakow.four.runtime.types;
+
+import nijakow.four.runtime.exceptions.CastException;
+import nijakow.four.runtime.objects.FList;
+import nijakow.four.runtime.objects.Instance;
 
 public class ListType extends Type {
 	private final Type parent;

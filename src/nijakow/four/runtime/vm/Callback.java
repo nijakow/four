@@ -1,6 +1,10 @@
 package nijakow.four.runtime.vm;
 
 import nijakow.four.runtime.*;
+import nijakow.four.runtime.exceptions.FourRuntimeException;
+import nijakow.four.runtime.objects.Blue;
+import nijakow.four.runtime.objects.FClosure;
+import nijakow.four.runtime.objects.Instance;
 
 public class Callback {
 	private final VM vm;

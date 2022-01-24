@@ -1,4 +1,4 @@
-package nijakow.four.runtime;
+package nijakow.four.runtime.exceptions;
 
 import nijakow.four.FourException;
 

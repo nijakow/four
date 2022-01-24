@@ -1,5 +1,7 @@
-package nijakow.four.runtime;
+package nijakow.four.runtime.objects;
 
+import nijakow.four.runtime.Key;
+import nijakow.four.runtime.exceptions.FourRuntimeException;
 import nijakow.four.runtime.vm.Fiber;
 import nijakow.four.serialization.base.ISerializer;
 

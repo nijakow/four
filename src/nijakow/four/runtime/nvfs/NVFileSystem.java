@@ -2,7 +2,7 @@ package nijakow.four.runtime.nvfs;
 
 import nijakow.four.c.compiler.CompilationException;
 import nijakow.four.c.parser.ParseException;
-import nijakow.four.runtime.Blue;
+import nijakow.four.runtime.objects.Blue;
 import nijakow.four.serialization.base.ISerializable;
 import nijakow.four.serialization.base.ISerializer;
 import nijakow.four.util.Pair;

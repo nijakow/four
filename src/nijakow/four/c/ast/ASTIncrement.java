@@ -2,7 +2,7 @@ package nijakow.four.c.ast;
 
 import nijakow.four.c.compiler.CompilationException;
 import nijakow.four.c.compiler.FCompiler;
-import nijakow.four.runtime.FInteger;
+import nijakow.four.runtime.objects.FInteger;
 
 public class ASTIncrement extends ASTExpression {
 	private final ASTExpression expr;

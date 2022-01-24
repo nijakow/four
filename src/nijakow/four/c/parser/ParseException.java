@@ -1,6 +1,6 @@
 package nijakow.four.c.parser;
 
-import nijakow.four.runtime.FourRuntimeException;
+import nijakow.four.runtime.exceptions.FourRuntimeException;
 
 public class ParseException extends FourRuntimeException {
 	private final StreamPosition position;

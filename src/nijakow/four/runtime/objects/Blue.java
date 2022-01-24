@@ -1,8 +1,12 @@
-package nijakow.four.runtime;
+package nijakow.four.runtime.objects;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import nijakow.four.runtime.vm.code.Code;
+import nijakow.four.runtime.Key;
+import nijakow.four.runtime.types.Type;
+import nijakow.four.runtime.exceptions.FourRuntimeException;
 import nijakow.four.runtime.vm.Fiber;
 import nijakow.four.runtime.vm.VM;
 import nijakow.four.serialization.base.ISerializer;

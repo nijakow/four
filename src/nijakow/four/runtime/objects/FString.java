@@ -1,9 +1,10 @@
-package nijakow.four.runtime;
+package nijakow.four.runtime.objects;
 
 import nijakow.four.c.compiler.CompilationException;
 import nijakow.four.c.parser.ParseException;
+import nijakow.four.runtime.vm.code.Code;
+import nijakow.four.runtime.Key;
 import nijakow.four.runtime.nvfs.NVFileSystem;
-import nijakow.four.runtime.vm.Fiber;
 import nijakow.four.runtime.vm.VM;
 import nijakow.four.serialization.base.ISerializer;
 

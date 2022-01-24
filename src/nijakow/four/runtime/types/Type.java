@@ -1,4 +1,7 @@
-package nijakow.four.runtime;
+package nijakow.four.runtime.types;
+
+import nijakow.four.runtime.exceptions.CastException;
+import nijakow.four.runtime.objects.*;
 
 public abstract class Type {
 	private static final Type ANY = new Type() {

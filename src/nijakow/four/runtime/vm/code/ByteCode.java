@@ -1,5 +1,9 @@
-package nijakow.four.runtime;
+package nijakow.four.runtime.vm.code;
 
+import nijakow.four.runtime.Key;
+import nijakow.four.runtime.exceptions.CastException;
+import nijakow.four.runtime.objects.Instance;
+import nijakow.four.runtime.types.Type;
 import nijakow.four.runtime.vm.Fiber;
 
 public class ByteCode implements Code {

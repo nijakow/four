@@ -1,7 +1,7 @@
 package nijakow.four.runtime.nvfs;
 
-import nijakow.four.runtime.Blue;
-import nijakow.four.runtime.Blueprint;
+import nijakow.four.runtime.objects.Blue;
+import nijakow.four.runtime.objects.Blueprint;
 
 public class SharedTextFileState extends SharedFileState {
     private Blue blue;

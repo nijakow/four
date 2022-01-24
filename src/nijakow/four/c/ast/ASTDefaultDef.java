@@ -1,8 +1,8 @@
 package nijakow.four.c.ast;
 
 import nijakow.four.c.compiler.CompilationException;
-import nijakow.four.runtime.Blueprint;
-import nijakow.four.runtime.Code;
+import nijakow.four.runtime.objects.Blueprint;
+import nijakow.four.runtime.vm.code.Code;
 import nijakow.four.runtime.FourClassLoader;
 import nijakow.four.runtime.Key;
 

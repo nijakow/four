@@ -1,4 +1,4 @@
-package nijakow.four.runtime;
+package nijakow.four.runtime.objects;
 
 import nijakow.four.serialization.base.ISerializer;
 

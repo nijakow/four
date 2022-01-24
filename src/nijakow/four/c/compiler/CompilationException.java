@@ -1,7 +1,7 @@
 package nijakow.four.c.compiler;
 
 import nijakow.four.c.ast.AST;
-import nijakow.four.runtime.FourRuntimeException;
+import nijakow.four.runtime.exceptions.FourRuntimeException;
 
 public class CompilationException extends FourRuntimeException {
     private final AST ast;

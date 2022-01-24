@@ -1,8 +1,8 @@
 package nijakow.four;
 
 import nijakow.four.net.Server;
-import nijakow.four.runtime.Blue;
-import nijakow.four.runtime.FourRuntimeException;
+import nijakow.four.runtime.objects.Blue;
+import nijakow.four.runtime.exceptions.FourRuntimeException;
 import nijakow.four.runtime.Key;
 import nijakow.four.runtime.nvfs.NVFileSystem;
 import nijakow.four.runtime.vm.VM;

@@ -5,11 +5,11 @@ import java.util.List;
 import java.util.function.Consumer;
 
 import nijakow.four.c.ast.OperatorType;
-import nijakow.four.runtime.ByteCode;
-import nijakow.four.runtime.Instance;
+import nijakow.four.runtime.vm.code.ByteCode;
+import nijakow.four.runtime.objects.Instance;
 import nijakow.four.runtime.Key;
-import nijakow.four.runtime.ListType;
-import nijakow.four.runtime.Type;
+import nijakow.four.runtime.types.ListType;
+import nijakow.four.runtime.types.Type;
 import nijakow.four.runtime.vm.Bytecodes;
 
 public class InstructionWriter {	

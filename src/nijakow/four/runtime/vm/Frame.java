@@ -5,6 +5,11 @@ import java.util.List;
 
 import nijakow.four.c.ast.OperatorType;
 import nijakow.four.runtime.*;
+import nijakow.four.runtime.exceptions.FourRuntimeException;
+import nijakow.four.runtime.objects.*;
+import nijakow.four.runtime.types.ListType;
+import nijakow.four.runtime.types.Type;
+import nijakow.four.runtime.vm.code.ByteCode;
 
 public class Frame {
 	private final Frame previous;

@@ -6,8 +6,8 @@ import nijakow.four.c.parser.ParseException;
 import nijakow.four.c.parser.Parser;
 import nijakow.four.c.parser.StringCharStream;
 import nijakow.four.c.parser.Tokenizer;
-import nijakow.four.runtime.Blue;
-import nijakow.four.runtime.Blueprint;
+import nijakow.four.runtime.objects.Blue;
+import nijakow.four.runtime.objects.Blueprint;
 import nijakow.four.serialization.base.ISerializer;
 
 public class TextFile extends File<SharedTextFileState> {

@@ -1,5 +1,8 @@
-package nijakow.four.runtime;
+package nijakow.four.runtime.objects;
 
+import nijakow.four.runtime.types.ListType;
+import nijakow.four.runtime.types.Type;
+import nijakow.four.runtime.exceptions.CastException;
 import nijakow.four.serialization.base.ISerializer;
 
 import java.util.ArrayList;
