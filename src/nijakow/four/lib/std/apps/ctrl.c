@@ -156,7 +156,7 @@ void resume_from_shell()
 
 void cmd_shell(string text)
 {
-    exec(this::resume_from_shell, "/std/apps/shell/shell.c");
+    exec(this::resume_from_shell, "/std/apps/shell.c");
 }
 
 void docmd(string cmd, string args)

@@ -60,7 +60,7 @@ void setuname(string uname)
     sword->add_IDs(uname + "'s");
     sword->move_to(player);
     player->act_goto(the("/world/void.c"));
-    exec(nil, "/std/apps/ctrl/ctrl.c", player);
+    exec(nil, "/std/apps/ctrl.c", player);
 }
 
 void start()
