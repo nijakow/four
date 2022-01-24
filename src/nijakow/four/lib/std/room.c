@@ -1,4 +1,5 @@
 inherits "/std/thing.c";
+inherits "/std/container.c";
 
 mapping exits;
 
@@ -20,6 +21,7 @@ void add_exit(string dir, string room)
 void create()
 {
     "/std/thing.c"::create();
+    "/std/container.c"::create();
     set_properly_named();
     exits = [];
 }

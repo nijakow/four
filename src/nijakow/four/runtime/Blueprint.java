@@ -35,7 +35,7 @@ public class Blueprint {
 	}
 
 	public void addSuper(Blueprint bp) {
-		this.supers.add(bp);
+		this.supers.add(0, bp);
 	}
 	
 	public void addSlot(Type type, Key name) {

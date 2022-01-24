@@ -1,4 +1,5 @@
 inherits "/std/thing.c";
+inherits "/std/container.c";
 
 func line_cb;
 

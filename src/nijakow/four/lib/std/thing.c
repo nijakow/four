@@ -11,6 +11,7 @@ inherits "/std/thing/light.c";
 
 void write(...) {}
 
+bool query_is_container() { return false; }
 
 void create()
 {

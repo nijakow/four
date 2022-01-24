@@ -9,11 +9,9 @@ void evt_leaving(object obj) {}
  *    C h e c k s
  */
 
-bool is_container;
-
 bool check_transparent() { return true; }
 bool check_move(object actor, object target) { return true; }
-bool check_object_entering(object actor, object obj, object target)  { return is_container; }
+bool check_object_entering(object actor, object obj, object target)  { return query_is_container(); }
 bool check_object_leaving(object actor, object obj, object target)   { return true;         }
 
 
@@ -123,5 +121,4 @@ bool act_drop(object obj)
 
 void create()
 {
-    is_container = true;
 }
