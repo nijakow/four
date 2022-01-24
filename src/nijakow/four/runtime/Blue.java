@@ -130,7 +130,7 @@ public class Blue extends Instance {
 
 	@Override
 	public String getSerializationClassID() {
-		return "instance.blue";
+		return "blue";
 	}
 
 	@Override

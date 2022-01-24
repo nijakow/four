@@ -5,6 +5,7 @@ import nijakow.four.c.parser.ParseException;
 import nijakow.four.runtime.nvfs.NVFileSystem;
 import nijakow.four.runtime.vm.Fiber;
 import nijakow.four.runtime.vm.VM;
+import nijakow.four.serialization.base.ISerializer;
 
 public class FString extends Instance {
 	private final String value;
@@ -78,5 +79,15 @@ public class FString extends Instance {
 	public Code extractMethod(VM vm, Key key) throws CompilationException, ParseException {
 		Blue blue = getBlue(vm.getFilesystem());
 		return blue.extractMethod(vm, key);
+	}
+
+	@Override
+	public String getSerializationClassID() {
+		return "string";
+	}
+
+	@Override
+	public void serialize(ISerializer serializer) {
+		serializer.writeString(value);
 	}
 }

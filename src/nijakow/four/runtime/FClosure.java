@@ -26,7 +26,7 @@ public class FClosure extends Instance {
 
 	@Override
 	public String getSerializationClassID() {
-		return "instance.closure";
+		return "closure";
 	}
 
 	@Override
