@@ -17,5 +17,5 @@ void handle_error(string key, string type, string msg)
 void create()
 {
     $on_error(this::handle_error);
-	$on_connect(this::receive);
+    $on_connect(this::receive);
 }
