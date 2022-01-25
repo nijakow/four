@@ -79,7 +79,10 @@ public class Blue extends Instance {
 	public String toString() {
 		return ((blueprint == null) ? "<no blueprint>" : blueprint.toString()) + "#" + id;
 	}
-	
+
+	@Override
+	public String getType() { return "object"; }
+
 	@Override
 	public boolean asBoolean() {
 		return true;

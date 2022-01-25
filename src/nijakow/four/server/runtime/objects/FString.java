@@ -26,7 +26,10 @@ public class FString extends Instance {
 		else if (!(obj instanceof FString)) return false;
 		else return value.equals(((FString) obj).value);
 	}
-	
+
+	@Override
+	public String getType() { return "string"; }
+
 	@Override
 	public boolean asBoolean() {
 		return !value.isEmpty();

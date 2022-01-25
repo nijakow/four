@@ -68,6 +68,13 @@ public class Key {
 				fiber.setAccu(fiber.getSharedState().getStatics());
 			}
 		};
+		get("$type").code = new BuiltinCode() {
+
+			@Override
+			public void run(Fiber fiber, Instance self, Instance[] args) throws CastException, CompilationException, ParseException {
+				fiber.setAccu(new FString(args[0].getType()));
+			}
+		};
 		get("$the_object").code = new BuiltinCode() {
 			
 			@Override

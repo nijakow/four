@@ -1,4 +1,5 @@
 use $log;
+use $type;
 use $the_object;
 use $is_initialized;
 use $set_initialized;
@@ -17,6 +18,12 @@ use $recompile;
 use $mkdir;
 use $rm;
 use $mv;
+
+
+string type(any obj)
+{
+    return $type(obj);
+}
 
 object the(string id)
 {

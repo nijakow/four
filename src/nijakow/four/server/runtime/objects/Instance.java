@@ -25,7 +25,9 @@ public abstract class Instance implements ISerializable {
 	public static Instance getNil() { return NIL; }
 	
 	public boolean isNil() { return this == NIL; }
-	
+
+	public String getType() { return "unknown"; }
+
 	public boolean asBoolean() { return !isNil(); }
 	public int asInt() { return hashCode(); }
 	public String asString() { return toString(); }

@@ -6,7 +6,10 @@ import nijakow.four.server.net.IConnection;
 
 public class FConnection extends Instance {
 	private final IConnection connection;
-	
+
+	@Override
+	public String getType() { return "connection"; }
+
 	@Override
 	public FConnection asFConnection() { return this; }
 	

@@ -22,6 +22,9 @@ public class FInteger extends Instance {
 	}
 
 	@Override
+	public String getType() { return "int"; }
+
+	@Override
 	public boolean asBoolean() {
 		return value != 0;
 	}

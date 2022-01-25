@@ -9,7 +9,10 @@ public class FClosure extends Instance {
 	private final Instance self;
 	private final Instance instance;
 	private final Key key;
-	
+
+	@Override
+	public String getType() { return "closure"; }
+
 	public FClosure(Blue self, Instance instance, Key key) {
 		this.self = self;
 		this.instance = instance;

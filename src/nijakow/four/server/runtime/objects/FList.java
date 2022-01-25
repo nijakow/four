@@ -25,6 +25,9 @@ public class FList extends Instance {
 	}
 
 	@Override
+	public String getType() { return "list"; }
+
+	@Override
 	public FList asFList() {
 		return this;
 	}

@@ -23,6 +23,9 @@ public class FMapping extends Instance {
 	}
 
 	@Override
+	public String getType() { return "mapping"; }
+
+	@Override
 	public FMapping asFMapping() {
 		return this;
 	}
