@@ -301,8 +301,8 @@ public class Parser {
 				defs.add(new ASTInheritanceDef(((Instance) expect(TokenType.CONSTANT).getPayload()).asString()));
 				expect(TokenType.SEMICOLON);
 			} else if (check(TokenType.STRUCT) || check(TokenType.CLASS)) {
-				expect(TokenType.LCURLY);
 				Key name = expectKey();
+				expect(TokenType.LCURLY);
 				defs.add(new ASTClassDef(name, parseClass()));
 				expect(TokenType.SEMICOLON);
 			} else {
