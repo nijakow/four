@@ -154,10 +154,23 @@ public class Parser {
 			OperatorInfo info = (OperatorInfo) t.getPayload();
 			expr = new ASTUnaryOp(info.getType(), parseExpression(info.getUnaryPrecedence()));
 		} else if (check(TokenType.NEW)) {
-			Key clazz = expectKey();
-			expect(TokenType.LPAREN);
-			Pair<ASTExpression[], Boolean> arglistData = parseArglist();
-			expr = new ASTNew(clazz, arglistData.getFirst(), arglistData.getSecond());
+			if (check(TokenType.LPAREN)) {
+				/*
+				 * We do have cases where the "new" operator works like a function call:
+				 *
+				 *   object obj = new("/foo/bar.c", ...);
+				 *
+				 * In these cases, we invoke the routine "_new".
+				 *                                           - nijakow
+				 */
+				Pair<ASTExpression[], Boolean> arglistData = parseArglist();
+				expr = new ASTCall(new ASTDot(new ASTThis(), Key.get("_new")), arglistData.getFirst(), arglistData.getSecond());
+			} else {
+				Key clazz = expectKey();
+				expect(TokenType.LPAREN);
+				Pair<ASTExpression[], Boolean> arglistData = parseArglist();
+				expr = new ASTNew(clazz, arglistData.getFirst(), arglistData.getSecond());
+			}
 		} else {
 			expr = parseSimpleExpression(); 
 		}

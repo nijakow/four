@@ -32,7 +32,7 @@ object the(string id)
     return obj;
 }
 
-any new(string blueprint, ...)
+any _new(string blueprint, ...)
 {
     object obj = the(blueprint);
     if (obj != nil)
