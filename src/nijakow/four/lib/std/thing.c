@@ -22,6 +22,11 @@ void create()
     "/std/thing/light.c"::create();
 }
 
+void reset()
+{
+    create();
+}
+
 void _init()
 {
     "/secure/object.c"::_init();
