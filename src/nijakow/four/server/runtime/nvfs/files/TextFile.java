@@ -47,7 +47,7 @@ public class TextFile extends File<SharedTextFileState> {
         if (blueprint == null || isDirty) {
             System.out.println("Compiling " + getFullName() + "...");
             Parser parser = new Parser(new Tokenizer(new StringCharStream(contents)));
-            ASTClass file = parser.parse();
+            ASTClass file = parser.parseFile();
             blueprint = file.compile(getFullName(), name -> resolve(name).asTextFile().compile());
             getState().updateBlueprint(blueprint);
             isDirty = false;

@@ -289,16 +289,21 @@ public class Parser {
 		}
 	}
 	
-	public ASTClass parse() throws ParseException {
+	private ASTClass parseClass(TokenType terminator) throws ParseException {
 		List<ASTDecl> defs = new ArrayList<>();
 	
-		while (!check(TokenType.EOF)) {
+		while (!check(terminator)) {
 			if (check(TokenType.USE)) {
 				Key name = expectKey();
 				defs.add(new ASTDefaultDef(name));
 				expect(TokenType.SEMICOLON);
 			} else if (check(TokenType.INHERITS)) {
 				defs.add(new ASTInheritanceDef(((Instance) expect(TokenType.CONSTANT).getPayload()).asString()));
+				expect(TokenType.SEMICOLON);
+			} else if (check(TokenType.STRUCT) || check(TokenType.CLASS)) {
+				expect(TokenType.LCURLY);
+				Key name = expectKey();
+				defs.add(new ASTClassDef(name, parseClass()));
 				expect(TokenType.SEMICOLON);
 			} else {
 				Type type = parseType();
@@ -316,6 +321,14 @@ public class Parser {
 		}
 		
 		return new ASTClass(defs.toArray(new ASTDecl[0]));
+	}
+
+	private ASTClass parseClass() throws ParseException {
+		return parseClass(TokenType.RCURLY);
+	}
+
+	public ASTClass parseFile() throws ParseException {
+		return parseClass(TokenType.EOF);
 	}
 	
 	private boolean checkKeep(TokenType type) throws ParseException {

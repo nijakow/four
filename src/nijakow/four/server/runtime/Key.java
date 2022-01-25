@@ -20,10 +20,12 @@ import java.util.Map;
 public class Key {
 	private final String name;
 	private Code code;
+	private Blueprint blueprint;
 	
 	private Key(String name) {
 		this.name = name;
 		this.code = null;
+		this.blueprint = null;
 	}
 
     @Override
@@ -34,6 +36,12 @@ public class Key {
 	public String getName() { return name; }
 	public Code getCode() {
 		return code;
+	}
+	public Blueprint getBlueprint() { return blueprint; }
+
+	public void setBlueprint(Blueprint blueprint) {
+		System.out.println("Setting the blueprint of " + this + " to " + blueprint);
+		this.blueprint = blueprint;
 	}
 
 	private static final Map<String, Key> KEYS = new HashMap<>();
