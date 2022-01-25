@@ -23,6 +23,7 @@ public class Blue extends Instance {
 	public Blue() {
 		this.id = ID_COUNTER++;
 		parent = sibling = children = null;
+		registerToPool();
 	}
 	
 	public Blue(Blueprint blueprint) {

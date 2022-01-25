@@ -20,6 +20,7 @@ public class FMapping extends Instance {
 			}
 			isKey = !isKey;
 		}
+		registerToPool();
 	}
 
 	@Override

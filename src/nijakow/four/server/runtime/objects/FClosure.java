@@ -17,6 +17,7 @@ public class FClosure extends Instance {
 		this.self = self;
 		this.instance = instance;
 		this.key = key;
+		registerToPool();
 	}
 	
 	@Override

@@ -13,6 +13,7 @@ public class FString extends Instance {
 	
 	public FString(String value) {
 		this.value = value;
+		registerToPool();
 	}
 	
 	@Override

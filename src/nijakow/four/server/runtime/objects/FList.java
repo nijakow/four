@@ -22,6 +22,7 @@ public class FList extends Instance {
 			type.getParent().expect(i);
 			list.add(i);
 		}
+		registerToPool();
 	}
 
 	@Override

@@ -43,5 +43,6 @@ public class FConnection extends Instance {
 	
 	public FConnection(IConnection connection) {
 		this.connection = connection;
+		registerToPool();
 	}
 }
