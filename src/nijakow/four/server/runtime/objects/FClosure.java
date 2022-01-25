@@ -11,7 +11,7 @@ public class FClosure extends Instance {
 	private final Key key;
 
 	@Override
-	public String getType() { return "closure"; }
+	public String getType() { return "function"; }
 
 	public FClosure(Blue self, Instance instance, Key key) {
 		this.self = self;

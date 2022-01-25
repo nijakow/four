@@ -13,6 +13,9 @@ import nijakow.four.server.serialization.base.ISerializer;
 public abstract class Instance implements ISerializable {
 	private static final Instance NIL = new Instance() {
 		@Override
+		public String getType() { return "nil"; }
+
+		@Override
 		public String getSerializationClassID() {
 			return "nil";
 		}

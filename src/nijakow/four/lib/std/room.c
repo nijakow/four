@@ -4,11 +4,20 @@ inherits "/std/container.c";
 mapping exits;
 
 
-object get_exit(string dir)
+object get_exit(object player, string dir)
 {
     string result = exits[dir];
-    if (result != nil)
+    string tp     = type(result);
+
+    while (tp == "function") {
+        result = call(result, player, dir);
+        tp     = type(result);
+    }
+
+    if (tp == "string")
         return the(result);
+    else if (tp == "object")
+        return result;
     else
         return nil;
 }

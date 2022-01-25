@@ -2,7 +2,7 @@ inherits "/std/cmd.c";
 
 void start()
 {
-    object loc = get_location()->get_exit(arg());
+    object loc = get_location()->get_exit(me(), arg());
 
     if (loc != nil) {
         me()->act_goto(loc);
