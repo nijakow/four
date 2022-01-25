@@ -125,6 +125,24 @@ public class Frame {
 			}
 			fiber.getAccu().send(fiber, key, args);
 			break;
+		case Bytecodes.BYTECODE_NEW:
+			key = code.keyAt(code.u16(ip));
+			ip += 2;
+			args = code.u8(ip++);
+			fiber.setAccu(key.newBlueInstance());
+			fiber.getAccu().send(fiber, Key.get("_init"), args);
+			break;
+		case Bytecodes.BYTECODE_NEW_VARARGS:
+			key = code.keyAt(code.u16(ip));
+			ip += 2;
+			args = code.u8(ip++);
+			for (Instance v : varargs) {
+				fiber.push(v);
+				args++;
+			}
+			fiber.setAccu(key.newBlueInstance());
+			fiber.getAccu().send(fiber, Key.get("_init"), args);
+			break;
 		case Bytecodes.BYTECODE_SCOPE:
 			key = code.keyAt(code.u16(ip));
 			ip += 2;

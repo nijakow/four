@@ -40,8 +40,13 @@ public class Key {
 	public Blueprint getBlueprint() { return blueprint; }
 
 	public void setBlueprint(Blueprint blueprint) {
-		System.out.println("Setting the blueprint of " + this + " to " + blueprint);
 		this.blueprint = blueprint;
+	}
+
+	public Instance newBlueInstance() {
+		if (this.blueprint == null)
+			return Instance.getNil();
+		return this.blueprint.createBlue();
 	}
 
 	private static final Map<String, Key> KEYS = new HashMap<>();
