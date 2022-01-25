@@ -153,6 +153,11 @@ public class Parser {
 			Token t = tokenizer.nextToken();
 			OperatorInfo info = (OperatorInfo) t.getPayload();
 			expr = new ASTUnaryOp(info.getType(), parseExpression(info.getUnaryPrecedence()));
+		} else if (check(TokenType.NEW)) {
+			Key clazz = expectKey();
+			expect(TokenType.LPAREN);
+			Pair<ASTExpression[], Boolean> arglistData = parseArglist();
+			expr = new ASTNew(clazz, arglistData.getFirst(), arglistData.getSecond());
 		} else {
 			expr = parseSimpleExpression(); 
 		}

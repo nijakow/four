@@ -156,6 +156,12 @@ public class InstructionWriter {
 		u8(args);
 	}
 
+	public void writeNew(Key clazz, int args, boolean hasVarargs) {
+		u8(hasVarargs ? Bytecodes.BYTECODE_NEW_VARARGS : Bytecodes.BYTECODE_NEW);
+		key(clazz);
+		u8(args);
+	}
+
 	public void writeScope(Key key) {
 		u8(Bytecodes.BYTECODE_SCOPE);
 		key(key);

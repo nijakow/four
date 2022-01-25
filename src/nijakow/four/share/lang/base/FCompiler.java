@@ -38,6 +38,8 @@ public interface FCompiler {
 
 	void compileCall(int args, boolean hasVarargs);
 	void compileDotCall(Key key, int args, boolean hasVarargs);
+	void compileNew(Key clazz, int args, boolean hasVarargs);
+
 	void compileOp(OperatorType type);
 	
 	void compileMakeList(ListType type, int length);
