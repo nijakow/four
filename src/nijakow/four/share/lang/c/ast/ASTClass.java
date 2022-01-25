@@ -5,10 +5,10 @@ import nijakow.four.share.lang.c.parser.ParseException;
 import nijakow.four.server.runtime.objects.Blueprint;
 import nijakow.four.server.runtime.FourClassLoader;
 
-public class ASTFile extends AST {
+public class ASTClass extends AST {
 	private final ASTDecl[] defs;
 	
-	public ASTFile(ASTDecl[] defs) {
+	public ASTClass(ASTDecl[] defs) {
 		this.defs = defs;
 	}
 

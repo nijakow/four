@@ -289,7 +289,7 @@ public class Parser {
 		}
 	}
 	
-	public ASTFile parse() throws ParseException {
+	public ASTClass parse() throws ParseException {
 		List<ASTDecl> defs = new ArrayList<>();
 	
 		while (!check(TokenType.EOF)) {
@@ -315,7 +315,7 @@ public class Parser {
 			}
 		}
 		
-		return new ASTFile(defs.toArray(new ASTDecl[0]));
+		return new ASTClass(defs.toArray(new ASTDecl[0]));
 	}
 	
 	private boolean checkKeep(TokenType type) throws ParseException {

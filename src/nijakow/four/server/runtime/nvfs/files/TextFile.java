@@ -1,6 +1,6 @@
 package nijakow.four.server.runtime.nvfs.files;
 
-import nijakow.four.share.lang.c.ast.ASTFile;
+import nijakow.four.share.lang.c.ast.ASTClass;
 import nijakow.four.share.lang.base.CompilationException;
 import nijakow.four.share.lang.c.parser.ParseException;
 import nijakow.four.share.lang.c.parser.Parser;
@@ -47,7 +47,7 @@ public class TextFile extends File<SharedTextFileState> {
         if (blueprint == null || isDirty) {
             System.out.println("Compiling " + getFullName() + "...");
             Parser parser = new Parser(new Tokenizer(new StringCharStream(contents)));
-            ASTFile file = parser.parse();
+            ASTClass file = parser.parse();
             blueprint = file.compile(getFullName(), name -> resolve(name).asTextFile().compile());
             getState().updateBlueprint(blueprint);
             isDirty = false;
