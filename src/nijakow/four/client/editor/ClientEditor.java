@@ -1,9 +1,6 @@
 package nijakow.four.client.editor;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.GridLayout;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
@@ -43,13 +40,13 @@ public class ClientEditor extends JFrame implements ActionListener {
 		pane.setFont(new Font("Monospaced", Font.PLAIN, 14));
 		doc = pane.getStyledDocument();
 		addStyles();
-		pane.addKeyListener(new KeyAdapter() {
+		/*pane.addKeyListener(new KeyAdapter() {
 
 			@Override
 			public void keyTyped(KeyEvent e) {
 				updateSyntaxHighlighting();
 			}
-		});
+		});*/
 		getContentPane().setLayout(new BorderLayout());
 		JScrollPane sp = new JScrollPane(pane);
 		getContentPane().add(sp, BorderLayout.CENTER);
@@ -70,6 +67,7 @@ public class ClientEditor extends JFrame implements ActionListener {
 				stopSyntaxHighlighting();
 			}
 		});
+		// TODO Select highlighter
 		JPanel buttons = new JPanel();
 		buttons.setLayout(new GridLayout(1, 3));
 		buttons.add(close);
@@ -80,6 +78,7 @@ public class ClientEditor extends JFrame implements ActionListener {
 		allButtons.add(buttons);
 		allButtons.add(highlight);
 		getContentPane().add(allButtons, BorderLayout.SOUTH);
+		setPreferredSize(new Dimension(300, 200));
 		pack();
 		updateSyntaxHighlighting();
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
