@@ -1,5 +1,7 @@
 package nijakow.four.server.runtime.nvfs.files;
 
+import nijakow.four.server.runtime.FourClassLoader;
+import nijakow.four.server.runtime.Key;
 import nijakow.four.share.lang.c.ast.ASTClass;
 import nijakow.four.share.lang.base.CompilationException;
 import nijakow.four.share.lang.c.parser.ParseException;
@@ -39,6 +41,7 @@ public class TextFile extends File<SharedTextFileState> {
 
     public String getContents() { return contents; }
 
+    public Blueprint getBlueprint() { return blueprint; }
     public Blue getInstance() {
         return getState().getBlue();
     }
@@ -48,7 +51,17 @@ public class TextFile extends File<SharedTextFileState> {
             System.out.println("Compiling " + getFullName() + "...");
             Parser parser = new Parser(new Tokenizer(new StringCharStream(contents)));
             ASTClass file = parser.parseFile();
-            blueprint = file.compile(getFullName(), name -> resolve(name).asTextFile().compile());
+            blueprint = file.compile(getFullName(), new FourClassLoader() {
+                @Override
+                public Blueprint load(String path) throws ParseException, CompilationException {
+                    return resolve(path).asTextFile().compile();
+                }
+
+                @Override
+                public Blueprint load(Key name) {
+                    return name.getBlueprint();
+                }
+            });
             getState().updateBlueprint(blueprint);
             isDirty = false;
         }

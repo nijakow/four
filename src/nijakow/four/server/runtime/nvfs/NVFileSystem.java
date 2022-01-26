@@ -1,5 +1,6 @@
 package nijakow.four.server.runtime.nvfs;
 
+import nijakow.four.server.runtime.objects.Blueprint;
 import nijakow.four.share.lang.base.CompilationException;
 import nijakow.four.share.lang.c.parser.ParseException;
 import nijakow.four.server.runtime.nvfs.files.Directory;
@@ -139,7 +140,14 @@ public class NVFileSystem implements FileParent, ISerializable {
         if (file == null)
             return null;
         file.compile();
-        return resolve(name).asTextFile().getInstance();
+        return file.getInstance();
+    }
+
+    public Blueprint getBlueprint(String name) {
+        TextFile file = resolveTextFile(name);
+        if (file == null)
+            return null;
+        return file.getBlueprint();
     }
 
     @Override

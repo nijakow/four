@@ -5,5 +5,6 @@ import nijakow.four.share.lang.c.parser.ParseException;
 import nijakow.four.server.runtime.objects.Blueprint;
 
 public interface FourClassLoader {
-    Blueprint load(String name) throws ParseException, CompilationException;
+    Blueprint load(String path) throws ParseException, CompilationException;
+    Blueprint load(Key name);
 }
