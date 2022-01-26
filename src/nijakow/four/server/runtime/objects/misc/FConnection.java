@@ -1,6 +1,8 @@
-package nijakow.four.server.runtime.objects;
+package nijakow.four.server.runtime.objects.misc;
 
 import nijakow.four.server.runtime.exceptions.FourRuntimeException;
+import nijakow.four.server.runtime.objects.standard.FString;
+import nijakow.four.server.runtime.objects.Instance;
 import nijakow.four.server.runtime.vm.Callback;
 import nijakow.four.server.net.IConnection;
 

@@ -1,16 +1,16 @@
-package nijakow.four.server.runtime.objects;
+package nijakow.four.server.runtime.objects.blue;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import nijakow.four.server.runtime.objects.standard.FClosure;
+import nijakow.four.server.runtime.objects.Instance;
 import nijakow.four.server.runtime.vm.code.Code;
 import nijakow.four.server.runtime.Key;
-import nijakow.four.server.runtime.types.Type;
 import nijakow.four.server.runtime.exceptions.FourRuntimeException;
 import nijakow.four.server.runtime.vm.Fiber;
 import nijakow.four.server.runtime.vm.VM;
 import nijakow.four.server.serialization.base.ISerializer;
-import nijakow.four.share.util.Pair;
 
 public class Blue extends Instance {
 	private static long ID_COUNTER = 0;
@@ -96,8 +96,8 @@ public class Blue extends Instance {
 
 	@Override
 	public void loadSlot(Fiber fiber, Key key) throws FourRuntimeException {
-		Pair<Type, Key> info = blueprint.getSlotInfo(key);
-		if (info == null)
+		Slot slot = blueprint.getSlot(key);
+		if (slot == null)
 			fiber.setAccu(new FClosure(this, this, key));
 		else if (slots.containsKey(key))
 			fiber.setAccu(slots.get(key));
@@ -107,24 +107,25 @@ public class Blue extends Instance {
 	
 	@Override
 	public void storeSlot(Fiber fiber, Key key, Instance value) {
-		Pair<Type, Key> info = blueprint.getSlotInfo(key);
-		if (info == null || !info.getFirst().check(value))
+		Slot slot = blueprint.getSlot(key);
+		if (slot == null || !slot.getType().check(value))
 			throw new RuntimeException("Oof. Slot not found (or wrong type): " + key);
 		slots.put(key, value);
 	}
 	
 	@Override
 	public void send(Fiber fiber, Key key, int args) throws FourRuntimeException {
-		Code code = blueprint == null ? null : blueprint.getMethod(key);
-		if (code == null)
+		Method method = blueprint == null ? null : blueprint.getMethod(key);
+		if (method == null)
 			super.send(fiber, key, args);
 		else
-			code.invoke(fiber, args, this);
+			method.getCode().invoke(fiber, args, this);
 	}
 	
 	@Override
 	public Code extractMethod(VM vm, Key key) {
-		return blueprint.getMethod(key);
+		Method method = blueprint.getMethod(key);
+		return (method != null) ? method.getCode() : null;
 	}
 
 	public Blue cloneBlue() {

@@ -2,7 +2,7 @@ package nijakow.four.server.runtime.vm;
 
 import java.util.Stack;
 
-import nijakow.four.server.runtime.objects.Blue;
+import nijakow.four.server.runtime.objects.blue.Blue;
 import nijakow.four.server.runtime.vm.code.ByteCode;
 import nijakow.four.server.runtime.exceptions.FourRuntimeException;
 import nijakow.four.server.runtime.objects.Instance;

@@ -1,7 +1,7 @@
 package nijakow.four.server.runtime.types;
 
 import nijakow.four.server.runtime.exceptions.CastException;
-import nijakow.four.server.runtime.objects.FList;
+import nijakow.four.server.runtime.objects.collections.FList;
 import nijakow.four.server.runtime.objects.Instance;
 
 public class ListType extends Type {

@@ -1,5 +1,7 @@
 package nijakow.four.server.runtime.nvfs.files;
 
+import nijakow.four.server.runtime.FourClassLoader;
+import nijakow.four.server.runtime.Key;
 import nijakow.four.share.lang.c.ast.ASTClass;
 import nijakow.four.share.lang.base.CompilationException;
 import nijakow.four.share.lang.c.parser.ParseException;
@@ -8,8 +10,8 @@ import nijakow.four.share.lang.c.parser.StringCharStream;
 import nijakow.four.share.lang.c.parser.Tokenizer;
 import nijakow.four.server.runtime.nvfs.FileParent;
 import nijakow.four.server.runtime.nvfs.shared.SharedTextFileState;
-import nijakow.four.server.runtime.objects.Blue;
-import nijakow.four.server.runtime.objects.Blueprint;
+import nijakow.four.server.runtime.objects.blue.Blue;
+import nijakow.four.server.runtime.objects.blue.Blueprint;
 import nijakow.four.server.serialization.base.ISerializer;
 
 public class TextFile extends File<SharedTextFileState> {
@@ -39,8 +41,14 @@ public class TextFile extends File<SharedTextFileState> {
 
     public String getContents() { return contents; }
 
+    public Blueprint getBlueprint() { return blueprint; }
     public Blue getInstance() {
         return getState().getBlue();
+    }
+
+    public void ensureCompiled() throws CompilationException, ParseException {
+        if (blueprint == null)
+            compile();
     }
 
     public Blueprint compile() throws ParseException, CompilationException {
@@ -48,7 +56,17 @@ public class TextFile extends File<SharedTextFileState> {
             System.out.println("Compiling " + getFullName() + "...");
             Parser parser = new Parser(new Tokenizer(new StringCharStream(contents)));
             ASTClass file = parser.parseFile();
-            blueprint = file.compile(getFullName(), name -> resolve(name).asTextFile().compile());
+            blueprint = file.compile(getFullName(), new FourClassLoader() {
+                @Override
+                public Blueprint load(String path) throws ParseException, CompilationException {
+                    return resolve(path).asTextFile().compile();
+                }
+
+                @Override
+                public Blueprint load(Key name) {
+                    return name.getBlueprint();
+                }
+            });
             getState().updateBlueprint(blueprint);
             isDirty = false;
         }

@@ -3,8 +3,8 @@ package nijakow.four.share.lang.c.parser;
 import java.util.Stack;
 
 import nijakow.four.share.lang.c.ast.OperatorType;
-import nijakow.four.server.runtime.objects.FInteger;
-import nijakow.four.server.runtime.objects.FString;
+import nijakow.four.server.runtime.objects.standard.FInteger;
+import nijakow.four.server.runtime.objects.standard.FString;
 
 public class Tokenizer {	
 	private final CharStream stream;
@@ -146,6 +146,8 @@ public class Tokenizer {
 		
 		switch (text) {
 		case "": return new Token(this, pos, TokenType.EOF);
+		case "public": return new Token(this, pos, TokenType.PUBLIC);
+		case "private": return new Token(this, pos, TokenType.PRIVATE);
 		case "this": return new Token(this, pos, TokenType.THIS);
 		case "nil": return new Token(this, pos, TokenType.NIL);
 		case "true": return new Token(this, pos, TokenType.TRUE);
