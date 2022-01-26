@@ -3,11 +3,10 @@ package nijakow.four.client.editor;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 import java.io.IOException;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -27,7 +26,9 @@ public class ClientEditor extends JFrame implements ActionListener {
 	private final ClientConnection connection;
 	private final String id;
 	private final String path;
-	private final ExecutorService queue;
+	private final ScheduledExecutorService queue;
+	private ScheduledFuture<?> future;
+	private final Runnable highlighter = () -> updateSyntaxHighlighting();
 
 	public ClientEditor(JFrame owner, ClientConnection c, ScheduledExecutorService queue, String[] args) {
 		super(args[1]);
@@ -40,13 +41,6 @@ public class ClientEditor extends JFrame implements ActionListener {
 		pane.setFont(new Font("Monospaced", Font.PLAIN, 14));
 		doc = pane.getStyledDocument();
 		addStyles();
-		/*pane.addKeyListener(new KeyAdapter() {
-
-			@Override
-			public void keyTyped(KeyEvent e) {
-				updateSyntaxHighlighting();
-			}
-		});*/
 		getContentPane().setLayout(new BorderLayout());
 		JScrollPane sp = new JScrollPane(pane);
 		getContentPane().add(sp, BorderLayout.CENTER);
@@ -82,17 +76,16 @@ public class ClientEditor extends JFrame implements ActionListener {
 		getContentPane().add(allButtons, BorderLayout.SOUTH);
 		setPreferredSize(new Dimension(300, 200));
 		pack();
-		updateSyntaxHighlighting();
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		setLocationRelativeTo(owner);
 	}
 
 	private void startSyntaxHighlighting() {
-		// TODO
+		future = queue.scheduleWithFixedDelay(highlighter, 0, 500, TimeUnit.MILLISECONDS);
 	}
 
 	private  void stopSyntaxHighlighting() {
-		// TODO
+		future.cancel(false);
 	}
 
 	public void dispose() {
@@ -115,34 +108,32 @@ public class ClientEditor extends JFrame implements ActionListener {
 	}
 	
 	private void updateSyntaxHighlighting() {
-		queue.execute(() -> {
-			Style defaultStyle = StyleContext.
-					   getDefaultStyleContext().
-					   getStyle(StyleContext.DEFAULT_STYLE);
-			doc.setCharacterAttributes(0, doc.getLength(), defaultStyle, true);
-			String keywords = "\\b(new|struct|class|inherits|use|this|if|else|while|for|break|continue|switch|case|return|private|protected|public)\\b";
-			Matcher matcher = Pattern.compile(keywords).matcher(pane.getText());
-			while (matcher.find())
-				doc.setCharacterAttributes(matcher.start(), matcher.end() - matcher.start(),
-						doc.getStyle(Commands.STYLE_KEYWORD), true);
-			keywords = "\\b(any|void|int|char|bool|string|object|list|mapping)\\b";
-			matcher = Pattern.compile(keywords).matcher(pane.getText());
-			while (matcher.find())
-				doc.setCharacterAttributes(matcher.start(), matcher.end() - matcher.start(),
-						doc.getStyle(Commands.STYLE_TYPE), true);
-			keywords = "\\b(true|false|nil|va_next|va_count)\\b";
-			matcher = Pattern.compile(keywords).matcher(pane.getText());
-			while (matcher.find())
-				doc.setCharacterAttributes(matcher.start(), matcher.end() - matcher.start(),
-						doc.getStyle(Commands.STYLE_SPECIAL_WORD), true);
-			keywords = "\\b(create|the|call|log|length|insert|append|remove|strlen|chr|write|prompt|password|edit)\\b";
-			matcher = Pattern.compile(keywords).matcher(pane.getText());
-			while (matcher.find())
-				doc.setCharacterAttributes(matcher.start(), matcher.end() - matcher.start(),
-						doc.getStyle(Commands.STYLE_STDLIB), true);
-		});
+		Style defaultStyle = StyleContext.
+				   getDefaultStyleContext().
+				   getStyle(StyleContext.DEFAULT_STYLE);
+		doc.setCharacterAttributes(0, doc.getLength(), defaultStyle, true);
+		String keywords = "\\b(new|struct|class|inherits|use|this|if|else|while|for|break|continue|switch|case|return|private|protected|public)\\b";
+		Matcher matcher = Pattern.compile(keywords).matcher(pane.getText());
+		while (matcher.find())
+			doc.setCharacterAttributes(matcher.start(), matcher.end() - matcher.start(),
+					doc.getStyle(Commands.STYLE_KEYWORD), true);
+		keywords = "\\b(any|void|int|char|bool|string|object|list|mapping)\\b";
+		matcher = Pattern.compile(keywords).matcher(pane.getText());
+		while (matcher.find())
+			doc.setCharacterAttributes(matcher.start(), matcher.end() - matcher.start(),
+					doc.getStyle(Commands.STYLE_TYPE), true);
+		keywords = "\\b(true|false|nil|va_next|va_count)\\b";
+		matcher = Pattern.compile(keywords).matcher(pane.getText());
+		while (matcher.find())
+			doc.setCharacterAttributes(matcher.start(), matcher.end() - matcher.start(),
+					doc.getStyle(Commands.STYLE_SPECIAL_WORD), true);
+		keywords = "\\b(create|the|call|log|length|insert|append|remove|strlen|chr|write|prompt|password|edit)\\b";
+		matcher = Pattern.compile(keywords).matcher(pane.getText());
+		while (matcher.find())
+			doc.setCharacterAttributes(matcher.start(), matcher.end() - matcher.start(),
+					doc.getStyle(Commands.STYLE_STDLIB), true);
 	}
-	
+
 	public void send(final boolean save, final String newPath) {
 		// TODO filter escape characters
 		queue.execute(() -> {
