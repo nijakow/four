@@ -5,6 +5,7 @@ import nijakow.four.server.runtime.objects.blue.Blueprint;
 import nijakow.four.server.runtime.objects.collections.FList;
 import nijakow.four.server.runtime.objects.standard.FInteger;
 import nijakow.four.server.runtime.objects.standard.FString;
+import nijakow.four.server.runtime.security.users.Identity;
 import nijakow.four.share.lang.base.CompilationException;
 import nijakow.four.share.lang.c.parser.ParseException;
 import nijakow.four.server.runtime.exceptions.CastException;
@@ -374,6 +375,57 @@ public class Key {
 					e.printStackTrace();
 					fiber.setAccu(new FInteger(0));
 				}
+			}
+		};
+		get("$stat").code = new BuiltinCode() {
+			@Override
+			public void run(Fiber fiber, Instance self, Instance[] args) throws FourRuntimeException {
+				final String curPath = args[0].asFString().asString();
+				File file = fiber.getVM().getFilesystem().resolve(curPath);
+				fiber.setAccu(new FInteger((file != null) ? file.getmod() : -1));
+			}
+		};
+		get("$getown").code = new BuiltinCode() {
+			@Override
+			public void run(Fiber fiber, Instance self, Instance[] args) throws FourRuntimeException {
+				final String curPath = args[0].asFString().asString();
+				File file = fiber.getVM().getFilesystem().resolve(curPath);
+				fiber.setAccu((file != null) ? new FString(file.getRights().getUserAccessRights().getIdentity().getName()) : Instance.getNil());
+			}
+		};
+		get("$getgrp").code = new BuiltinCode() {
+			@Override
+			public void run(Fiber fiber, Instance self, Instance[] args) throws FourRuntimeException {
+				final String curPath = args[0].asFString().asString();
+				File file = fiber.getVM().getFilesystem().resolve(curPath);
+				fiber.setAccu((file != null) ? new FString(file.getRights().getGroupAccessRights().getIdentity().getName()) : Instance.getNil());
+			}
+		};
+		get("$chmod").code = new BuiltinCode() {
+			@Override
+			public void run(Fiber fiber, Instance self, Instance[] args) throws FourRuntimeException {
+				final String curPath = args[0].asFString().asString();
+				final int flags = args[1].asInt();
+				File file = fiber.getVM().getFilesystem().resolve(curPath);
+				fiber.setAccu(new FInteger((file != null && file.chmod(fiber.getSharedState().getUser(), flags)) ? 1 : 0));
+			}
+		};
+		get("$chown").code = new BuiltinCode() {
+			@Override
+			public void run(Fiber fiber, Instance self, Instance[] args) throws FourRuntimeException {
+				final String curPath = args[0].asFString().asString();
+				final Identity identity = fiber.getVM().getIdentityDB().find(args[1].asFString().asString());
+				File file = fiber.getVM().getFilesystem().resolve(curPath);
+				fiber.setAccu(new FInteger((file != null && file.chown(fiber.getSharedState().getUser(), identity)) ? 1 : 0));
+			}
+		};
+		get("$chgrp").code = new BuiltinCode() {
+			@Override
+			public void run(Fiber fiber, Instance self, Instance[] args) throws FourRuntimeException {
+				final String curPath = args[0].asFString().asString();
+				final Identity identity = fiber.getVM().getIdentityDB().find(args[1].asFString().asString());
+				File file = fiber.getVM().getFilesystem().resolve(curPath);
+				fiber.setAccu(new FInteger((file != null && file.chgrp(fiber.getSharedState().getUser(), identity)) ? 1 : 0));
 			}
 		};
 		get("$dump").code = new BuiltinCode() {
