@@ -14,11 +14,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextPane;
+import javax.swing.*;
 import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
@@ -77,7 +73,7 @@ public class ClientEditor extends JFrame implements ActionListener {
 	}
 
 	public void dispose() {
-		send(false);
+		send(false, null);
 		super.dispose();
 	}
 	
@@ -124,11 +120,13 @@ public class ClientEditor extends JFrame implements ActionListener {
 		});
 	}
 	
-	public void send(final boolean save) {
+	public void send(final boolean save, final String newPath) {
 		// TODO filter escape characters
 		queue.execute(() -> {
 			try {
 				connection.send(Commands.SPECIAL_START + Commands.SPECIAL_EDIT + id);
+				if (newPath != null)
+					connection.send(Commands.SPECIAL_RAW + newPath);
 				if (save)
 					connection.send(Commands.SPECIAL_RAW + pane.getText());
 				connection.send("" + Commands.SPECIAL_END);
@@ -137,20 +135,31 @@ public class ClientEditor extends JFrame implements ActionListener {
 			}
 		});
 	}
-	
+
+	private void saveAs() {
+		String input = JOptionPane.showInputDialog(this,
+				"Enter the new file name:",
+				"Save as...", JOptionPane.PLAIN_MESSAGE);
+		if (input != null) {
+			JOptionPane.showMessageDialog(this, "This feature might not be implemented yet!",
+					"Hic sunt dracones!", JOptionPane.WARNING_MESSAGE);
+			send(true, input);
+		}
+	}
+
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		switch (e.getActionCommand()) {
 			case Commands.ACTION_EDIT_SAVE:
-				send(true);
+				send(true, null);
 				break;
 
 			case Commands.ACTION_EDIT_SAVE_AS:
-				// TODO
+				saveAs();
 				break;
 
 			case Commands.ACTION_EDIT_CLOSE:
-				send(false);
+				send(false, null);
 				dispose();
 				break;
 		}
