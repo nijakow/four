@@ -79,7 +79,6 @@ void cmd_cat(list argv)
 void cmd_edit_file__write(any id, string text)
 {
     string path = mapped_pathnames[id];
-    mapped_pathnames[id] = nil;
     if (path != nil && text != nil) {
         connection()->mode_italic();
         if(!echo_into(path, text)) {
