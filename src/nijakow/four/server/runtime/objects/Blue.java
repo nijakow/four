@@ -96,8 +96,8 @@ public class Blue extends Instance {
 
 	@Override
 	public void loadSlot(Fiber fiber, Key key) throws FourRuntimeException {
-		Pair<Type, Key> info = blueprint.getSlotInfo(key);
-		if (info == null)
+		Slot slot = blueprint.getSlot(key);
+		if (slot == null)
 			fiber.setAccu(new FClosure(this, this, key));
 		else if (slots.containsKey(key))
 			fiber.setAccu(slots.get(key));
@@ -107,8 +107,8 @@ public class Blue extends Instance {
 	
 	@Override
 	public void storeSlot(Fiber fiber, Key key, Instance value) {
-		Pair<Type, Key> info = blueprint.getSlotInfo(key);
-		if (info == null || !info.getFirst().check(value))
+		Slot slot = blueprint.getSlot(key);
+		if (slot == null || !slot.getType().check(value))
 			throw new RuntimeException("Oof. Slot not found (or wrong type): " + key);
 		slots.put(key, value);
 	}

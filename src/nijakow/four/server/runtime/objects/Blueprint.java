@@ -8,12 +8,13 @@ import java.util.Map;
 import nijakow.four.server.runtime.vm.code.Code;
 import nijakow.four.server.runtime.Key;
 import nijakow.four.server.runtime.types.Type;
+import nijakow.four.share.lang.c.SlotVisibility;
 import nijakow.four.share.util.Pair;
 
 public class Blueprint {
 	private final String filename;
 	private final List<Blueprint> supers = new ArrayList<>();
-	private final List<Pair<Type, Key>> slots = new ArrayList<>();
+	private final List<Slot> slots = new ArrayList<>();
 	private final Map<Key, Code> methods = new HashMap<>();
 
 	public Blueprint(String filename) {
@@ -40,28 +41,28 @@ public class Blueprint {
 	public void addSuper(Blueprint bp) {
 		this.supers.add(0, bp);
 	}
-	
-	public void addSlot(Type type, Key name) {
-		if (!slots.contains(name))
-			slots.add(new Pair<>(type, name));
-	}
-	
-	public Pair<Type, Key> getSlotInfo(Key name) {
-		for (Pair<Type, Key> slot : slots) {
-			if (slot.getSecond() == name) {
+
+	public Slot getSlot(Key name) {
+		for (Slot slot : slots) {
+			if (slot.getName() == name) {
 				return slot;
 			}
 		}
-		
+
 		for (Blueprint parent : supers) {
-			Pair<Type, Key> slot = parent.getSlotInfo(name);
+			Slot slot = parent.getSlot(name);
 			if (slot != null)
 				return slot;
 		}
-		
+
 		return null;
 	}
-	
+
+	public void addSlot(SlotVisibility visibility, Type type, Key name) {
+		if (!slots.contains(name))
+			slots.add(new Slot(visibility, type, name));
+	}
+
 	public void addMethod(Key name, Code code) {
 		methods.put(name, code);
 	}

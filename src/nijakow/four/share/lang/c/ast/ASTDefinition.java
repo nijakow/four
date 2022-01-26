@@ -15,6 +15,7 @@ public abstract class ASTDefinition extends ASTDecl {
 		this.name = name;
 	}
 
+	protected SlotVisibility getVisibility() { return visibility; }
 	protected Type getType() { return type; }
 	protected Key getName() { return name; }
 }

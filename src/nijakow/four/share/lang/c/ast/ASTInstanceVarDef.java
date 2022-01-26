@@ -14,6 +14,6 @@ public class ASTInstanceVarDef extends ASTDefinition {
 
 	@Override
 	public void compileInto(Blueprint blueprint, FourClassLoader fs) {
-		blueprint.addSlot(getType(), getName());
+		blueprint.addSlot(getVisibility(), getType(), getName());
 	}
 }
