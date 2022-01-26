@@ -6,8 +6,8 @@ mapping exits;
 
 object get_exit(object player, string dir)
 {
-    string result = exits[dir];
-    string tp     = type(result);
+    any result = exits[dir];
+    string tp  = type(result);
 
     while (tp == "function") {
         result = call(result, player, dir);

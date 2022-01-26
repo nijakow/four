@@ -2,13 +2,15 @@ inherits "/std/cmd.c";
 
 void start()
 {
-    object loc = get_location()->get_exit(me(), arg());
+    object current_loc = get_location();
+    object loc         = current_loc->get_exit(me(), arg());
 
-    if (loc != nil) {
+    if (loc == current_loc) {
+    } else if (loc == nil) {
+        connection()->write("There is no exit in this direction!\n");
+    } else {
         me()->act_goto(loc);
         lookaround();
-    } else {
-        connection()->write("There is no exit in this direction!\n");
     }
     exit();
 }
