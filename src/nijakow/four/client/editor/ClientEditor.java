@@ -29,10 +29,12 @@ public class ClientEditor extends JFrame implements ActionListener {
 	private final StyledDocument doc;
 	private final ClientConnection connection;
 	private final String id;
+	private final String path;
 	private final ExecutorService queue;
 
 	public ClientEditor(JFrame owner, ClientConnection c, ScheduledExecutorService queue, String[] args) {
 		super(args[1]);
+		path = args[1];
 		id = args[0];
 		this.queue = queue;
 		connection = c;
@@ -60,16 +62,36 @@ public class ClientEditor extends JFrame implements ActionListener {
 		JButton close = new JButton("Close");
 		close.addActionListener(this);
 		close.setActionCommand(Commands.ACTION_EDIT_CLOSE);
+		JCheckBox highlight = new JCheckBox("Enable syntax highlighting");
+		highlight.addItemListener(event -> {
+			if (highlight.isSelected()) {
+				startSyntaxHighlighting();
+			} else {
+				stopSyntaxHighlighting();
+			}
+		});
 		JPanel buttons = new JPanel();
 		buttons.setLayout(new GridLayout(1, 3));
 		buttons.add(close);
 		buttons.add(saveAs);
 		buttons.add(save);
-		getContentPane().add(buttons, BorderLayout.SOUTH);
+		JPanel allButtons = new JPanel();
+		allButtons.setLayout(new GridLayout(2, 1));
+		allButtons.add(buttons);
+		allButtons.add(highlight);
+		getContentPane().add(allButtons, BorderLayout.SOUTH);
 		pack();
 		updateSyntaxHighlighting();
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		setLocationRelativeTo(owner);
+	}
+
+	private void startSyntaxHighlighting() {
+		// TODO
+	}
+
+	private  void stopSyntaxHighlighting() {
+		// TODO
 	}
 
 	public void dispose() {
