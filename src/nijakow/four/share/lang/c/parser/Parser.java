@@ -1,8 +1,10 @@
 package nijakow.four.share.lang.c.parser;
 
+import java.beans.Visibility;
 import java.util.ArrayList;
 import java.util.List;
 
+import nijakow.four.share.lang.c.SlotVisibility;
 import nijakow.four.share.lang.c.ast.*;
 import nijakow.four.server.runtime.objects.FInteger;
 import nijakow.four.server.runtime.objects.Instance;
@@ -324,15 +326,23 @@ public class Parser {
 				defs.add(new ASTClassDef(name, parseClass()));
 				expect(TokenType.SEMICOLON);
 			} else {
+				SlotVisibility visibility = SlotVisibility.NONE;
+
+				if (check(TokenType.PUBLIC)) {
+					visibility = SlotVisibility.PUBLIC;
+				} else if (check(TokenType.PRIVATE)) {
+					visibility = SlotVisibility.PRIVATE;
+				}
+
 				Type type = parseType();
 				Key name = expectKey();
 				if (check(TokenType.LPAREN)) {
 					Pair<Pair<Type, Key>[], Boolean> args = parseArgdefs();
 					expect(TokenType.LCURLY);
 					ASTInstruction body = parseBlock();
-					defs.add(new ASTFunctionDef(type, name, args.getFirst(), args.getSecond(), body));
+					defs.add(new ASTFunctionDef(visibility, type, name, args.getFirst(), args.getSecond(), body));
 				} else {
-					defs.add(new ASTInstanceVarDef(type, name));
+					defs.add(new ASTInstanceVarDef(visibility, type, name));
 					expect(TokenType.SEMICOLON);
 				}
 			}

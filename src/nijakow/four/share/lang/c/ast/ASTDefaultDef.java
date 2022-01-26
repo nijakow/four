@@ -5,11 +5,12 @@ import nijakow.four.server.runtime.objects.Blueprint;
 import nijakow.four.server.runtime.vm.code.Code;
 import nijakow.four.server.runtime.FourClassLoader;
 import nijakow.four.server.runtime.Key;
+import nijakow.four.share.lang.c.SlotVisibility;
 
 public class ASTDefaultDef extends ASTDefinition {
 
 	public ASTDefaultDef(Key name) {
-		super(null, name);
+		super(SlotVisibility.PRIVATE, null, name);
 	}
 
 	@Override
@@ -17,6 +18,6 @@ public class ASTDefaultDef extends ASTDefinition {
 		Code code = getName().getCode();
 		if (code == null)
 			throw new CompilationException("Oof. Can't import this code!");
-		blueprint.addMethod(getName(), code);
+		blueprint.addMethod(getVisibility(), getName(), code);
 	}
 }
