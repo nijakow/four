@@ -274,8 +274,7 @@ public class Key {
 			public void run(Fiber fiber, Instance self, Instance[] args) throws CastException {
 				String path = args[0].asFString().asString();
 				String value = args[1].asFString().asString();
-				File node;
-				node = fiber.getVM().getFilesystem().resolve(path).asTextFile().setContents(value);
+				fiber.getVM().getFilesystem().resolve(path).asTextFile().setContents(value, fiber.getSharedState().getUser());
 				fiber.setAccu(new FInteger(1));
 			}
 		};

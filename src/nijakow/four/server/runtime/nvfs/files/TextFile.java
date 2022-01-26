@@ -3,6 +3,7 @@ package nijakow.four.server.runtime.nvfs.files;
 import nijakow.four.server.runtime.FourClassLoader;
 import nijakow.four.server.runtime.Key;
 import nijakow.four.server.runtime.security.users.Group;
+import nijakow.four.server.runtime.security.users.Identity;
 import nijakow.four.server.runtime.security.users.User;
 import nijakow.four.share.lang.c.ast.ASTClass;
 import nijakow.four.share.lang.base.CompilationException;
@@ -35,10 +36,14 @@ public class TextFile extends File<SharedTextFileState> {
         return new SharedTextFileState();
     }
 
-    public TextFile setContents(String contents) {
-        this.contents = contents;
-        this.isDirty = true;
-        return this;
+    public boolean setContents(String contents, Identity identity) {
+        if (getRights().checkWriteAccess(identity)) {
+            this.contents = contents;
+            this.isDirty = true;
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public String getContents() { return contents; }

@@ -4,6 +4,7 @@ import nijakow.four.server.runtime.nvfs.FileParent;
 import nijakow.four.server.runtime.nvfs.shared.SharedFileState;
 import nijakow.four.server.runtime.security.fs.FileAccessRights;
 import nijakow.four.server.runtime.security.users.Group;
+import nijakow.four.server.runtime.security.users.Identity;
 import nijakow.four.server.runtime.security.users.User;
 import nijakow.four.server.serialization.base.ISerializable;
 import nijakow.four.server.serialization.base.ISerializer;
@@ -33,6 +34,8 @@ public abstract class File<T extends SharedFileState> implements ISerializable {
 
     public TextFile asTextFile() { return null; }
     public Directory asDirectory() { return null; }
+
+    public FileAccessRights getRights() { return this.rights; }
 
     public void rm() { getParent().remove(this); }
     public void moveTo(FileParent parent, String name) {
