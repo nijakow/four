@@ -1,5 +1,10 @@
 package nijakow.four.server.runtime;
 
+import nijakow.four.server.runtime.objects.blue.Blue;
+import nijakow.four.server.runtime.objects.blue.Blueprint;
+import nijakow.four.server.runtime.objects.collections.FList;
+import nijakow.four.server.runtime.objects.standard.FInteger;
+import nijakow.four.server.runtime.objects.standard.FString;
 import nijakow.four.share.lang.base.CompilationException;
 import nijakow.four.share.lang.c.parser.ParseException;
 import nijakow.four.server.runtime.exceptions.CastException;

@@ -1,4 +1,4 @@
-package nijakow.four.server.runtime.objects;
+package nijakow.four.server.runtime.objects.blue;
 
 import nijakow.four.server.runtime.Key;
 import nijakow.four.server.runtime.vm.code.Code;

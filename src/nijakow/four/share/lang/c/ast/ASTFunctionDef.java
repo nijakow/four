@@ -3,7 +3,7 @@ package nijakow.four.share.lang.c.ast;
 import nijakow.four.share.lang.base.CompilationException;
 import nijakow.four.server.compiler.ScopedCompiler;
 import nijakow.four.server.runtime.*;
-import nijakow.four.server.runtime.objects.Blueprint;
+import nijakow.four.server.runtime.objects.blue.Blueprint;
 import nijakow.four.server.runtime.types.Type;
 import nijakow.four.server.runtime.vm.code.Code;
 import nijakow.four.share.lang.c.SlotVisibility;

@@ -1,6 +1,6 @@
 package nijakow.four.server.runtime;
 
-import nijakow.four.server.runtime.objects.Blueprint;
+import nijakow.four.server.runtime.objects.blue.Blueprint;
 
 public class BlueprintKeyReference extends BlueprintReference {
     private final Key key;

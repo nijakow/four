@@ -3,8 +3,8 @@ package nijakow.four.share.lang.c.parser;
 import java.util.Stack;
 
 import nijakow.four.share.lang.c.ast.OperatorType;
-import nijakow.four.server.runtime.objects.FInteger;
-import nijakow.four.server.runtime.objects.FString;
+import nijakow.four.server.runtime.objects.standard.FInteger;
+import nijakow.four.server.runtime.objects.standard.FString;
 
 public class Tokenizer {	
 	private final CharStream stream;

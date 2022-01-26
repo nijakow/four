@@ -10,8 +10,8 @@ import nijakow.four.share.lang.c.parser.StringCharStream;
 import nijakow.four.share.lang.c.parser.Tokenizer;
 import nijakow.four.server.runtime.nvfs.FileParent;
 import nijakow.four.server.runtime.nvfs.shared.SharedTextFileState;
-import nijakow.four.server.runtime.objects.Blue;
-import nijakow.four.server.runtime.objects.Blueprint;
+import nijakow.four.server.runtime.objects.blue.Blue;
+import nijakow.four.server.runtime.objects.blue.Blueprint;
 import nijakow.four.server.serialization.base.ISerializer;
 
 public class TextFile extends File<SharedTextFileState> {

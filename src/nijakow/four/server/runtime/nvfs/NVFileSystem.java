@@ -1,12 +1,12 @@
 package nijakow.four.server.runtime.nvfs;
 
-import nijakow.four.server.runtime.objects.Blueprint;
+import nijakow.four.server.runtime.objects.blue.Blueprint;
 import nijakow.four.share.lang.base.CompilationException;
 import nijakow.four.share.lang.c.parser.ParseException;
 import nijakow.four.server.runtime.nvfs.files.Directory;
 import nijakow.four.server.runtime.nvfs.files.File;
 import nijakow.four.server.runtime.nvfs.files.TextFile;
-import nijakow.four.server.runtime.objects.Blue;
+import nijakow.four.server.runtime.objects.blue.Blue;
 import nijakow.four.server.serialization.base.ISerializable;
 import nijakow.four.server.serialization.base.ISerializer;
 import nijakow.four.share.util.Pair;
