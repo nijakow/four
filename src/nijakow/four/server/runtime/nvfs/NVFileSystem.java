@@ -129,7 +129,7 @@ public class NVFileSystem implements FileParent, ISerializable {
             }
         } else if (file.isFile()) {
             TextFile textFile = touch(newPath, db.getRootUser(), db.getRootGroup());
-            textFile.setContents(getResourceText(file), db.getRootUser());
+            textFile.setContents(getResourceText(file));
         }
     }
 

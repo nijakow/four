@@ -264,7 +264,11 @@ public class Key {
 				if (node == null) {
 					fiber.setAccu(Instance.getNil());
 				} else {
-					fiber.setAccu(new FString(node.getContents()));
+					String contents = node.readContents(fiber.getSharedState().getUser());
+					if (contents != null)
+						fiber.setAccu(new FString(node.getContents()));
+					else
+						fiber.setAccu(Instance.getNil());
 				}
 			}
 		};
@@ -274,7 +278,7 @@ public class Key {
 			public void run(Fiber fiber, Instance self, Instance[] args) throws CastException {
 				String path = args[0].asFString().asString();
 				String value = args[1].asFString().asString();
-				fiber.getVM().getFilesystem().resolve(path).asTextFile().setContents(value, fiber.getSharedState().getUser());
+				fiber.getVM().getFilesystem().resolve(path).asTextFile().writeContents(value, fiber.getSharedState().getUser());
 				fiber.setAccu(new FInteger(1));
 			}
 		};

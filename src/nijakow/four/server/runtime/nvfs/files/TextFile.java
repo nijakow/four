@@ -36,17 +36,28 @@ public class TextFile extends File<SharedTextFileState> {
         return new SharedTextFileState();
     }
 
-    public boolean setContents(String contents, Identity identity) {
+    public String getContents() { return contents; }
+    public void setContents(String contents) {
+        this.contents = contents;
+        this.isDirty = true;
+    }
+
+    public String readContents(Identity identity) {
+        if (getRights().checkReadAccess(identity)) {
+            return getContents();
+        } else {
+            return null;
+        }
+    }
+
+    public boolean writeContents(String contents, Identity identity) {
         if (getRights().checkWriteAccess(identity)) {
-            this.contents = contents;
-            this.isDirty = true;
+            setContents(contents);
             return true;
         } else {
             return false;
         }
     }
-
-    public String getContents() { return contents; }
 
     public Blueprint getBlueprint() { return blueprint; }
     public Blue getInstance() {
