@@ -46,6 +46,11 @@ public class TextFile extends File<SharedTextFileState> {
         return getState().getBlue();
     }
 
+    public void ensureCompiled() throws CompilationException, ParseException {
+        if (blueprint == null)
+            compile();
+    }
+
     public Blueprint compile() throws ParseException, CompilationException {
         if (blueprint == null || isDirty) {
             System.out.println("Compiling " + getFullName() + "...");

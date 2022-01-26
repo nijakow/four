@@ -139,7 +139,7 @@ public class NVFileSystem implements FileParent, ISerializable {
         TextFile file = resolveTextFile(name);
         if (file == null)
             return null;
-        file.compile();
+        file.ensureCompiled();
         return file.getInstance();
     }
 
