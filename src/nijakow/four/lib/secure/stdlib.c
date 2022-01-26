@@ -18,6 +18,12 @@ use $recompile;
 use $mkdir;
 use $rm;
 use $mv;
+use $stat;
+use $getown;
+use $getgrp;
+use $chmod;
+use $chown;
+use $chgrp;
 
 
 string type(any obj)
@@ -358,3 +364,34 @@ bool recompile(string path)
 {
     return $recompile(path);
 }
+
+int stat(string path)
+{
+    return $stat(path);
+}
+
+string getown(string path)
+{
+    return $getown(path);
+}
+
+string getgrp(string path)
+{
+    return $getgrp(path);
+}
+
+int chmod(string path, int flags)
+{
+    return $chmod(path, flags);
+}
+
+int chown(string path, string uid)
+{
+    return $chown(path, uid);
+}
+
+int chgrp(string path, string gid)
+{
+    return $chgrp(path, gid);
+}
+

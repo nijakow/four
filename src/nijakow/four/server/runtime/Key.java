@@ -390,7 +390,7 @@ public class Key {
 			public void run(Fiber fiber, Instance self, Instance[] args) throws FourRuntimeException {
 				final String curPath = args[0].asFString().asString();
 				File file = fiber.getVM().getFilesystem().resolve(curPath);
-				fiber.setAccu((file != null) ? new FString(file.getRights().getUserAccessRights().getIdentity().getName()) : Instance.getNil());
+				fiber.setAccu((file != null) ? new FString(file.getRights().getUserAccessRights().getIdentity().getID()) : Instance.getNil());
 			}
 		};
 		get("$getgrp").code = new BuiltinCode() {
@@ -398,7 +398,7 @@ public class Key {
 			public void run(Fiber fiber, Instance self, Instance[] args) throws FourRuntimeException {
 				final String curPath = args[0].asFString().asString();
 				File file = fiber.getVM().getFilesystem().resolve(curPath);
-				fiber.setAccu((file != null) ? new FString(file.getRights().getGroupAccessRights().getIdentity().getName()) : Instance.getNil());
+				fiber.setAccu((file != null) ? new FString(file.getRights().getGroupAccessRights().getIdentity().getID()) : Instance.getNil());
 			}
 		};
 		get("$chmod").code = new BuiltinCode() {
