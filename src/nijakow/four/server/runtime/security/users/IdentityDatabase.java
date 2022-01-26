@@ -13,6 +13,7 @@ public class IdentityDatabase {
         this.usersGroup = newGroup("users");
         this.rootUser = newUser("root");
         this.rootGroup = newGroup("admin");
+        this.rootGroup.add(this.rootUser);
     }
 
     static String newID() {
