@@ -67,7 +67,9 @@ public class ClientEditor extends JFrame implements ActionListener {
 				stopSyntaxHighlighting();
 			}
 		});
-		// TODO Select highlighter
+		if (path.endsWith(".c")) {
+			highlight.setSelected(true);
+		}
 		JPanel buttons = new JPanel();
 		buttons.setLayout(new GridLayout(1, 3));
 		buttons.add(close);
