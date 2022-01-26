@@ -102,6 +102,21 @@ public class NVFileSystem implements FileParent, ISerializable {
         return false;
     }
 
+    public boolean chmod(String path, int flags, Identity identity) {
+        File file = resolve(path);
+        return (file != null && file.chmod(identity, flags));
+    }
+
+    public boolean chown(String path, Identity newOwner, Identity actor) {
+        File file = resolve(path);
+        return (file != null && file.chown(actor, newOwner));
+    }
+
+    public boolean chgrp(String path, Identity newGroup, Identity actor) {
+        File file = resolve(path);
+        return (file != null && file.chown(actor, newGroup));
+    }
+
     @Override
     public boolean add(File file, String name) { return false; }
 
