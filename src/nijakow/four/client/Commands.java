@@ -5,8 +5,9 @@ public abstract class Commands {
 	public static final String ACTION_SEND = "send";
 	public static final String ACTION_STATUS_LABEL_TIMER = "invisible";
 	public static final String ACTION_PASSWORD = "password";
-	public static final String ACTION_EDIT_REJECT = "editor/reject";
-	public static final String ACTION_EDIT_ACCEPT = "editor/accept";
+	public static final String ACTION_EDIT_CLOSE = "editor/reject";
+	public static final String ACTION_EDIT_SAVE = "editor/accept";
+	public static final String ACTION_EDIT_SAVE_AS = "editor/saveAs";
 	public static final String STYLE_ERROR = "error";
 	public static final String STYLE_INPUT = "input";
 	public static final String STYLE_NORMAL = "RESET";
