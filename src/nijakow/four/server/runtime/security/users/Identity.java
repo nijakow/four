@@ -11,8 +11,10 @@ public abstract class Identity {
     }
 
     protected IdentityDatabase getDB() { return db; }
-
     public String getID() { return id; }
+
+    public User asUser() { return null; }
+    public Group asGroup() { return null; }
 
     public boolean includes(Identity identity) { return identity == this; }
 }

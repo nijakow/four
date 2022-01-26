@@ -11,6 +11,11 @@ public class Group extends Identity {
     }
 
     @Override
+    public Group asGroup() {
+        return this;
+    }
+
+    @Override
     public boolean includes(Identity identity) {
         for (Identity member : members) {
             if (member.includes(identity))
