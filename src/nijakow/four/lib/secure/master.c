@@ -1,4 +1,4 @@
-inherits "/secure/stdlib.c";
+inherits "/secure/object.c";
 
 use $on_connect;
 use $on_error;
@@ -16,6 +16,7 @@ void handle_error(string key, string type, string msg)
 
 void create()
 {
+    "/secure/object.c"::create();
     $on_error(this::handle_error);
     $on_connect(this::receive);
 }
