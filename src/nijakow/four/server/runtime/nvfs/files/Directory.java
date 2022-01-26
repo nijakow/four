@@ -44,10 +44,14 @@ public class Directory extends File<SharedDirectoryState> implements FileParent 
         }
     }
 
-    public Directory mkdir(String name, User owner, Group gowner) {
-        Directory dir = new Directory(this, owner, gowner);
-        files.put(name, dir);
-        return dir;
+    public Directory mkdir(String name, Identity identity, User owner, Group gowner) {
+        if (getRights().checkWriteAccess(identity)) {
+            Directory dir = new Directory(this, owner, gowner);
+            files.put(name, dir);
+            return dir;
+        } else {
+            return null;
+        }
     }
 
     @Override

@@ -322,7 +322,10 @@ public class Key {
 			@Override
 			public void run(Fiber fiber, Instance self, Instance[] args) throws FourRuntimeException {
 				String path = args[0].asFString().asString();
-				if (fiber.getVM().getFilesystem().mkdir(path, fiber.getSharedState().getUser(), fiber.getVM().getIdentityDB().getUsersGroup()) != null) {
+				if (fiber.getVM().getFilesystem().mkdir(path,
+						fiber.getSharedState().getUser(),
+						fiber.getSharedState().getUser(),
+						fiber.getVM().getIdentityDB().getUsersGroup()) != null) {
 					fiber.setAccu(new FInteger(1));
 				} else {
 					fiber.setAccu(new FInteger(0));
