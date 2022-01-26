@@ -5,20 +5,23 @@ import nijakow.four.server.runtime.objects.blue.Blue;
 import nijakow.four.server.runtime.exceptions.FourRuntimeException;
 import nijakow.four.server.runtime.Key;
 import nijakow.four.server.runtime.nvfs.NVFileSystem;
+import nijakow.four.server.runtime.security.users.IdentityDatabase;
 import nijakow.four.server.runtime.vm.VM;
 
 import java.io.IOException;
 
 public class Four implements Runnable {
+	private final IdentityDatabase db;
 	private final NVFileSystem fs;
 	private final Server server;
 	private final VM vm;
 	private boolean wasStarted = false;
 
-	public Four(NVFileSystem fs, int[] ports) throws IOException {
+	public Four(IdentityDatabase db, NVFileSystem fs, int[] ports) throws IOException {
+		this.db = db;
 		this.fs = fs;
 		this.server = new Server();
-		this.vm = new VM(this.fs, this.server);
+		this.vm = new VM(this.db, this.fs, this.server);
 		
 		for (int port : ports)
 			server.serveOn(port);

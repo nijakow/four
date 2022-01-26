@@ -15,6 +15,10 @@ public class FileAccessRights {
         this.otherAccessRights = otherAccessRights;
     }
 
+    public FileAccessRights(User user, Group group) {
+        this(new AccessRights<User>(user), new AccessRights<Group>(group), new Permissions(true, false, false));
+    }
+
     public boolean checkReadAccess(Identity identity) {
         return userAccessRights.checkReadAccess(identity)
                 || groupAccessRights.checkReadAccess(identity)

@@ -2,21 +2,27 @@ package nijakow.four.server.runtime.nvfs.files;
 
 import nijakow.four.server.runtime.nvfs.FileParent;
 import nijakow.four.server.runtime.nvfs.shared.SharedFileState;
+import nijakow.four.server.runtime.security.fs.FileAccessRights;
+import nijakow.four.server.runtime.security.users.Group;
+import nijakow.four.server.runtime.security.users.User;
 import nijakow.four.server.serialization.base.ISerializable;
 import nijakow.four.server.serialization.base.ISerializer;
 
 public abstract class File<T extends SharedFileState> implements ISerializable {
     private FileParent parent;
+    private FileAccessRights rights;
     private T state;
 
-    protected File(FileParent parent) {
+    protected File(FileParent parent, User owner, Group gowner) {
         this.parent = parent;
+        this.rights = new FileAccessRights(owner, gowner);
         this.state = createFileState();
     }
 
     protected void serializeCore(ISerializer serializer) {
         serializer.openProperty("file.name").writeString(getName()).close();
         serializer.openProperty("file.path").writeString(getFullName()).close();
+        // TODO: Permissions!
     }
 
     protected FileParent getParent() { return parent; }

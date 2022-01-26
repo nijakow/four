@@ -2,6 +2,8 @@ package nijakow.four.server.runtime.nvfs.files;
 
 import nijakow.four.server.runtime.FourClassLoader;
 import nijakow.four.server.runtime.Key;
+import nijakow.four.server.runtime.security.users.Group;
+import nijakow.four.server.runtime.security.users.User;
 import nijakow.four.share.lang.c.ast.ASTClass;
 import nijakow.four.share.lang.base.CompilationException;
 import nijakow.four.share.lang.c.parser.ParseException;
@@ -19,8 +21,8 @@ public class TextFile extends File<SharedTextFileState> {
     private Blueprint blueprint;
     private boolean isDirty = true;
 
-    TextFile(FileParent parent) {
-        super(parent);
+    TextFile(FileParent parent, User owner, Group gowner) {
+        super(parent, owner, gowner);
     }
 
     @Override

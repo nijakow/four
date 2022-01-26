@@ -1,6 +1,9 @@
 package nijakow.four.server.runtime.nvfs;
 
 import nijakow.four.server.runtime.objects.blue.Blueprint;
+import nijakow.four.server.runtime.security.users.Group;
+import nijakow.four.server.runtime.security.users.IdentityDatabase;
+import nijakow.four.server.runtime.security.users.User;
 import nijakow.four.share.lang.base.CompilationException;
 import nijakow.four.share.lang.c.parser.ParseException;
 import nijakow.four.server.runtime.nvfs.files.Directory;
@@ -18,8 +21,8 @@ import java.io.InputStreamReader;
 public class NVFileSystem implements FileParent, ISerializable {
     private Directory root;
 
-    public NVFileSystem() {
-        this.root = new Directory(this);
+    public NVFileSystem(IdentityDatabase db) {
+        this.root = new Directory(this, db.getRootUser(), db.getRootGroup());
     }
 
     @Override
@@ -62,14 +65,14 @@ public class NVFileSystem implements FileParent, ISerializable {
         }
     }
 
-    public TextFile touch(String file) {
+    public TextFile touch(String file, User owner, Group gowner) {
         Pair<String, String> path = splitPath(file);
-        return resolve(path.getFirst()).asDirectory().touch(path.getSecond());
+        return resolve(path.getFirst()).asDirectory().touch(path.getSecond(), owner, gowner);
     }
 
-    public Directory mkdir(String file) {
+    public Directory mkdir(String file, User owner, Group gowner) {
         Pair<String, String> path = splitPath(file);
-        return resolve(path.getFirst()).asDirectory().mkdir(path.getSecond());
+        return resolve(path.getFirst()).asDirectory().mkdir(path.getSecond(), owner, gowner);
     }
 
     public boolean mv(String file, String loc) {
@@ -115,23 +118,23 @@ public class NVFileSystem implements FileParent, ISerializable {
         }
     }
 
-    public void load(java.io.File file, String path) throws CompilationException, ParseException {
+    public void load(java.io.File file, String path, IdentityDatabase db) {
         final String name = file.getName();
         final String newPath = path + "/" + name;
 
         if (file.isDirectory()) {
-            mkdir(newPath);
+            mkdir(newPath, db.getRootUser(), db.getRootGroup());
             for (java.io.File f : file.listFiles()) {
-                load(f, newPath);
+                load(f, newPath, db);
             }
         } else if (file.isFile()) {
-            touch(newPath).setContents(getResourceText(file));
+            touch(newPath, db.getRootUser(), db.getRootGroup()).setContents(getResourceText(file));
         }
     }
 
-    public void load(java.io.File file) throws CompilationException, ParseException {
+    public void load(java.io.File file, IdentityDatabase db) throws CompilationException, ParseException {
         for (java.io.File f : file.listFiles()) {
-            load(f, "");
+            load(f, "", db);
         }
     }
 

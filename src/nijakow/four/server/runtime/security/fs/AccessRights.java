@@ -10,6 +10,10 @@ public class AccessRights<T extends Identity> extends Permissions {
         this.identity = identity;
     }
 
+    public AccessRights(T identity) {
+        this(identity, true, true, false);
+    }
+
     public T getIdentity() { return identity; }
     public void setIdentity(T identity) { this.identity = identity; }
 

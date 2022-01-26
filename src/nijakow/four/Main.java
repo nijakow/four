@@ -1,5 +1,6 @@
 package nijakow.four;
 
+import nijakow.four.server.runtime.security.users.IdentityDatabase;
 import nijakow.four.share.lang.base.CompilationException;
 import nijakow.four.share.lang.c.parser.ParseException;
 import nijakow.four.client.ClientWindow;
@@ -12,7 +13,8 @@ import java.util.ArrayList;
 public class Main {
 
 	public static void main(String[] args) throws IOException, CompilationException, ParseException {
-		NVFileSystem fileSystem = new NVFileSystem();
+		IdentityDatabase db = new IdentityDatabase();
+		NVFileSystem fileSystem = new NVFileSystem(db);
 
 		ArrayList<Integer> ports = new ArrayList<>();
 
@@ -22,7 +24,7 @@ public class Main {
 			switch (args[i]) {
 			case "-d":
 			case "--directory":
-				fileSystem.load(new java.io.File(args[++i]));
+				fileSystem.load(new java.io.File(args[++i]), db);
 				break;
 
 			case "--client":
@@ -102,7 +104,7 @@ public class Main {
 		while (clients --> 0)
 			ClientWindow.openWindow(ps);
 		if (server) {
-			Four four = new Four(fileSystem, ps);
+			Four four = new Four(db, fileSystem, ps);
 			four.run();
 		}
 	}

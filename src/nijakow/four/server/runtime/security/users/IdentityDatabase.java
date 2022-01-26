@@ -18,9 +18,27 @@ public class IdentityDatabase {
         identities.put(identity.getID(), identity);
     }
 
+    public Identity find(String id) { return identities.get(id); }
+
     public User newUser() {
         return new User(this);
     }
 
-    public Identity find(String id) { return identities.get(id); }
+    public User getNewUnprivilegedUser() {
+        return newUser();
+    }
+
+    public User getRootUser() {
+        return null;    // TODO
+    }
+
+    public Group getRootGroup() {
+        // TODO
+        return null;
+    }
+
+    public Group getUsersGroup() {
+        // TODO
+        return null;
+    }
 }

@@ -14,7 +14,7 @@ public class Fiber {
 	private final Stack<Instance> stack = new Stack<>();
 	private Frame top = null;
 
-	Fiber(VM vm) { this(vm, new SharedFiberState()); }
+	Fiber(VM vm) { this(vm, new SharedFiberState(vm)); }
 	Fiber(VM vm, SharedFiberState state) {
 		this.vm = vm;
 		this.state = state;
