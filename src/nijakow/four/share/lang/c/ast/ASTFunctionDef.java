@@ -31,6 +31,6 @@ public class ASTFunctionDef extends ASTDefinition {
 			compiler.enableVarargs();
 		body.compile(compiler);
 		Code code = compiler.finish();
-		blueprint.addMethod(getName(), code);
+		blueprint.addMethod(getVisibility(), getName(), code);
 	}
 }

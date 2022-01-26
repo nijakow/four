@@ -115,16 +115,17 @@ public class Blue extends Instance {
 	
 	@Override
 	public void send(Fiber fiber, Key key, int args) throws FourRuntimeException {
-		Code code = blueprint == null ? null : blueprint.getMethod(key);
-		if (code == null)
+		Method method = blueprint == null ? null : blueprint.getMethod(key);
+		if (method == null)
 			super.send(fiber, key, args);
 		else
-			code.invoke(fiber, args, this);
+			method.getCode().invoke(fiber, args, this);
 	}
 	
 	@Override
 	public Code extractMethod(VM vm, Key key) {
-		return blueprint.getMethod(key);
+		Method method = blueprint.getMethod(key);
+		return (method != null) ? method.getCode() : null;
 	}
 
 	public Blue cloneBlue() {

@@ -15,7 +15,7 @@ public class Blueprint {
 	private final String filename;
 	private final List<Blueprint> supers = new ArrayList<>();
 	private final List<Slot> slots = new ArrayList<>();
-	private final Map<Key, Code> methods = new HashMap<>();
+	private final Map<Key, Method> methods = new HashMap<>();
 
 	public Blueprint(String filename) {
 		this.filename = filename;
@@ -26,16 +26,16 @@ public class Blueprint {
 		return filename;
 	}
 
-	public Code getMethod(Key key) {
-		Code c = methods.get(key);
-		if (c == null) {
+	public Method getMethod(Key key) {
+		Method m = methods.get(key);
+		if (m == null) {
 			for (Blueprint s : supers) {
-				c = s.getMethod(key);
-				if (c != null)
+				m = s.getMethod(key);
+				if (m != null)
 					break;
 			}
 		}
-		return c;
+		return m;
 	}
 
 	public void addSuper(Blueprint bp) {
@@ -63,8 +63,8 @@ public class Blueprint {
 			slots.add(new Slot(visibility, type, name));
 	}
 
-	public void addMethod(Key name, Code code) {
-		methods.put(name, code);
+	public void addMethod(SlotVisibility visibility, Key name, Code code) {
+		methods.put(name, new Method(visibility, name, code));
 	}
 
 	public Blue createBlue() {

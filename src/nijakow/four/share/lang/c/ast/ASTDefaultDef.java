@@ -18,6 +18,6 @@ public class ASTDefaultDef extends ASTDefinition {
 		Code code = getName().getCode();
 		if (code == null)
 			throw new CompilationException("Oof. Can't import this code!");
-		blueprint.addMethod(getName(), code);
+		blueprint.addMethod(getVisibility(), getName(), code);
 	}
 }
