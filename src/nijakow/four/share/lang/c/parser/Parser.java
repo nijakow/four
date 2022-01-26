@@ -1,12 +1,11 @@
 package nijakow.four.share.lang.c.parser;
 
-import java.beans.Visibility;
 import java.util.ArrayList;
 import java.util.List;
 
 import nijakow.four.share.lang.c.SlotVisibility;
 import nijakow.four.share.lang.c.ast.*;
-import nijakow.four.server.runtime.objects.FInteger;
+import nijakow.four.server.runtime.objects.standard.FInteger;
 import nijakow.four.server.runtime.objects.Instance;
 import nijakow.four.server.runtime.Key;
 import nijakow.four.server.runtime.types.Type;

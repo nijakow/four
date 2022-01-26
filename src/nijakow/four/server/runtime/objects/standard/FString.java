@@ -1,5 +1,7 @@
-package nijakow.four.server.runtime.objects;
+package nijakow.four.server.runtime.objects.standard;
 
+import nijakow.four.server.runtime.objects.Instance;
+import nijakow.four.server.runtime.objects.blue.Blue;
 import nijakow.four.share.lang.base.CompilationException;
 import nijakow.four.share.lang.c.parser.ParseException;
 import nijakow.four.server.runtime.vm.code.Code;

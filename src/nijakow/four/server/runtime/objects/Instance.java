@@ -1,5 +1,11 @@
 package nijakow.four.server.runtime.objects;
 
+import nijakow.four.server.runtime.objects.blue.Blue;
+import nijakow.four.server.runtime.objects.collections.FList;
+import nijakow.four.server.runtime.objects.collections.FMapping;
+import nijakow.four.server.runtime.objects.misc.FConnection;
+import nijakow.four.server.runtime.objects.standard.FClosure;
+import nijakow.four.server.runtime.objects.standard.FString;
 import nijakow.four.server.runtime.vm.code.Code;
 import nijakow.four.server.runtime.Key;
 import nijakow.four.server.runtime.types.Type;

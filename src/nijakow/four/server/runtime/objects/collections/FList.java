@@ -1,5 +1,6 @@
-package nijakow.four.server.runtime.objects;
+package nijakow.four.server.runtime.objects.collections;
 
+import nijakow.four.server.runtime.objects.Instance;
 import nijakow.four.server.runtime.types.ListType;
 import nijakow.four.server.runtime.types.Type;
 import nijakow.four.server.runtime.exceptions.CastException;

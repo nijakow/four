@@ -2,6 +2,11 @@ package nijakow.four.server.runtime.types;
 
 import nijakow.four.server.runtime.exceptions.CastException;
 import nijakow.four.server.runtime.objects.*;
+import nijakow.four.server.runtime.objects.blue.Blue;
+import nijakow.four.server.runtime.objects.collections.FMapping;
+import nijakow.four.server.runtime.objects.standard.FClosure;
+import nijakow.four.server.runtime.objects.standard.FInteger;
+import nijakow.four.server.runtime.objects.standard.FString;
 
 public abstract class Type {
 	private static final Type ANY = new Type() {

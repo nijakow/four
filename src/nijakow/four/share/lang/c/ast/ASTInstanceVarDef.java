@@ -1,6 +1,6 @@
 package nijakow.four.share.lang.c.ast;
 
-import nijakow.four.server.runtime.objects.Blueprint;
+import nijakow.four.server.runtime.objects.blue.Blueprint;
 import nijakow.four.server.runtime.FourClassLoader;
 import nijakow.four.server.runtime.Key;
 import nijakow.four.server.runtime.types.Type;

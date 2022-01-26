@@ -1,7 +1,7 @@
 package nijakow.four.server.runtime;
 
 import nijakow.four.server.runtime.nvfs.NVFileSystem;
-import nijakow.four.server.runtime.objects.Blueprint;
+import nijakow.four.server.runtime.objects.blue.Blueprint;
 
 public class BlueprintFileReference extends BlueprintReference {
     private final NVFileSystem fs;

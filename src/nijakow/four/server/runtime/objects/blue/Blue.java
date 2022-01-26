@@ -1,16 +1,16 @@
-package nijakow.four.server.runtime.objects;
+package nijakow.four.server.runtime.objects.blue;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import nijakow.four.server.runtime.objects.standard.FClosure;
+import nijakow.four.server.runtime.objects.Instance;
 import nijakow.four.server.runtime.vm.code.Code;
 import nijakow.four.server.runtime.Key;
-import nijakow.four.server.runtime.types.Type;
 import nijakow.four.server.runtime.exceptions.FourRuntimeException;
 import nijakow.four.server.runtime.vm.Fiber;
 import nijakow.four.server.runtime.vm.VM;
 import nijakow.four.server.serialization.base.ISerializer;
-import nijakow.four.share.util.Pair;
 
 public class Blue extends Instance {
 	private static long ID_COUNTER = 0;

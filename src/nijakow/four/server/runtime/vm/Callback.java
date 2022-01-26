@@ -2,8 +2,8 @@ package nijakow.four.server.runtime.vm;
 
 import nijakow.four.server.runtime.*;
 import nijakow.four.server.runtime.exceptions.FourRuntimeException;
-import nijakow.four.server.runtime.objects.Blue;
-import nijakow.four.server.runtime.objects.FClosure;
+import nijakow.four.server.runtime.objects.blue.Blue;
+import nijakow.four.server.runtime.objects.standard.FClosure;
 import nijakow.four.server.runtime.objects.Instance;
 
 public class Callback {

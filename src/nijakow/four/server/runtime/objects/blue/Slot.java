@@ -1,6 +1,7 @@
-package nijakow.four.server.runtime.objects;
+package nijakow.four.server.runtime.objects.blue;
 
 import nijakow.four.server.runtime.Key;
+import nijakow.four.server.runtime.objects.Instance;
 import nijakow.four.server.runtime.types.Type;
 import nijakow.four.share.lang.c.SlotVisibility;
 

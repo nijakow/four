@@ -1,4 +1,4 @@
-package nijakow.four.server.runtime.objects;
+package nijakow.four.server.runtime.objects.blue;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,7 +9,6 @@ import nijakow.four.server.runtime.vm.code.Code;
 import nijakow.four.server.runtime.Key;
 import nijakow.four.server.runtime.types.Type;
 import nijakow.four.share.lang.c.SlotVisibility;
-import nijakow.four.share.util.Pair;
 
 public class Blueprint {
 	private final String filename;

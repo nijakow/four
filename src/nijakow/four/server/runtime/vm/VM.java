@@ -5,6 +5,10 @@ import nijakow.four.server.runtime.*;
 import nijakow.four.server.runtime.exceptions.FourRuntimeException;
 import nijakow.four.server.runtime.nvfs.NVFileSystem;
 import nijakow.four.server.runtime.objects.*;
+import nijakow.four.server.runtime.objects.blue.Blue;
+import nijakow.four.server.runtime.objects.misc.FConnection;
+import nijakow.four.server.runtime.objects.standard.FClosure;
+import nijakow.four.server.runtime.objects.standard.FString;
 import nijakow.four.share.util.ComparablePair;
 
 import java.util.LinkedList;
