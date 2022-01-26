@@ -5,6 +5,15 @@ import java.util.Map;
 
 public class IdentityDatabase {
     private final Map<String, Identity> identities = new HashMap<>();
+    private final Group usersGroup;
+    private final User rootUser;
+    private final Group rootGroup;
+
+    public IdentityDatabase() {
+        this.usersGroup = newGroup();
+        this.rootUser = newUser();
+        this.rootGroup = newGroup();
+    }
 
     static String newID() {
         final String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_-";
@@ -20,25 +29,26 @@ public class IdentityDatabase {
 
     public Identity find(String id) { return identities.get(id); }
 
-    public User newUser() {
+    public User getNewUnprivilegedUser() {
         return new User(this);
     }
 
-    public User getNewUnprivilegedUser() {
-        return newUser();
+    public User newUser() {
+        User user = new User(this);
+        getUsersGroup().add(user);
+        return user;
     }
+    public Group newGroup() { return new Group(this); }
 
     public User getRootUser() {
-        return null;    // TODO
+        return rootUser;
     }
 
     public Group getRootGroup() {
-        // TODO
-        return null;
+        return rootGroup;
     }
 
     public Group getUsersGroup() {
-        // TODO
-        return null;
+        return usersGroup;
     }
 }
