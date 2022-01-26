@@ -24,6 +24,8 @@ use $getgrp;
 use $chmod;
 use $chown;
 use $chgrp;
+use $uname;
+use $gname;
 
 
 string type(any obj)
@@ -395,3 +397,12 @@ int chgrp(string path, string gid)
     return $chgrp(path, gid);
 }
 
+string uname(string id)
+{
+    return $uname(id);
+}
+
+string gname(string id)
+{
+    return $gname(id);
+}

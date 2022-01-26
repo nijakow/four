@@ -10,7 +10,7 @@ void start(list argv)
             string path = resolve(pwd(), argv[i]);
             string owner = getown(path);
             if (owner != nil)
-                connection()->write(getown(path), "\n");
+                connection()->write(uname(getown(path)), "\n");
             else
                 connection()->write("ID not found!\n");
         }

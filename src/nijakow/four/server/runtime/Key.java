@@ -377,6 +377,28 @@ public class Key {
 				}
 			}
 		};
+		get("$uname").code = new BuiltinCode() {
+			@Override
+			public void run(Fiber fiber, Instance self, Instance[] args) throws FourRuntimeException {
+				final String id = args[0].asFString().asString();
+				Identity user = fiber.getVM().getIdentityDB().find(id);
+				if (user != null && user.asUser() != null)
+					fiber.setAccu(new FString(user.getName()));
+				else
+					fiber.setAccu(Instance.getNil());
+			}
+		};
+		get("$gname").code = new BuiltinCode() {
+			@Override
+			public void run(Fiber fiber, Instance self, Instance[] args) throws FourRuntimeException {
+				final String id = args[0].asFString().asString();
+				Identity user = fiber.getVM().getIdentityDB().find(id);
+				if (user != null && user.asGroup() != null)
+					fiber.setAccu(new FString(user.getName()));
+				else
+					fiber.setAccu(Instance.getNil());
+			}
+		};
 		get("$stat").code = new BuiltinCode() {
 			@Override
 			public void run(Fiber fiber, Instance self, Instance[] args) throws FourRuntimeException {
