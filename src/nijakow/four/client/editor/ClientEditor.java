@@ -28,7 +28,7 @@ public class ClientEditor extends JFrame implements ActionListener {
 	private final String path;
 	private final ScheduledExecutorService queue;
 	private ScheduledFuture<?> future;
-	private final Runnable highlighter = () -> updateSyntaxHighlighting();
+	private final Runnable highlighter = this::updateSyntaxHighlighting;
 
 	public ClientEditor(JFrame owner, ClientConnection c, ScheduledExecutorService queue, String[] args) {
 		super(args[1]);
@@ -92,7 +92,7 @@ public class ClientEditor extends JFrame implements ActionListener {
 		send(false, null);
 		super.dispose();
 	}
-	
+
 	private void addStyles() {
 		final Style def = pane.getLogicalStyle();
 		Style s = doc.addStyle(Commands.STYLE_KEYWORD, def);
