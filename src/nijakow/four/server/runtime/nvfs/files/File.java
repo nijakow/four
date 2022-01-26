@@ -37,15 +37,33 @@ public abstract class File<T extends SharedFileState> implements ISerializable {
 
     public FileAccessRights getRights() { return this.rights; }
 
-    public void rm() { getParent().remove(this); }
-    public void moveTo(FileParent parent, String name) {
+    public void forceRM() { getParent().remove(this); }
+    public void forceMoveTo(FileParent parent, String name) {
         if (parent == null)
-            rm();
+            forceRM();
         else if (parent == getParent())
             getParent().rename(this, name);
         else if (parent.add(this, name)) {
-            rm();
+            forceRM();
             this.parent = parent;
+        }
+    }
+
+    public boolean rm(Identity identity) {
+        if (getParent().hasWriteAccess(identity)) {
+            forceRM();
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean moveTo(FileParent parent, String name, Identity identity) {
+        if (getParent().hasWriteAccess(identity) && parent.hasWriteAccess(identity)) {
+            forceMoveTo(parent, name);
+            return true;
+        } else {
+            return false;
         }
     }
 

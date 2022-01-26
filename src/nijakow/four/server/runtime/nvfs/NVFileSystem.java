@@ -41,6 +41,11 @@ public class NVFileSystem implements FileParent, ISerializable {
         return "";
     }
 
+    @Override
+    public boolean hasWriteAccess(Identity identity) {
+        return getRoot().hasWriteAccess(identity);
+    }
+
     public Directory getRoot() {
         return root;
     }
@@ -76,7 +81,7 @@ public class NVFileSystem implements FileParent, ISerializable {
         return resolve(path.getFirst()).asDirectory().mkdir(path.getSecond(), identity, owner, gowner);
     }
 
-    public boolean mv(String file, String loc) {
+    public boolean mv(String file, String loc, Identity identity) {
         File f = resolve(file);
         File target = resolve(loc);
 
@@ -84,13 +89,13 @@ public class NVFileSystem implements FileParent, ISerializable {
             if (target != null) {
                 if (target.asDirectory() == null)
                     return false;
-                f.moveTo(target.asDirectory(), f.getName());
+                f.moveTo(target.asDirectory(), f.getName(), identity);
             } else {
                 Pair<String, String> path = splitPath(loc);
                 target = resolve(path.getFirst());
                 if (target == null || target.asDirectory() == null)
                     return false;
-                f.moveTo(target.asDirectory(), path.getSecond());
+                f.moveTo(target.asDirectory(), path.getSecond(), identity);
             }
             return true;
         }

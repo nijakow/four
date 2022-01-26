@@ -338,8 +338,7 @@ public class Key {
 				String curPath = args[0].asFString().asString();
 				File file = fiber.getVM().getFilesystem().resolve(curPath);
 				if (file != null) {
-					file.rm();
-					fiber.setAccu(new FInteger(1));
+					fiber.setAccu(new FInteger(file.rm(fiber.getSharedState().getUser()) ? 1 : 0));
 				} else {
 					fiber.setAccu(new FInteger(0));
 				}
@@ -349,7 +348,9 @@ public class Key {
 
 			@Override
 			public void run(Fiber fiber, Instance self, Instance[] args) throws CastException {
-				if (fiber.getVM().getFilesystem().mv(args[0].asFString().asString(), args[1].asFString().asString()))
+				if (fiber.getVM().getFilesystem().mv(args[0].asFString().asString(),
+						args[1].asFString().asString(),
+						fiber.getSharedState().getUser()))
 					fiber.setAccu(new FInteger(1));
 				else
 					fiber.setAccu(new FInteger(0));

@@ -33,6 +33,10 @@ public class Directory extends File<SharedDirectoryState> implements FileParent 
         return this;
     }
 
+    @Override
+    public boolean hasWriteAccess(Identity identity) {
+        return getRights().checkWriteAccess(identity);
+    }
 
     public TextFile touch(String name, Identity identity, User owner, Group gowner) {
         if (getRights().checkWriteAccess(identity)) {
