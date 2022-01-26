@@ -37,20 +37,44 @@ void cmd_cd(list argv)
     resume();
 }
 
+string rwxstr(int flags)
+{
+    string s = "";
+    if (flags & 0x04) s = s + "r";
+    else              s = s + "-";
+    if (flags & 0x02) s = s + "w";
+    else              s = s + "-";
+    if (flags & 0x01) s = s + "x";
+    else              s = s + "-";
+    return s;
+}
+
+string rwx3str(int flags)
+{
+    return rwxstr(flags >> 6) + rwxstr(flags >> 3) + rwxstr(flags);
+}
+
 void cmd_ls(list argv)
 {
     list files;
+    string base = nil;
 
     if (length(argv) == 1) {
-        files = ls(pwd());
-        if (files != nil)
-            foreach (string name : files)
-                connection()->write(name, "\n");
+        base = pwd();
     } else if (length(argv) == 2) {
-        files = ls(resolve(pwd(), argv[1]));
-        if (files != nil)
-            foreach (string name : files)
-                connection()->write(name, "\n");
+        base = resolve(pwd(), argv[1]);
+    }
+    files = ls(base);
+    if (files != nil) {
+        foreach (string name : files)
+        {
+            string file = base + "/" + name;
+            connection()->write(rwx3str(stat(file)), " ",
+                                strwid(uname(getown(file)), 8), " ",
+                                strwid(gname(getgrp(file)), 8), " ",
+                                name,
+                                "\n");
+        }
     } else {
         arg_error();
     }

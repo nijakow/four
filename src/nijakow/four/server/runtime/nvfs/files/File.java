@@ -53,15 +53,15 @@ public abstract class File<T extends SharedFileState> implements ISerializable {
 
     public int getmod() {
         int flags = 0b000000000;
-        if (getRights().getUserAccessRights().isReadable())    flags = flags & 0b100000000;
-        if (getRights().getUserAccessRights().isWritable())    flags = flags & 0b010000000;
-        if (getRights().getUserAccessRights().isExecutable())  flags = flags & 0b001000000;
-        if (getRights().getGroupAccessRights().isReadable())   flags = flags & 0b000100000;
-        if (getRights().getGroupAccessRights().isWritable())   flags = flags & 0b000010000;
-        if (getRights().getGroupAccessRights().isExecutable()) flags = flags & 0b000001000;
-        if (getRights().getOtherAccessRights().isReadable())   flags = flags & 0b000000100;
-        if (getRights().getOtherAccessRights().isWritable())   flags = flags & 0b000000010;
-        if (getRights().getOtherAccessRights().isExecutable()) flags = flags & 0b000000001;
+        if (getRights().getUserAccessRights().isReadable())    flags |= 0b100000000;
+        if (getRights().getUserAccessRights().isWritable())    flags |= 0b010000000;
+        if (getRights().getUserAccessRights().isExecutable())  flags |= 0b001000000;
+        if (getRights().getGroupAccessRights().isReadable())   flags |= 0b000100000;
+        if (getRights().getGroupAccessRights().isWritable())   flags |= 0b000010000;
+        if (getRights().getGroupAccessRights().isExecutable()) flags |= 0b000001000;
+        if (getRights().getOtherAccessRights().isReadable())   flags |= 0b000000100;
+        if (getRights().getOtherAccessRights().isWritable())   flags |= 0b000000010;
+        if (getRights().getOtherAccessRights().isExecutable()) flags |= 0b000000001;
         return flags;
     }
 
