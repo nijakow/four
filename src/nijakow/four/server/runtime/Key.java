@@ -278,8 +278,13 @@ public class Key {
 			public void run(Fiber fiber, Instance self, Instance[] args) throws CastException {
 				String path = args[0].asFString().asString();
 				String value = args[1].asFString().asString();
-				fiber.getVM().getFilesystem().resolve(path).asTextFile().writeContents(value, fiber.getSharedState().getUser());
-				fiber.setAccu(new FInteger(1));
+				File file = fiber.getVM().getFilesystem().resolve(path);
+				if (file != null && file.asTextFile() != null
+						&& file.asTextFile().writeContents(value, fiber.getSharedState().getUser())) {
+					fiber.setAccu(new FInteger(1));
+				} else {
+					fiber.setAccu(new FInteger(0));
+				}
 			}
 		};
 		get("$filechildren").code = new BuiltinCode() {
