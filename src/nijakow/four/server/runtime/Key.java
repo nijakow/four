@@ -311,8 +311,11 @@ public class Key {
 			@Override
 			public void run(Fiber fiber, Instance self, Instance[] args) throws CastException {
 				String path = args[0].asFString().asString();
-				fiber.getVM().getFilesystem().touch(path, fiber.getSharedState().getUser(), fiber.getVM().getIdentityDB().getUsersGroup());
-				fiber.setAccu(new FInteger(1));
+				TextFile file = fiber.getVM().getFilesystem().touch(path,
+						fiber.getSharedState().getUser(),
+						fiber.getSharedState().getUser(),
+						fiber.getVM().getIdentityDB().getUsersGroup());
+				fiber.setAccu(new FInteger(file != null ? 1 : 0));
 			}
 		};
 		get("$mkdir").code = new BuiltinCode() {

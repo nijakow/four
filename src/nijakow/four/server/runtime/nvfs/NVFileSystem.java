@@ -2,6 +2,7 @@ package nijakow.four.server.runtime.nvfs;
 
 import nijakow.four.server.runtime.objects.blue.Blueprint;
 import nijakow.four.server.runtime.security.users.Group;
+import nijakow.four.server.runtime.security.users.Identity;
 import nijakow.four.server.runtime.security.users.IdentityDatabase;
 import nijakow.four.server.runtime.security.users.User;
 import nijakow.four.share.lang.base.CompilationException;
@@ -65,9 +66,9 @@ public class NVFileSystem implements FileParent, ISerializable {
         }
     }
 
-    public TextFile touch(String file, User owner, Group gowner) {
+    public TextFile touch(String file, Identity identity, User owner, Group gowner) {
         Pair<String, String> path = splitPath(file);
-        return resolve(path.getFirst()).asDirectory().touch(path.getSecond(), owner, gowner);
+        return resolve(path.getFirst()).asDirectory().touch(path.getSecond(), identity, owner, gowner);
     }
 
     public Directory mkdir(String file, User owner, Group gowner) {
@@ -128,7 +129,7 @@ public class NVFileSystem implements FileParent, ISerializable {
                 load(f, newPath, db);
             }
         } else if (file.isFile()) {
-            TextFile textFile = touch(newPath, db.getRootUser(), db.getRootGroup());
+            TextFile textFile = touch(newPath, db.getRootUser(), db.getRootUser(), db.getRootGroup());
             textFile.setContents(getResourceText(file));
         }
     }

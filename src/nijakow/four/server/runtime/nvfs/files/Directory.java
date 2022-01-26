@@ -3,6 +3,7 @@ package nijakow.four.server.runtime.nvfs.files;
 import nijakow.four.server.runtime.nvfs.FileParent;
 import nijakow.four.server.runtime.nvfs.shared.SharedDirectoryState;
 import nijakow.four.server.runtime.security.users.Group;
+import nijakow.four.server.runtime.security.users.Identity;
 import nijakow.four.server.runtime.security.users.User;
 import nijakow.four.server.serialization.base.ISerializer;
 import nijakow.four.share.util.Pair;
@@ -33,10 +34,14 @@ public class Directory extends File<SharedDirectoryState> implements FileParent 
     }
 
 
-    public TextFile touch(String name, User owner, Group gowner) {
-        TextFile file = new TextFile(this, owner, gowner);
-        files.put(name, file);
-        return file;
+    public TextFile touch(String name, Identity identity, User owner, Group gowner) {
+        if (getRights().checkWriteAccess(identity)) {
+            TextFile file = new TextFile(this, owner, gowner);
+            files.put(name, file);
+            return file;
+        } else {
+            return null;
+        }
     }
 
     public Directory mkdir(String name, User owner, Group gowner) {
