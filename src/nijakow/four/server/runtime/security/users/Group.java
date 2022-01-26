@@ -6,8 +6,8 @@ import java.util.Set;
 public class Group extends Identity {
     private final Set<Identity> members = new HashSet<>();
 
-    protected Group(IdentityDatabase db) {
-        super(db);
+    protected Group(IdentityDatabase db, String name) {
+        super(db, name);
     }
 
     @Override

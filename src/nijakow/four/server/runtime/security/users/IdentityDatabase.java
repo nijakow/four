@@ -10,9 +10,9 @@ public class IdentityDatabase {
     private final Group rootGroup;
 
     public IdentityDatabase() {
-        this.usersGroup = newGroup();
-        this.rootUser = newUser();
-        this.rootGroup = newGroup();
+        this.usersGroup = newGroup("users");
+        this.rootUser = newUser("root");
+        this.rootGroup = newGroup("admin");
     }
 
     static String newID() {
@@ -30,15 +30,15 @@ public class IdentityDatabase {
     public Identity find(String id) { return identities.get(id); }
 
     public User getNewUnprivilegedUser() {
-        return new User(this);
+        return new User(this, newID());
     }
 
-    public User newUser() {
-        User user = new User(this);
+    public User newUser(String name) {
+        User user = new User(this, name);
         getUsersGroup().add(user);
         return user;
     }
-    public Group newGroup() { return new Group(this); }
+    public Group newGroup(String name) { return new Group(this, name); }
 
     public User getRootUser() {
         return rootUser;
