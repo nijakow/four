@@ -55,16 +55,20 @@ public class ClientEditor extends JFrame implements ActionListener {
 		getContentPane().setLayout(new BorderLayout());
 		JScrollPane sp = new JScrollPane(pane);
 		getContentPane().add(sp, BorderLayout.CENTER);
-		JButton accept = new JButton("Accept Changes");
-		accept.addActionListener(this);
-		accept.setActionCommand(Commands.ACTION_EDIT_ACCEPT);
-		JButton reject = new JButton("Reject Changes");
-		reject.addActionListener(this);
-		reject.setActionCommand(Commands.ACTION_EDIT_REJECT);
+		JButton save = new JButton("Save");
+		save.addActionListener(this);
+		save.setActionCommand(Commands.ACTION_EDIT_SAVE);
+		JButton saveAs = new JButton("Save as");
+		saveAs.addActionListener(this);
+		saveAs.setActionCommand(Commands.ACTION_EDIT_SAVE_AS);
+		JButton close = new JButton("Close");
+		close.addActionListener(this);
+		close.setActionCommand(Commands.ACTION_EDIT_CLOSE);
 		JPanel buttons = new JPanel();
-		buttons.setLayout(new GridLayout(1, 2));
-		buttons.add(reject);
-		buttons.add(accept);
+		buttons.setLayout(new GridLayout(1, 3));
+		buttons.add(close);
+		buttons.add(saveAs);
+		buttons.add(save);
 		getContentPane().add(buttons, BorderLayout.SOUTH);
 		pack();
 		updateSyntaxHighlighting();
@@ -137,15 +141,18 @@ public class ClientEditor extends JFrame implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		switch (e.getActionCommand()) {
-		case Commands.ACTION_EDIT_ACCEPT:
-			send(true);
-			dispose();
-			break;
+			case Commands.ACTION_EDIT_SAVE:
+				send(true);
+				break;
 
-		case Commands.ACTION_EDIT_REJECT:
-			send(false);
-			dispose();
-			break;
+			case Commands.ACTION_EDIT_SAVE_AS:
+				// TODO
+				break;
+
+			case Commands.ACTION_EDIT_CLOSE:
+				send(false);
+				dispose();
+				break;
 		}
 	}
 }
