@@ -6,6 +6,7 @@ import nijakow.four.server.runtime.*;
 import nijakow.four.server.runtime.objects.Blueprint;
 import nijakow.four.server.runtime.types.Type;
 import nijakow.four.server.runtime.vm.code.Code;
+import nijakow.four.share.lang.c.SlotVisibility;
 import nijakow.four.share.util.Pair;
 
 public class ASTFunctionDef extends ASTDefinition {
@@ -13,8 +14,8 @@ public class ASTFunctionDef extends ASTDefinition {
 	private final boolean hasVarargs;
 	private final ASTInstruction body;
 
-	public ASTFunctionDef(Type type, Key name, Pair<Type, Key>[] args, boolean hasVarargs, ASTInstruction body) {
-		super(type, name);
+	public ASTFunctionDef(SlotVisibility visibility, Type type, Key name, Pair<Type, Key>[] args, boolean hasVarargs, ASTInstruction body) {
+		super(visibility, type, name);
 		this.args = args;
 		this.hasVarargs = hasVarargs;
 		this.body = body;
