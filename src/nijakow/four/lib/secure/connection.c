@@ -80,7 +80,13 @@ void process_escaped(string ln)
             id = substr(ln, index, sepIndex);
             content = substr(ln, sepIndex + 1, strlen(ln));
         }
-        call(mapped_callbacks[id], id, content);
+        any cb = mapped_callbacks[id];
+        if (type(cb) == "function") {
+            call(mapped_callbacks[id], id, content);
+        } else {
+            log("The system can't run an escaped event handler!\n");
+            write("\n\{RED\}WARNING: The system can't run an escaped event handler!\{RESET\}\n");
+        }
     }
 }
 
