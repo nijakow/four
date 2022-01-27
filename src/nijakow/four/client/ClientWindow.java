@@ -199,13 +199,17 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 		s = term.addStyle(Commands.STYLE_INPUT, def);
 		StyleConstants.setForeground(s, Color.gray);
 	}
-	
-	public void dispose() {
-		prefs.setWindowDimensions(getX(), getY(), getWidth(), getHeight());
-		prefs.flush();
+
+	private void disposeEditors() {
 		for (ClientEditor ed : editors) {
 			ed.dispose();
 		}
+	}
+
+	public void dispose() {
+		prefs.setWindowDimensions(getX(), getY(), getWidth(), getHeight());
+		prefs.flush();
+		disposeEditors();
 		closeConnection();
 		super.dispose();
 	}
@@ -418,6 +422,7 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 	@Override
 	public void connectionLost(ClientConnection connection) {
 		EventQueue.invokeLater(() -> {
+			disposeEditors();
 			prompt.setText(" Connection closed. ");
 			prompt.setEnabled(false);
 			pwf.setText(" Connection lost." );
