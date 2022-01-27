@@ -4,6 +4,8 @@ list argv;
 string working_dir;
 
 string pwd() { return working_dir; }
+bool chdir(string path) { working_dir = path; return true; }
+
 list args() { return argv; }
 
 void create(object connection, func finish_cb, object me, string working_dir, list the_argv)
