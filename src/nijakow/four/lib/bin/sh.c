@@ -207,6 +207,8 @@ object lookup_cmd_instance(list argv)
 bool launch_app(list argv)
 {
     return execapp(this->resume, "/bin/" + argv[0] + ".c", argv)
+        || execapp(this->resume, "/sbin/" + argv[0] + ".c", argv)
+        || execapp(this->resume, "/usr/bin/" + argv[0] + ".c", argv)
         || execapp(this->resume, resolve(pwd(), argv[0]), argv);
 }
 
