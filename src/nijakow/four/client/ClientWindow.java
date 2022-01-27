@@ -104,7 +104,7 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 		buffer = "";
 		bother = true;
 		prefs = new PreferencesHelper();
-		queue = Executors.newScheduledThreadPool(2);
+		queue = Executors.newScheduledThreadPool(3);
 		if (ports.length > 0)
 			prefs.setPort(ports[0]);
 		getContentPane().setLayout(new BorderLayout());
