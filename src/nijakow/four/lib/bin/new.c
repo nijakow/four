@@ -1,6 +1,6 @@
-inherits "/std/cli.c";
+inherits "/std/app.c";
 
-void start(list argv)
+void start()
 {
     if (length(argv) < 3)
         connection()->write("Argument error!\n");

@@ -198,9 +198,9 @@ void cmd_mv(list argv)
 object lookup_cmd_instance(list argv)
 {
     object cmd;
-    cmd = new("/bin/" + argv[0] + ".c", connection(), this::resume, me());
+    cmd = new("/bin/" + argv[0] + ".c", connection(), this::resume, me(), argv);
     if (cmd == nil)
-        cmd = new(resolve(pwd(), argv[0]), connection(), this::resume, me());
+        cmd = new(resolve(pwd(), argv[0]), connection(), this::resume, me(), argv);
     return cmd;
 }
 
@@ -228,7 +228,7 @@ void receive(string line)
     else {
         object cmd = lookup_cmd_instance(argv);
         if (cmd != nil)
-            cmd->start(argv);
+            cmd->start();
         else if (argv[0] == "ls") {
             cmd_ls(argv);
             resume();

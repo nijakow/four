@@ -1,4 +1,4 @@
-inherits "/std/cli.c";
+inherits "/std/app.c";
 
 string rwxstr(int flags)
 {
@@ -44,7 +44,7 @@ void do_ls(string dir, bool long_mode, bool dir_mode)
     }
 }
 
-void start(list argv)
+void start()
 {
     int off        = 1;
     bool long_mode = false;

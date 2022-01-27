@@ -1,6 +1,6 @@
-inherits "/std/cli.c";
+inherits "/std/app.c";
 
-void start(list argv)
+void start()
 {
     connection()->write(uname(getuid()), "\n");
     exit();
