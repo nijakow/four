@@ -70,19 +70,6 @@ void cmd_edit_file(list argv)
     resume();
 }
 
-void cmd_rm(list argv)
-{
-    if (length(argv) <= 1)
-        arg_error();
-    else {
-        for (int i = 1; i < length(argv); i++) {
-           if (!rm(resolve(pwd(), argv[i])))
-                connection()->write(argv[i], ": error.\n");
-        }
-    }
-    resume();
-}
-
 void cmd_mv(list argv)
 {
     if (length(argv) != 3)
@@ -125,8 +112,6 @@ void receive(string line)
         cmd_cd(argv);
     else if (argv[0] == "edit")
         cmd_edit_file(argv);
-    else if (argv[0] == "rm")
-        cmd_rm(argv);
     else if (argv[0] == "mv")
         cmd_mv(argv);
     else {
