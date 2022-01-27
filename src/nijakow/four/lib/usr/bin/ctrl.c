@@ -1,4 +1,4 @@
-inherits "/std/cli.c";
+inherits "/std/app.c";
 
 void docmd(string cmd, string args)
 {

@@ -61,7 +61,7 @@ void setuname(string uname)
     sword->move_to(player);
     player->act_goto(the("/world/void.c"));
     set_me(player);
-    exec(this->logout, "/usr/bin/ctrl.c");
+    execappfromcli(this->logout, "/usr/bin/ctrl.c", "/", {"/usr/bin/ctrl.c"});
 }
 
 void logout()
