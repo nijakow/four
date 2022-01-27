@@ -378,26 +378,6 @@ public class Key {
 				}
 			}
 		};
-		get("$recompile").code = new BuiltinCode() {
-
-			@Override
-			public void run(Fiber fiber, Instance self, Instance[] args) throws CastException {
-				String path = args[0].asFString().asString();
-				try {
-					TextFile file = fiber.getVM().getFilesystem().resolveTextFile(path);
-					if (file == null)
-						fiber.setAccu(new FInteger(0));
-					else {
-						file.compile();
-						fiber.setAccu(new FInteger(1));
-					}
-				} catch (ParseException | NullPointerException | CompilationException e) {
-					// TODO: Handle this gracefully
-					e.printStackTrace();
-					fiber.setAccu(new FInteger(0));
-				}
-			}
-		};
 		get("$eval").code = new BuiltinCode() {
 			@Override
 			public void run(Fiber fiber, Instance self, Instance[] args) throws FourRuntimeException {
@@ -407,6 +387,12 @@ public class Key {
 						fiber.push(args[x]);
 					code.invoke(fiber, args.length - 2, args[0]);
 				}
+			}
+		};
+		get("$getuid").code = new BuiltinCode() {
+			@Override
+			public void run(Fiber fiber, Instance self, Instance[] args) throws FourRuntimeException {
+				fiber.setAccu(new FString(fiber.getSharedState().getUser().getID()));
 			}
 		};
 		get("$uname").code = new BuiltinCode() {
