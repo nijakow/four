@@ -24,6 +24,7 @@ use $getgrp;
 use $chmod;
 use $chown;
 use $chgrp;
+use $getuid;
 use $uname;
 use $gname;
 
@@ -410,6 +411,11 @@ int chown(string path, string uid)
 int chgrp(string path, string gid)
 {
     return $chgrp(path, gid);
+}
+
+string getuid()
+{
+    return $getuid();
 }
 
 string uname(string id)

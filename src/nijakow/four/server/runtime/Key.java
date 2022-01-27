@@ -377,6 +377,12 @@ public class Key {
 				}
 			}
 		};
+		get("$getuid").code = new BuiltinCode() {
+			@Override
+			public void run(Fiber fiber, Instance self, Instance[] args) throws FourRuntimeException {
+				fiber.setAccu(new FString(fiber.getSharedState().getUser().getID()));
+			}
+		};
 		get("$uname").code = new BuiltinCode() {
 			@Override
 			public void run(Fiber fiber, Instance self, Instance[] args) throws FourRuntimeException {
