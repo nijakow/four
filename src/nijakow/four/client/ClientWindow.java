@@ -165,7 +165,8 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 	
 	private void setLineBreaking(boolean breaking) {
 		if (breaking)
-			pane.setViewportView(area);else {
+			pane.setViewportView(area);
+		else {
 			JPanel wrap = new JPanel();
 			wrap.setLayout(new BorderLayout());
 			wrap.add(area);

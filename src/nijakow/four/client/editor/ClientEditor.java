@@ -173,7 +173,6 @@ public class ClientEditor extends JFrame implements ActionListener {
 				break;
 
 			case Commands.ACTION_EDIT_CLOSE:
-				send(false, null);
 				dispose();
 				break;
 		}
