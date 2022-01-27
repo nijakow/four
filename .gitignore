@@ -8,6 +8,6 @@
 !Makefile
 .idea
 .eclipse
-bin/
+./bin/
 production/
 !src/nijakow/four/lib/*

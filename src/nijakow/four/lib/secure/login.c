@@ -61,7 +61,7 @@ void setuname(string uname)
     sword->move_to(player);
     player->act_goto(the("/world/void.c"));
     set_me(player);
-    exec(nil, "/std/apps/ctrl.c");
+    exec(nil, "/usr/bin/ctrl.c");
 }
 
 void start()
