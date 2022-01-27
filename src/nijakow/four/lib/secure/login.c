@@ -61,7 +61,13 @@ void setuname(string uname)
     sword->move_to(player);
     player->act_goto(the("/world/void.c"));
     set_me(player);
-    exec(nil, "/usr/bin/ctrl.c");
+    exec(this->logout, "/usr/bin/ctrl.c");
+}
+
+void logout()
+{
+    connection()->write("Goodbye! :)\n");
+    connection()->close();
 }
 
 void start()

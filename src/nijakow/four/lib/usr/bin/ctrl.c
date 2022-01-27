@@ -5,8 +5,7 @@ void docmd(string cmd, string args)
     if (cmd == "") {
         resume();
     } else if (cmd == "quit" || cmd == "logout") {
-        connection()->write("Goodbye! :)\n");
-        connection()->close();
+        exit();
     } else {
         if (!exec(this::resume, "/usr/cmds/" + cmd + ".c", args)) {
             connection()->write("I didn't quite get that, sorry...\n");
@@ -33,12 +32,12 @@ void receive(string cmd)
 
 void resume()
 {
+    connection()->set_fallback(this::resume);
     connection()->prompt(this::receive, "> ");
 }
 
 void start()
 {
-    connection()->set_fallback(this::resume);
     me()->submit_lines_to(connection()->write);
     resume();
 }

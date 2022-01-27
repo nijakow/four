@@ -247,6 +247,7 @@ void receive(string line)
 
 void resume()
 {
+    connection()->set_fallback(this::resume);
     string ps1 = pwd();
     if (ps1 != nil) ps1 = ps1 + " $ ";
     else ps1 = "$ ";
