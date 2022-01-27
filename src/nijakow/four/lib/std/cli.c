@@ -21,7 +21,7 @@ bool exec(func our_cb, string name, ...)
     }
 }
 
-bool execapp(func our_cb, string name, string working_dir, list args, ...)
+bool execappfromcli(func our_cb, string name, string working_dir, list args)
 {
     return exec(our_cb, name, working_dir, args, ...);
 }
