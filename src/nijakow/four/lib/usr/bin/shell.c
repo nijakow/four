@@ -13,15 +13,6 @@ void file_not_found_error()
     connection()->write("File not found!\n");
 }
 
-void cmd_pwd(list argv)
-{
-    if (length(argv) != 1)
-        arg_error();
-    else
-        connection()->write(pwd(), "\n");
-    resume();
-}
-
 void cmd_cd(list argv)
 {
     if (length(argv) != 2)
@@ -239,8 +230,6 @@ void receive(string line)
     if (length(argv) == 0) resume();
     else if (argv[0] == "exit")
         exit();
-    else if (argv[0] == "pwd")
-        cmd_pwd(argv);
     else if (argv[0] == "cd")
         cmd_cd(argv);
     else if (argv[0] == "cat")
