@@ -8,7 +8,7 @@ object connection() { return the_connection; }
 object me() { return _me; }
 void set_me(object value) { this._me = value; }
 
-void exit() { call(finish_cb); }
+void exit(...) { call(finish_cb, ...); }
 
 bool exec(func our_cb, string name, ...)
 {
