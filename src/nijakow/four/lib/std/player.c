@@ -20,6 +20,8 @@ void activate_as(string name)
     add_IDs(name);
 }
 
+bool query_is_heavy() { return true; }
+
 void create()
 {
     "/std/thing.c"::create();

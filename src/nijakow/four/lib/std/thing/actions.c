@@ -95,7 +95,7 @@ bool act_goto(object location)
 
 bool act_take(object obj)
 {
-    if (this->contains_or_is(obj)) {
+    if (this->contains_or_is(obj) || obj->query_is_heavy()) {
         return false;
     } else if (try_move(this, obj, this)) {
         me_act("takes ", obj->get_short(), ".\n");

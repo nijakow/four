@@ -35,6 +35,8 @@ public class IdentityDatabase {
     }
 
     public User newUser(String name) {
+        if (getIdentityByName(name) != null)
+            return null;
         User user = new User(this, name);
         getUsersGroup().add(user);
         return user;
