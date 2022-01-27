@@ -1,7 +1,8 @@
 inherits "/std/cli.c";
 
+use $adduser;
+
 string name;
-string pass;
 
 void banner()
 {
@@ -29,25 +30,60 @@ void banner()
     connection()->write("\n");
 }
 
-void setname(string name)
+void newuser(string name)
 {
     this.name = name;
-    connection()->password(this::setpass, "Password: ");
+    connection()->prompt(this::newpass, "Please choose a password: ");
+}
+
+void newpass(string pass)
+{
+    if (!($adduser(name, pass) && trylogin(name, pass))) {
+        connection()->write("\n");
+        connection()->mode_red();
+        connection()->mode_underscore();
+        connection()->write("Unable to create user.\nConnection terminated.\n");
+        connection()->mode_normal();
+        connection()->close();
+    } else {
+        startup();
+    }
+}
+
+void setname(string name)
+{
+    if (name == "new") {
+        connection()->prompt(this::newuser, "New username: ");
+    } else {
+        this.name = name;
+        connection()->password(this::setpass, "Password: ");
+    }
 }
 
 void setpass(string pass)
 {
-    if (!the("/secure/logman.c")->login(name, pass)) {
+    if (dologin(this.name, pass))
+        startup();
+}
+
+bool trylogin(string username, string password)
+{
+    return the("/secure/logman.c")->login(name, password);
+}
+
+bool dologin(string username, string password)
+{
+    if (!trylogin(username, password)) {
         connection()->write("\n");
         connection()->mode_red();
         connection()->mode_underscore();
         connection()->write("Username or password not recognized.\nConnection terminated.\n");
         connection()->mode_normal();
         connection()->close();
-        return;
+        return false;
+    } else {
+        return true;
     }
-    connection()->write("\nWelcome to the 42 MUD, ", this.name, "!\n\n");
-    connection()->prompt(this::setuname, "By what name will your character be known? ");
 }
 
 void setuname(string uname)
@@ -62,6 +98,11 @@ void setuname(string uname)
     player->act_goto(the("/world/void.c"));
     set_me(player);
     execappfromcli(this->logout, "/usr/bin/ctrl.c");
+}
+
+void startup()
+{
+    connection()->prompt(this::setuname, "By what name will you be known? ");
 }
 
 void logout()
