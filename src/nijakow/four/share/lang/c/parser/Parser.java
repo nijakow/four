@@ -357,6 +357,12 @@ public class Parser {
 	public ASTClass parseFile() throws ParseException {
 		return parseClass(TokenType.EOF);
 	}
+
+	public ASTExpression parseLine() throws ParseException {
+		ASTExpression expr = parseExpression();
+		check(TokenType.SEMICOLON);
+		return expr;
+	}
 	
 	private boolean checkKeep(TokenType type) throws ParseException {
 		Token t = tokenizer.nextToken();

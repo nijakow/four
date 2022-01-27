@@ -29,6 +29,7 @@ use $uname;
 use $gname;
 use $finduser;
 use $findgroup;
+use $eval;
 
 
 string type(any obj)
@@ -480,4 +481,9 @@ string finduser(string name)
 string findgroup(string name)
 {
     return $findgroup(name);
+}
+
+any eval(any target, string code, ...)
+{
+    return $eval(target, code, ...);
 }
