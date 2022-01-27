@@ -72,25 +72,6 @@ void cmd_ls(list argv)
     resume();
 }
 
-void cmd_cat(list argv)
-{
-    for (int i = 1; i < length(argv); i++)
-    {
-        string the_path = resolve(pwd(), argv[i]);
-        if (the_path == nil) {
-            file_not_found_error();
-            break;
-        }
-        string the_text = cat(the_path);
-        if (the_text == nil) {
-            file_not_found_error();
-            break;
-        }
-        connection()->write(the_text);
-    }
-    resume();
-}
-
 void cmd_touch_file(list argv)
 {
     if (length(argv) <= 1)
@@ -232,8 +213,6 @@ void receive(string line)
         exit();
     else if (argv[0] == "cd")
         cmd_cd(argv);
-    else if (argv[0] == "cat")
-        cmd_cat(argv);
     else if (argv[0] == "edit")
         cmd_edit_file(argv);
     else if (argv[0] == "cc")
