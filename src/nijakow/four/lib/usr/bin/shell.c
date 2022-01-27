@@ -100,23 +100,6 @@ void cmd_cat(list argv)
     resume();
 }
 
-void cmd_edit_file__write(any id, string text)
-{
-    string path = mapped_pathnames[id];
-    if (path != nil && text != nil) {
-        connection()->mode_italic();
-        if(!echo_into(path, text)) {
-            connection()->mode_red();
-            connection()->write("Could not write \"", path, "\"!\n");
-        } else {
-            connection()->mode_green();
-            connection()->write("\"", path, "\" written.\n");
-        }
-        connection()->mode_normal();
-    }
-    resume();
-}
-
 void cmd_touch_file(list argv)
 {
     if (length(argv) <= 1)
@@ -131,6 +114,23 @@ void cmd_touch_file(list argv)
                     connection()->write("Could not create file!\n");
             }
         }
+    }
+    resume();
+}
+
+void cmd_edit_file__write(any id, string text)
+{
+    string path = mapped_pathnames[id];
+    if (path != nil && text != nil) {
+        connection()->mode_italic();
+        if(!echo_into(path, text)) {
+            connection()->mode_red();
+            connection()->write("Could not write \"", path, "\"!\n");
+        } else {
+            connection()->mode_green();
+            connection()->write("\"", path, "\" written.\n");
+        }
+        connection()->mode_normal();
     }
     resume();
 }
@@ -152,7 +152,7 @@ void cmd_edit_file(list argv)
             if (content == nil) {
                 file_not_found_error();
             } else {
-                any id = connection()->edit(this::cmd_edit_file__write, path, content);
+                any id = connection()->edit(this->cmd_edit_file__write, path, content);
                 mapped_pathnames[id] = path;
             }
         }
