@@ -132,29 +132,6 @@ void cmd_edit_file(list argv)
     resume();
 }
 
-void cmd_recompile_file(list argv)
-{
-    if (length(argv) <= 1)
-        arg_error();
-    else {
-        for (int i = 1; i < length(argv); i++)
-        {
-            string file = resolve(pwd(), argv[i]);
-            if (recompile(file)) {
-                the(file);  // This automatically reinitializes the file
-                connection()->mode_green();
-                connection()->write(file, ": ok.\n");
-                connection()->mode_normal();
-            } else {
-                connection()->mode_red();
-                connection()->write(file, ": error.\n");
-                connection()->mode_normal();
-            }
-        }
-    }
-    resume();
-}
-
 void cmd_mkdir(list argv)
 {
     if (length(argv) <= 1)
@@ -223,8 +200,6 @@ void receive(string line)
         cmd_cd(argv);
     else if (argv[0] == "edit")
         cmd_edit_file(argv);
-    else if (argv[0] == "cc")
-        cmd_recompile_file(argv);
     else if (argv[0] == "touch")
         cmd_touch_file(argv);
     else if (argv[0] == "mkdir")
