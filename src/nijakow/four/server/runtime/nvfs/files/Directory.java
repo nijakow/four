@@ -2,6 +2,9 @@ package nijakow.four.server.runtime.nvfs.files;
 
 import nijakow.four.server.runtime.nvfs.FileParent;
 import nijakow.four.server.runtime.nvfs.shared.SharedDirectoryState;
+import nijakow.four.server.runtime.security.users.Group;
+import nijakow.four.server.runtime.security.users.Identity;
+import nijakow.four.server.runtime.security.users.User;
 import nijakow.four.server.serialization.base.ISerializer;
 import nijakow.four.share.util.Pair;
 
@@ -10,8 +13,8 @@ import java.util.*;
 public class Directory extends File<SharedDirectoryState> implements FileParent {
     private final Map<String, File> files;
 
-    public Directory(FileParent parent) {
-        super(parent);
+    public Directory(FileParent parent, User owner, Group gowner) {
+        super(parent, owner, gowner);
         this.files = new HashMap<>();
     }
 
@@ -30,17 +33,29 @@ public class Directory extends File<SharedDirectoryState> implements FileParent 
         return this;
     }
 
-
-    public TextFile touch(String name) {
-        TextFile file = new TextFile(this);
-        files.put(name, file);
-        return file;
+    @Override
+    public boolean hasWriteAccess(Identity identity) {
+        return getRights().checkWriteAccess(identity);
     }
 
-    public Directory mkdir(String name) {
-        Directory dir = new Directory(this);
-        files.put(name, dir);
-        return dir;
+    public TextFile touch(String name, Identity identity, User owner, Group gowner) {
+        if (getRights().checkWriteAccess(identity)) {
+            TextFile file = new TextFile(this, owner, gowner);
+            files.put(name, file);
+            return file;
+        } else {
+            return null;
+        }
+    }
+
+    public Directory mkdir(String name, Identity identity, User owner, Group gowner) {
+        if (getRights().checkWriteAccess(identity)) {
+            Directory dir = new Directory(this, owner, gowner);
+            files.put(name, dir);
+            return dir;
+        } else {
+            return null;
+        }
     }
 
     @Override

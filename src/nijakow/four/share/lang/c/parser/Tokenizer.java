@@ -140,7 +140,7 @@ public class Tokenizer {
 		final String text = builder.toString();
 		
 		try {
-			return new Token(this, pos, TokenType.CONSTANT, new FInteger(Integer.parseInt(text)));
+			return new Token(this, pos, TokenType.CONSTANT, new FInteger(Integer.decode(text)));
 		} catch (NumberFormatException e) {
 		}
 		

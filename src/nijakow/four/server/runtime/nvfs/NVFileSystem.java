@@ -1,6 +1,10 @@
 package nijakow.four.server.runtime.nvfs;
 
 import nijakow.four.server.runtime.objects.blue.Blueprint;
+import nijakow.four.server.runtime.security.users.Group;
+import nijakow.four.server.runtime.security.users.Identity;
+import nijakow.four.server.runtime.security.users.IdentityDatabase;
+import nijakow.four.server.runtime.security.users.User;
 import nijakow.four.share.lang.base.CompilationException;
 import nijakow.four.share.lang.c.parser.ParseException;
 import nijakow.four.server.runtime.nvfs.files.Directory;
@@ -18,8 +22,8 @@ import java.io.InputStreamReader;
 public class NVFileSystem implements FileParent, ISerializable {
     private Directory root;
 
-    public NVFileSystem() {
-        this.root = new Directory(this);
+    public NVFileSystem(IdentityDatabase db) {
+        this.root = new Directory(this, db.getRootUser(), db.getRootGroup());
     }
 
     @Override
@@ -35,6 +39,11 @@ public class NVFileSystem implements FileParent, ISerializable {
     @Override
     public String getMyFullName(File me) {
         return "";
+    }
+
+    @Override
+    public boolean hasWriteAccess(Identity identity) {
+        return getRoot().hasWriteAccess(identity);
     }
 
     public Directory getRoot() {
@@ -62,17 +71,17 @@ public class NVFileSystem implements FileParent, ISerializable {
         }
     }
 
-    public TextFile touch(String file) {
+    public TextFile touch(String file, Identity identity, User owner, Group gowner) {
         Pair<String, String> path = splitPath(file);
-        return resolve(path.getFirst()).asDirectory().touch(path.getSecond());
+        return resolve(path.getFirst()).asDirectory().touch(path.getSecond(), identity, owner, gowner);
     }
 
-    public Directory mkdir(String file) {
+    public Directory mkdir(String file, Identity identity, User owner, Group gowner) {
         Pair<String, String> path = splitPath(file);
-        return resolve(path.getFirst()).asDirectory().mkdir(path.getSecond());
+        return resolve(path.getFirst()).asDirectory().mkdir(path.getSecond(), identity, owner, gowner);
     }
 
-    public boolean mv(String file, String loc) {
+    public boolean mv(String file, String loc, Identity identity) {
         File f = resolve(file);
         File target = resolve(loc);
 
@@ -80,17 +89,32 @@ public class NVFileSystem implements FileParent, ISerializable {
             if (target != null) {
                 if (target.asDirectory() == null)
                     return false;
-                f.moveTo(target.asDirectory(), f.getName());
+                f.moveTo(target.asDirectory(), f.getName(), identity);
             } else {
                 Pair<String, String> path = splitPath(loc);
                 target = resolve(path.getFirst());
                 if (target == null || target.asDirectory() == null)
                     return false;
-                f.moveTo(target.asDirectory(), path.getSecond());
+                f.moveTo(target.asDirectory(), path.getSecond(), identity);
             }
             return true;
         }
         return false;
+    }
+
+    public boolean chmod(String path, int flags, Identity identity) {
+        File file = resolve(path);
+        return (file != null && file.chmod(identity, flags));
+    }
+
+    public boolean chown(String path, Identity newOwner, Identity actor) {
+        File file = resolve(path);
+        return (file != null && file.chown(actor, newOwner));
+    }
+
+    public boolean chgrp(String path, Identity newGroup, Identity actor) {
+        File file = resolve(path);
+        return (file != null && file.chown(actor, newGroup));
     }
 
     @Override
@@ -115,23 +139,28 @@ public class NVFileSystem implements FileParent, ISerializable {
         }
     }
 
-    public void load(java.io.File file, String path) throws CompilationException, ParseException {
+    public void load(java.io.File file, String path, IdentityDatabase db) {
+        final boolean secure = path.equals("/") || path.startsWith("/secure");
+        final User user = db.getRootUser();
+        final Group group = secure ? db.getRootGroup() : db.getUsersGroup();
+
         final String name = file.getName();
         final String newPath = path + "/" + name;
 
         if (file.isDirectory()) {
-            mkdir(newPath);
+            mkdir(newPath, db.getRootUser(), user, group);
             for (java.io.File f : file.listFiles()) {
-                load(f, newPath);
+                load(f, newPath, db);
             }
         } else if (file.isFile()) {
-            touch(newPath).setContents(getResourceText(file));
+            TextFile textFile = touch(newPath, user, user, group);
+            textFile.setContents(getResourceText(file));
         }
     }
 
-    public void load(java.io.File file) throws CompilationException, ParseException {
+    public void load(java.io.File file, IdentityDatabase db) throws CompilationException, ParseException {
         for (java.io.File f : file.listFiles()) {
-            load(f, "");
+            load(f, "", db);
         }
     }
 

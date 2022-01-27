@@ -9,6 +9,7 @@ import nijakow.four.server.runtime.objects.blue.Blue;
 import nijakow.four.server.runtime.objects.misc.FConnection;
 import nijakow.four.server.runtime.objects.standard.FClosure;
 import nijakow.four.server.runtime.objects.standard.FString;
+import nijakow.four.server.runtime.security.users.IdentityDatabase;
 import nijakow.four.share.util.ComparablePair;
 
 import java.util.LinkedList;
@@ -16,17 +17,20 @@ import java.util.PriorityQueue;
 import java.util.Queue;
 
 public class VM {
+	private final IdentityDatabase identityDB;
 	private final NVFileSystem fs;
 	private final Server server;
 	private final Queue<Fiber> fibers = new LinkedList<>();
 	private final PriorityQueue<ComparablePair<Long, Callback>> pendingCallbacks = new PriorityQueue<>();
 	private Callback errorCallback = null;
 	
-	public VM(NVFileSystem fs, Server server) {
+	public VM(IdentityDatabase identityDB, NVFileSystem fs, Server server) {
+		this.identityDB = identityDB;
 		this.fs = fs;
 		this.server = server;
 	}
-	
+
+	public IdentityDatabase getIdentityDB() { return identityDB; }
 	public NVFileSystem getFilesystem() {
 		return fs;
 	}

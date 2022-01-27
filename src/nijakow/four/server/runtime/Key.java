@@ -5,6 +5,7 @@ import nijakow.four.server.runtime.objects.blue.Blueprint;
 import nijakow.four.server.runtime.objects.collections.FList;
 import nijakow.four.server.runtime.objects.standard.FInteger;
 import nijakow.four.server.runtime.objects.standard.FString;
+import nijakow.four.server.runtime.security.users.Identity;
 import nijakow.four.share.lang.base.CompilationException;
 import nijakow.four.share.lang.c.parser.ParseException;
 import nijakow.four.server.runtime.exceptions.CastException;
@@ -264,7 +265,11 @@ public class Key {
 				if (node == null) {
 					fiber.setAccu(Instance.getNil());
 				} else {
-					fiber.setAccu(new FString(node.getContents()));
+					String contents = node.readContents(fiber.getSharedState().getUser());
+					if (contents != null)
+						fiber.setAccu(new FString(node.getContents()));
+					else
+						fiber.setAccu(Instance.getNil());
 				}
 			}
 		};
@@ -274,9 +279,13 @@ public class Key {
 			public void run(Fiber fiber, Instance self, Instance[] args) throws CastException {
 				String path = args[0].asFString().asString();
 				String value = args[1].asFString().asString();
-				File node;
-				node = fiber.getVM().getFilesystem().resolve(path).asTextFile().setContents(value);
-				fiber.setAccu(new FInteger(1));
+				File file = fiber.getVM().getFilesystem().resolve(path);
+				if (file != null && file.asTextFile() != null
+						&& file.asTextFile().writeContents(value, fiber.getSharedState().getUser())) {
+					fiber.setAccu(new FInteger(1));
+				} else {
+					fiber.setAccu(new FInteger(0));
+				}
 			}
 		};
 		get("$filechildren").code = new BuiltinCode() {
@@ -303,15 +312,21 @@ public class Key {
 			@Override
 			public void run(Fiber fiber, Instance self, Instance[] args) throws CastException {
 				String path = args[0].asFString().asString();
-				fiber.getVM().getFilesystem().touch(path);
-				fiber.setAccu(new FInteger(1));
+				TextFile file = fiber.getVM().getFilesystem().touch(path,
+						fiber.getSharedState().getUser(),
+						fiber.getSharedState().getUser(),
+						fiber.getVM().getIdentityDB().getUsersGroup());
+				fiber.setAccu(new FInteger(file != null ? 1 : 0));
 			}
 		};
 		get("$mkdir").code = new BuiltinCode() {
 			@Override
 			public void run(Fiber fiber, Instance self, Instance[] args) throws FourRuntimeException {
 				String path = args[0].asFString().asString();
-				if (fiber.getVM().getFilesystem().mkdir(path) != null) {
+				if (fiber.getVM().getFilesystem().mkdir(path,
+						fiber.getSharedState().getUser(),
+						fiber.getSharedState().getUser(),
+						fiber.getVM().getIdentityDB().getUsersGroup()) != null) {
 					fiber.setAccu(new FInteger(1));
 				} else {
 					fiber.setAccu(new FInteger(0));
@@ -324,8 +339,7 @@ public class Key {
 				String curPath = args[0].asFString().asString();
 				File file = fiber.getVM().getFilesystem().resolve(curPath);
 				if (file != null) {
-					file.rm();
-					fiber.setAccu(new FInteger(1));
+					fiber.setAccu(new FInteger(file.rm(fiber.getSharedState().getUser()) ? 1 : 0));
 				} else {
 					fiber.setAccu(new FInteger(0));
 				}
@@ -335,7 +349,9 @@ public class Key {
 
 			@Override
 			public void run(Fiber fiber, Instance self, Instance[] args) throws CastException {
-				if (fiber.getVM().getFilesystem().mv(args[0].asFString().asString(), args[1].asFString().asString()))
+				if (fiber.getVM().getFilesystem().mv(args[0].asFString().asString(),
+						args[1].asFString().asString(),
+						fiber.getSharedState().getUser()))
 					fiber.setAccu(new FInteger(1));
 				else
 					fiber.setAccu(new FInteger(0));
@@ -359,6 +375,79 @@ public class Key {
 					e.printStackTrace();
 					fiber.setAccu(new FInteger(0));
 				}
+			}
+		};
+		get("$uname").code = new BuiltinCode() {
+			@Override
+			public void run(Fiber fiber, Instance self, Instance[] args) throws FourRuntimeException {
+				final String id = args[0].asFString().asString();
+				Identity user = fiber.getVM().getIdentityDB().find(id);
+				if (user != null && user.asUser() != null)
+					fiber.setAccu(new FString(user.getName()));
+				else
+					fiber.setAccu(Instance.getNil());
+			}
+		};
+		get("$gname").code = new BuiltinCode() {
+			@Override
+			public void run(Fiber fiber, Instance self, Instance[] args) throws FourRuntimeException {
+				final String id = args[0].asFString().asString();
+				Identity user = fiber.getVM().getIdentityDB().find(id);
+				if (user != null && user.asGroup() != null)
+					fiber.setAccu(new FString(user.getName()));
+				else
+					fiber.setAccu(Instance.getNil());
+			}
+		};
+		get("$stat").code = new BuiltinCode() {
+			@Override
+			public void run(Fiber fiber, Instance self, Instance[] args) throws FourRuntimeException {
+				final String curPath = args[0].asFString().asString();
+				File file = fiber.getVM().getFilesystem().resolve(curPath);
+				fiber.setAccu(new FInteger((file != null) ? file.getmod() : -1));
+			}
+		};
+		get("$getown").code = new BuiltinCode() {
+			@Override
+			public void run(Fiber fiber, Instance self, Instance[] args) throws FourRuntimeException {
+				final String curPath = args[0].asFString().asString();
+				File file = fiber.getVM().getFilesystem().resolve(curPath);
+				fiber.setAccu((file != null) ? new FString(file.getRights().getUserAccessRights().getIdentity().getID()) : Instance.getNil());
+			}
+		};
+		get("$getgrp").code = new BuiltinCode() {
+			@Override
+			public void run(Fiber fiber, Instance self, Instance[] args) throws FourRuntimeException {
+				final String curPath = args[0].asFString().asString();
+				File file = fiber.getVM().getFilesystem().resolve(curPath);
+				fiber.setAccu((file != null) ? new FString(file.getRights().getGroupAccessRights().getIdentity().getID()) : Instance.getNil());
+			}
+		};
+		get("$chmod").code = new BuiltinCode() {
+			@Override
+			public void run(Fiber fiber, Instance self, Instance[] args) throws FourRuntimeException {
+				final String curPath = args[0].asFString().asString();
+				final int flags = args[1].asInt();
+				File file = fiber.getVM().getFilesystem().resolve(curPath);
+				fiber.setAccu(new FInteger((file != null && file.chmod(fiber.getSharedState().getUser(), flags)) ? 1 : 0));
+			}
+		};
+		get("$chown").code = new BuiltinCode() {
+			@Override
+			public void run(Fiber fiber, Instance self, Instance[] args) throws FourRuntimeException {
+				final String curPath = args[0].asFString().asString();
+				final Identity identity = fiber.getVM().getIdentityDB().find(args[1].asFString().asString());
+				File file = fiber.getVM().getFilesystem().resolve(curPath);
+				fiber.setAccu(new FInteger((file != null && file.chown(fiber.getSharedState().getUser(), identity)) ? 1 : 0));
+			}
+		};
+		get("$chgrp").code = new BuiltinCode() {
+			@Override
+			public void run(Fiber fiber, Instance self, Instance[] args) throws FourRuntimeException {
+				final String curPath = args[0].asFString().asString();
+				final Identity identity = fiber.getVM().getIdentityDB().find(args[1].asFString().asString());
+				File file = fiber.getVM().getFilesystem().resolve(curPath);
+				fiber.setAccu(new FInteger((file != null && file.chgrp(fiber.getSharedState().getUser(), identity)) ? 1 : 0));
 			}
 		};
 		get("$dump").code = new BuiltinCode() {
