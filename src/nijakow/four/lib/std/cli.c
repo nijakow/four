@@ -21,9 +21,14 @@ bool exec(func our_cb, string name, ...)
     }
 }
 
-bool execappfromcli(func our_cb, string name, string working_dir, list args)
+bool execappfromcli(func our_cb, string name, ...)
 {
-    return exec(our_cb, name, working_dir, args, ...);
+    list args = {name};
+    while (va_count > 0)
+    {
+        append(args, va_next);
+    }
+    return exec(our_cb, name, "/", args);
 }
 
 void start()

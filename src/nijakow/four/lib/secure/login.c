@@ -61,12 +61,12 @@ void setuname(string uname)
     sword->move_to(player);
     player->act_goto(the("/world/void.c"));
     set_me(player);
-    execappfromcli(this->logout, "/usr/bin/ctrl.c", "/", {"/usr/bin/ctrl.c"});
+    execappfromcli(this->logout, "/usr/bin/ctrl.c");
 }
 
 void logout()
 {
-    execappfromcli(nil, "/sbin/logout.c", "/", {"/sbin/logout.c"});
+    execappfromcli(nil, "/sbin/logout.c");
 }
 
 void start()
