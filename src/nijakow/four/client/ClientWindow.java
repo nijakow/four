@@ -47,12 +47,14 @@ import nijakow.four.client.utils.StringHelper;
 public class ClientWindow extends JFrame implements ActionListener, ClientConnectionListener {
 	private static final long serialVersionUID = 1L;
 	private final JLabel promptText;
+	private final JButton reconnectButton;
 	private final JScrollPane pane;
 	private final JTextField prompt;
 	private final JPasswordField pwf;
 	private final JTextPane area;
 	private final StyledDocument term;
 	private final List<ClientEditor> editors;
+	private final char pwdEchoChar;
 	private String buffer;
 	private JLabel connectionStatus;
 	private PreferencesHelper prefs;
@@ -118,8 +120,12 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 		pwf.setFont(font);
 		pwf.addActionListener(this);
 		pwf.setActionCommand(Commands.ACTION_PASSWORD);
+		pwdEchoChar = pwf.getEchoChar();
 		promptText = new JLabel();
 		promptText.setFont(font);
+		reconnectButton = new JButton("Reconnect");
+		reconnectButton.setActionCommand(Commands.ACTION_RECONNECT);
+		reconnectButton.addActionListener(this);
 		connectionStatus = new JLabel();
 		getContentPane().add(connectionStatus, BorderLayout.NORTH);
 		JButton settings = new JButton("Settings");
@@ -128,6 +134,8 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 		south.add(promptText);
 		south.add(prompt);
 		south.add(pwf);
+		south.add(reconnectButton);
+		reconnectButton.setVisible(false);
 		pwf.setVisible(false);
 		south.add(settings);
 		getContentPane().add(south, BorderLayout.SOUTH);
@@ -415,6 +423,7 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 			pwf.setText(" Connection lost." );
 			pwf.setEchoChar((char) 0);
 			pwf.setEnabled(false);
+			reconnectButton.setVisible(true);
 		});
 	}
 	
@@ -422,50 +431,64 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 	public void actionPerformed(ActionEvent e) {
 		JTextField tmp = prompt;
 		switch (e.getActionCommand()) {
-		case Commands.ACTION_SETTINGS:
-			openSettingsWindow();
-			break;
-			
-		case Commands.ACTION_STATUS_LABEL_TIMER:
-			connectionStatus.setVisible(false);
-			break;
-			
-		case Commands.ACTION_PASSWORD:
-			prompt.setVisible(true);
-			pwf.setVisible(false);
-			prompt.requestFocusInWindow();
-			validate();
-			tmp = pwf;
-			
-		case Commands.ACTION_SEND:
-			// TODO Don't reset background
-			String text = tmp.getText() + "\n";
-			tmp.enableInputMethods(true);
-			try {
-				term.insertString(term.getLength(), promptText.getText(), null);
-				final Style s = term.getStyle(Commands.STYLE_INPUT);
-				if (tmp == prompt)
-					term.insertString(term.getLength(), text, s);
-				else
-					term.insertString(term.getLength(), StringHelper.generateFilledString('*', text.length() - 1) + "\n", s);
-			} catch (BadLocationException e1) {
-				e1.printStackTrace();
-			}
-			tmp.setText("");
-			queue.schedule(() -> {
+			case Commands.ACTION_SETTINGS:
+				openSettingsWindow();
+				break;
+
+			case Commands.ACTION_RECONNECT:
+				prompt.setText("");
+				pwf.setText("");
+				pwf.setEchoChar(pwdEchoChar);
+				pwf.setEnabled(true);
+				prompt.setEnabled(true);
+				pwf.setVisible(false);
+				prompt.setVisible(true);
+				reconnectButton.setVisible(false);
+				prompt.requestFocusInWindow();
+				reconnectorHandler = queue.scheduleWithFixedDelay(reconnector, 0, 5, TimeUnit.SECONDS);
+				labelTimer.restart();
+				break;
+
+			case Commands.ACTION_STATUS_LABEL_TIMER:
+				connectionStatus.setVisible(false);
+				break;
+
+			case Commands.ACTION_PASSWORD:
+				prompt.setVisible(true);
+				pwf.setVisible(false);
+				prompt.requestFocusInWindow();
+				validate();
+				tmp = pwf;
+
+			case Commands.ACTION_SEND:
+				// TODO Don't reset background
+				String text = tmp.getText() + "\n";
+				tmp.enableInputMethods(true);
 				try {
-					connection.send(text);
-				} catch (Exception ex) {
-					EventQueue.invokeLater(() -> {
-						try {
-							term.insertString(term.getLength(), "*** Could not send message --- see console for more details! ***\n", term.getStyle(Commands.STYLE_ERROR));
-						} catch (BadLocationException e1) {
-							e1.printStackTrace();
-						}
-					});
+					term.insertString(term.getLength(), promptText.getText(), null);
+					final Style s = term.getStyle(Commands.STYLE_INPUT);
+					if (tmp == prompt)
+						term.insertString(term.getLength(), text, s);
+					else
+						term.insertString(term.getLength(), StringHelper.generateFilledString('*', text.length() - 1) + "\n", s);
+				} catch (BadLocationException e1) {
+					e1.printStackTrace();
 				}
-			}, 0, TimeUnit.NANOSECONDS);
-			break;
+				tmp.setText("");
+				queue.schedule(() -> {
+					try {
+						connection.send(text);
+					} catch (Exception ex) {
+						EventQueue.invokeLater(() -> {
+							try {
+								term.insertString(term.getLength(), "*** Could not send message --- see console for more details! ***\n", term.getStyle(Commands.STYLE_ERROR));
+							} catch (BadLocationException e1) {
+								e1.printStackTrace();
+							}
+						});
+					}
+				}, 0, TimeUnit.NANOSECONDS);
+				break;
 		}
 	}
 	
