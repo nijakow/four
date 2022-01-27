@@ -485,6 +485,28 @@ public class Key {
 				}
 			}
 		};
+		get("$finduser").code = new BuiltinCode() {
+			@Override
+			public void run(Fiber fiber, Instance self, Instance[] args) throws FourRuntimeException {
+				final String username = args[0].asFString().asString();
+				Identity identity = fiber.getVM().getIdentityDB().getIdentityByName(username);
+				if (identity != null && identity.asUser() != null)
+					fiber.setAccu(new FString(identity.getID()));
+				else
+					fiber.setAccu(Instance.getNil());
+			}
+		};
+		get("$findgroup").code = new BuiltinCode() {
+			@Override
+			public void run(Fiber fiber, Instance self, Instance[] args) throws FourRuntimeException {
+				final String username = args[0].asFString().asString();
+				Identity identity = fiber.getVM().getIdentityDB().getIdentityByName(username);
+				if (identity != null && identity.asGroup() != null)
+					fiber.setAccu(new FString(identity.getID()));
+				else
+					fiber.setAccu(Instance.getNil());
+			}
+		};
 		get("$dump").code = new BuiltinCode() {
 
 			@Override

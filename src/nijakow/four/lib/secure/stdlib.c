@@ -27,6 +27,8 @@ use $chgrp;
 use $getuid;
 use $uname;
 use $gname;
+use $finduser;
+use $findgroup;
 
 
 string type(any obj)
@@ -468,4 +470,14 @@ string uname(string id)
 string gname(string id)
 {
     return $gname(id);
+}
+
+string finduser(string name)
+{
+    return $finduser(name);
+}
+
+string findgroup(string name)
+{
+    return $findgroup(name);
 }
