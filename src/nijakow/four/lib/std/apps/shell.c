@@ -183,15 +183,6 @@ void cmd_recompile_file(list argv)
     resume();
 }
 
-object lookup_cmd_instance(list argv)
-{
-    object cmd;
-    cmd = new("/bin/" + argv[0] + ".c", connection(), this::resume);
-    if (cmd == nil)
-        cmd = new(resolve(pwd(), argv[0]), connection(), this::resume);
-    return cmd;
-}
-
 void cmd_mkdir(list argv)
 {
     if (length(argv) <= 1)
@@ -230,6 +221,15 @@ void cmd_mv(list argv)
         }
     }
     resume();
+}
+
+object lookup_cmd_instance(list argv)
+{
+    object cmd;
+    cmd = new("/bin/" + argv[0] + ".c", connection(), this::resume, me());
+    if (cmd == nil)
+        cmd = new(resolve(pwd(), argv[0]), connection(), this::resume, me());
+    return cmd;
 }
 
 void receive(string line)
@@ -279,8 +279,8 @@ void resume()
     connection()->prompt(this::receive, ps1);
 }
 
-void create(object connection, func finish_cb)
+void start()
 {
-    "/std/cli.c"::create(connection, finish_cb);
     mapped_pathnames = [];
+    resume();
 }

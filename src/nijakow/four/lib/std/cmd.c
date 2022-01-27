@@ -1,11 +1,9 @@
 inherits "/std/cli.c";
 
-object player;
 string the_arg;
 
 string arg() { return the_arg; }
 
-object me() { return player; }
 object get_location() { return me()->get_location(); }
 
 
@@ -66,9 +64,8 @@ void lookaround()
 }
 
 
-void create(object connection, func finish_cb, object player, string arg)
+void create(object connection, func finish_cb, object the_me, string arg)
 {
-    "/std/cli.c"::create(connection, finish_cb);
+    "/std/cli.c"::create(connection, finish_cb, the_me);
     this.the_arg = arg;
-    this.player = player;
 }

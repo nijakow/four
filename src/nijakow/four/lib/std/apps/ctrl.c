@@ -1,8 +1,5 @@
 inherits "/std/cli.c";
 
-object me;
-
-
 void docmd(string cmd, string args)
 {
     if (cmd == "") {
@@ -13,7 +10,7 @@ void docmd(string cmd, string args)
         connection()->write("Goodbye! :)\n");
         connection()->close();
     } else {
-        if (!exec(this::resume, "/usr/cmds/" + cmd + ".c", me, args)) {
+        if (!exec(this::resume, "/usr/cmds/" + cmd + ".c", args)) {
             connection()->write("I didn't quite get that, sorry...\n");
             resume();
         }
@@ -41,10 +38,9 @@ void resume()
     connection()->prompt(this::receive, "> ");
 }
 
-void create(object connection, func finish_cb, object me)
+void start()
 {
-    "/std/cli.c"::create(connection, finish_cb);
-    connection->set_fallback(this::resume);
-    me->submit_lines_to(connection->write);
-    this.me = me;
+    connection()->set_fallback(this::resume);
+    me()->submit_lines_to(connection()->write);
+    resume();
 }

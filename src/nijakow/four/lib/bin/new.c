@@ -24,8 +24,3 @@ void start(list argv)
     }
     exit();
 }
-
-void create(object connection, func finish_cb)
-{
-    "/std/cli.c"::create(connection, finish_cb);
-}
