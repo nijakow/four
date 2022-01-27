@@ -1,4 +1,4 @@
-inherits "/std/cli.c";
+inherits "/std/app.c";
 
 mapping mapped_pathnames;
 
@@ -198,9 +198,9 @@ void cmd_mv(list argv)
 object lookup_cmd_instance(list argv)
 {
     object cmd;
-    cmd = new("/bin/" + argv[0] + ".c", connection(), this::resume, me(), argv);
+    cmd = new("/bin/" + argv[0] + ".c", connection(), this::resume, me(), pwd(), argv);
     if (cmd == nil)
-        cmd = new(resolve(pwd(), argv[0]), connection(), this::resume, me(), argv);
+        cmd = new(resolve(pwd(), argv[0]), connection(), this::resume, me(), pwd(), argv);
     return cmd;
 }
 

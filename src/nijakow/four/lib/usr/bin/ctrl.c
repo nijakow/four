@@ -4,8 +4,6 @@ void docmd(string cmd, string args)
 {
     if (cmd == "") {
         resume();
-    } else if (cmd == "shell!") {   // Emergency shell!
-        exec(this::resume, "/usr/bin/shell.c");
     } else if (cmd == "quit" || cmd == "logout") {
         connection()->write("Goodbye! :)\n");
         connection()->close();
