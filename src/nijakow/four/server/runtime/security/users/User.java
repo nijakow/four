@@ -1,9 +1,11 @@
 package nijakow.four.server.runtime.security.users;
 
 public class User extends Identity {
+    private String password;
 
     protected User(IdentityDatabase db, String name) {
         super(db, name);
+        this.password = null;
     }
 
     @Override
@@ -11,7 +13,11 @@ public class User extends Identity {
         return this;
     }
 
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
     public boolean checkPassword(String password) {
-        return password.isEmpty();
+        return this.password != null && this.password.equals(password);
     }
 }

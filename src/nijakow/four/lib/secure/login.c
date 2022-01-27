@@ -33,7 +33,7 @@ void banner()
 void newuser(string name)
 {
     this.name = name;
-    connection()->prompt(this::newpass, "Please choose a password: ");
+    connection()->password(this::newpass, "Please choose a password: ");
 }
 
 void newpass(string pass)

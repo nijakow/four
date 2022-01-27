@@ -475,9 +475,14 @@ public class Key {
 			@Override
 			public void run(Fiber fiber, Instance self, Instance[] args) throws FourRuntimeException {
 				final String username = args[0].asFString().asString();
-				final String password = args[1].asFString().asString();	// TODO: Currently unused
+				final String password = args[1].asFString().asString();
 				User user = fiber.getVM().getIdentityDB().newUser(username);
-				fiber.setAccu(new FInteger((user != null) ? 1 : 0));
+				if (user != null) {
+					user.setPassword(password);
+					fiber.setAccu(new FInteger(1));
+				} else {
+					fiber.setAccu(new FInteger(0));
+				}
 			}
 		};
 		get("$dump").code = new BuiltinCode() {
