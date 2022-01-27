@@ -37,7 +37,7 @@ void setname(string name)
 
 void setpass(string pass)
 {
-    if (!the("/secure/logman.c")->check_login(name, pass)) {
+    if (!the("/secure/logman.c")->login(name, pass)) {
         connection()->write("\n");
         connection()->mode_red();
         connection()->mode_underscore();

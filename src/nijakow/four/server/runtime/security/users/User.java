@@ -10,4 +10,8 @@ public class User extends Identity {
     public User asUser() {
         return this;
     }
+
+    public boolean checkPassword(String password) {
+        return password.isEmpty();
+    }
 }

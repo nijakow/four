@@ -52,4 +52,18 @@ public class IdentityDatabase {
     public Group getUsersGroup() {
         return usersGroup;
     }
+
+    public Identity getIdentityByName(String username) {
+        for (Identity identity : identities.values()) {
+            if (username.equals(identity.getName()))
+                return identity;
+        }
+        return null;
+    }
+
+    public User login(String username, String password) {
+        Identity identity = getIdentityByName(username);
+        User user = (identity != null) ? identity.asUser() : null;
+        return (user != null && user.checkPassword(password)) ? user : null;
+    }
 }

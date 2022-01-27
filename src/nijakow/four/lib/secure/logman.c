@@ -1,13 +1,11 @@
 inherits "/secure/object.c";
 
-bool check_login(string name, string pass)
-{
-    list users = {
-        "enijakow",
-        "mhahn"
-    };
+use $login;
 
-    return member(users, name);
+
+bool login(string name, string password)
+{
+    return $login(name, password);
 }
 
 object get_player(string name)

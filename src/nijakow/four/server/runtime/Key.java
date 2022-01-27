@@ -6,6 +6,7 @@ import nijakow.four.server.runtime.objects.collections.FList;
 import nijakow.four.server.runtime.objects.standard.FInteger;
 import nijakow.four.server.runtime.objects.standard.FString;
 import nijakow.four.server.runtime.security.users.Identity;
+import nijakow.four.server.runtime.security.users.User;
 import nijakow.four.share.lang.base.CompilationException;
 import nijakow.four.share.lang.c.parser.ParseException;
 import nijakow.four.server.runtime.exceptions.CastException;
@@ -454,6 +455,20 @@ public class Key {
 				final Identity identity = fiber.getVM().getIdentityDB().find(args[1].asFString().asString());
 				File file = fiber.getVM().getFilesystem().resolve(curPath);
 				fiber.setAccu(new FInteger((file != null && file.chgrp(fiber.getSharedState().getUser(), identity)) ? 1 : 0));
+			}
+		};
+		get("$login").code = new BuiltinCode() {
+			@Override
+			public void run(Fiber fiber, Instance self, Instance[] args) throws FourRuntimeException {
+				final String username = args[0].asFString().asString();
+				final String password = args[1].asFString().asString();
+				User user = fiber.getVM().getIdentityDB().login(username, password);
+				if (user != null) {
+					fiber.getSharedState().setUser(user);
+					fiber.setAccu(new FInteger(1));
+				} else {
+					fiber.setAccu(new FInteger(0));
+				}
 			}
 		};
 		get("$dump").code = new BuiltinCode() {
