@@ -66,8 +66,7 @@ void setuname(string uname)
 
 void logout()
 {
-    connection()->write("Goodbye! :)\n");
-    connection()->close();
+    execappfromcli(nil, "/sbin/logout.c", "/", {"/sbin/logout.c"});
 }
 
 void start()
