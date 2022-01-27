@@ -70,20 +70,6 @@ void cmd_edit_file(list argv)
     resume();
 }
 
-void cmd_mv(list argv)
-{
-    if (length(argv) != 3)
-        arg_error();
-    else {
-        string from = resolve(pwd(), argv[1]);
-        string to   = resolve(pwd(), argv[2]);
-        if (from == nil || to == nil || !mv(from, to)) {
-            file_not_found_error();
-        }
-    }
-    resume();
-}
-
 object lookup_cmd_instance(list argv)
 {
     object cmd;
@@ -112,8 +98,6 @@ void receive(string line)
         cmd_cd(argv);
     else if (argv[0] == "edit")
         cmd_edit_file(argv);
-    else if (argv[0] == "mv")
-        cmd_mv(argv);
     else {
         if (!launch_app(argv))
         {
