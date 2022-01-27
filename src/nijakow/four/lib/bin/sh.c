@@ -28,68 +28,6 @@ void cmd_cd(list argv)
     resume();
 }
 
-string rwxstr(int flags)
-{
-    string s = "";
-    if (flags & 0x04) s = s + "r";
-    else              s = s + "-";
-    if (flags & 0x02) s = s + "w";
-    else              s = s + "-";
-    if (flags & 0x01) s = s + "x";
-    else              s = s + "-";
-    return s;
-}
-
-string rwx3str(int flags)
-{
-    return rwxstr(flags >> 6) + rwxstr(flags >> 3) + rwxstr(flags);
-}
-
-void cmd_ls(list argv)
-{
-    list files;
-    string base = nil;
-
-    if (length(argv) == 1) {
-        base = pwd();
-    } else if (length(argv) == 2) {
-        base = resolve(pwd(), argv[1]);
-    }
-    files = ls(base);
-    if (files != nil) {
-        foreach (string name : files)
-        {
-            string file = base + "/" + name;
-            connection()->write(rwx3str(stat(file)), " ",
-                                strwid(uname(getown(file)), 8), " ",
-                                strwid(gname(getgrp(file)), 8), " ",
-                                name,
-                                "\n");
-        }
-    } else {
-        arg_error();
-    }
-    resume();
-}
-
-void cmd_touch_file(list argv)
-{
-    if (length(argv) <= 1)
-        arg_error();
-    else {
-        for (int x = 1; x < length(argv); x++)
-        {
-            string path = resolve(pwd(), argv[x]);
-            if (path != nil)
-            {
-                if (!touch(path))
-                    connection()->write("Could not create file!\n");
-            }
-        }
-    }
-    resume();
-}
-
 void cmd_edit_file__write(any id, string text)
 {
     string path = mapped_pathnames[id];
@@ -200,8 +138,6 @@ void receive(string line)
         cmd_cd(argv);
     else if (argv[0] == "edit")
         cmd_edit_file(argv);
-    else if (argv[0] == "touch")
-        cmd_touch_file(argv);
     else if (argv[0] == "mkdir")
         cmd_mkdir(argv);
     else if (argv[0] == "rm")
