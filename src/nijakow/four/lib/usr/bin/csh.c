@@ -7,14 +7,14 @@ void receive(string line)
     if (line == "")
         exit();
     else {
-        connection()->write(eval(subject, "this->" + line));
+        connection()->write(eval(subject, "this->" + line), "\n");
         resume();
     }
 }
 
 void resume()
 {
-    connection()->prompt(this::receive, "->");
+    connection()->prompt(this::receive, "this->");
 }
 
 void start()
