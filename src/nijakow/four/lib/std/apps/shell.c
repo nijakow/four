@@ -243,8 +243,6 @@ void receive(string line)
         cmd_pwd(argv);
     else if (argv[0] == "cd")
         cmd_cd(argv);
-    else if (argv[0] == "ls")
-        cmd_ls(argv);
     else if (argv[0] == "cat")
         cmd_cat(argv);
     else if (argv[0] == "edit")
@@ -261,8 +259,11 @@ void receive(string line)
         cmd_mv(argv);
     else {
         object cmd = lookup_cmd_instance(argv);
-        if (cmd != nil) {
+        if (cmd != nil)
             cmd->start(argv);
+        else if (argv[0] == "ls") {
+            cmd_ls(argv);
+            resume();
         } else {
             connection()->write(argv[0], ": not a command!\n");
             resume();
