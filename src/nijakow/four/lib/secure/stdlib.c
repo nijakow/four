@@ -221,11 +221,35 @@ int sfind(string s, char c)
     return -1;
 }
 
+int rsfind(string s, char c)
+{
+    for (int x = strlen(s) - 1; x >= 0; x--)
+        if (s[x] == c)
+            return x;
+    return -1;
+}
+
 int indexof(string s, char c) { return sfind(s, c); }
+
+bool endswith(string s, char c)
+{
+    if (strlen(s) == 0)
+        return false;
+    else
+        return s[strlen(s) - 1] == c;
+}
 
 int find(any lst, any e)
 {
     for (int x = 0; x < length(lst); x++)
+        if (lst[x] == e)
+            return x;
+    return -1;
+}
+
+int rfind(any lst, any e)
+{
+    for (int x = length(lst) - 1; x >= 0; x--)
         if (lst[x] == e)
             return x;
     return -1;
@@ -333,6 +357,19 @@ string resolve(string base, string path)
     return base;
 }
 
+string basename(string path)
+{
+    while (endswith(path, '/'))
+        path = substr(path, 0, strlen(path) - 1);
+    if (path == "")
+        return "/";
+    int index = rsfind(path, '/');
+    if (index < 0)
+        return path;
+    else
+        return substr(path, index + 1, strlen(path));
+}
+
 list ls(string path)
 {
     return $filechildren(path);
@@ -386,6 +423,11 @@ bool recompile(string path)
 int stat(string path)
 {
     return $stat(path);
+}
+
+bool exists(string path)
+{
+    return $stat(path) >= 0;
 }
 
 string getown(string path)

@@ -17,47 +17,62 @@ string rwx3str(int flags)
     return rwxstr(flags >> 6) + rwxstr(flags >> 3) + rwxstr(flags);
 }
 
-void do_ls1(string base, string file, bool long_mode)
+void do_ls1(string path, string file, bool long_mode)
 {
-    string full = base + "/" + file;
-    if (long_mode) {
-        connection()->write(rwx3str(stat(full)), " ",
-                            strwid(uname(getown(full)), 8), " ",
-                            strwid(gname(getgrp(full)), 8), " ");
+    if (!exists(path)) {
+        connection()->write(path, ": file not found!\n");
+    } else {
+        if (long_mode) {
+            connection()->write(rwx3str(stat(path)), " ",
+                                strwid(uname(getown(path)), 8), " ",
+                                strwid(gname(getgrp(path)), 8), " ");
+        }
+        connection()->write(file, "\n");
     }
-    connection()->write(file, "\n");
 }
 
-void do_ls(string dir, bool long_mode)
+void do_ls(string dir, bool long_mode, bool dir_mode)
 {
     list files = ls(dir);
-    if (files == nil) {
-        connection()->write(dir, ": Not a directory!\n");
+    if (files == nil || dir_mode) {
+        do_ls1(dir, basename(dir), long_mode);
     } else {
         foreach (string f : files)
         {
-            do_ls1(dir, f, long_mode);
+            do_ls1(dir + "/" + f, f, long_mode);
         }
     }
 }
 
 void start(list argv)
 {
-    int off        = 0;
+    int off        = 1;
     bool long_mode = false;
+    bool dir_mode  = false;
 
-    if (length(argv) > 1 && argv[1] == "-l") {
-        off       = 1;
-        long_mode = true;
+    while (off < length(argv))
+    {
+        if (argv[off] == "-l")
+            long_mode = true;
+        else if (argv[off] == "-d")
+            dir_mode = true;
+        else if (argv[off] == "-ld")
+        {
+            long_mode = true;
+            dir_mode  = true;
+        }
+        else
+            break;
+        off = off + 1;
     }
 
-    if (length(argv) - off <= 1)
-        do_ls(pwd(), long_mode);
+    if (length(argv) - off <= 0)
+        do_ls(pwd(), long_mode, dir_mode);
     else if (length(argv) >= 2) {
-        for (int i = 1 + off; i < length(argv); i++)
+        for (int i = off; i < length(argv); i++)
         {
             string path = resolve(pwd(), argv[i]);
-            do_ls(path, long_mode);
+            do_ls(path, long_mode, dir_mode);
         }
     } else {
         connection()->write("Argument error!\n");
