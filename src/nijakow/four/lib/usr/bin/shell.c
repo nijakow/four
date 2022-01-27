@@ -204,6 +204,12 @@ object lookup_cmd_instance(list argv)
     return cmd;
 }
 
+bool launch_app(list argv)
+{
+    return execapp(this->resume, "/bin/" + argv[0] + ".c", argv)
+        || execapp(this->resume, resolve(pwd(), argv[0]), argv);
+}
+
 void receive(string line)
 {
     list argv = split(line);
@@ -226,15 +232,15 @@ void receive(string line)
     else if (argv[0] == "mv")
         cmd_mv(argv);
     else {
-        object cmd = lookup_cmd_instance(argv);
-        if (cmd != nil)
-            cmd->start();
-        else if (argv[0] == "ls") {
-            cmd_ls(argv);
-            resume();
-        } else {
-            connection()->write(argv[0], ": not a command!\n");
-            resume();
+        if (!launch_app(argv))
+        {
+            if (argv[0] == "ls") {
+                cmd_ls(argv);
+                resume();
+            } else {
+                connection()->write(argv[0], ": not a command!\n");
+                resume();
+            }
         }
     }
 }

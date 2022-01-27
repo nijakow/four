@@ -10,7 +10,7 @@ list args() { return argv; }
 
 bool execapp(func our_cb, string name, list args)
 {
-    return execappfromcli(our_cb, name, working_dir, args, pwd(), args);
+    return execappfromcli(our_cb, name, pwd(), args);
 }
 
 void create(object connection, func finish_cb, object me, string working_dir, list the_argv)
