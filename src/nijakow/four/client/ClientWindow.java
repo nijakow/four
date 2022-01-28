@@ -34,6 +34,8 @@ import javax.swing.JTextPane;
 import javax.swing.Timer;
 import javax.swing.UIManager;
 import javax.swing.border.EtchedBorder;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
@@ -99,7 +101,7 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 		super("Nijakow's \"Four\"");
 
 		final Font font = new Font("Monospaced", Font.PLAIN, 14);
-		
+
 		// TODO macOS customization
 		// TODO iterate through ports
 		buffer = "";
@@ -143,6 +145,20 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 		area.setFont(font);
 		area.setOpaque(true);
 		term = area.getStyledDocument();
+		term.addDocumentListener(new DocumentListener() {
+			@Override
+			public void insertUpdate(DocumentEvent e) {
+				area.setCaretPosition(term.getLength());
+			}
+
+			@Override
+			public void removeUpdate(DocumentEvent e) {
+			}
+
+			@Override
+			public void changedUpdate(DocumentEvent e) {
+			}
+		});
 		addStyles();
 		pane = new JScrollPane();
 		setLineBreaking(prefs.getLineBreaking());
