@@ -27,7 +27,23 @@ public class PreferencesHelper {
 	public int getWindowWidth() {
 		return prefs.getInt(Key.WINDOW_WIDTH, -1);
 	}
-	
+
+	public int getEditorPositionX() {
+		return prefs.getInt(Key.EDITOR_POS_X, -1);
+	}
+
+	public int getEditorPositionY() {
+		return prefs.getInt(Key.EDITOR_POS_Y, -1);
+	}
+
+	public int getEditorHeight() {
+		return prefs.getInt(Key.EDITOR_HEIGHT, -1);
+	}
+
+	public int getEditorWidth() {
+		return prefs.getInt(Key.EDITOR_WIDTH, -1);
+	}
+
 	public int getPort() {
 		return prefs.getInt(Key.PORT_NUMBER, 4242);
 	}
@@ -58,7 +74,22 @@ public class PreferencesHelper {
 		prefs.putInt(Key.WINDOW_POS_X, x);
 		prefs.putInt(Key.WINDOW_POS_Y, y);
 	}
-	
+
+	public void setEditorSize(int width, int height) {
+		prefs.putInt(Key.EDITOR_WIDTH, width);
+		prefs.putInt(Key.EDITOR_HEIGHT, height);
+	}
+
+	public void setEditorPosition(int x, int y) {
+		prefs.putInt(Key.EDITOR_POS_X, x);
+		prefs.putInt(Key.EDITOR_POS_Y, y);
+	}
+
+	public void setEditorDimensions(int posX, int posY, int width, int height) {
+		setEditorPosition(posX, posY);
+		setEditorSize(width, height);
+	}
+
 	public void setHostname(String hostname) {
 		prefs.put(Key.HOSTNAME, hostname);
 	}
@@ -86,5 +117,9 @@ public class PreferencesHelper {
 		public static final String HOSTNAME = "hostname";
 		public static final String PORT_NUMBER = "portNumber";
 		public static final String LINE_BREAKING = "lineBreaking";
+		public static final String EDITOR_WIDTH = "editorWidth";
+		public static final String EDITOR_HEIGHT = "editorHeight";
+		public static final String EDITOR_POS_X = "editorPosX";
+		public static final String EDITOR_POS_Y = "editorPosY";
 	}
 }

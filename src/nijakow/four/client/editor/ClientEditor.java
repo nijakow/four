@@ -74,10 +74,7 @@ public class ClientEditor extends JFrame implements ActionListener {
 		allButtons.add(buttons);
 		allButtons.add(highlight);
 		getContentPane().add(allButtons, BorderLayout.SOUTH);
-		setPreferredSize(new Dimension(300, 200));
-		pack();
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-		setLocationRelativeTo(owner);
 	}
 
 	private void startSyntaxHighlighting() {

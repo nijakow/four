@@ -388,10 +388,33 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 		ClientEditor editor = new ClientEditor(this, connection, queue, args);
 		editor.addWindowListener(new WindowAdapter() {
 			@Override
+			public void windowDeactivated(WindowEvent e) {
+				prefs.setEditorSize(editor.getWidth(), editor.getHeight());
+				prefs.setEditorPosition(editor.getX(), editor.getY());
+			}
+
+			@Override
 			public void windowClosed(WindowEvent e) {
 				editors.remove(editor);
 			}
 		});
+		int width = prefs.getEditorWidth();
+		int height = prefs.getEditorHeight();
+		if (width == -1 || height == -1) {
+			editor.pack();
+		} else {
+			editor.setSize(width, height);
+		}
+		int x = prefs.getEditorPositionX();
+		int y = prefs.getEditorPositionY();
+		if (x == -1 || y == -1) {
+			editor.setLocationRelativeTo(this);
+		} else {
+			if (editors.isEmpty())
+				editor.setLocation(x, y);
+			else
+				editor.setLocation(x + 25, y + 25);
+		}
 		editors.add(editor);
 		editor.setVisible(true);
 	}
