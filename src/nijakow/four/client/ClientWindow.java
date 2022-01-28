@@ -54,7 +54,6 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 	private final JTextPane area;
 	private final StyledDocument term;
 	private final List<ClientEditor> editors;
-	private final char pwdEchoChar;
 	private String buffer;
 	private JLabel connectionStatus;
 	private PreferencesHelper prefs;
@@ -120,7 +119,6 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 		pwf.setFont(font);
 		pwf.addActionListener(this);
 		pwf.setActionCommand(Commands.ACTION_PASSWORD);
-		pwdEchoChar = pwf.getEchoChar();
 		promptText = new JLabel();
 		promptText.setFont(font);
 		reconnectButton = new JButton("Reconnect");
@@ -425,8 +423,8 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 			disposeEditors();
 			prompt.setText(" Connection closed. ");
 			prompt.setEnabled(false);
-			pwf.setText(" Connection lost." );
-			pwf.setEchoChar((char) 0);
+			pwf.setVisible(false);
+			prompt.setVisible(true);
 			pwf.setEnabled(false);
 			reconnectButton.setVisible(true);
 		});
@@ -443,7 +441,6 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 			case Commands.ACTION_RECONNECT:
 				prompt.setText("");
 				pwf.setText("");
-				pwf.setEchoChar(pwdEchoChar);
 				pwf.setEnabled(true);
 				prompt.setEnabled(true);
 				pwf.setVisible(false);
