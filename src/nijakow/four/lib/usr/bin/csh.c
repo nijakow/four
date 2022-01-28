@@ -19,11 +19,15 @@ void resume()
 
 void start()
 {
-    if (length(argv) != 2) {
+    if (length(argv) == 1) {
         subject = me();
-    } else {
+        resume();
+    } else if (length(argv) == 2) {
         string path = resolve(pwd(), argv[1]);
         subject     = the(path);
+        resume();
+    } else {
+        connection()->write("Argument error!\n");
+        exit();
     }
-    resume();
 }
