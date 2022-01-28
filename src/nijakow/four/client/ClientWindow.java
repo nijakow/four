@@ -114,21 +114,21 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 		prompt = new JTextField();
 		prompt.setFont(font);
 		prompt.addActionListener(this);
-		prompt.setActionCommand(Commands.ACTION_SEND);
+		prompt.setActionCommand(Commands.Actions.ACTION_SEND);
 		pwf = new JPasswordField();
 		pwf.setFont(font);
 		pwf.addActionListener(this);
-		pwf.setActionCommand(Commands.ACTION_PASSWORD);
+		pwf.setActionCommand(Commands.Actions.ACTION_PASSWORD);
 		promptText = new JLabel();
 		promptText.setFont(font);
 		reconnectButton = new JButton("Reconnect");
-		reconnectButton.setActionCommand(Commands.ACTION_RECONNECT);
+		reconnectButton.setActionCommand(Commands.Actions.ACTION_RECONNECT);
 		reconnectButton.addActionListener(this);
 		connectionStatus = new JLabel();
 		getContentPane().add(connectionStatus, BorderLayout.NORTH);
 		JButton settings = new JButton("Settings");
 		settings.addActionListener(this);
-		settings.setActionCommand(Commands.ACTION_SETTINGS);
+		settings.setActionCommand(Commands.Actions.ACTION_SETTINGS);
 		south.add(promptText);
 		south.add(prompt);
 		south.add(pwf);
@@ -164,7 +164,7 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 		else
 			setSize(width, height);
 		labelTimer = new Timer(5000, this);
-		labelTimer.setActionCommand(Commands.ACTION_STATUS_LABEL_TIMER);
+		labelTimer.setActionCommand(Commands.Actions.ACTION_STATUS_LABEL_TIMER);
 		labelTimer.setRepeats(false);
 		reconnectorHandler = queue.scheduleWithFixedDelay(reconnector, 0, 5, TimeUnit.SECONDS);
 	}
@@ -190,11 +190,11 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 	
 	private void addStyles() {
 		final Style def = area.getLogicalStyle();
-		Style s = term.addStyle(Commands.STYLE_ERROR, def);
+		Style s = term.addStyle(Commands.Styles.STYLE_ERROR, def);
 		StyleConstants.setBold(s, true);
 		StyleConstants.setItalic(s, true);
 		StyleConstants.setForeground(s, Color.red);
-		s = term.addStyle(Commands.STYLE_INPUT, def);
+		s = term.addStyle(Commands.Styles.STYLE_INPUT, def);
 		StyleConstants.setForeground(s, Color.gray);
 	}
 
@@ -291,59 +291,59 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 	private Style getStyleByName(String style) {
 		Style ret = term.addStyle(style, current == null ? area.getLogicalStyle() : current);
 		switch (style) {
-		case Commands.STYLE_NORMAL:
+		case Commands.Styles.STYLE_NORMAL:
 			ret = null;
 			break;
 
-		case Commands.STYLE_BLUE:
+		case Commands.Styles.STYLE_BLUE:
 			StyleConstants.setForeground(ret, Color.blue);
 			break;
 
-		case Commands.STYLE_RED:
+		case Commands.Styles.STYLE_RED:
 			StyleConstants.setForeground(ret, Color.red);
 			break;
 
-		case Commands.STYLE_GREEN:
+		case Commands.Styles.STYLE_GREEN:
 			StyleConstants.setForeground(ret, Color.green);
 			break;
 
-		case Commands.STYLE_YELLOW:
+		case Commands.Styles.STYLE_YELLOW:
 			StyleConstants.setForeground(ret, Color.yellow);
 			break;
 
-		case Commands.STYLE_BLACK:
+		case Commands.Styles.STYLE_BLACK:
 			StyleConstants.setForeground(ret, Color.black);
 			break;
 
-		case Commands.STYLE_ITALIC:
+		case Commands.Styles.STYLE_ITALIC:
 			StyleConstants.setItalic(ret, true);
 			break;
 
-		case Commands.STYLE_BOLD:
+		case Commands.Styles.STYLE_BOLD:
 			StyleConstants.setBold(ret, true);
 			break;
 
-		case Commands.STYLE_UNDERSCORED:
+		case Commands.Styles.STYLE_UNDERSCORED:
 			StyleConstants.setUnderline(ret, true);
 			break;
 
-		case Commands.STYLE_BG_BLACK:
+		case Commands.Styles.STYLE_BG_BLACK:
 			StyleConstants.setBackground(ret, Color.black);
 			break;
 
-		case Commands.STYLE_BG_BLUE:
+		case Commands.Styles.STYLE_BG_BLUE:
 			StyleConstants.setBackground(ret, Color.blue);
 			break;
 
-		case Commands.STYLE_BG_GREEN:
+		case Commands.Styles.STYLE_BG_GREEN:
 			StyleConstants.setBackground(ret, Color.green);
 			break;
 
-		case Commands.STYLE_BG_RED:
+		case Commands.Styles.STYLE_BG_RED:
 			StyleConstants.setBackground(ret, Color.red);
 			break;
 
-		case Commands.STYLE_BG_YELLOW:
+		case Commands.Styles.STYLE_BG_YELLOW:
 			StyleConstants.setBackground(ret, Color.yellow);
 			break;
 		}
@@ -351,31 +351,31 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 	}
 	
 	private void parseArgument(String arg) {
-		if (arg.startsWith(Commands.SPECIAL_PWD)) {
+		if (arg.startsWith(Commands.Codes.SPECIAL_PWD)) {
 			EventQueue.invokeLater(() -> {
 				pwf.setVisible(true);
 				prompt.setVisible(false);
 				pwf.requestFocusInWindow();
-				if (arg.length() > Commands.SPECIAL_PROMPT.length() + 1)
-					promptText.setText(arg.substring(Commands.SPECIAL_PWD.length()));
+				if (arg.length() > Commands.Codes.SPECIAL_PROMPT.length() + 1)
+					promptText.setText(arg.substring(Commands.Codes.SPECIAL_PWD.length()));
 				else
 					promptText.setText("");
 				validate();
 			});
-		} else if (arg.startsWith(Commands.SPECIAL_PROMPT)) {
+		} else if (arg.startsWith(Commands.Codes.SPECIAL_PROMPT)) {
 			EventQueue.invokeLater(() -> {
-				if (arg.length() > Commands.SPECIAL_PROMPT.length() + 1)
-					promptText.setText(arg.substring(Commands.SPECIAL_PWD.length()));
+				if (arg.length() > Commands.Codes.SPECIAL_PROMPT.length() + 1)
+					promptText.setText(arg.substring(Commands.Codes.SPECIAL_PWD.length()));
 				else
 					promptText.setText("");
 			});
-		} else if (arg.startsWith(Commands.SPECIAL_EDIT)) {
-			String splitter = arg.substring(Commands.SPECIAL_EDIT.length());
-			int i0 = splitter.indexOf(Commands.SPECIAL_RAW);
+		} else if (arg.startsWith(Commands.Codes.SPECIAL_EDIT)) {
+			String splitter = arg.substring(Commands.Codes.SPECIAL_EDIT.length());
+			int i0 = splitter.indexOf(Commands.Codes.SPECIAL_RAW);
 			if (i0 < 0) return;
 			String id = splitter.substring(0, i0);
 			splitter = splitter.substring(i0 + 1);
-			int i1 = splitter.indexOf(Commands.SPECIAL_RAW);
+			int i1 = splitter.indexOf(Commands.Codes.SPECIAL_RAW);
 			if (i1 < 0) return;
 			String title = splitter.substring(0, i1);
 			splitter = splitter.substring(i1 + 1);
@@ -400,12 +400,12 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 	public void charReceived(ClientConnection connection, char c) {
 		EventQueue.invokeLater(() -> {
 			try {
-				if (c == Commands.SPECIAL_END) {
+				if (c == Commands.Codes.SPECIAL_END) {
 					wasSpecial = false;
 					parseArgument(buffer);
 				} else if (wasSpecial)
 					buffer += c;
-				else if (c == Commands.SPECIAL_START) {
+				else if (c == Commands.Codes.SPECIAL_START) {
 					wasSpecial = true;
 					buffer = "";
 				}
@@ -434,11 +434,11 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 	public void actionPerformed(ActionEvent e) {
 		JTextField tmp = prompt;
 		switch (e.getActionCommand()) {
-			case Commands.ACTION_SETTINGS:
+			case Commands.Actions.ACTION_SETTINGS:
 				openSettingsWindow();
 				break;
 
-			case Commands.ACTION_RECONNECT:
+			case Commands.Actions.ACTION_RECONNECT:
 				prompt.setText("");
 				pwf.setText("");
 				pwf.setEnabled(true);
@@ -451,24 +451,24 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 				labelTimer.restart();
 				break;
 
-			case Commands.ACTION_STATUS_LABEL_TIMER:
+			case Commands.Actions.ACTION_STATUS_LABEL_TIMER:
 				connectionStatus.setVisible(false);
 				break;
 
-			case Commands.ACTION_PASSWORD:
+			case Commands.Actions.ACTION_PASSWORD:
 				prompt.setVisible(true);
 				pwf.setVisible(false);
 				prompt.requestFocusInWindow();
 				validate();
 				tmp = pwf;
 
-			case Commands.ACTION_SEND:
+			case Commands.Actions.ACTION_SEND:
 				// TODO Don't reset background
 				String text = tmp.getText() + "\n";
 				tmp.enableInputMethods(true);
 				try {
 					term.insertString(term.getLength(), promptText.getText(), null);
-					final Style s = term.getStyle(Commands.STYLE_INPUT);
+					final Style s = term.getStyle(Commands.Styles.STYLE_INPUT);
 					if (tmp == prompt)
 						term.insertString(term.getLength(), text, s);
 					else
@@ -483,7 +483,7 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 					} catch (Exception ex) {
 						EventQueue.invokeLater(() -> {
 							try {
-								term.insertString(term.getLength(), "*** Could not send message --- see console for more details! ***\n", term.getStyle(Commands.STYLE_ERROR));
+								term.insertString(term.getLength(), "*** Could not send message --- see console for more details! ***\n", term.getStyle(Commands.Styles.STYLE_ERROR));
 							} catch (BadLocationException e1) {
 								e1.printStackTrace();
 							}

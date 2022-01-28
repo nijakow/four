@@ -6,13 +6,6 @@ import java.util.prefs.Preferences;
 import nijakow.four.server.Four;
 
 public class PreferencesHelper {
-	public static final String WINDOW_POS_X = "windowPosX";
-	public static final String WINDOW_POS_Y = "windowPosY";
-	public static final String WINDOW_WIDTH = "windowWidth";
-	public static final String WINDOW_HEIGHT = "windowHeight";
-	public static final String HOSTNAME = "hostname";
-	public static final String PORT_NUMBER = "portNumber";
-	public static final String LINE_BREAKING = "lineBreaking";
 	private final Preferences prefs;
 	
 	public PreferencesHelper() {
@@ -20,35 +13,35 @@ public class PreferencesHelper {
 	}
 	
 	public int getWindowPositionX() {
-		return prefs.getInt(WINDOW_POS_X, -1);
+		return prefs.getInt(Key.WINDOW_POS_X, -1);
 	}
 	
 	public int getWindowPositionY() {
-		return prefs.getInt(WINDOW_POS_Y, -1);
+		return prefs.getInt(Key.WINDOW_POS_Y, -1);
 	}
 	
 	public int getWindowHeight() {
-		return prefs.getInt(WINDOW_HEIGHT, -1);
+		return prefs.getInt(Key.WINDOW_HEIGHT, -1);
 	}
 	
 	public int getWindowWidth() {
-		return prefs.getInt(WINDOW_WIDTH, -1);
+		return prefs.getInt(Key.WINDOW_WIDTH, -1);
 	}
 	
 	public int getPort() {
-		return prefs.getInt(PORT_NUMBER, 4242);
+		return prefs.getInt(Key.PORT_NUMBER, 4242);
 	}
 	
 	public String getHostname() {
-		return prefs.get(HOSTNAME, "");
+		return prefs.get(Key.HOSTNAME, "");
 	}
 	
 	public boolean getLineBreaking() {
-		return prefs.getBoolean(LINE_BREAKING, true);
+		return prefs.getBoolean(Key.LINE_BREAKING, true);
 	}
 	
 	public void setLineBreaking(boolean breaking) {
-		prefs.putBoolean(LINE_BREAKING, breaking);
+		prefs.putBoolean(Key.LINE_BREAKING, breaking);
 	}
 	
 	public void setWindowDimensions(int posX, int posY, int width, int height) {
@@ -57,21 +50,21 @@ public class PreferencesHelper {
 	}
 	
 	public void setWindowSize(int width, int height) {
-		prefs.putInt(WINDOW_HEIGHT, height);
-		prefs.putInt(WINDOW_WIDTH, width);
+		prefs.putInt(Key.WINDOW_HEIGHT, height);
+		prefs.putInt(Key.WINDOW_WIDTH, width);
 	}
 	
 	public void setWindowPosition(int x, int y) {
-		prefs.putInt(WINDOW_POS_X, x);
-		prefs.putInt(WINDOW_POS_Y, y);
+		prefs.putInt(Key.WINDOW_POS_X, x);
+		prefs.putInt(Key.WINDOW_POS_Y, y);
 	}
 	
 	public void setHostname(String hostname) {
-		prefs.put(HOSTNAME, hostname);
+		prefs.put(Key.HOSTNAME, hostname);
 	}
 	
 	public void setPort(int port) {
-		prefs.putInt(PORT_NUMBER, port);
+		prefs.putInt(Key.PORT_NUMBER, port);
 	}
 	
 	public boolean flush() {
@@ -83,5 +76,15 @@ public class PreferencesHelper {
 			return false;
 		}
 		return true;
+	}
+
+	public abstract static class Key {
+		public static final String WINDOW_POS_X = "windowPosX";
+		public static final String WINDOW_POS_Y = "windowPosY";
+		public static final String WINDOW_WIDTH = "windowWidth";
+		public static final String WINDOW_HEIGHT = "windowHeight";
+		public static final String HOSTNAME = "hostname";
+		public static final String PORT_NUMBER = "portNumber";
+		public static final String LINE_BREAKING = "lineBreaking";
 	}
 }
