@@ -389,8 +389,7 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 		editor.addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowDeactivated(WindowEvent e) {
-				prefs.setEditorSize(editor.getWidth(), editor.getHeight());
-				prefs.setEditorPosition(editor.getX(), editor.getY());
+				prefs.setEditorDimensions(editor.getX(), editor.getY(), editor.getWidth(), editor.getHeight());
 			}
 
 			@Override
