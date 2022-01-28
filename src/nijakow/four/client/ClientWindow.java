@@ -450,6 +450,7 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 			prompt.setVisible(true);
 			pwf.setEnabled(false);
 			reconnectButton.setVisible(true);
+			reconnectButton.requestFocusInWindow();
 		});
 	}
 	
