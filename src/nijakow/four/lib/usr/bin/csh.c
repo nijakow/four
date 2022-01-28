@@ -7,23 +7,23 @@ void receive(string line)
     if (line == "")
         exit();
     else {
-        connection()->write(eval(subject, "this->" + line), "\n");
+        connection()->write(eval(subject, line), "\n");
         resume();
     }
 }
 
 void resume()
 {
-    connection()->prompt(this::receive, "this->");
+    connection()->prompt(this::receive, "& ");
 }
 
 void start()
 {
     if (length(argv) != 2) {
-        connection->write("Argument error!\n");
-        exit();
+        subject = me();
     } else {
-        subject = the(argv[1]);
-        resume();
+        string path = resolve(pwd(), argv[1]);
+        subject     = the(path);
     }
+    resume();
 }
