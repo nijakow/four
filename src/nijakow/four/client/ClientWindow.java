@@ -401,7 +401,7 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 	}
 	
 	private void openEditor(String[] args) {
-		ClientEditor editor = new ClientEditor(this, connection, queue, args);
+		ClientEditor editor = new ClientEditor(connection, queue, args);
 		editor.addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowDeactivated(WindowEvent e) {

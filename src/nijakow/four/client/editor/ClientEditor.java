@@ -30,7 +30,7 @@ public class ClientEditor extends JFrame implements ActionListener {
 	private ScheduledFuture<?> future;
 	private final Runnable highlighter = this::updateSyntaxHighlighting;
 
-	public ClientEditor(JFrame owner, ClientConnection c, ScheduledExecutorService queue, String[] args) {
+	public ClientEditor(ClientConnection c, ScheduledExecutorService queue, String[] args) {
 		super(args[1]);
 		path = args[1];
 		id = args[0];
