@@ -47,7 +47,7 @@ public class ClientEditor extends JFrame implements ActionListener {
 		JButton save = new JButton("Save");
 		save.addActionListener(this);
 		save.setActionCommand(Commands.Actions.ACTION_EDIT_SAVE);
-		JButton saveAs = new JButton("Save as");
+		JButton saveAs = new JButton("Save as...");
 		saveAs.addActionListener(this);
 		saveAs.setActionCommand(Commands.Actions.ACTION_EDIT_SAVE_AS);
 		JButton close = new JButton("Close");
