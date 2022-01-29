@@ -1,17 +1,13 @@
 package nijakow.four.client;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Cursor;
-import java.awt.Dimension;
-import java.awt.EventQueue;
-import java.awt.Font;
-import java.awt.GridLayout;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.Executors;
@@ -19,21 +15,10 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JDialog;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JPasswordField;
-import javax.swing.JScrollPane;
-import javax.swing.JTextField;
-import javax.swing.JTextPane;
-import javax.swing.Timer;
-import javax.swing.UIManager;
+import javax.swing.*;
 import javax.swing.border.EtchedBorder;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
@@ -54,7 +39,6 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 	private final JTextPane area;
 	private final StyledDocument term;
 	private final List<ClientEditor> editors;
-	private final char pwdEchoChar;
 	private String buffer;
 	private JLabel connectionStatus;
 	private PreferencesHelper prefs;
@@ -100,7 +84,7 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 		super("Nijakow's \"Four\"");
 
 		final Font font = new Font("Monospaced", Font.PLAIN, 14);
-		
+
 		// TODO macOS customization
 		// TODO iterate through ports
 		buffer = "";
@@ -115,22 +99,21 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 		prompt = new JTextField();
 		prompt.setFont(font);
 		prompt.addActionListener(this);
-		prompt.setActionCommand(Commands.ACTION_SEND);
+		prompt.setActionCommand(Commands.Actions.ACTION_SEND);
 		pwf = new JPasswordField();
 		pwf.setFont(font);
 		pwf.addActionListener(this);
-		pwf.setActionCommand(Commands.ACTION_PASSWORD);
-		pwdEchoChar = pwf.getEchoChar();
+		pwf.setActionCommand(Commands.Actions.ACTION_PASSWORD);
 		promptText = new JLabel();
 		promptText.setFont(font);
 		reconnectButton = new JButton("Reconnect");
-		reconnectButton.setActionCommand(Commands.ACTION_RECONNECT);
+		reconnectButton.setActionCommand(Commands.Actions.ACTION_RECONNECT);
 		reconnectButton.addActionListener(this);
 		connectionStatus = new JLabel();
 		getContentPane().add(connectionStatus, BorderLayout.NORTH);
 		JButton settings = new JButton("Settings");
 		settings.addActionListener(this);
-		settings.setActionCommand(Commands.ACTION_SETTINGS);
+		settings.setActionCommand(Commands.Actions.ACTION_SETTINGS);
 		south.add(promptText);
 		south.add(prompt);
 		south.add(pwf);
@@ -145,6 +128,20 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 		area.setFont(font);
 		area.setOpaque(true);
 		term = area.getStyledDocument();
+		term.addDocumentListener(new DocumentListener() {
+			@Override
+			public void insertUpdate(DocumentEvent e) {
+				area.setCaretPosition(term.getLength());
+			}
+
+			@Override
+			public void removeUpdate(DocumentEvent e) {
+			}
+
+			@Override
+			public void changedUpdate(DocumentEvent e) {
+			}
+		});
 		addStyles();
 		pane = new JScrollPane();
 		setLineBreaking(prefs.getLineBreaking());
@@ -166,7 +163,7 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 		else
 			setSize(width, height);
 		labelTimer = new Timer(5000, this);
-		labelTimer.setActionCommand(Commands.ACTION_STATUS_LABEL_TIMER);
+		labelTimer.setActionCommand(Commands.Actions.ACTION_STATUS_LABEL_TIMER);
 		labelTimer.setRepeats(false);
 		reconnectorHandler = queue.scheduleWithFixedDelay(reconnector, 0, 5, TimeUnit.SECONDS);
 	}
@@ -192,20 +189,24 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 	
 	private void addStyles() {
 		final Style def = area.getLogicalStyle();
-		Style s = term.addStyle(Commands.STYLE_ERROR, def);
+		Style s = term.addStyle(Commands.Styles.STYLE_ERROR, def);
 		StyleConstants.setBold(s, true);
 		StyleConstants.setItalic(s, true);
 		StyleConstants.setForeground(s, Color.red);
-		s = term.addStyle(Commands.STYLE_INPUT, def);
+		s = term.addStyle(Commands.Styles.STYLE_INPUT, def);
 		StyleConstants.setForeground(s, Color.gray);
 	}
-	
-	public void dispose() {
-		prefs.setWindowDimensions(getX(), getY(), getWidth(), getHeight());
-		prefs.flush();
+
+	private void disposeEditors() {
 		for (ClientEditor ed : editors) {
 			ed.dispose();
 		}
+	}
+
+	public void dispose() {
+		prefs.setWindowDimensions(getX(), getY(), getWidth(), getHeight());
+		prefs.flush();
+		disposeEditors();
 		closeConnection();
 		super.dispose();
 	}
@@ -289,59 +290,59 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 	private Style getStyleByName(String style) {
 		Style ret = term.addStyle(style, current == null ? area.getLogicalStyle() : current);
 		switch (style) {
-		case Commands.STYLE_NORMAL:
+		case Commands.Styles.STYLE_NORMAL:
 			ret = null;
 			break;
 
-		case Commands.STYLE_BLUE:
+		case Commands.Styles.STYLE_BLUE:
 			StyleConstants.setForeground(ret, Color.blue);
 			break;
 
-		case Commands.STYLE_RED:
+		case Commands.Styles.STYLE_RED:
 			StyleConstants.setForeground(ret, Color.red);
 			break;
 
-		case Commands.STYLE_GREEN:
+		case Commands.Styles.STYLE_GREEN:
 			StyleConstants.setForeground(ret, Color.green);
 			break;
 
-		case Commands.STYLE_YELLOW:
+		case Commands.Styles.STYLE_YELLOW:
 			StyleConstants.setForeground(ret, Color.yellow);
 			break;
 
-		case Commands.STYLE_BLACK:
+		case Commands.Styles.STYLE_BLACK:
 			StyleConstants.setForeground(ret, Color.black);
 			break;
 
-		case Commands.STYLE_ITALIC:
+		case Commands.Styles.STYLE_ITALIC:
 			StyleConstants.setItalic(ret, true);
 			break;
 
-		case Commands.STYLE_BOLD:
+		case Commands.Styles.STYLE_BOLD:
 			StyleConstants.setBold(ret, true);
 			break;
 
-		case Commands.STYLE_UNDERSCORED:
+		case Commands.Styles.STYLE_UNDERSCORED:
 			StyleConstants.setUnderline(ret, true);
 			break;
 
-		case Commands.STYLE_BG_BLACK:
+		case Commands.Styles.STYLE_BG_BLACK:
 			StyleConstants.setBackground(ret, Color.black);
 			break;
 
-		case Commands.STYLE_BG_BLUE:
+		case Commands.Styles.STYLE_BG_BLUE:
 			StyleConstants.setBackground(ret, Color.blue);
 			break;
 
-		case Commands.STYLE_BG_GREEN:
+		case Commands.Styles.STYLE_BG_GREEN:
 			StyleConstants.setBackground(ret, Color.green);
 			break;
 
-		case Commands.STYLE_BG_RED:
+		case Commands.Styles.STYLE_BG_RED:
 			StyleConstants.setBackground(ret, Color.red);
 			break;
 
-		case Commands.STYLE_BG_YELLOW:
+		case Commands.Styles.STYLE_BG_YELLOW:
 			StyleConstants.setBackground(ret, Color.yellow);
 			break;
 		}
@@ -349,47 +350,103 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 	}
 	
 	private void parseArgument(String arg) {
-		if (arg.startsWith(Commands.SPECIAL_PWD)) {
-			EventQueue.invokeLater(() -> {
-				pwf.setVisible(true);
-				prompt.setVisible(false);
-				pwf.requestFocusInWindow();
-				if (arg.length() > Commands.SPECIAL_PROMPT.length() + 1)
-					promptText.setText(arg.substring(Commands.SPECIAL_PWD.length()));
-				else
-					promptText.setText("");
-				validate();
-			});
-		} else if (arg.startsWith(Commands.SPECIAL_PROMPT)) {
-			EventQueue.invokeLater(() -> {
-				if (arg.length() > Commands.SPECIAL_PROMPT.length() + 1)
-					promptText.setText(arg.substring(Commands.SPECIAL_PWD.length()));
-				else
-					promptText.setText("");
-			});
-		} else if (arg.startsWith(Commands.SPECIAL_EDIT)) {
-			String splitter = arg.substring(Commands.SPECIAL_EDIT.length());
-			int i0 = splitter.indexOf(Commands.SPECIAL_RAW);
+		if (arg.startsWith(Commands.Codes.SPECIAL_PWD)) {
+			pwf.setVisible(true);
+			prompt.setVisible(false);
+			pwf.requestFocusInWindow();
+			if (arg.length() > Commands.Codes.SPECIAL_PROMPT.length() + 1)
+				promptText.setText(arg.substring(Commands.Codes.SPECIAL_PWD.length()));
+			else
+				promptText.setText("");
+			validate();
+		} else if (arg.startsWith(Commands.Codes.SPECIAL_PROMPT)) {
+			if (arg.length() > Commands.Codes.SPECIAL_PROMPT.length() + 1)
+				promptText.setText(arg.substring(Commands.Codes.SPECIAL_PWD.length()));
+			else
+				promptText.setText("");
+		} else if (arg.startsWith(Commands.Codes.SPECIAL_EDIT)) {
+			String splitter = arg.substring(Commands.Codes.SPECIAL_EDIT.length());
+			int i0 = splitter.indexOf(Commands.Codes.SPECIAL_RAW);
 			if (i0 < 0) return;
 			String id = splitter.substring(0, i0);
 			splitter = splitter.substring(i0 + 1);
-			int i1 = splitter.indexOf(Commands.SPECIAL_RAW);
+			int i1 = splitter.indexOf(Commands.Codes.SPECIAL_RAW);
 			if (i1 < 0) return;
 			String title = splitter.substring(0, i1);
 			splitter = splitter.substring(i1 + 1);
-			openEditor(new String[] { id, title, splitter });
+			openEditor(new String[]{id, title, splitter});
+		} else if (arg.startsWith(Commands.Codes.SPECIAL_IMG)) {
+			String splitter = arg.substring(Commands.Codes.SPECIAL_IMG.length());
+			int cross = splitter.indexOf('x');
+			int firstComma = splitter.indexOf(',');
+			int width = -1, height = -1;
+			String desc = null;
+			if (cross >= 0 && firstComma > cross) {
+				try {
+					width = Integer.parseInt(splitter.substring(0, cross));
+					height = Integer.parseInt(splitter.substring(cross + 1, firstComma));
+				} catch (NumberFormatException e) {
+					width = height = -1;
+				}
+				int secondComma = splitter.indexOf(',', firstComma + 1);
+				if (secondComma >= 0) {
+					desc = splitter.substring(firstComma + 1, secondComma);
+					splitter = splitter.substring(secondComma + 1);
+				} else {
+					splitter = splitter.substring(firstComma + 1);
+				}
+			} else if (firstComma >= 0) {
+				desc = splitter.substring(0, firstComma);
+				splitter = splitter.substring(firstComma + 1);
+			}
+			ImageIcon i;
+			try {
+				i = new ImageIcon(new URL(splitter));
+				if (desc != null) {
+					i.setDescription(desc);
+				}
+				if (width >= 0 || height >= 0) {
+					i = new ImageIcon(i.getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH));
+				}
+			} catch (MalformedURLException e) {
+				i = null;
+			}
+			if (i != null)
+				area.insertIcon(i);
 		} else
 			current = getStyleByName(arg);
 	}
-	
+
 	private void openEditor(String[] args) {
-		ClientEditor editor = new ClientEditor(this, connection, queue, args);
+		ClientEditor editor = new ClientEditor(connection, queue, args);
 		editor.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowDeactivated(WindowEvent e) {
+				prefs.setEditorDimensions(editor.getX(), editor.getY(), editor.getWidth(), editor.getHeight());
+			}
+
 			@Override
 			public void windowClosed(WindowEvent e) {
 				editors.remove(editor);
 			}
 		});
+		int width = prefs.getEditorWidth();
+		int height = prefs.getEditorHeight();
+		if (width == -1 || height == -1) {
+			editor.pack();
+		} else {
+			editor.setSize(width, height);
+		}
+		int x = prefs.getEditorPositionX();
+		int y = prefs.getEditorPositionY();
+		if (x == -1 || y == -1) {
+			editor.setLocationRelativeTo(this);
+		} else {
+			if (editors.isEmpty())
+				editor.setLocation(x, y);
+			else
+				editor.setLocation(x + 25, y + 25);
+		}
 		editors.add(editor);
 		editor.setVisible(true);
 	}
@@ -398,12 +455,12 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 	public void charReceived(ClientConnection connection, char c) {
 		EventQueue.invokeLater(() -> {
 			try {
-				if (c == Commands.SPECIAL_END) {
+				if (c == Commands.Codes.SPECIAL_END) {
 					wasSpecial = false;
 					parseArgument(buffer);
 				} else if (wasSpecial)
 					buffer += c;
-				else if (c == Commands.SPECIAL_START) {
+				else if (c == Commands.Codes.SPECIAL_START) {
 					wasSpecial = true;
 					buffer = "";
 				}
@@ -418,12 +475,14 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 	@Override
 	public void connectionLost(ClientConnection connection) {
 		EventQueue.invokeLater(() -> {
+			disposeEditors();
 			prompt.setText(" Connection closed. ");
 			prompt.setEnabled(false);
-			pwf.setText(" Connection lost." );
-			pwf.setEchoChar((char) 0);
+			pwf.setVisible(false);
+			prompt.setVisible(true);
 			pwf.setEnabled(false);
 			reconnectButton.setVisible(true);
+			reconnectButton.requestFocusInWindow();
 		});
 	}
 	
@@ -431,14 +490,13 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 	public void actionPerformed(ActionEvent e) {
 		JTextField tmp = prompt;
 		switch (e.getActionCommand()) {
-			case Commands.ACTION_SETTINGS:
+			case Commands.Actions.ACTION_SETTINGS:
 				openSettingsWindow();
 				break;
 
-			case Commands.ACTION_RECONNECT:
+			case Commands.Actions.ACTION_RECONNECT:
 				prompt.setText("");
 				pwf.setText("");
-				pwf.setEchoChar(pwdEchoChar);
 				pwf.setEnabled(true);
 				prompt.setEnabled(true);
 				pwf.setVisible(false);
@@ -449,24 +507,24 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 				labelTimer.restart();
 				break;
 
-			case Commands.ACTION_STATUS_LABEL_TIMER:
+			case Commands.Actions.ACTION_STATUS_LABEL_TIMER:
 				connectionStatus.setVisible(false);
 				break;
 
-			case Commands.ACTION_PASSWORD:
+			case Commands.Actions.ACTION_PASSWORD:
 				prompt.setVisible(true);
 				pwf.setVisible(false);
 				prompt.requestFocusInWindow();
 				validate();
 				tmp = pwf;
 
-			case Commands.ACTION_SEND:
+			case Commands.Actions.ACTION_SEND:
 				// TODO Don't reset background
 				String text = tmp.getText() + "\n";
 				tmp.enableInputMethods(true);
 				try {
 					term.insertString(term.getLength(), promptText.getText(), null);
-					final Style s = term.getStyle(Commands.STYLE_INPUT);
+					final Style s = term.getStyle(Commands.Styles.STYLE_INPUT);
 					if (tmp == prompt)
 						term.insertString(term.getLength(), text, s);
 					else
@@ -481,7 +539,7 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 					} catch (Exception ex) {
 						EventQueue.invokeLater(() -> {
 							try {
-								term.insertString(term.getLength(), "*** Could not send message --- see console for more details! ***\n", term.getStyle(Commands.STYLE_ERROR));
+								term.insertString(term.getLength(), "*** Could not send message --- see console for more details! ***\n", term.getStyle(Commands.Styles.STYLE_ERROR));
 							} catch (BadLocationException e1) {
 								e1.printStackTrace();
 							}

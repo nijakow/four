@@ -30,7 +30,7 @@ public class ClientEditor extends JFrame implements ActionListener {
 	private ScheduledFuture<?> future;
 	private final Runnable highlighter = this::updateSyntaxHighlighting;
 
-	public ClientEditor(JFrame owner, ClientConnection c, ScheduledExecutorService queue, String[] args) {
+	public ClientEditor(ClientConnection c, ScheduledExecutorService queue, String[] args) {
 		super(args[1]);
 		path = args[1];
 		id = args[0];
@@ -46,13 +46,13 @@ public class ClientEditor extends JFrame implements ActionListener {
 		getContentPane().add(sp, BorderLayout.CENTER);
 		JButton save = new JButton("Save");
 		save.addActionListener(this);
-		save.setActionCommand(Commands.ACTION_EDIT_SAVE);
-		JButton saveAs = new JButton("Save as");
+		save.setActionCommand(Commands.Actions.ACTION_EDIT_SAVE);
+		JButton saveAs = new JButton("Save as...");
 		saveAs.addActionListener(this);
-		saveAs.setActionCommand(Commands.ACTION_EDIT_SAVE_AS);
+		saveAs.setActionCommand(Commands.Actions.ACTION_EDIT_SAVE_AS);
 		JButton close = new JButton("Close");
 		close.addActionListener(this);
-		close.setActionCommand(Commands.ACTION_EDIT_CLOSE);
+		close.setActionCommand(Commands.Actions.ACTION_EDIT_CLOSE);
 		JCheckBox highlight = new JCheckBox("Enable syntax highlighting");
 		highlight.addItemListener(event -> {
 			if (highlight.isSelected()) {
@@ -74,10 +74,7 @@ public class ClientEditor extends JFrame implements ActionListener {
 		allButtons.add(buttons);
 		allButtons.add(highlight);
 		getContentPane().add(allButtons, BorderLayout.SOUTH);
-		setPreferredSize(new Dimension(300, 200));
-		pack();
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-		setLocationRelativeTo(owner);
 	}
 
 	private void startSyntaxHighlighting() {
@@ -95,15 +92,15 @@ public class ClientEditor extends JFrame implements ActionListener {
 
 	private void addStyles() {
 		final Style def = pane.getLogicalStyle();
-		Style s = doc.addStyle(Commands.STYLE_KEYWORD, def);
+		Style s = doc.addStyle(Commands.Styles.STYLE_KEYWORD, def);
 		StyleConstants.setForeground(s, Color.red);
 		StyleConstants.setBold(s, true);
-		s = doc.addStyle(Commands.STYLE_TYPE, def);
+		s = doc.addStyle(Commands.Styles.STYLE_TYPE, def);
 		StyleConstants.setForeground(s, Color.green);
-		s = doc.addStyle(Commands.STYLE_SPECIAL_WORD, def);
+		s = doc.addStyle(Commands.Styles.STYLE_SPECIAL_WORD, def);
 		StyleConstants.setItalic(s, true);
 		StyleConstants.setForeground(s, Color.blue);
-		s = doc.addStyle(Commands.STYLE_STDLIB, def);
+		s = doc.addStyle(Commands.Styles.STYLE_STDLIB, def);
 		StyleConstants.setForeground(s, Color.orange);
 	}
 	
@@ -116,34 +113,34 @@ public class ClientEditor extends JFrame implements ActionListener {
 		Matcher matcher = Pattern.compile(keywords).matcher(pane.getText());
 		while (matcher.find())
 			doc.setCharacterAttributes(matcher.start(), matcher.end() - matcher.start(),
-					doc.getStyle(Commands.STYLE_KEYWORD), true);
+					doc.getStyle(Commands.Styles.STYLE_KEYWORD), true);
 		keywords = "\\b(any|void|int|char|bool|string|object|list|mapping)\\b";
 		matcher = Pattern.compile(keywords).matcher(pane.getText());
 		while (matcher.find())
 			doc.setCharacterAttributes(matcher.start(), matcher.end() - matcher.start(),
-					doc.getStyle(Commands.STYLE_TYPE), true);
+					doc.getStyle(Commands.Styles.STYLE_TYPE), true);
 		keywords = "\\b(true|false|nil|va_next|va_count)\\b";
 		matcher = Pattern.compile(keywords).matcher(pane.getText());
 		while (matcher.find())
 			doc.setCharacterAttributes(matcher.start(), matcher.end() - matcher.start(),
-					doc.getStyle(Commands.STYLE_SPECIAL_WORD), true);
+					doc.getStyle(Commands.Styles.STYLE_SPECIAL_WORD), true);
 		keywords = "\\b(create|the|call|log|length|insert|append|remove|strlen|chr|write|prompt|password|edit)\\b";
 		matcher = Pattern.compile(keywords).matcher(pane.getText());
 		while (matcher.find())
 			doc.setCharacterAttributes(matcher.start(), matcher.end() - matcher.start(),
-					doc.getStyle(Commands.STYLE_STDLIB), true);
+					doc.getStyle(Commands.Styles.STYLE_STDLIB), true);
 	}
 
 	public void send(final boolean save, final String newPath) {
 		// TODO filter escape characters
 		queue.execute(() -> {
 			try {
-				connection.send(Commands.SPECIAL_START + Commands.SPECIAL_EDIT + id);
+				connection.send(Commands.Codes.SPECIAL_START + Commands.Codes.SPECIAL_EDIT + id);
 				if (newPath != null)
-					connection.send(Commands.SPECIAL_RAW + newPath);
+					connection.send(Commands.Codes.SPECIAL_RAW + newPath);
 				if (save)
-					connection.send(Commands.SPECIAL_RAW + pane.getText());
-				connection.send("" + Commands.SPECIAL_END);
+					connection.send(Commands.Codes.SPECIAL_RAW + pane.getText());
+				connection.send("" + Commands.Codes.SPECIAL_END);
 			} catch (IOException e) {
 				System.err.println("Could not send message!");
 			}
@@ -164,15 +161,15 @@ public class ClientEditor extends JFrame implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		switch (e.getActionCommand()) {
-			case Commands.ACTION_EDIT_SAVE:
+			case Commands.Actions.ACTION_EDIT_SAVE:
 				send(true, null);
 				break;
 
-			case Commands.ACTION_EDIT_SAVE_AS:
+			case Commands.Actions.ACTION_EDIT_SAVE_AS:
 				saveAs();
 				break;
 
-			case Commands.ACTION_EDIT_CLOSE:
+			case Commands.Actions.ACTION_EDIT_CLOSE:
 				dispose();
 				break;
 		}
