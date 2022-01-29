@@ -16,16 +16,28 @@ public abstract class Commands {
 		public static final String STYLE_ERROR = "error";
 		public static final String STYLE_INPUT = "input";
 		public static final String STYLE_NORMAL = "RESET";
+		@Deprecated
 		public static final String STYLE_BG_BLUE = "BG_BLUE";
+		@Deprecated
 		public static final String STYLE_BLUE = "BLUE";
+		@Deprecated
 		public static final String STYLE_BG_GREEN = "BG_GREEN";
+		@Deprecated
 		public static final String STYLE_GREEN = "GREEN";
+		@Deprecated
 		public static final String STYLE_BG_YELLOW = "BG_YELLOW";
+		@Deprecated
 		public static final String STYLE_YELLOW = "YELLOW";
+		@Deprecated
 		public static final String STYLE_BG_BLACK = "BG_BLACK";
+		@Deprecated
 		public static final String STYLE_BLACK = "BLACK";
+		@Deprecated
 		public static final String STYLE_BG_RED = "BG_RED";
+		@Deprecated
 		public static final String STYLE_RED = "RED";
+		public static final String STYLE_BG_RGB = "BG_0x";
+		public static final String STYLE_FG_RGB = "FG_0x";
 		public static final String STYLE_ITALIC = "ITALIC";
 		public static final String STYLE_BOLD = "BOLD";
 		public static final String STYLE_UNDERSCORED = "UNDERSCORED";

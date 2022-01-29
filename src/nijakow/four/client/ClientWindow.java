@@ -290,61 +290,70 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 	private Style getStyleByName(String style) {
 		Style ret = term.addStyle(style, current == null ? area.getLogicalStyle() : current);
 		switch (style) {
-		case Commands.Styles.STYLE_NORMAL:
-			ret = null;
-			break;
+			case Commands.Styles.STYLE_NORMAL:
+				ret = null;
+				break;
 
-		case Commands.Styles.STYLE_BLUE:
-			StyleConstants.setForeground(ret, Color.blue);
-			break;
+			case Commands.Styles.STYLE_BLUE:
+				StyleConstants.setForeground(ret, Color.blue);
+				break;
 
-		case Commands.Styles.STYLE_RED:
-			StyleConstants.setForeground(ret, Color.red);
-			break;
+			case Commands.Styles.STYLE_RED:
+				StyleConstants.setForeground(ret, Color.red);
+				break;
 
-		case Commands.Styles.STYLE_GREEN:
-			StyleConstants.setForeground(ret, Color.green);
-			break;
+			case Commands.Styles.STYLE_GREEN:
+				StyleConstants.setForeground(ret, Color.green);
+				break;
 
-		case Commands.Styles.STYLE_YELLOW:
-			StyleConstants.setForeground(ret, Color.yellow);
-			break;
+			case Commands.Styles.STYLE_YELLOW:
+				StyleConstants.setForeground(ret, Color.yellow);
+				break;
 
-		case Commands.Styles.STYLE_BLACK:
-			StyleConstants.setForeground(ret, Color.black);
-			break;
+			case Commands.Styles.STYLE_BLACK:
+				StyleConstants.setForeground(ret, Color.black);
+				break;
 
-		case Commands.Styles.STYLE_ITALIC:
-			StyleConstants.setItalic(ret, true);
-			break;
+			case Commands.Styles.STYLE_ITALIC:
+				StyleConstants.setItalic(ret, true);
+				break;
 
-		case Commands.Styles.STYLE_BOLD:
-			StyleConstants.setBold(ret, true);
-			break;
+			case Commands.Styles.STYLE_BOLD:
+				StyleConstants.setBold(ret, true);
+				break;
 
-		case Commands.Styles.STYLE_UNDERSCORED:
-			StyleConstants.setUnderline(ret, true);
-			break;
+			case Commands.Styles.STYLE_UNDERSCORED:
+				StyleConstants.setUnderline(ret, true);
+				break;
 
-		case Commands.Styles.STYLE_BG_BLACK:
-			StyleConstants.setBackground(ret, Color.black);
-			break;
+			case Commands.Styles.STYLE_BG_BLACK:
+				StyleConstants.setBackground(ret, Color.black);
+				break;
 
-		case Commands.Styles.STYLE_BG_BLUE:
-			StyleConstants.setBackground(ret, Color.blue);
-			break;
+			case Commands.Styles.STYLE_BG_BLUE:
+				StyleConstants.setBackground(ret, Color.blue);
+				break;
 
-		case Commands.Styles.STYLE_BG_GREEN:
-			StyleConstants.setBackground(ret, Color.green);
-			break;
+			case Commands.Styles.STYLE_BG_GREEN:
+				StyleConstants.setBackground(ret, Color.green);
+				break;
 
-		case Commands.Styles.STYLE_BG_RED:
-			StyleConstants.setBackground(ret, Color.red);
-			break;
+			case Commands.Styles.STYLE_BG_RED:
+				StyleConstants.setBackground(ret, Color.red);
+				break;
 
-		case Commands.Styles.STYLE_BG_YELLOW:
-			StyleConstants.setBackground(ret, Color.yellow);
-			break;
+			case Commands.Styles.STYLE_BG_YELLOW:
+				StyleConstants.setBackground(ret, Color.yellow);
+				break;
+
+			default:
+				if (style.startsWith(Commands.Styles.STYLE_BG_RGB)) {
+					StyleConstants.setBackground(ret, new Color(Integer.parseUnsignedInt(
+							style.substring(Commands.Styles.STYLE_BG_RGB.length()), 16)));
+				} else if (style.startsWith(Commands.Styles.STYLE_FG_RGB)) {
+					StyleConstants.setForeground(ret, new Color(Integer.parseUnsignedInt(
+							style.substring(Commands.Styles.STYLE_FG_RGB.length()), 16)));
+				}
 		}
 		return ret;
 	}
