@@ -40,6 +40,7 @@ public abstract class Commands {
 		public static final String SPECIAL_RAW = ":";
 		public static final String SPECIAL_PWD = "?";
 		public static final String SPECIAL_PROMPT = ".";
+		public static final String SPECIAL_IMG = "^";
 		public static final char SPECIAL_START = 0x02;
 		public static final char SPECIAL_END = 0x03;
 	}

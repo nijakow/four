@@ -1,17 +1,13 @@
 package nijakow.four.client;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Cursor;
-import java.awt.Dimension;
-import java.awt.EventQueue;
-import java.awt.Font;
-import java.awt.GridLayout;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.Executors;
@@ -19,20 +15,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JDialog;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JPasswordField;
-import javax.swing.JScrollPane;
-import javax.swing.JTextField;
-import javax.swing.JTextPane;
-import javax.swing.Timer;
-import javax.swing.UIManager;
+import javax.swing.*;
 import javax.swing.border.EtchedBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -368,23 +351,19 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 	
 	private void parseArgument(String arg) {
 		if (arg.startsWith(Commands.Codes.SPECIAL_PWD)) {
-			EventQueue.invokeLater(() -> {
-				pwf.setVisible(true);
-				prompt.setVisible(false);
-				pwf.requestFocusInWindow();
-				if (arg.length() > Commands.Codes.SPECIAL_PROMPT.length() + 1)
-					promptText.setText(arg.substring(Commands.Codes.SPECIAL_PWD.length()));
-				else
-					promptText.setText("");
-				validate();
-			});
+			pwf.setVisible(true);
+			prompt.setVisible(false);
+			pwf.requestFocusInWindow();
+			if (arg.length() > Commands.Codes.SPECIAL_PROMPT.length() + 1)
+				promptText.setText(arg.substring(Commands.Codes.SPECIAL_PWD.length()));
+			else
+				promptText.setText("");
+			validate();
 		} else if (arg.startsWith(Commands.Codes.SPECIAL_PROMPT)) {
-			EventQueue.invokeLater(() -> {
-				if (arg.length() > Commands.Codes.SPECIAL_PROMPT.length() + 1)
-					promptText.setText(arg.substring(Commands.Codes.SPECIAL_PWD.length()));
-				else
-					promptText.setText("");
-			});
+			if (arg.length() > Commands.Codes.SPECIAL_PROMPT.length() + 1)
+				promptText.setText(arg.substring(Commands.Codes.SPECIAL_PWD.length()));
+			else
+				promptText.setText("");
 		} else if (arg.startsWith(Commands.Codes.SPECIAL_EDIT)) {
 			String splitter = arg.substring(Commands.Codes.SPECIAL_EDIT.length());
 			int i0 = splitter.indexOf(Commands.Codes.SPECIAL_RAW);
@@ -395,11 +374,49 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 			if (i1 < 0) return;
 			String title = splitter.substring(0, i1);
 			splitter = splitter.substring(i1 + 1);
-			openEditor(new String[] { id, title, splitter });
+			openEditor(new String[]{id, title, splitter});
+		} else if (arg.startsWith(Commands.Codes.SPECIAL_IMG)) {
+			String splitter = arg.substring(Commands.Codes.SPECIAL_IMG.length());
+			int cross = splitter.indexOf('x');
+			int firstComma = splitter.indexOf(',');
+			int width = -1, height = -1;
+			String desc = null;
+			if (cross >= 0 && firstComma > cross) {
+				try {
+					width = Integer.parseInt(splitter.substring(0, cross));
+					height = Integer.parseInt(splitter.substring(cross + 1, firstComma));
+				} catch (NumberFormatException e) {
+					width = height = -1;
+				}
+				int secondComma = splitter.indexOf(',', firstComma + 1);
+				if (secondComma >= 0) {
+					desc = splitter.substring(firstComma + 1, secondComma);
+					splitter = splitter.substring(secondComma + 1);
+				} else {
+					splitter = splitter.substring(firstComma + 1);
+				}
+			} else if (firstComma >= 0) {
+				desc = splitter.substring(0, firstComma);
+				splitter = splitter.substring(firstComma + 1);
+			}
+			ImageIcon i;
+			try {
+				i = new ImageIcon(new URL(splitter));
+				if (desc != null) {
+					i.setDescription(desc);
+				}
+				if (width >= 0 || height >= 0) {
+					i = new ImageIcon(i.getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH));
+				}
+			} catch (MalformedURLException e) {
+				i = null;
+			}
+			if (i != null)
+				area.insertIcon(i);
 		} else
 			current = getStyleByName(arg);
 	}
-	
+
 	private void openEditor(String[] args) {
 		ClientEditor editor = new ClientEditor(connection, queue, args);
 		editor.addWindowListener(new WindowAdapter() {
