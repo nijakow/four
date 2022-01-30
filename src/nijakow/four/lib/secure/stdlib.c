@@ -200,7 +200,7 @@ list spliton(string s, func predicate)
     while (pos < len)
     {
         if (predicate(s[pos])) {
-            if (pos - start > 1)
+            if (pos - start >= 1)
                 append(lst, substr(s, start, pos));
             start = pos + 1;
         }
