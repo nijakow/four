@@ -1,5 +1,6 @@
 package nijakow.four.server.runtime.nvfs;
 
+import nijakow.four.server.runtime.nvfs.serialization.IFSSerializer;
 import nijakow.four.server.runtime.objects.blue.Blueprint;
 import nijakow.four.server.runtime.security.users.Group;
 import nijakow.four.server.runtime.security.users.Identity;
@@ -187,5 +188,9 @@ public class NVFileSystem implements FileParent, ISerializable {
     @Override
     public void serialize(ISerializer serializer) {
         getRoot().serialize(serializer);
+    }
+
+    public void writeOut(IFSSerializer serializer) {
+        serializer.queue(getRoot());
     }
 }
