@@ -11,7 +11,7 @@ void start()
         else {
             for (int i = 2; i < length(argv); i++)
             {
-                if (!chgrp(resolve(pwd(), argv[i]), uid))
+                if (!chgrp(resolve(pwd(), argv[i]), gid))
                     connection()->write(argv[i], ": Can't change group!\n");
             }
         }
