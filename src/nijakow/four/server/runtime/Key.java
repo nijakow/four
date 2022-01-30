@@ -1,5 +1,6 @@
 package nijakow.four.server.runtime;
 
+import nijakow.four.server.runtime.nvfs.serialization.BasicFSSerializer;
 import nijakow.four.server.runtime.objects.blue.Blue;
 import nijakow.four.server.runtime.objects.blue.Blueprint;
 import nijakow.four.server.runtime.objects.collections.FList;
@@ -525,6 +526,15 @@ public class Key {
 				Serializer serializer = new Serializer();
 				fiber.getVM().getFilesystem().serialize(serializer);
 				System.out.println(serializer.asString());
+			}
+		};
+		get("$dumpfs").code = new BuiltinCode() {
+
+			@Override
+			public void run(Fiber fiber, Instance self, Instance[] args) throws CastException {
+				BasicFSSerializer serializer = new BasicFSSerializer(System.out);
+				serializer.serialize(fiber.getVM().getFilesystem());
+				fiber.setAccu(Instance.getNil());
 			}
 		};
 	}
