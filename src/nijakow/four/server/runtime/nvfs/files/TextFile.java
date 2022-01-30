@@ -2,6 +2,7 @@ package nijakow.four.server.runtime.nvfs.files;
 
 import nijakow.four.server.runtime.FourClassLoader;
 import nijakow.four.server.runtime.Key;
+import nijakow.four.server.runtime.nvfs.serialization.IFSSerializer;
 import nijakow.four.server.runtime.security.users.Group;
 import nijakow.four.server.runtime.security.users.Identity;
 import nijakow.four.server.runtime.security.users.User;
@@ -103,5 +104,10 @@ public class TextFile extends File<SharedTextFileState> {
         Blue instance = getInstance();
         if (instance != null)
             serializer.openProperty("textfile.instance").writeObject(instance).close();
+    }
+
+    @Override
+    public void writeOutPayload(IFSSerializer serializer) {
+        serializer.writeBase64Encoded(getContents());
     }
 }

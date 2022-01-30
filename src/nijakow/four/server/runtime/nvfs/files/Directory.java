@@ -1,6 +1,7 @@
 package nijakow.four.server.runtime.nvfs.files;
 
 import nijakow.four.server.runtime.nvfs.FileParent;
+import nijakow.four.server.runtime.nvfs.serialization.IFSSerializer;
 import nijakow.four.server.runtime.nvfs.shared.SharedDirectoryState;
 import nijakow.four.server.runtime.security.users.Group;
 import nijakow.four.server.runtime.security.users.Identity;
@@ -127,5 +128,12 @@ public class Directory extends File<SharedDirectoryState> implements FileParent 
             mapser.openProperty(key).writeObject(files.get(key)).close();
         }
         mapser.close();
+    }
+
+    @Override
+    public void writeOutPayload(IFSSerializer serializer) {
+        for (String key : files.keySet()) {
+            serializer.queue(files.get(key));
+        }
     }
 }

@@ -1,6 +1,7 @@
 package nijakow.four.server.runtime.nvfs.files;
 
 import nijakow.four.server.runtime.nvfs.FileParent;
+import nijakow.four.server.runtime.nvfs.serialization.IFSSerializer;
 import nijakow.four.server.runtime.nvfs.shared.SharedFileState;
 import nijakow.four.server.runtime.security.fs.FileAccessRights;
 import nijakow.four.server.runtime.security.users.Group;
@@ -25,6 +26,18 @@ public abstract class File<T extends SharedFileState> implements ISerializable {
         serializer.openProperty("file.path").writeString(getFullName()).close();
         // TODO: Permissions!
     }
+
+    public final void writeOut(IFSSerializer serializer) {
+        String path = getFullName();
+        if (asDirectory() != null && !(path.equals("/") || path.isEmpty()))
+            path += "/";
+        serializer.newEntry(path);
+        serializer.writeOwner(rights.getUserAccessRights().getIdentity().getID(), rights.getUserAccessRights().getIdentity().getName());
+        serializer.writeGroup(rights.getGroupAccessRights().getIdentity().getID(), rights.getGroupAccessRights().getIdentity().getName());
+        serializer.writePermissions(getmod());
+    }
+
+    public abstract void writeOutPayload(IFSSerializer serializer);
 
     protected FileParent getParent() { return parent; }
     public File getRoot() { return getParent().getRoot(); }
