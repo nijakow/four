@@ -2,39 +2,35 @@ package nijakow.four.server.runtime.nvfs.files;
 
 import nijakow.four.server.runtime.FourClassLoader;
 import nijakow.four.server.runtime.Key;
+import nijakow.four.server.runtime.nvfs.FileParent;
 import nijakow.four.server.runtime.nvfs.serialization.IFSSerializer;
+import nijakow.four.server.runtime.objects.blue.Blue;
+import nijakow.four.server.runtime.objects.blue.Blueprint;
 import nijakow.four.server.runtime.security.users.Group;
 import nijakow.four.server.runtime.security.users.Identity;
 import nijakow.four.server.runtime.security.users.User;
-import nijakow.four.share.lang.c.ast.ASTClass;
+import nijakow.four.server.serialization.base.ISerializer;
 import nijakow.four.share.lang.base.CompilationException;
+import nijakow.four.share.lang.c.ast.ASTClass;
 import nijakow.four.share.lang.c.parser.ParseException;
 import nijakow.four.share.lang.c.parser.Parser;
 import nijakow.four.share.lang.c.parser.StringCharStream;
 import nijakow.four.share.lang.c.parser.Tokenizer;
-import nijakow.four.server.runtime.nvfs.FileParent;
-import nijakow.four.server.runtime.nvfs.shared.SharedTextFileState;
-import nijakow.four.server.runtime.objects.blue.Blue;
-import nijakow.four.server.runtime.objects.blue.Blueprint;
-import nijakow.four.server.serialization.base.ISerializer;
 
-public class TextFile extends File<SharedTextFileState> {
+public class TextFile extends File {
     private String contents = "";
     private Blueprint blueprint;
     private boolean isDirty = true;
+    private Blue blue;
 
     TextFile(FileParent parent, User owner, Group gowner) {
         super(parent, owner, gowner);
+        this.blue = blue;
     }
 
     @Override
     public TextFile asTextFile() {
         return this;
-    }
-
-    @Override
-    protected SharedTextFileState createFileState() {
-        return new SharedTextFileState();
     }
 
     public String getContents() { return contents; }
@@ -61,8 +57,11 @@ public class TextFile extends File<SharedTextFileState> {
     }
 
     public Blueprint getBlueprint() { return blueprint; }
+    private Blue getBlue() { return blue; }
     public Blue getInstance() {
-        return getState().getBlue();
+        if (blue == null)
+            blue = new Blue();
+        return blue;
     }
 
     public void ensureCompiled() throws CompilationException, ParseException {
@@ -86,7 +85,7 @@ public class TextFile extends File<SharedTextFileState> {
                     return name.getBlueprint();
                 }
             });
-            getState().updateBlueprint(blueprint);
+            getInstance().updateBlueprint(blueprint);
             isDirty = false;
         }
         return blueprint;
@@ -101,7 +100,7 @@ public class TextFile extends File<SharedTextFileState> {
     public void serialize(ISerializer serializer) {
         serializeCore(serializer);
         serializer.openProperty("textfile.contents").writeString(getContents()).close();
-        Blue instance = getInstance();
+        Blue instance = getBlue();
         if (instance != null)
             serializer.openProperty("textfile.instance").writeObject(instance).close();
     }

@@ -2,7 +2,6 @@ package nijakow.four.server.runtime.nvfs.files;
 
 import nijakow.four.server.runtime.nvfs.FileParent;
 import nijakow.four.server.runtime.nvfs.serialization.IFSSerializer;
-import nijakow.four.server.runtime.nvfs.shared.SharedDirectoryState;
 import nijakow.four.server.runtime.security.users.Group;
 import nijakow.four.server.runtime.security.users.Identity;
 import nijakow.four.server.runtime.security.users.User;
@@ -11,17 +10,12 @@ import nijakow.four.share.util.Pair;
 
 import java.util.*;
 
-public class Directory extends File<SharedDirectoryState> implements FileParent {
+public class Directory extends File implements FileParent {
     private final Map<String, File> files;
 
     public Directory(FileParent parent, User owner, Group gowner) {
         super(parent, owner, gowner);
         this.files = new HashMap<>();
-    }
-
-    @Override
-    protected SharedDirectoryState createFileState() {
-        return new SharedDirectoryState();
     }
 
     @Override
