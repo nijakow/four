@@ -17,6 +17,8 @@ void exit(...) { call(finish_cb, ...); }
 
 bool exec(func our_cb, string name, ...)
 {
+    if (!checkexec(name))
+        return false;
     object obj = new(name, the_connection, our_cb, me(), ...);
     if (obj != nil) {
         obj->start();

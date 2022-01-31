@@ -418,6 +418,14 @@ public class Key {
 					fiber.setAccu(Instance.getNil());
 			}
 		};
+		get("$checkexec").code = new BuiltinCode() {
+			@Override
+			public void run(Fiber fiber, Instance self, Instance[] args) throws FourRuntimeException {
+				final String curPath = args[0].asFString().asString();
+				File file = fiber.getVM().getFilesystem().resolve(curPath);
+				fiber.setAccu(new FInteger((file != null && file.getRights().checkExecuteAccess(fiber.getSharedState().getUser())) ? 1 : 0));
+			}
+		};
 		get("$stat").code = new BuiltinCode() {
 			@Override
 			public void run(Fiber fiber, Instance self, Instance[] args) throws FourRuntimeException {

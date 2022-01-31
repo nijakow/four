@@ -18,6 +18,7 @@ use $recompile;
 use $mkdir;
 use $rm;
 use $mv;
+use $checkexec;
 use $stat;
 use $getown;
 use $getgrp;
@@ -442,6 +443,11 @@ bool mv(string from, string to)
 bool recompile(string path)
 {
     return $recompile(path);
+}
+
+bool checkexec(string path)
+{
+    return $checkexec(path);
 }
 
 int stat(string path)
