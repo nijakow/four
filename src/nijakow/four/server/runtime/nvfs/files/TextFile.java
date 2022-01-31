@@ -28,6 +28,7 @@ public class TextFile extends File {
     TextFile(FileParent parent, User owner, Group gowner) {
         super(parent, owner, gowner);
         this.blue = blue;
+        this.contents = new byte[0];
     }
 
     @Override
