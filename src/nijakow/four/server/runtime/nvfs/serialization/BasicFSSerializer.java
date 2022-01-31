@@ -19,13 +19,13 @@ public class BasicFSSerializer implements IFSSerializer {
     public BasicFSSerializer(OutputStream stream) {
         this.stream = new PrintStream(stream);
         this.stream.println("Version: 1");
-        this.stream.println("Datestamp: " + LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
+        this.stream.println("Timestamp: " + LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
     }
 
     @Override
-    public void newEntry(String path) {
+    public void newEntry(String id) {
         stream.println();
-        stream.println("--- " + path);
+        stream.println("--- " + id);
     }
 
     @Override

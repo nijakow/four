@@ -9,11 +9,15 @@ import nijakow.four.server.runtime.security.users.User;
 import nijakow.four.server.serialization.base.ISerializable;
 import nijakow.four.server.serialization.base.ISerializer;
 
+import java.util.UUID;
+
 public abstract class File implements ISerializable {
+    private final UUID uuid;
     private FileParent parent;
     private FileAccessRights rights;
 
     protected File(FileParent parent, User owner, Group gowner) {
+        this.uuid = UUID.randomUUID();
         this.parent = parent;
         this.rights = new FileAccessRights(owner, gowner);
     }
@@ -25,10 +29,7 @@ public abstract class File implements ISerializable {
     }
 
     public final void writeOut(IFSSerializer serializer) {
-        String path = getFullName();
-        if (asDirectory() != null && !path.endsWith("/"))
-            path += "/";
-        serializer.newEntry(path);
+        serializer.newEntry(getID());
         serializer.writeOwner(rights.getUserAccessRights().getIdentity().getID(), rights.getUserAccessRights().getIdentity().getName());
         serializer.writeGroup(rights.getGroupAccessRights().getIdentity().getID(), rights.getGroupAccessRights().getIdentity().getName());
         serializer.writePermissions(getmod());
@@ -36,6 +37,8 @@ public abstract class File implements ISerializable {
     }
 
     public abstract void writeOutPayload(IFSSerializer serializer);
+
+    public String getID() { return uuid.toString(); }
 
     protected FileParent getParent() { return parent; }
     public File getRoot() { return getParent().getRoot(); }
