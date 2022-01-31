@@ -51,7 +51,7 @@ void start()
                      if (mode == 1) result = chmod(file, flags & (~bitmask));
                 else if (mode == 2) result = chmod(file, flags | bitmask);
                 if (!result)
-                    connection->write(argv[i], ": Can't set permissions!\n");
+                    connection()->write(argv[i], ": Can't set permissions!\n");
             }
         }
     }
