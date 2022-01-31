@@ -98,6 +98,6 @@ void create()
     article = "a";
     set_name("<error>");
     set_desc("<error>");
-    set_img(nil, "0x0");
+    image = nil;
     ids = {};
 }
