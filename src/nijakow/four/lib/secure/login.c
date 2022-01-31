@@ -37,7 +37,7 @@ void banner()
 void newuser(string name)
 {
     this.name = name;
-    connection()->password(this::newpass, "Please choose a password: ");
+    password(this::newpass, "Please choose a password: ");
 }
 
 void newpass(string pass)
@@ -57,10 +57,10 @@ void newpass(string pass)
 void setname(string name)
 {
     if (name == "new") {
-        connection()->prompt(this::newuser, "New username: ");
+        prompt(this::newuser, "New username: ");
     } else {
         this.name = name;
-        connection()->password(this::setpass, "Password: ");
+        password(this::setpass, "Password: ");
     }
 }
 
@@ -78,10 +78,10 @@ bool trylogin(string username, string password)
 bool dologin(string username, string password)
 {
     if (!trylogin(username, password)) {
-        connection()->write("\n");
+        printf("\n");
         connection()->mode_red();
         connection()->mode_underscore();
-        connection()->write("Username or password not recognized.\nConnection terminated.\n");
+        printf("Username or password not recognized.\nConnection terminated.\n");
         connection()->mode_normal();
         connection()->close();
         return false;
@@ -106,7 +106,7 @@ void setuname(string uname)
 
 void startup()
 {
-    connection()->prompt(this::setuname, "By what name will you be known? ");
+    prompt(this::setuname, "By what name will you be known? ");
 }
 
 void logout()
@@ -117,5 +117,5 @@ void logout()
 void start()
 {
     banner();
-    connection()->prompt(this::setname, "What's your intra name? ");
+    prompt(this::setname, "What's your intra name? ");
 }
