@@ -4,6 +4,7 @@ use $the_object;
 use $is_initialized;
 use $set_initialized;
 use $call;
+use $random;
 use $listinsert;
 use $listremove;
 use $substr;
@@ -88,7 +89,7 @@ any select_random(list lst)
     if (length(lst) == 0)
         return nil;
     else
-        return lst[rand() % lengt(lst)];
+        return lst[rand() % length(lst)];
 }
 
 int length(any seq)
