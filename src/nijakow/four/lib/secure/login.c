@@ -6,33 +6,32 @@ string name;
 
 void banner()
 {
-    connection()->write("\{^64x64,nijakow,https://avatars.githubusercontent.com/u/79372954?v=4\}\{^64x64,mhahnFr,https://avatars.githubusercontent.com/u/83553794?v=4\}\n");
-    connection()->write("nijakow and mhahnFr present...\n");
-    connection()->write("\n");
-    connection()->write("\n");
-    connection()->write("                                  /####/  #################\n");
-    connection()->write("                                /####/    #####/     ######\n");
-    connection()->write("                              /####/      ###/       ######\n");
-    connection()->write("                            /####/        #/         /####/\n");
-    connection()->write("                          /####/          /        /####/\n");
-    connection()->write("                        /####/                   /####/\n");
-    connection()->write("                      /####/                   /####/\n");
-    connection()->write("                    /####/                   /####/\n");
-    connection()->write("                  /####/                   /####/         /\n");
-    connection()->write("                  #####################   ######         /#\n");
-    connection()->write("                  #####################   ######       /###\n");
-    connection()->write("                  #####################   ######     /#####\n");
-    connection()->write("                                 ######   #################\n");
-    connection()->write("                                 ######\n");
-    connection()->write("                                 ######\n");
-    connection()->write("                                 ######\n");
-    connection()->write("\n");
+    printf("\{^64x64,nijakow,https://avatars.githubusercontent.com/u/79372954?v=4\}\{^64x64,mhahnFr,https://avatars.githubusercontent.com/u/83553794?v=4\}\n");
+    printf("nijakow and mhahnFr present...\n");
+    printf("\n");
+    printf("\n");
+    printf("                                  /####/  #################\n");
+    printf("                                /####/    #####/     ######\n");
+    printf("                              /####/      ###/       ######\n");
+    printf("                            /####/        #/         /####/\n");
+    printf("                          /####/          /        /####/\n");
+    printf("                        /####/                   /####/\n");
+    printf("                      /####/                   /####/\n");
+    printf("                    /####/                   /####/\n");
+    printf("                  /####/                   /####/         /\n");
+    printf("                  #####################   ######         /#\n");
+    printf("                  #####################   ######       /###\n");
+    printf("                  #####################   ######     /#####\n");
+    printf("                                 ######   #################\n");
+    printf("                                 ######\n");
+    printf("                                 ######\n");
+    printf("                                 ######\n");
+    printf("\n");
     connection()->mode_italic();
-    connection()->write("  Welcome to the 42 MUD!\n");
-    connection()->write("\n");
-    connection()->write("\n");
+    printf("  Welcome to the 42 MUD!\n");
+    printf("\n");
     connection()->mode_normal();
-    connection()->write("\n");
+    printf("\n");
 }
 
 void newuser(string name)
@@ -44,10 +43,10 @@ void newuser(string name)
 void newpass(string pass)
 {
     if (!($adduser(name, pass) && trylogin(name, pass))) {
-        connection()->write("\n");
+        printf("\n");
         connection()->mode_red();
         connection()->mode_underscore();
-        connection()->write("Unable to create user.\nConnection terminated.\n");
+        printf("Unable to create user.\nConnection terminated.\n");
         connection()->mode_normal();
         connection()->close();
     } else {
