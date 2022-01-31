@@ -1,5 +1,6 @@
 package nijakow.four.server.runtime.objects.collections;
 
+import nijakow.four.server.runtime.objects.FloatingInstance;
 import nijakow.four.server.runtime.objects.Instance;
 import nijakow.four.server.serialization.base.ISerializer;
 
@@ -7,7 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-public class FMapping extends Instance {
+public class FMapping extends FloatingInstance {
 	private final Map<Instance, Instance> map = new HashMap<>();
 	
 	public FMapping(Instance... instances) {

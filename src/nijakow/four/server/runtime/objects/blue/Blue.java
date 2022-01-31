@@ -3,6 +3,7 @@ package nijakow.four.server.runtime.objects.blue;
 import java.util.HashMap;
 import java.util.Map;
 
+import nijakow.four.server.runtime.objects.FloatingInstance;
 import nijakow.four.server.runtime.objects.standard.FClosure;
 import nijakow.four.server.runtime.objects.Instance;
 import nijakow.four.server.runtime.vm.code.Code;
@@ -12,7 +13,7 @@ import nijakow.four.server.runtime.vm.Fiber;
 import nijakow.four.server.runtime.vm.VM;
 import nijakow.four.server.serialization.base.ISerializer;
 
-public class Blue extends Instance {
+public class Blue extends FloatingInstance {
 	private static long ID_COUNTER = 0;
 	private final long id;
 	private boolean initialized = false;

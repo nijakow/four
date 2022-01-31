@@ -21,12 +21,6 @@ import java.util.Set;
 import java.util.WeakHashMap;
 
 public abstract class Instance implements ISerializable {
-	private static final Set<Instance> instances;
-
-	static {
-		instances = Collections.newSetFromMap(new WeakHashMap<>());
-	}
-
 	private static final Instance NIL = new Instance() {
 		@Override
 		public String getType() { return "nil"; }
@@ -42,10 +36,6 @@ public abstract class Instance implements ISerializable {
 	};
 
 	public static Instance getNil() { return NIL; }
-
-	protected void registerToPool() {
-		instances.add(this);
-	}
 	
 	public boolean isNil() { return this == NIL; }
 

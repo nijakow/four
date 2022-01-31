@@ -1,5 +1,6 @@
 package nijakow.four.server.runtime.objects.standard;
 
+import nijakow.four.server.runtime.objects.FloatingInstance;
 import nijakow.four.server.runtime.objects.Instance;
 import nijakow.four.server.runtime.objects.blue.Blue;
 import nijakow.four.share.lang.base.CompilationException;
@@ -14,7 +15,7 @@ import nijakow.four.share.lang.c.parser.Parser;
 import nijakow.four.share.lang.c.parser.StringCharStream;
 import nijakow.four.share.lang.c.parser.Tokenizer;
 
-public class FString extends Instance {
+public class FString extends FloatingInstance {
 	private final String value;
 	
 	public FString(String value) {
