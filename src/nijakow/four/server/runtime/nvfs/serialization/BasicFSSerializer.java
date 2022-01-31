@@ -6,6 +6,7 @@ import nijakow.four.server.runtime.nvfs.files.File;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Base64;
@@ -19,7 +20,7 @@ public class BasicFSSerializer implements IFSSerializer {
     public BasicFSSerializer(OutputStream stream) {
         this.stream = new PrintStream(stream);
         this.stream.println("Version: 1");
-        this.stream.println("Timestamp: " + LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
+        this.stream.println("Timestamp: " + Instant.now().toString());
     }
 
     @Override
