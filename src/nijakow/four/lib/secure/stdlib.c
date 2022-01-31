@@ -64,6 +64,14 @@ any call(any f, ...)
     return $call(f, ...);
 }
 
+any invoke(any f, ...)
+{
+    if (type(f) == "function")
+        return call(f, ...);
+    else
+        return f;
+}
+
 void log(...)
 {
     $log(...);
