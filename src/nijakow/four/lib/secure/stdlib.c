@@ -82,6 +82,14 @@ int rand()
     return $random();
 }
 
+any select_random(list lst)
+{
+    if (length(lst) == 0)
+        return nil;
+    else
+        return lst[rand() % lengt(lst)];
+}
+
 int length(any seq)
 {
     return $length(seq);
