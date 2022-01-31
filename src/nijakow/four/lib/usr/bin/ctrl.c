@@ -8,7 +8,7 @@ void docmd(string cmd, string args)
         exit();
     } else {
         if (!exec(this::resume, "/usr/cmds/" + cmd + ".c", args)) {
-            connection()->write("I didn't quite get that, sorry...\n");
+            printf("I didn't quite get that, sorry...\n");
             resume();
         }
     }
@@ -33,7 +33,7 @@ void receive(string cmd)
 void resume()
 {
     connection()->set_fallback(this::resume);
-    connection()->prompt(this::receive, "> ");
+    prompt(this::receive, "> ");
 }
 
 void start()

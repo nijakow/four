@@ -7,7 +7,7 @@ void start()
 
     if (loc == current_loc) {
     } else if (loc == nil) {
-        connection()->write("There is no exit in this direction!\n");
+        printf("There is no exit in this direction!\n");
     } else {
         me()->act_goto(loc);
         lookaround();

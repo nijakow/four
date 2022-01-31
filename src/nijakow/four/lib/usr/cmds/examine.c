@@ -3,9 +3,9 @@ inherits "/std/cmd.c";
 void cmd_examine_act(object obj)
 {
     if (obj == nil)
-        connection()->write("You can't examine that!\n");
+        printf("You can't examine that!\n");
     else
-        connection()->write(obj->get_desc(), "\n");
+        printf("%s\n", obj->get_desc());
     exit();
 }
 

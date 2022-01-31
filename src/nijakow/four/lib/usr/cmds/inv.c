@@ -7,7 +7,7 @@ void start()
          obj = obj->get_sibling())
     {
         if (obj != me())
-            connection()->write(capitalize(obj->get_short()), ".\n");
+            printf("%s.\n", capitalize(obj->get_short()));
     }
     exit();
 }

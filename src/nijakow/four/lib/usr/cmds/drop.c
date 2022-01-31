@@ -3,11 +3,11 @@ inherits "/std/cmd.c";
 void cmd_drop_act(object obj)
 {
     if (obj == nil)
-        connection()->write("There is no such thing here!\n");
+        printf("There is no such thing here!\n");
     else if (!me()->act_drop(obj))
-        connection()->write("You can't drop that!\n");
+        printf("You can't drop that!\n");
     else
-        connection()->write("Dropped.\n");
+        printf("Dropped.\n");
     exit();
 }
 

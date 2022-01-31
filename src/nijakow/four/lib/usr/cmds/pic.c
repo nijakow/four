@@ -6,9 +6,9 @@ void examine(object the_object)
     if (the_object != nil)
         img = the_object->get_img();
     if (img == nil) {
-        connection()->write("There is no image available!\n");
+        printf("There is no image available!\n");
     } else {
-        connection()->write("\{^" + img + "\}\n");
+        printf("\{^%s\}\n", img);
     }
     exit();
 }
