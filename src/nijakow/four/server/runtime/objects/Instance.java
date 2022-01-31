@@ -23,6 +23,11 @@ import java.util.WeakHashMap;
 public abstract class Instance implements ISerializable {
 	private static final Instance NIL = new Instance() {
 		@Override
+		public String toString() {
+			return "nil";
+		}
+
+		@Override
 		public String getType() { return "nil"; }
 
 		@Override
