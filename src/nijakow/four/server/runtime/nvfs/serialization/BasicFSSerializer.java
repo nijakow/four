@@ -36,13 +36,13 @@ public class BasicFSSerializer implements IFSSerializer {
     }
 
     @Override
-    public void writeOwner(String id) {
-        stream.println("Owner: " + id);
+    public void writeOwner(String name) {
+        stream.println("Owner: " + new String(Base64.getEncoder().encode(name.getBytes(StandardCharsets.UTF_8)), StandardCharsets.UTF_8));
     }
 
     @Override
-    public void writeGroup(String id) {
-        stream.println("Group: " + id);
+    public void writeGroup(String name) {
+        stream.println("Group: " + new String(Base64.getEncoder().encode(name.getBytes(StandardCharsets.UTF_8)), StandardCharsets.UTF_8));
     }
 
     @Override
