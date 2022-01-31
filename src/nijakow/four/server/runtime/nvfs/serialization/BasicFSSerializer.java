@@ -40,12 +40,21 @@ public class BasicFSSerializer implements IFSSerializer {
 
     @Override
     public void writePermissions(int permissions) {
-        stream.println("0" + Integer.toOctalString(permissions));
+        stream.println("Permissions: 0" + Integer.toOctalString(permissions));
     }
 
     @Override
     public void writeBase64Encoded(String text) {
-        Base64.getEncoder().encode(text.getBytes(StandardCharsets.UTF_8));
+        String encoded = new String(Base64.getEncoder().encode(text.getBytes(StandardCharsets.UTF_8)));
+        stream.print('\t');
+        for (int c = 0; c < encoded.length(); c++) {
+            stream.print(encoded.charAt(c));
+            if (c % 72 == 71) {
+                stream.println();
+                stream.print('\t');
+            }
+        }
+        stream.println();
     }
 
     @Override
@@ -54,13 +63,17 @@ public class BasicFSSerializer implements IFSSerializer {
             pendingFiles.add(file);
     }
 
-    public void serialize(File file) {
-        queue(file);
+    private final void loop() {
         while (!pendingFiles.isEmpty())
             pendingFiles.poll().writeOut(this);
     }
 
+    private void serialize(File file) {
+        queue(file);
+    }
+
     public void serialize(NVFileSystem fs) {
         fs.writeOut(this);
+        loop();
     }
 }

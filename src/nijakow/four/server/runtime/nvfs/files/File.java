@@ -35,6 +35,7 @@ public abstract class File<T extends SharedFileState> implements ISerializable {
         serializer.writeOwner(rights.getUserAccessRights().getIdentity().getID(), rights.getUserAccessRights().getIdentity().getName());
         serializer.writeGroup(rights.getGroupAccessRights().getIdentity().getID(), rights.getGroupAccessRights().getIdentity().getName());
         serializer.writePermissions(getmod());
+        writeOutPayload(serializer);
     }
 
     public abstract void writeOutPayload(IFSSerializer serializer);
