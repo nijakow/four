@@ -3,7 +3,7 @@ inherits "/std/room.c";
 void create()
 {
     "/std/room.c"::create();
-    set_name("Reception @ 42 Heilbronn");
+    set_name("Upstairs @ 42 Heilbronn");
     set_img("https://www.42heilbronn.de/assets/images/4/42-heilbronn-Campus_Spaceship_Flur-b8fc69fd.jpg", "400x");
     set_desc("Text follows.");
     add_exit("down", "/world/42/hn/downstairs.c");
