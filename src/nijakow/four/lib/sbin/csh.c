@@ -7,14 +7,14 @@ void receive(string line)
     if (line == "")
         exit();
     else {
-        connection()->write(eval(subject, line), "\n");
+        printf("%s\n", eval(subject, line));
         resume();
     }
 }
 
 void resume()
 {
-    connection()->prompt(this::receive, "& ");
+    prompt(this::receive, "& ");
 }
 
 void start()
@@ -27,7 +27,7 @@ void start()
         subject     = the(path);
         resume();
     } else {
-        connection()->write("Argument error!\n");
+        printf("Argument error!\n");
         exit();
     }
 }

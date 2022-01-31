@@ -3,7 +3,7 @@ inherits "/std/app.c";
 void start()
 {
     if (length(argv) <= 1)
-        connection()->write("Argument error!\n");
+        printf("Argument error!\n");
     else {
         for (int i = 1; i < length(argv); i++)
         {
@@ -11,11 +11,11 @@ void start()
             if (recompile(file)) {
                 the(file);  // This automatically reinitializes the file
                 connection()->mode_green();
-                connection()->write(file, ": ok.\n");
+                printf("%s: ok.\n", file);
                 connection()->mode_normal();
             } else {
                 connection()->mode_red();
-                connection()->write(file, ": error.\n");
+                printf("%s: error.\n", file);
                 connection()->mode_normal();
             }
         }

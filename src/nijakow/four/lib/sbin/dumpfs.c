@@ -4,8 +4,8 @@ use $dumpfs;
 
 void start()
 {
-    connection()->write("Dumping the FS...");
+    printf("Dumping the FS...");
     $dumpfs();
-    connection()->write("done!\n");
+    printf("done!\n");
     exit();
 }
