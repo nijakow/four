@@ -7,9 +7,9 @@ void start()
         string path = resolve(pwd(), argv[i]);
         string text = cat(path);
         if (text == nil)
-            connection()->write(argv[i], ": File not found!\n");
+            printf("%s: File not found!\n", argv[i]);
         else
-            connection()->write(text);
+            printf("%s", text);
     }
     exit();
 }

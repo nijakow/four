@@ -20,14 +20,12 @@ string rwx3str(int flags)
 void do_ls1(string path, string file, bool long_mode)
 {
     if (!exists(path)) {
-        connection()->write(path, ": file not found!\n");
+        printf("%s: file not found!\n", path);
     } else {
         if (long_mode) {
-            connection()->write(rwx3str(stat(path)), " ",
-                                strwid(uname(getown(path)), 8), " ",
-                                strwid(gname(getgrp(path)), 8), " ");
+            printf("%s %s %s ", rwx3str(stat(path)), strwid(uname(getown(path)), 8), strwid(gname(getgrp(path)), 8));
         }
-        connection()->write(file, "\n");
+        printf("%s\n", file);
     }
 }
 
@@ -75,7 +73,7 @@ void start()
             do_ls(path, long_mode, dir_mode);
         }
     } else {
-        connection()->write("Argument error!\n");
+        printf("Argument error!\n");
     }
     exit();
 }

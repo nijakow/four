@@ -3,7 +3,7 @@ inherits "/std/app.c";
 void start()
 {
     if (length(argv) <= 1)
-        connection()->write("Argument error!\n");
+        printf("Argument error!\n");
     else {
         bool user  = false;
         bool group = false;
@@ -29,7 +29,7 @@ void start()
             else if (arg[index] == 'w') mini_bitmask = mini_bitmask | 0x02;
             else if (arg[index] == 'x') mini_bitmask = mini_bitmask | 0x01;
             else {
-                connection()->write("Unexpected character in flag string: " + chr(arg[index]) + "!\n");
+                printf("Unexpected character in flag string: %c!\n", arg[index]);
                 exit();
                 return;
             }

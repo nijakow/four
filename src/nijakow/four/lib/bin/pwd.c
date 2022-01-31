@@ -2,6 +2,6 @@ inherits "/std/app.c";
 
 void start()
 {
-    connection()->write(pwd(), "\n");
+    printf("%s\n", pwd());
     exit();
 }

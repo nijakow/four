@@ -65,6 +65,7 @@ void printf(string format, ...)
             else if (format[index] == '%') write("%");
             else if (format[index] == 'a') write(va_next);
             else if (format[index] == 's') write(va_next);
+            else if (format[index] == 'c') write(chr(va_next));
             else if (format[index] == 'd') write(itoa(va_next));
             else if (format[index] == 'x') write(itoax(va_next));
         }
