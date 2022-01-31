@@ -5,6 +5,8 @@ func   finish_cb;
 object _me;
 
 object connection() { return the_connection; }
+void printf(...) { connection()->printf(...); }
+
 object me() { return _me; }
 void set_me(object value) { this._me = value; }
 

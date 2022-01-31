@@ -50,6 +50,28 @@ void write(...)
     }
 }
 
+void printf(string format, ...)
+{
+    int index = 0;
+    int limit = strlen(format);
+
+    while (index < limit)
+    {
+        if (format[index] != '%') {
+            write(chr(format[index]));
+        } else {
+            index = index + 1;
+            if (index >= limit) break;
+            else if (format[index] == '%') write("%");
+            else if (format[index] == 'a') write(va_next);
+            else if (format[index] == 's') write(va_next);
+            else if (format[index] == 'd') write(itoa(va_next));
+            else if (format[index] == 'x') write(itoax(va_next));
+        }
+        index = index + 1;
+    }
+}
+
 void mode_normal()     { write("\{RESET\}"); }
 void mode_red()        { write("\{RED\}"); }
 void mode_green()      { write("\{GREEN\}"); }

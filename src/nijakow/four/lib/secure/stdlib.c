@@ -300,7 +300,7 @@ int atoi(string s)
 	return num * factor;
 }
 
-string itoa(int i)
+string itoab(int i, int base)
 {
     string pre = "";
     string s = "";
@@ -314,12 +314,17 @@ string itoa(int i)
 
     while (i != 0)
     {
-        s = chr((i % 10) + '0') + s;
+        int c = i % base;
         i = i / 10;
+        if (c < 10) s = chr(c + '0') + s;
+        else        s = chr((c - 10) + 'a') + s;
     }
 
     return pre + s;
 }
+
+string itoa(int i) { return itoab(i, 10); }
+string itoax(int i) { return itoab(i, 16); }
 
 bool isslash(char c)
 {
