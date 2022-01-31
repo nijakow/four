@@ -141,15 +141,15 @@ public class NVFileSystem implements FileParent, ISerializable {
     }
 
     public void load(java.io.File file, String path, IdentityDatabase db) {
-        final boolean secure = path.equals("/") || path.startsWith("/secure");
-        final User user = db.getRootUser();
-        final Group group = secure ? db.getRootGroup() : db.getUsersGroup();
-
         final String name = file.getName();
         final String newPath = path + "/" + name;
 
+        final boolean secure = newPath.equals("/") || newPath.startsWith("/secure");
+        final User user = db.getRootUser();
+        final Group group = secure ? db.getRootGroup() : db.getUsersGroup();
+
         if (file.isDirectory()) {
-            mkdir(newPath, db.getRootUser(), user, group);
+            mkdir(newPath, user, user, group);
             for (java.io.File f : file.listFiles()) {
                 load(f, newPath, db);
             }
