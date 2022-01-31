@@ -44,8 +44,8 @@ public class BasicFSSerializer implements IFSSerializer {
     }
 
     @Override
-    public void writeBase64Encoded(String text) {
-        String encoded = new String(Base64.getEncoder().encode(text.getBytes(StandardCharsets.UTF_8)));
+    public void writeBase64Encoded(byte[] bytes) {
+        String encoded = new String(Base64.getEncoder().encode(bytes));
         stream.print('\t');
         for (int c = 0; c < encoded.length(); c++) {
             stream.print(encoded.charAt(c));

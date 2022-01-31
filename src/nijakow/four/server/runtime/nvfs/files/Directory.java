@@ -8,6 +8,7 @@ import nijakow.four.server.runtime.security.users.User;
 import nijakow.four.server.serialization.base.ISerializer;
 import nijakow.four.share.util.Pair;
 
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 public class Directory extends File implements FileParent {
@@ -135,6 +136,6 @@ public class Directory extends File implements FileParent {
             contents.append('\n');
             serializer.queue(file);
         }
-        serializer.writeBase64Encoded(contents.toString());
+        serializer.writeBase64Encoded(contents.toString().getBytes(StandardCharsets.UTF_8));
     }
 }

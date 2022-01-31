@@ -17,8 +17,10 @@ import nijakow.four.share.lang.c.parser.Parser;
 import nijakow.four.share.lang.c.parser.StringCharStream;
 import nijakow.four.share.lang.c.parser.Tokenizer;
 
+import java.nio.charset.StandardCharsets;
+
 public class TextFile extends File {
-    private String contents = "";
+    private byte[] contents;
     private Blueprint blueprint;
     private boolean isDirty = true;
     private Blue blue;
@@ -33,9 +35,9 @@ public class TextFile extends File {
         return this;
     }
 
-    public String getContents() { return contents; }
+    public String getContents() { return new String(contents, StandardCharsets.UTF_8); }
     public void setContents(String contents) {
-        this.contents = contents;
+        this.contents = contents.getBytes(StandardCharsets.UTF_8);
         this.isDirty = true;
     }
 
@@ -72,7 +74,7 @@ public class TextFile extends File {
     public Blueprint compile() throws ParseException, CompilationException {
         if (blueprint == null || isDirty) {
             System.out.println("Compiling " + getFullName() + "...");
-            Parser parser = new Parser(new Tokenizer(new StringCharStream(contents)));
+            Parser parser = new Parser(new Tokenizer(new StringCharStream(getContents())));
             ASTClass file = parser.parseFile();
             blueprint = file.compile(getFullName(), new FourClassLoader() {
                 @Override
@@ -107,6 +109,6 @@ public class TextFile extends File {
 
     @Override
     public void writeOutPayload(IFSSerializer serializer) {
-        serializer.writeBase64Encoded(getContents());
+        serializer.writeBase64Encoded(this.contents);
     }
 }
