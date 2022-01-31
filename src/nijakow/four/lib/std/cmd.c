@@ -51,6 +51,10 @@ void lookaround()
     if (me()->query_light_level_here() == 0) {
         connection()->write("Is is pitch black here.\n");
     } else {
+        string img = get_location()->get_img();
+        if (img != nil) {
+            connection()->write("\{^" + img + "\}\n");
+        }
 	    connection()->write(get_location()->get_short(), "\n");
 	    connection()->write(get_location()->get_desc(), "\n");
 	    for (object obj = get_location()->get_children();

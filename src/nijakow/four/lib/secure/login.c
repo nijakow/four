@@ -100,7 +100,7 @@ void setuname(string uname)
     sword->set_properly_named();
     sword->add_IDs(uname + "'s");
     sword->move_to(player);
-    player->act_goto(the("/world/void.c"));
+    player->act_goto(the("/world/42/hn/reception.c"));
     set_me(player);
     execappfromcli(this->logout, "/usr/bin/ctrl.c");
 }
