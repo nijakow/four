@@ -29,7 +29,7 @@ public abstract class File<T extends SharedFileState> implements ISerializable {
 
     public final void writeOut(IFSSerializer serializer) {
         String path = getFullName();
-        if (asDirectory() != null && !(path.equals("/") || path.isEmpty()))
+        if (asDirectory() != null && !path.endsWith("/"))
             path += "/";
         serializer.newEntry(path);
         serializer.writeOwner(rights.getUserAccessRights().getIdentity().getID(), rights.getUserAccessRights().getIdentity().getName());
