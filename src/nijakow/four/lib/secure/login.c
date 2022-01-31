@@ -6,6 +6,9 @@ string name;
 
 void banner()
 {
+    connection()->write("\{^64x64,nijakow,https://avatars.githubusercontent.com/u/79372954?v=4\}\{^64x64,mhahnFr,https://avatars.githubusercontent.com/u/83553794?v=4\}\n");
+    connection()->write("nijakow and mhahnFr present...\n");
+    connection()->write("\n");
     connection()->write("\n");
     connection()->write("                                  /####/  #################\n");
     connection()->write("                                /####/    #####/     ######\n");
@@ -26,6 +29,8 @@ void banner()
     connection()->write("\n");
     connection()->mode_italic();
     connection()->write("  Welcome to the 42 MUD!\n");
+    connection()->write("\n");
+    connection()->write("\n");
     connection()->mode_normal();
     connection()->write("\n");
 }
