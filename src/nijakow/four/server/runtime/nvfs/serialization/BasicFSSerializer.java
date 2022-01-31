@@ -23,19 +23,26 @@ public class BasicFSSerializer implements IFSSerializer {
     }
 
     @Override
+    public void newMetaEntry(String type, byte[] payload) {
+        stream.println();
+        stream.println("+++ " + type);
+        writeBase64Encoded(payload);
+    }
+
+    @Override
     public void newEntry(String id) {
         stream.println();
         stream.println("--- " + id);
     }
 
     @Override
-    public void writeOwner(String id, String name) {
-        stream.println("Owner: " + id + " " + name);
+    public void writeOwner(String id) {
+        stream.println("Owner: " + id);
     }
 
     @Override
-    public void writeGroup(String id, String name) {
-        stream.println("Group: " + id + " " + name);
+    public void writeGroup(String id) {
+        stream.println("Group: " + id);
     }
 
     @Override
