@@ -533,6 +533,7 @@ public class Key {
 			@Override
 			public void run(Fiber fiber, Instance self, Instance[] args) throws CastException {
 				BasicFSSerializer serializer = new BasicFSSerializer(System.out);
+				serializer.newMetaEntry("users", fiber.getVM().getIdentityDB().serializeAsBytes());
 				serializer.serialize(fiber.getVM().getFilesystem());
 				fiber.setAccu(Instance.getNil());
 			}
