@@ -9,12 +9,16 @@ import java.util.concurrent.ExecutionException;
 public class ImageLoader extends SwingWorker<ImageIcon, Object> {
     private final String argument;
     private final int position;
+    private final int visibleHeight;
+    private final int visibleWidth;
     private final JTextPane pane;
 
-    public ImageLoader(String argument, int position, JTextPane pane) {
+    public ImageLoader(String argument, int position, JTextPane pane, int height, int width) {
         this.argument = argument;
         this.position = position;
         this.pane = pane;
+        this.visibleHeight = height;
+        this.visibleWidth = width;
     }
 
     @Override
@@ -27,15 +31,25 @@ public class ImageLoader extends SwingWorker<ImageIcon, Object> {
         int width = -1, height = -1;
         String desc = null;
         if (cross >= 0 && firstComma > cross) {
-            try {
-                width = Integer.parseInt(splitter.substring(0, cross));
-            } catch (NumberFormatException e) {
-                width = -1;
+            String w = splitter.substring(0, cross);
+            String h = splitter.substring(cross + 1, firstComma);
+            if (w.equals("?")) {
+                width = visibleWidth;
+            } else {
+                try {
+                    width = Integer.parseInt(w);
+                } catch (NumberFormatException e) {
+                    width = -1;
+                }
             }
-            try {
-                height = Integer.parseInt(splitter.substring(cross + 1, firstComma));
-            } catch (NumberFormatException e) {
-                height = -1;
+            if (h.equals("?") && !w.equals("?")) {
+                height = visibleHeight;
+            } else {
+                try {
+                    height = Integer.parseInt(h);
+                } catch (NumberFormatException e) {
+                    height = -1;
+                }
             }
             int secondComma = splitter.indexOf(',', firstComma + 1);
             if (secondComma >= 0) {
@@ -55,9 +69,11 @@ public class ImageLoader extends SwingWorker<ImageIcon, Object> {
                 i.setDescription(desc);
             }
             if (height == -1 && width >= 0) {
-                height = i.getIconHeight() / (i.getIconWidth() / width);
+                float scale = (float) i.getIconWidth() / width;
+                height = (int) (i.getIconHeight() / scale);
             } else if (width == -1 && height >= 0) {
-                width = i.getIconWidth() / (i.getIconHeight() / height);
+                float scale = (float) i.getIconHeight() / height;
+                width = (int) (i.getIconWidth() / scale);
             }
             if (width >= 0 || height >= 0) {
                 i = new ImageIcon(i.getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH));
