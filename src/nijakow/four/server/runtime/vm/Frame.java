@@ -56,7 +56,7 @@ public class Frame {
 		case SHR: return new FInteger(x.asInt() >> y.asInt());
 		case BITAND: return new FInteger(x.asInt() & y.asInt());
 		case BITOR: return new FInteger(x.asInt() | y.asInt());
-		case BITXOR: return new FInteger(x.asInt() ^ y.asInt()); 
+		case BITXOR: return new FInteger(x.asInt() ^ y.asInt());
 		default: 
 			throw new FourRuntimeException("Whoopsie, didn't catch the op type!");
 		}
@@ -171,6 +171,8 @@ public class Frame {
 				} else {
 					fiber.setAccu(new FInteger(1));
 				}
+			} else if (operation == OperatorType.BITNOT) {
+				fiber.setAccu(new FInteger(~fiber.getAccu().asInt()));
 			} else if (operation == OperatorType.UPLUS) {
 				// Do nothing
 			} else if (operation == OperatorType.UMINUS) {

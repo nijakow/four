@@ -1,5 +1,6 @@
 package nijakow.four.server.runtime.objects.collections;
 
+import nijakow.four.server.runtime.objects.FloatingInstance;
 import nijakow.four.server.runtime.objects.Instance;
 import nijakow.four.server.runtime.types.ListType;
 import nijakow.four.server.runtime.types.Type;
@@ -9,7 +10,7 @@ import nijakow.four.server.serialization.base.ISerializer;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FList extends Instance {
+public class FList extends FloatingInstance {
 	private final ListType type;
 	private final List<Instance> list = new ArrayList<>();
 	

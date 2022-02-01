@@ -6,6 +6,7 @@ bool   is_properly_named;
 string article;
 string name;
 string desc;
+string image;
 
 string get_name()         { return name; }
 void   set_name(string n) { name = n; }
@@ -30,6 +31,9 @@ string get_the_short()
 }
 
 void set_properly_named() { is_properly_named = true; }
+
+string get_img() { return image; }
+void set_img(string image, string size) { this.image = size + "," + image; }
 
 
 /*
@@ -94,5 +98,6 @@ void create()
     article = "a";
     set_name("<error>");
     set_desc("<error>");
+    image = nil;
     ids = {};
 }

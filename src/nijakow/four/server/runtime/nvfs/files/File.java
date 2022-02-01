@@ -1,7 +1,7 @@
 package nijakow.four.server.runtime.nvfs.files;
 
 import nijakow.four.server.runtime.nvfs.FileParent;
-import nijakow.four.server.runtime.nvfs.shared.SharedFileState;
+import nijakow.four.server.runtime.nvfs.serialization.IFSSerializer;
 import nijakow.four.server.runtime.security.fs.FileAccessRights;
 import nijakow.four.server.runtime.security.users.Group;
 import nijakow.four.server.runtime.security.users.Identity;
@@ -9,15 +9,17 @@ import nijakow.four.server.runtime.security.users.User;
 import nijakow.four.server.serialization.base.ISerializable;
 import nijakow.four.server.serialization.base.ISerializer;
 
-public abstract class File<T extends SharedFileState> implements ISerializable {
+import java.util.UUID;
+
+public abstract class File implements ISerializable {
+    private final UUID uuid;
     private FileParent parent;
     private FileAccessRights rights;
-    private T state;
 
     protected File(FileParent parent, User owner, Group gowner) {
+        this.uuid = UUID.randomUUID();
         this.parent = parent;
         this.rights = new FileAccessRights(owner, gowner);
-        this.state = createFileState();
     }
 
     protected void serializeCore(ISerializer serializer) {
@@ -26,11 +28,20 @@ public abstract class File<T extends SharedFileState> implements ISerializable {
         // TODO: Permissions!
     }
 
+    public final void writeOut(IFSSerializer serializer) {
+        serializer.newEntry(getID());
+        serializer.writeOwner(rights.getUserAccessRights().getIdentity().getName());
+        serializer.writeGroup(rights.getGroupAccessRights().getIdentity().getName());
+        serializer.writePermissions(getmod());
+        writeOutPayload(serializer);
+    }
+
+    public abstract void writeOutPayload(IFSSerializer serializer);
+
+    public String getID() { return uuid.toString(); }
+
     protected FileParent getParent() { return parent; }
     public File getRoot() { return getParent().getRoot(); }
-    protected T getState() { return state; }
-
-    protected abstract T createFileState();
 
     public TextFile asTextFile() { return null; }
     public Directory asDirectory() { return null; }

@@ -11,7 +11,7 @@ public class AccessRights<T extends Identity> extends Permissions {
     }
 
     public AccessRights(T identity) {
-        this(identity, true, true, false);
+        this(identity, true, true, true);
     }
 
     public T getIdentity() { return identity; }

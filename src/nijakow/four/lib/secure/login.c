@@ -6,43 +6,47 @@ string name;
 
 void banner()
 {
-    connection()->write("\n");
-    connection()->write("                                  /####/  #################\n");
-    connection()->write("                                /####/    #####/     ######\n");
-    connection()->write("                              /####/      ###/       ######\n");
-    connection()->write("                            /####/        #/         /####/\n");
-    connection()->write("                          /####/          /        /####/\n");
-    connection()->write("                        /####/                   /####/\n");
-    connection()->write("                      /####/                   /####/\n");
-    connection()->write("                    /####/                   /####/\n");
-    connection()->write("                  /####/                   /####/         /\n");
-    connection()->write("                  #####################   ######         /#\n");
-    connection()->write("                  #####################   ######       /###\n");
-    connection()->write("                  #####################   ######     /#####\n");
-    connection()->write("                                 ######   #################\n");
-    connection()->write("                                 ######\n");
-    connection()->write("                                 ######\n");
-    connection()->write("                                 ######\n");
-    connection()->write("\n");
+    printf("\{^64x64,nijakow,https://avatars.githubusercontent.com/u/79372954?v=4\}\{^64x64,mhahnFr,https://avatars.githubusercontent.com/u/83553794?v=4\}\n");
+    printf("nijakow and mhahnFr present...\n");
+    printf("\n");
+    printf("\n");
+    printf("                                  /####/  #################\n");
+    printf("                                /####/    #####/     ######\n");
+    printf("                              /####/      ###/       ######\n");
+    printf("                            /####/        #/         /####/\n");
+    printf("                          /####/          /        /####/\n");
+    printf("                        /####/                   /####/\n");
+    printf("                      /####/                   /####/\n");
+    printf("                    /####/                   /####/\n");
+    printf("                  /####/                   /####/         /\n");
+    printf("                  #####################   ######         /#\n");
+    printf("                  #####################   ######       /###\n");
+    printf("                  #####################   ######     /#####\n");
+    printf("                                 ######   #################\n");
+    printf("                                 ######\n");
+    printf("                                 ######\n");
+    printf("                                 ######\n");
+    printf("\n");
     connection()->mode_italic();
-    connection()->write("  Welcome to the 42 MUD!\n");
+    printf("  Welcome to the 42 MUD!\n");
+    printf("\n");
     connection()->mode_normal();
-    connection()->write("\n");
+    printf("\n");
 }
 
 void newuser(string name)
 {
     this.name = name;
-    connection()->password(this::newpass, "Please choose a password: ");
+    password(this::newpass, "Please choose a password: ");
 }
 
 void newpass(string pass)
 {
     if (!($adduser(name, pass) && trylogin(name, pass))) {
-        connection()->write("\n");
+        printf("\n");
         connection()->mode_red();
         connection()->mode_underscore();
-        connection()->write("Unable to create user.\nConnection terminated.\n");
+        printf("Unable to create user.\nConnection terminated.\n");
         connection()->mode_normal();
         connection()->close();
     } else {
@@ -53,10 +57,10 @@ void newpass(string pass)
 void setname(string name)
 {
     if (name == "new") {
-        connection()->prompt(this::newuser, "New username: ");
+        prompt(this::newuser, "New username: ");
     } else {
         this.name = name;
-        connection()->password(this::setpass, "Password: ");
+        password(this::setpass, "Password: ");
     }
 }
 
@@ -74,10 +78,10 @@ bool trylogin(string username, string password)
 bool dologin(string username, string password)
 {
     if (!trylogin(username, password)) {
-        connection()->write("\n");
+        printf("\n");
         connection()->mode_red();
         connection()->mode_underscore();
-        connection()->write("Username or password not recognized.\nConnection terminated.\n");
+        printf("Username or password not recognized.\nConnection terminated.\n");
         connection()->mode_normal();
         connection()->close();
         return false;
@@ -95,14 +99,14 @@ void setuname(string uname)
     sword->set_properly_named();
     sword->add_IDs(uname + "'s");
     sword->move_to(player);
-    player->act_goto(the("/world/void.c"));
+    player->act_goto(the("/world/42/hn/reception.c"));
     set_me(player);
     execappfromcli(this->logout, "/usr/bin/ctrl.c");
 }
 
 void startup()
 {
-    connection()->prompt(this::setuname, "By what name will you be known? ");
+    prompt(this::setuname, "By what name will you be known? ");
 }
 
 void logout()
@@ -113,5 +117,5 @@ void logout()
 void start()
 {
     banner();
-    connection()->prompt(this::setname, "What's your intra name? ");
+    prompt(this::setname, "What's your intra name? ");
 }

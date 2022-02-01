@@ -3,7 +3,7 @@ inherits "/std/app.c";
 void start()
 {
     if (length(argv) <= 1)
-        connection()->write("Argument error!\n");
+        printf("Argument error!\n");
     else {
         for (int x = 1; x < length(argv); x++)
         {
@@ -11,7 +11,7 @@ void start()
             if (path != nil)
             {
                 if (!touch(path))
-                    connection()->write("Could not create file!\n");
+                    printf("Could not create file!\n");
             }
         }
     }

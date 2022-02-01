@@ -1,16 +1,21 @@
 package nijakow.four.server.runtime.objects.standard;
 
+import nijakow.four.server.runtime.objects.FloatingInstance;
 import nijakow.four.server.runtime.objects.Instance;
 import nijakow.four.server.runtime.objects.blue.Blue;
 import nijakow.four.share.lang.base.CompilationException;
+import nijakow.four.share.lang.c.ast.ASTExpression;
 import nijakow.four.share.lang.c.parser.ParseException;
 import nijakow.four.server.runtime.vm.code.Code;
 import nijakow.four.server.runtime.Key;
 import nijakow.four.server.runtime.nvfs.NVFileSystem;
 import nijakow.four.server.runtime.vm.VM;
 import nijakow.four.server.serialization.base.ISerializer;
+import nijakow.four.share.lang.c.parser.Parser;
+import nijakow.four.share.lang.c.parser.StringCharStream;
+import nijakow.four.share.lang.c.parser.Tokenizer;
 
-public class FString extends Instance {
+public class FString extends FloatingInstance {
 	private final String value;
 	
 	public FString(String value) {
@@ -97,4 +102,10 @@ public class FString extends Instance {
 	public void serialize(ISerializer serializer) {
 		serializer.writeString(value);
 	}
+
+    public Code compileAsCode() throws ParseException, CompilationException {
+		Parser parser = new Parser(new Tokenizer(new StringCharStream(this.value)));
+		ASTExpression expr = parser.parseLine();
+		return expr.compileStandalone();
+    }
 }

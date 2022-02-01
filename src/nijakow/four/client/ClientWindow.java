@@ -393,9 +393,13 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 			if (cross >= 0 && firstComma > cross) {
 				try {
 					width = Integer.parseInt(splitter.substring(0, cross));
+				} catch (NumberFormatException e) {
+					width = -1;
+				}
+				try {
 					height = Integer.parseInt(splitter.substring(cross + 1, firstComma));
 				} catch (NumberFormatException e) {
-					width = height = -1;
+					height = -1;
 				}
 				int secondComma = splitter.indexOf(',', firstComma + 1);
 				if (secondComma >= 0) {
@@ -413,6 +417,11 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 				i = new ImageIcon(new URL(splitter));
 				if (desc != null) {
 					i.setDescription(desc);
+				}
+				if (height == -1 && width >= 0) {
+					height = i.getIconHeight() / (i.getIconWidth() / width);
+				} else if (width == -1 && height >= 0) {
+					width = i.getIconWidth() / (i.getIconHeight() / height);
 				}
 				if (width >= 0 || height >= 0) {
 					i = new ImageIcon(i.getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH));

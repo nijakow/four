@@ -5,6 +5,11 @@ func   finish_cb;
 object _me;
 
 object connection() { return the_connection; }
+void printf(...) { connection()->printf(...); }
+void prompt(...) { connection()->prompt(...); }
+void password(...) { connection()->password(...); }
+void edit(...) { connection()->edit(...); }
+
 object me() { return _me; }
 void set_me(object value) { this._me = value; }
 
@@ -12,6 +17,8 @@ void exit(...) { call(finish_cb, ...); }
 
 bool exec(func our_cb, string name, ...)
 {
+    if (!checkexec(name))
+        return false;
     object obj = new(name, the_connection, our_cb, me(), ...);
     if (obj != nil) {
         obj->start();

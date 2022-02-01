@@ -1,5 +1,6 @@
 package nijakow.four.server.runtime.security.users;
 
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -67,5 +68,25 @@ public class IdentityDatabase {
         Identity identity = getIdentityByName(username);
         User user = (identity != null) ? identity.asUser() : null;
         return (user != null && user.checkPassword(password)) ? user : null;
+    }
+
+    public byte[] serializeAsBytes() {
+        StringBuilder builder = new StringBuilder();
+        for (Identity identity : identities.values()) {
+            builder.append(identity.getID());
+            builder.append(',');
+            builder.append(identity.getName());
+            User user = identity.asUser();
+            if (user != null) {
+                builder.append(",user,");
+                builder.append(user.getPasswordHash());
+            } else if (identity.asGroup() != null) {
+                builder.append(",group");
+            } else {
+                builder.append(",unknown");
+            }
+            builder.append('\n');
+        }
+        return builder.toString().getBytes(StandardCharsets.UTF_8);
     }
 }

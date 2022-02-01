@@ -1,5 +1,6 @@
 package nijakow.four.server.runtime;
 
+import nijakow.four.server.runtime.nvfs.serialization.BasicFSSerializer;
 import nijakow.four.server.runtime.objects.blue.Blue;
 import nijakow.four.server.runtime.objects.blue.Blueprint;
 import nijakow.four.server.runtime.objects.collections.FList;
@@ -378,6 +379,17 @@ public class Key {
 				}
 			}
 		};
+		get("$eval").code = new BuiltinCode() {
+			@Override
+			public void run(Fiber fiber, Instance self, Instance[] args) throws FourRuntimeException {
+				Code code = args[1].asFString().compileAsCode();
+				if (code != null) {
+					for (int x = 2; x < args.length; x++)
+						fiber.push(args[x]);
+					code.invoke(fiber, args.length - 2, args[0]);
+				}
+			}
+		};
 		get("$getuid").code = new BuiltinCode() {
 			@Override
 			public void run(Fiber fiber, Instance self, Instance[] args) throws FourRuntimeException {
@@ -404,6 +416,14 @@ public class Key {
 					fiber.setAccu(new FString(user.getName()));
 				else
 					fiber.setAccu(Instance.getNil());
+			}
+		};
+		get("$checkexec").code = new BuiltinCode() {
+			@Override
+			public void run(Fiber fiber, Instance self, Instance[] args) throws FourRuntimeException {
+				final String curPath = args[0].asFString().asString();
+				File file = fiber.getVM().getFilesystem().resolve(curPath);
+				fiber.setAccu(new FInteger((file != null && file.getRights().checkExecuteAccess(fiber.getSharedState().getUser())) ? 1 : 0));
 			}
 		};
 		get("$stat").code = new BuiltinCode() {
@@ -485,6 +505,28 @@ public class Key {
 				}
 			}
 		};
+		get("$finduser").code = new BuiltinCode() {
+			@Override
+			public void run(Fiber fiber, Instance self, Instance[] args) throws FourRuntimeException {
+				final String username = args[0].asFString().asString();
+				Identity identity = fiber.getVM().getIdentityDB().getIdentityByName(username);
+				if (identity != null && identity.asUser() != null)
+					fiber.setAccu(new FString(identity.getID()));
+				else
+					fiber.setAccu(Instance.getNil());
+			}
+		};
+		get("$findgroup").code = new BuiltinCode() {
+			@Override
+			public void run(Fiber fiber, Instance self, Instance[] args) throws FourRuntimeException {
+				final String username = args[0].asFString().asString();
+				Identity identity = fiber.getVM().getIdentityDB().getIdentityByName(username);
+				if (identity != null && identity.asGroup() != null)
+					fiber.setAccu(new FString(identity.getID()));
+				else
+					fiber.setAccu(Instance.getNil());
+			}
+		};
 		get("$dump").code = new BuiltinCode() {
 
 			@Override
@@ -492,6 +534,16 @@ public class Key {
 				Serializer serializer = new Serializer();
 				fiber.getVM().getFilesystem().serialize(serializer);
 				System.out.println(serializer.asString());
+			}
+		};
+		get("$dumpfs").code = new BuiltinCode() {
+
+			@Override
+			public void run(Fiber fiber, Instance self, Instance[] args) throws CastException {
+				BasicFSSerializer serializer = new BasicFSSerializer(System.out);
+				serializer.newMetaEntry("users", fiber.getVM().getIdentityDB().serializeAsBytes());
+				serializer.serialize(fiber.getVM().getFilesystem());
+				fiber.setAccu(Instance.getNil());
 			}
 		};
 	}

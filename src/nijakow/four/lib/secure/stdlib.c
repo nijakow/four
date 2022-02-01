@@ -4,6 +4,7 @@ use $the_object;
 use $is_initialized;
 use $set_initialized;
 use $call;
+use $random;
 use $listinsert;
 use $listremove;
 use $substr;
@@ -18,6 +19,7 @@ use $recompile;
 use $mkdir;
 use $rm;
 use $mv;
+use $checkexec;
 use $stat;
 use $getown;
 use $getgrp;
@@ -27,6 +29,9 @@ use $chgrp;
 use $getuid;
 use $uname;
 use $gname;
+use $finduser;
+use $findgroup;
+use $eval;
 
 
 string type(any obj)
@@ -61,6 +66,14 @@ any call(any f, ...)
     return $call(f, ...);
 }
 
+any invoke(any f, ...)
+{
+    if (type(f) == "function")
+        return call(f, ...);
+    else
+        return f;
+}
+
 void log(...)
 {
     $log(...);
@@ -69,6 +82,14 @@ void log(...)
 int rand()
 {
     return $random();
+}
+
+any select_random(list lst)
+{
+    if (length(lst) == 0)
+        return nil;
+    else
+        return lst[rand() % length(lst)];
 }
 
 int length(any seq)
@@ -197,7 +218,7 @@ list spliton(string s, func predicate)
     while (pos < len)
     {
         if (predicate(s[pos])) {
-            if (pos - start > 1)
+            if (pos - start >= 1)
                 append(lst, substr(s, start, pos));
             start = pos + 1;
         }
@@ -281,7 +302,7 @@ int atoi(string s)
 	return num * factor;
 }
 
-string itoa(int i)
+string itoab(int i, int base)
 {
     string pre = "";
     string s = "";
@@ -295,12 +316,17 @@ string itoa(int i)
 
     while (i != 0)
     {
-        s = chr((i % 10) + '0') + s;
+        int c = i % base;
         i = i / 10;
+        if (c < 10) s = chr(c + '0') + s;
+        else        s = chr((c - 10) + 'a') + s;
     }
 
     return pre + s;
 }
+
+string itoa(int i) { return itoab(i, 10); }
+string itoax(int i) { return itoab(i, 16); }
 
 bool isslash(char c)
 {
@@ -420,6 +446,11 @@ bool recompile(string path)
     return $recompile(path);
 }
 
+bool checkexec(string path)
+{
+    return $checkexec(path);
+}
+
 int stat(string path)
 {
     return $stat(path);
@@ -468,4 +499,19 @@ string uname(string id)
 string gname(string id)
 {
     return $gname(id);
+}
+
+string finduser(string name)
+{
+    return $finduser(name);
+}
+
+string findgroup(string name)
+{
+    return $findgroup(name);
+}
+
+any eval(any target, string code, ...)
+{
+    return $eval(target, code, ...);
 }

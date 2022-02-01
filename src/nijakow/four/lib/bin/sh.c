@@ -5,12 +5,12 @@ mapping mapped_pathnames;
 
 void arg_error()
 {
-    connection()->write("Argument error!\n");
+    printf("Argument error!\n");
 }
 
 void file_not_found_error()
 {
-    connection()->write("File not found!\n");
+    printf("File not found!\n");
 }
 
 void cmd_cd(list argv)
@@ -35,10 +35,10 @@ void cmd_edit_file__write(any id, string text)
         connection()->mode_italic();
         if(!echo_into(path, text)) {
             connection()->mode_red();
-            connection()->write("Could not write \"", path, "\"!\n");
+            printf("Could not write \"%s\"!\n", path);
         } else {
             connection()->mode_green();
-            connection()->write("\"", path, "\" written.\n");
+            printf("\"%s\" written.\n", path);
         }
         connection()->mode_normal();
     }
@@ -62,7 +62,7 @@ void cmd_edit_file(list argv)
             if (content == nil) {
                 file_not_found_error();
             } else {
-                any id = connection()->edit(this->cmd_edit_file__write, path, content);
+                any id = edit(this->cmd_edit_file__write, path, content);
                 mapped_pathnames[id] = path;
             }
         }
@@ -96,7 +96,7 @@ void receive(string line)
                 cmd_ls(argv);
                 resume();
             } else {
-                connection()->write(argv[0], ": not a command!\n");
+                printf("%s: not a command!\n", argv[0]);
                 resume();
             }
         }
@@ -109,7 +109,7 @@ void resume()
     string ps1 = pwd();
     if (ps1 != nil) ps1 = ps1 + " $ ";
     else ps1 = "$ ";
-    connection()->prompt(this::receive, ps1);
+    prompt(this::receive, ps1);
 }
 
 void start()
