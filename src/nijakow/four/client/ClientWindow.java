@@ -385,52 +385,7 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 			splitter = splitter.substring(i1 + 1);
 			openEditor(new String[]{id, title, splitter});
 		} else if (arg.startsWith(Commands.Codes.SPECIAL_IMG)) {
-			String splitter = arg.substring(Commands.Codes.SPECIAL_IMG.length());
-			int cross = splitter.indexOf('x');
-			int firstComma = splitter.indexOf(',');
-			int width = -1, height = -1;
-			String desc = null;
-			if (cross >= 0 && firstComma > cross) {
-				try {
-					width = Integer.parseInt(splitter.substring(0, cross));
-				} catch (NumberFormatException e) {
-					width = -1;
-				}
-				try {
-					height = Integer.parseInt(splitter.substring(cross + 1, firstComma));
-				} catch (NumberFormatException e) {
-					height = -1;
-				}
-				int secondComma = splitter.indexOf(',', firstComma + 1);
-				if (secondComma >= 0) {
-					desc = splitter.substring(firstComma + 1, secondComma);
-					splitter = splitter.substring(secondComma + 1);
-				} else {
-					splitter = splitter.substring(firstComma + 1);
-				}
-			} else if (firstComma >= 0) {
-				desc = splitter.substring(0, firstComma);
-				splitter = splitter.substring(firstComma + 1);
-			}
-			ImageIcon i;
-			try {
-				i = new ImageIcon(new URL(splitter));
-				if (desc != null) {
-					i.setDescription(desc);
-				}
-				if (height == -1 && width >= 0) {
-					height = i.getIconHeight() / (i.getIconWidth() / width);
-				} else if (width == -1 && height >= 0) {
-					width = i.getIconWidth() / (i.getIconHeight() / height);
-				}
-				if (width >= 0 || height >= 0) {
-					i = new ImageIcon(i.getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH));
-				}
-			} catch (MalformedURLException e) {
-				i = null;
-			}
-			if (i != null)
-				area.insertIcon(i);
+			new ImageLoader(arg, term.getLength(), area).execute();
 		} else
 			current = getStyleByName(arg);
 	}
