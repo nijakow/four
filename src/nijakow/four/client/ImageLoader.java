@@ -4,7 +4,7 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.net.MalformedURLException;
+import java.io.IOException;
 import java.net.URL;
 import java.util.concurrent.ExecutionException;
 
@@ -81,7 +81,7 @@ public class ImageLoader extends SwingWorker<ImageIcon, Object> {
             if (width >= 0 || height >= 0) {
                 i = new ImageIcon(i.getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH));
             }
-        } catch (Exception e) {
+        } catch (IOException e) {
             i = null;
         }
         return i;
