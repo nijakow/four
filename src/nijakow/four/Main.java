@@ -50,6 +50,10 @@ public class Main {
 						System.err.println("No proper port specified! Argument was: " + args[i]);
 				}
 				break;
+
+			case "--root-password":
+				db.getRootUser().setPassword(args[++i]);
+				break;
 			
 			case "--license":
 			case "--info":
