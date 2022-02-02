@@ -179,7 +179,12 @@ public class Parser {
 		ASTExpression next = null;
 		while (expr != next) {
 			next = expr;
-			if (check(TokenType.DOT) || check(TokenType.RARROW)) {
+			if (check(TokenType.QUESTION)) {
+				ASTExpression consequent = parseExpression();
+				expect(TokenType.COLON);
+				ASTExpression alternative = parseExpression();
+				expr = new ASTTernary(expr, consequent, alternative);
+			} else if (check(TokenType.DOT) || check(TokenType.RARROW)) {
 				expr = new ASTDot(expr, expectKey());
 			} else if (check(TokenType.LPAREN)) {
 				Pair<ASTExpression[], Boolean> arglistData = parseArglist();

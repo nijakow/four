@@ -99,6 +99,7 @@ public class Tokenizer {
 		else if (peeks(",")) return new Token(this, pos, TokenType.COMMA);
 		else if (peeks(":")) return new Token(this, pos, TokenType.COLON);
 		else if (peeks(";")) return new Token(this, pos, TokenType.SEMICOLON);
+		else if (peeks("?")) return new Token(this, pos, TokenType.QUESTION);
 		else if (peeks("->")) return new Token(this, pos, TokenType.RARROW);
 		else if (peeks("++")) return new Token(this, pos, TokenType.INC1);
 		else if (peeks("--")) return new Token(this, pos, TokenType.DEC1);
