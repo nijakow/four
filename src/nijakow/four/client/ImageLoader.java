@@ -93,7 +93,8 @@ public class ImageLoader extends SwingWorker<ImageIcon, Object> {
             i = null;
         }
         if (i != null) {
-            pane.setCaretPosition(position);
+            pane.setSelectionStart(position - 1);
+            pane.setSelectionEnd(position);
             pane.insertIcon(i);
         }
     }
