@@ -42,7 +42,7 @@ public class ImageLoader extends SwingWorker<ImageIcon, Object> {
                     width = -1;
                 }
             }
-            if (h.equals("?") && !w.equals("?")) {
+            if (h.equals("?")) {
                 height = visibleHeight;
             } else {
                 try {
