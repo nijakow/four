@@ -1,7 +1,9 @@
 package nijakow.four.client;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.concurrent.ExecutionException;
@@ -64,7 +66,8 @@ public class ImageLoader extends SwingWorker<ImageIcon, Object> {
         }
         ImageIcon i;
         try {
-            i = new ImageIcon(new URL(splitter));
+            BufferedImage ii = ImageIO.read(new URL(splitter));
+            i = new ImageIcon(ii);
             if (desc != null) {
                 i.setDescription(desc);
             }
@@ -78,7 +81,7 @@ public class ImageLoader extends SwingWorker<ImageIcon, Object> {
             if (width >= 0 || height >= 0) {
                 i = new ImageIcon(i.getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH));
             }
-        } catch (MalformedURLException e) {
+        } catch (Exception e) {
             i = null;
         }
         return i;
