@@ -383,6 +383,11 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 			splitter = splitter.substring(i1 + 1);
 			openEditor(new String[]{id, title, splitter});
 		} else if (arg.startsWith(Commands.Codes.SPECIAL_IMG)) {
+			try {
+				term.insertString(term.getLength(), " ", current);
+			} catch (BadLocationException e) {
+				e.printStackTrace();
+			}
 			new ImageLoader(arg, term.getLength(), area,
 					pane.getHeight() - pane.getHorizontalScrollBar().getHeight() - 5,
 					pane.getWidth() - pane.getVerticalScrollBar().getWidth() - 5)
