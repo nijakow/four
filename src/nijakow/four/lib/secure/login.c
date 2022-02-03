@@ -44,6 +44,16 @@ void no_login()
     connection()->close();
 }
 
+void no_shell()
+{
+    printf("\n");
+    connection()->mode_red();
+    connection()->mode_underscore();
+    printf("Startup shell not present.\nPlease contact the administrator.\n");
+    connection()->mode_normal();
+    connection()->close();
+}
+
 void setname(string name)
 {
     this.name = name;
@@ -92,7 +102,13 @@ void launch_shell()
             shell = "/usr/bin/ctrl.c";
         }
     }
-    execappfromcli(this->logout, shell);
+    if (!execappfromcli(this->logout, shell)) {
+        if (isroot()) {
+            execappfromcli(this->logout, "/bin/sh.c");
+        } else {
+            no_shell();
+        }
+    }
 }
 
 void setuname(string uname)
