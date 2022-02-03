@@ -34,6 +34,16 @@ void banner()
     printf("\n");
 }
 
+void no_login()
+{
+    printf("\n");
+    connection()->mode_red();
+    connection()->mode_underscore();
+    printf("Identification not recognized.\nConnection terminated.\n");
+    connection()->mode_normal();
+    connection()->close();
+}
+
 void newuser(string name)
 {
     this.name = name;
@@ -43,12 +53,7 @@ void newuser(string name)
 void newpass(string pass)
 {
     if (!($adduser(name, pass) && trylogin(name, pass))) {
-        printf("\n");
-        connection()->mode_red();
-        connection()->mode_underscore();
-        printf("Unable to create user.\nConnection terminated.\n");
-        connection()->mode_normal();
-        connection()->close();
+        no_login();
     } else {
         startup();
     }
@@ -78,12 +83,7 @@ bool trylogin(string username, string password)
 bool dologin(string username, string password)
 {
     if (!trylogin(username, password)) {
-        printf("\n");
-        connection()->mode_red();
-        connection()->mode_underscore();
-        printf("Username or password not recognized.\nConnection terminated.\n");
-        connection()->mode_normal();
-        connection()->close();
+        no_login();
         return false;
     } else {
         return true;

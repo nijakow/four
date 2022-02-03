@@ -107,8 +107,9 @@ void resume()
 {
     connection()->set_fallback(this::resume);
     string ps1 = pwd();
-    if (ps1 != nil) ps1 = ps1 + " $ ";
-    else ps1 = "$ ";
+    string dollar = isroot() ? "# " : "$ ";
+    if (ps1 != nil) ps1 = ps1 + " " + dollar;
+    else ps1 = dollar;
     prompt(this::receive, ps1);
 }
 
