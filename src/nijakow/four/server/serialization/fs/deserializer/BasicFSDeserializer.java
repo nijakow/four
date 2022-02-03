@@ -34,7 +34,17 @@ public class BasicFSDeserializer {
         while (scanner.hasNextLine()) {
             final String line = scanner.nextLine();
             if (line.trim().isEmpty());
-            else if (line.startsWith("--- ")) {
+            else if (line.startsWith("+++ ")) {
+                final String type = line.substring(4);
+                final StringBuilder payload = new StringBuilder();
+                while (scanner.hasNextLine()) {
+                    final String xline = scanner.nextLine();
+                    if (!xline.startsWith("\t"))
+                        break;
+                    payload.append(xline);
+                }
+                // TODO: Process the special declarations
+            } else if (line.startsWith("--- ")) {
                 final String id = line.substring(4);
                 entry = new FileEntry(id);
                 files.put(id, entry);
