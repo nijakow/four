@@ -93,6 +93,7 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 			prefs.setPort(ports[0]);
 		getContentPane().setLayout(new BorderLayout());
 		JPanel south = new JPanel();
+		south.setOpaque(false);
 		south.setLayout(new BoxLayout(south, BoxLayout.X_AXIS));
 		prompt = new JTextField();
 		prompt.setFont(font);
@@ -107,7 +108,7 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 		reconnectButton = new JButton("Reconnect");
 		reconnectButton.setActionCommand(Commands.Actions.ACTION_RECONNECT);
 		reconnectButton.addActionListener(this);
-		connectionStatus = new JLabel();
+		connectionStatus = new JLabel("", SwingConstants.CENTER);
 		getContentPane().add(connectionStatus, BorderLayout.NORTH);
 		JButton settings = new JButton("Settings");
 		settings.addActionListener(this);
@@ -142,6 +143,7 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 		});
 		addStyles();
 		pane = new JScrollPane();
+		pane.setOpaque(false);
 		setLineBreaking(prefs.getLineBreaking());
 		getContentPane().add(pane, BorderLayout.CENTER);
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
@@ -168,11 +170,33 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 
 	private void toggleMode(boolean dark) {
 		if (dark) {
-			area.setBackground(Color.black);
+			pwf.setForeground(Color.black);
+			pwf.setBackground(Color.lightGray);
+			pwf.setCaretColor(Color.black);
 			area.setForeground(Color.lightGray);
+			area.setBackground(Color.black);
+			prompt.setForeground(Color.black);
+			prompt.setBackground(Color.lightGray);
+			prompt.setCaretColor(Color.black);
+			promptText.setForeground(Color.white);
+			promptText.setBackground(Color.darkGray);
+			connectionStatus.setForeground(Color.white);
+			connectionStatus.setBackground(Color.darkGray);
+			getContentPane().setBackground(Color.darkGray);
 		} else {
-			area.setForeground(Color.black);
-			area.setBackground(Color.white);
+			pwf.setForeground(null);
+			pwf.setBackground(Color.white);
+			pwf.setCaretColor(null);
+			area.setForeground(null);
+			area.setBackground(null);
+			prompt.setForeground(null);
+			prompt.setBackground(Color.white);
+			prompt.setCaretColor(null);
+			promptText.setForeground(null);
+			promptText.setBackground(null);
+			connectionStatus.setForeground(null);
+			connectionStatus.setBackground(null);
+			getContentPane().setBackground(null);
 		}
 	}
 
@@ -230,15 +254,19 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 		JDialog settingsWindow = new JDialog(this, "Four: Settings", true);
 		settingsWindow.getContentPane().setLayout(new BoxLayout(settingsWindow.getContentPane(), BoxLayout.Y_AXIS));
 		JPanel hostPa = new JPanel();
+		hostPa.setOpaque(false);
 		hostPa.setLayout(new GridLayout(2, 1));
-		hostPa.add(new JLabel("The hostname to connect to:"));
+		JLabel hostPaLabel = new JLabel("The hostname to connect to:");
+		hostPa.add(hostPaLabel);
 		JTextField hostname = new JTextField();
 		hostPa.add(hostname);
 		hostPa.setBorder(new EtchedBorder());
 		settingsWindow.getContentPane().add(hostPa);
 		JPanel portPa = new JPanel();
+		portPa.setOpaque(false);
 		portPa.setLayout(new GridLayout(2, 1));
-		portPa.add(new JLabel("The port to use: "));
+		JLabel portPaLabel = new JLabel("The port to use: ");
+		portPa.add(portPaLabel);
 		JTextField portNo = new JTextField();
 		portPa.add(portNo);
 		portPa.setBorder(new EtchedBorder());
@@ -249,12 +277,34 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 			setLineBreaking(prefs.getLineBreaking());
 		});
 		JCheckBox darkMode = new JCheckBox("Dark mode");
-		darkMode.addItemListener(event -> {
-			toggleMode(darkMode.isSelected());
-			prefs.setDarkMode(darkMode.isSelected());
-		});
 		settingsWindow.getContentPane().add(darkMode);
 		settingsWindow.getContentPane().add(lineBreak);
+		darkMode.addItemListener(event -> {
+			boolean dark = darkMode.isSelected();
+			toggleMode(dark);
+			prefs.setDarkMode(dark);
+			if (dark) {
+				settingsWindow.getContentPane().setBackground(Color.darkGray);
+				darkMode.setForeground(Color.white);
+				darkMode.setBackground(Color.darkGray);
+				lineBreak.setForeground(Color.white);
+				lineBreak.setBackground(Color.darkGray);
+				hostname.setBackground(Color.lightGray);
+				portNo.setBackground(Color.lightGray);
+				hostPaLabel.setForeground(Color.white);
+				portPaLabel.setForeground(Color.white);
+			} else {
+				settingsWindow.getContentPane().setBackground(null);
+				darkMode.setForeground(null);
+				darkMode.setBackground(null);
+				lineBreak.setForeground(null);
+				lineBreak.setBackground(null);
+				hostname.setBackground(Color.white);
+				portNo.setBackground(Color.white);
+				hostPaLabel.setForeground(null);
+				portPaLabel.setForeground(null);
+			}
+		});
 		settingsWindow.addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowActivated(WindowEvent e) {
