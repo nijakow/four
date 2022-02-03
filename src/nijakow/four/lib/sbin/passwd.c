@@ -19,7 +19,7 @@ void process(string uid)
         exit();
     } else {
         this.uid = uid;
-        password(this->set_password, "Password: ");
+        password(this->set_password, "Password for " + uname(uid) + ": ");
     }
 }
 

@@ -105,7 +105,11 @@ void setuname(string uname)
 
 void startup()
 {
-    prompt(this::setuname, "By what name will you be known? ");
+    if (isroot()) {
+        launch_shell();
+    } else {
+        prompt(this::setuname, "By what name will you be known? ");
+    }
 }
 
 void logout()
