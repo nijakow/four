@@ -6,6 +6,7 @@ import nijakow.four.server.runtime.objects.blue.Blueprint;
 import nijakow.four.server.runtime.objects.collections.FList;
 import nijakow.four.server.runtime.objects.standard.FInteger;
 import nijakow.four.server.runtime.objects.standard.FString;
+import nijakow.four.server.runtime.security.users.Group;
 import nijakow.four.server.runtime.security.users.Identity;
 import nijakow.four.server.runtime.security.users.User;
 import nijakow.four.share.lang.base.CompilationException;
@@ -525,6 +526,79 @@ public class Key {
 					fiber.setAccu(new FString(identity.getID()));
 				else
 					fiber.setAccu(Instance.getNil());
+			}
+		};
+		get("$adduser").code = new BuiltinCode() {
+			@Override
+			public void run(Fiber fiber, Instance self, Instance[] args) throws FourRuntimeException {
+				final String username = args[0].asFString().asString();
+				User user = null;
+				if (fiber.isRoot()) {
+					fiber.getVM().getIdentityDB().newUser(username);
+				}
+				fiber.setAccu((user != null) ? new FString(user.getID()) : Instance.getNil());
+			}
+		};
+		get("$addgroup").code = new BuiltinCode() {
+			@Override
+			public void run(Fiber fiber, Instance self, Instance[] args) throws FourRuntimeException {
+				final String username = args[0].asFString().asString();
+				Group group = null;
+				if (fiber.isRoot()) {
+					fiber.getVM().getIdentityDB().newGroup(username);
+				}
+				fiber.setAccu((group != null) ? new FString(group.getID()) : Instance.getNil());
+			}
+		};
+		get("$chpass").code = new BuiltinCode() {
+			@Override
+			public void run(Fiber fiber, Instance self, Instance[] args) throws FourRuntimeException {
+				boolean success = false;
+				final String username = args[0].asFString().asString();
+				final String password = args[1].asFString().asString();
+				Identity identity = fiber.getVM().getIdentityDB().getIdentityByName(username);
+				User user = null;
+				if (identity != null)
+					user = identity.asUser();
+				if (user != null && (fiber.getSharedState().getUser() == user || fiber.isRoot())) {
+					user.setPassword(password);
+					success = true;
+				}
+				fiber.setAccu(new FInteger(success ? 1 : 0));
+			}
+		};
+		get("$getshell").code = new BuiltinCode() {
+			@Override
+			public void run(Fiber fiber, Instance self, Instance[] args) throws FourRuntimeException {
+				Instance value = Instance.getNil();
+				final String username = args[0].asFString().asString();
+				Identity identity = fiber.getVM().getIdentityDB().getIdentityByName(username);
+				User user = null;
+				if (identity != null)
+					user = identity.asUser();
+				if (user != null && (fiber.getSharedState().getUser() == user || fiber.isRoot())) {
+					String shell = user.getShell();
+					if (shell != null)
+						value = new FString(shell);
+				}
+				fiber.setAccu(value);
+			}
+		};
+		get("$chsh").code = new BuiltinCode() {
+			@Override
+			public void run(Fiber fiber, Instance self, Instance[] args) throws FourRuntimeException {
+				boolean success = false;
+				final String username = args[0].asFString().asString();
+				final String shell = args[1].asFString().asString();
+				Identity identity = fiber.getVM().getIdentityDB().getIdentityByName(username);
+				User user = null;
+				if (identity != null)
+					user = identity.asUser();
+				if (user != null && (fiber.getSharedState().getUser() == user || fiber.isRoot())) {
+					user.setShell(shell);
+					success = true;
+				}
+				fiber.setAccu(new FInteger(success ? 1 : 0));
 			}
 		};
 		get("$dump").code = new BuiltinCode() {

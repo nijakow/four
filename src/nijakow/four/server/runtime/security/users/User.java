@@ -8,10 +8,12 @@ import java.util.Base64;
 
 public class User extends Identity {
     private String password;
+    private String shell;
 
     protected User(IdentityDatabase db, String name) {
         super(db, name);
         this.password = null;
+        this.shell = null;
     }
 
     @Override
@@ -48,4 +50,8 @@ public class User extends Identity {
             return "";
         }
     }
+
+    public String getShell() { return this.shell; }
+
+    public void setShell(String shell) { this.shell = shell; }
 }

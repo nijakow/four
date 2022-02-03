@@ -66,4 +66,8 @@ public class Fiber {
 	public void tick() throws FourRuntimeException {
 		top.tick(this);
 	}
+
+    public boolean isRoot() {
+		return getSharedState().getUser() != null && vm.getIdentityDB().getRootUser() == getSharedState().getUser();
+    }
 }

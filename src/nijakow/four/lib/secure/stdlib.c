@@ -31,6 +31,11 @@ use $uname;
 use $gname;
 use $finduser;
 use $findgroup;
+use $adduser;
+use $addgroup;
+use $chpass;
+use $getshell;
+use $chsh;
 use $eval;
 
 
@@ -509,6 +514,31 @@ string finduser(string name)
 string findgroup(string name)
 {
     return $findgroup(name);
+}
+
+string adduser(string name)
+{
+    return $adduser(name);
+}
+
+string addgroup(string name)
+{
+    return $addgroup(name);
+}
+
+bool chpass(string user, string pass)
+{
+    return $chpass(user, pass);
+}
+
+string getshell(string user)
+{
+    return $getshell(user);
+}
+
+string chsh(string user, string shell)
+{
+    return $chsh(user, shell);
 }
 
 any eval(any target, string code, ...)
