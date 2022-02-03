@@ -44,29 +44,10 @@ void no_login()
     connection()->close();
 }
 
-void newuser(string name)
-{
-    this.name = name;
-    password(this::newpass, "Please choose a password: ");
-}
-
-void newpass(string pass)
-{
-    if (!($adduser(name, pass) && trylogin(name, pass))) {
-        no_login();
-    } else {
-        startup();
-    }
-}
-
 void setname(string name)
 {
-    if (name == "new") {
-        prompt(this::newuser, "New username: ");
-    } else {
-        this.name = name;
-        password(this::setpass, "Password: ");
-    }
+    this.name = name;
+    password(this::setpass, "Password: ");
 }
 
 void setpass(string pass)

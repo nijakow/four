@@ -492,20 +492,6 @@ public class Key {
 				}
 			}
 		};
-		get("$adduser").code = new BuiltinCode() {
-			@Override
-			public void run(Fiber fiber, Instance self, Instance[] args) throws FourRuntimeException {
-				final String username = args[0].asFString().asString();
-				final String password = args[1].asFString().asString();
-				User user = fiber.getVM().getIdentityDB().newUser(username);
-				if (user != null) {
-					user.setPassword(password);
-					fiber.setAccu(new FInteger(1));
-				} else {
-					fiber.setAccu(new FInteger(0));
-				}
-			}
-		};
 		get("$finduser").code = new BuiltinCode() {
 			@Override
 			public void run(Fiber fiber, Instance self, Instance[] args) throws FourRuntimeException {
