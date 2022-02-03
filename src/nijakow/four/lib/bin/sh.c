@@ -92,13 +92,8 @@ void receive(string line)
     else {
         if (!launch_app(argv))
         {
-            if (argv[0] == "ls") {
-                cmd_ls(argv);
-                resume();
-            } else {
-                printf("%s: not a command!\n", argv[0]);
-                resume();
-            }
+            printf("%s: not a command!\n", argv[0]);
+            resume();
         }
     }
 }
