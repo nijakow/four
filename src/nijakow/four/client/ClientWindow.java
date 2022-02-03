@@ -124,7 +124,7 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 		area.setEditable(false);
 		area.setCursor(new Cursor(Cursor.TEXT_CURSOR));
 		area.setFont(font);
-		area.setOpaque(true);
+		toggleMode(prefs.getDarkMode());
 		term = area.getStyledDocument();
 		term.addDocumentListener(new DocumentListener() {
 			@Override
@@ -165,7 +165,17 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 		labelTimer.setRepeats(false);
 		reconnectorHandler = queue.scheduleWithFixedDelay(reconnector, 0, 5, TimeUnit.SECONDS);
 	}
-	
+
+	private void toggleMode(boolean dark) {
+		if (dark) {
+			area.setBackground(Color.black);
+			area.setForeground(Color.lightGray);
+		} else {
+			area.setForeground(Color.black);
+			area.setBackground(Color.white);
+		}
+	}
+
 	private void setLineBreaking(boolean breaking) {
 		if (breaking)
 			pane.setViewportView(area);
@@ -218,7 +228,7 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 	
 	private void openSettingsWindow() {
 		JDialog settingsWindow = new JDialog(this, "Four: Settings", true);
-		settingsWindow.getContentPane().setLayout(new GridLayout(3, 1));
+		settingsWindow.getContentPane().setLayout(new BoxLayout(settingsWindow.getContentPane(), BoxLayout.Y_AXIS));
 		JPanel hostPa = new JPanel();
 		hostPa.setLayout(new GridLayout(2, 1));
 		hostPa.add(new JLabel("The hostname to connect to:"));
@@ -234,6 +244,13 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 		portPa.setBorder(new EtchedBorder());
 		settingsWindow.getContentPane().add(portPa);
 		JCheckBox lineBreak = new JCheckBox("Automated line breaking");
+		JCheckBox darkMode = new JCheckBox("Dark mode");
+		darkMode.addItemListener(event -> {
+			toggleMode(darkMode.isSelected());
+			prefs.setDarkMode(darkMode.isSelected());
+		});
+		darkMode.setSelected(prefs.getDarkMode());
+		settingsWindow.getContentPane().add(darkMode);
 		settingsWindow.getContentPane().add(lineBreak);
 		settingsWindow.addWindowListener(new WindowAdapter() {
 			@Override

@@ -55,7 +55,11 @@ public class PreferencesHelper {
 	public boolean getLineBreaking() {
 		return prefs.getBoolean(Key.LINE_BREAKING, true);
 	}
-	
+
+	public boolean getDarkMode() {
+		return prefs.getBoolean(Key.DARK_MODE, false);
+	}
+
 	public void setLineBreaking(boolean breaking) {
 		prefs.putBoolean(Key.LINE_BREAKING, breaking);
 	}
@@ -97,7 +101,11 @@ public class PreferencesHelper {
 	public void setPort(int port) {
 		prefs.putInt(Key.PORT_NUMBER, port);
 	}
-	
+
+	public void setDarkMode(boolean enabled) {
+		prefs.putBoolean(Key.DARK_MODE, enabled);
+	}
+
 	public boolean flush() {
 		try {
 			prefs.flush();
@@ -110,16 +118,17 @@ public class PreferencesHelper {
 	}
 
 	public abstract static class Key {
-		public static final String WINDOW_POS_X = "windowPosX";
-		public static final String WINDOW_POS_Y = "windowPosY";
-		public static final String WINDOW_WIDTH = "windowWidth";
+		public static final String WINDOW_POS_X  = "windowPosX";
+		public static final String WINDOW_POS_Y  = "windowPosY";
+		public static final String WINDOW_WIDTH  = "windowWidth";
 		public static final String WINDOW_HEIGHT = "windowHeight";
-		public static final String HOSTNAME = "hostname";
-		public static final String PORT_NUMBER = "portNumber";
+		public static final String HOSTNAME      = "hostname";
+		public static final String PORT_NUMBER   = "portNumber";
 		public static final String LINE_BREAKING = "lineBreaking";
-		public static final String EDITOR_WIDTH = "editorWidth";
+		public static final String DARK_MODE     = "darkMode";
+		public static final String EDITOR_WIDTH  = "editorWidth";
 		public static final String EDITOR_HEIGHT = "editorHeight";
-		public static final String EDITOR_POS_X = "editorPosX";
-		public static final String EDITOR_POS_Y = "editorPosY";
+		public static final String EDITOR_POS_X  = "editorPosX";
+		public static final String EDITOR_POS_Y  = "editorPosY";
 	}
 }
