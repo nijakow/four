@@ -244,12 +244,15 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 		portPa.setBorder(new EtchedBorder());
 		settingsWindow.getContentPane().add(portPa);
 		JCheckBox lineBreak = new JCheckBox("Automated line breaking");
+		lineBreak.addItemListener(event -> {
+			prefs.setLineBreaking(lineBreak.isSelected());
+			setLineBreaking(prefs.getLineBreaking());
+		});
 		JCheckBox darkMode = new JCheckBox("Dark mode");
 		darkMode.addItemListener(event -> {
 			toggleMode(darkMode.isSelected());
 			prefs.setDarkMode(darkMode.isSelected());
 		});
-		darkMode.setSelected(prefs.getDarkMode());
 		settingsWindow.getContentPane().add(darkMode);
 		settingsWindow.getContentPane().add(lineBreak);
 		settingsWindow.addWindowListener(new WindowAdapter() {
@@ -258,15 +261,15 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 				hostname.setText(prefs.getHostname());
 				portNo.setText(Integer.toString(prefs.getPort()));
 				lineBreak.setSelected(prefs.getLineBreaking());
+				darkMode.setSelected(prefs.getDarkMode());
 			}
-			
+
 			private void storeSettings() {
 				String host = hostname.getText();
 				if (!prefs.getHostname().equals(host)) {
 					prefs.setHostname(hostname.getText());
 					reconnect = true;
 				}
-				prefs.setLineBreaking(lineBreak.isSelected());
 				try {
 					int port = Integer.parseInt(portNo.getText());
 					if (port != prefs.getPort()) {
@@ -277,12 +280,12 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 					System.err.println("Not a valid port: \"" + portNo.getText() +"\", ignored.");
 				}
 			}
-			
+
 			@Override
 			public void windowDeactivated(WindowEvent e) {
 				storeSettings();
 			}
-			
+
 			@Override
 			public void windowClosing(WindowEvent e) {
 				storeSettings();
@@ -292,7 +295,6 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 					reconnectorHandler = queue.scheduleAtFixedRate(reconnector, 0, 5, TimeUnit.SECONDS);
 					reconnect = false;
 				}
-				setLineBreaking(prefs.getLineBreaking());
 			}
 		});
 		settingsWindow.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
