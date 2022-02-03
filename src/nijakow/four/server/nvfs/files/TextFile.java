@@ -1,9 +1,9 @@
-package nijakow.four.server.runtime.nvfs.files;
+package nijakow.four.server.nvfs.files;
 
 import nijakow.four.server.runtime.FourClassLoader;
 import nijakow.four.server.runtime.Key;
-import nijakow.four.server.runtime.nvfs.FileParent;
-import nijakow.four.server.runtime.nvfs.serialization.IFSSerializer;
+import nijakow.four.server.nvfs.FileParent;
+import nijakow.four.server.nvfs.serialization.IFSSerializer;
 import nijakow.four.server.runtime.objects.blue.Blue;
 import nijakow.four.server.runtime.objects.blue.Blueprint;
 import nijakow.four.server.runtime.security.users.Group;

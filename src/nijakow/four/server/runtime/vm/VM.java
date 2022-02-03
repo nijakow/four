@@ -3,7 +3,7 @@ package nijakow.four.server.runtime.vm;
 import nijakow.four.server.net.Server;
 import nijakow.four.server.runtime.*;
 import nijakow.four.server.runtime.exceptions.FourRuntimeException;
-import nijakow.four.server.runtime.nvfs.NVFileSystem;
+import nijakow.four.server.nvfs.NVFileSystem;
 import nijakow.four.server.runtime.objects.*;
 import nijakow.four.server.runtime.objects.blue.Blue;
 import nijakow.four.server.runtime.objects.misc.FConnection;

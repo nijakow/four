@@ -1,6 +1,6 @@
-package nijakow.four.server.runtime.nvfs.serialization;
+package nijakow.four.server.nvfs.serialization;
 
-import nijakow.four.server.runtime.nvfs.files.File;
+import nijakow.four.server.nvfs.files.File;
 
 public interface IFSSerializer {
     void newMetaEntry(String type, byte[] payload);

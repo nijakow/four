@@ -1,14 +1,12 @@
-package nijakow.four.server.runtime.nvfs.serialization;
+package nijakow.four.server.nvfs.serialization;
 
-import nijakow.four.server.runtime.nvfs.NVFileSystem;
-import nijakow.four.server.runtime.nvfs.files.File;
+import nijakow.four.server.nvfs.NVFileSystem;
+import nijakow.four.server.nvfs.files.File;
 
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Base64;
 import java.util.LinkedList;
 import java.util.Queue;
