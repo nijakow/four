@@ -29,6 +29,8 @@ use $chgrp;
 use $getuid;
 use $uname;
 use $gname;
+use $users;
+use $groups;
 use $finduser;
 use $findgroup;
 use $adduser;
@@ -505,6 +507,9 @@ string gname(string id)
 {
     return $gname(id);
 }
+
+list getusers() { return $users(); }
+list getgroups() { return $groups(); }
 
 string finduser(string name)
 {

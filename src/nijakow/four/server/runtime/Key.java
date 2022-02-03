@@ -514,6 +514,30 @@ public class Key {
 					fiber.setAccu(Instance.getNil());
 			}
 		};
+		get("$users").code = new BuiltinCode() {
+			@Override
+			public void run(Fiber fiber, Instance self, Instance[] args) throws FourRuntimeException {
+				FList list = new FList();
+				for (Identity identity : fiber.getVM().getIdentityDB().getIdentities()) {
+					User user = identity.asUser();
+					if (user != null)
+						list.insert(list.length(), new FString(user.getID()));
+				}
+				fiber.setAccu(list);
+			}
+		};
+		get("$groups").code = new BuiltinCode() {
+			@Override
+			public void run(Fiber fiber, Instance self, Instance[] args) throws FourRuntimeException {
+				FList list = new FList();
+				for (Identity identity : fiber.getVM().getIdentityDB().getIdentities()) {
+					Group group = identity.asGroup();
+					if (group != null)
+						list.insert(list.length(), new FString(group.getID()));
+				}
+				fiber.setAccu(list);
+			}
+		};
 		get("$adduser").code = new BuiltinCode() {
 			@Override
 			public void run(Fiber fiber, Instance self, Instance[] args) throws FourRuntimeException {

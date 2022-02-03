@@ -89,4 +89,8 @@ public class IdentityDatabase {
         }
         return builder.toString().getBytes(StandardCharsets.UTF_8);
     }
+
+    public Identity[] getIdentities() {
+        return identities.values().toArray(new Identity[0]);
+    }
 }
