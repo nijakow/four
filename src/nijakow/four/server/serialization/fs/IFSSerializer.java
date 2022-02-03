@@ -1,4 +1,4 @@
-package nijakow.four.server.nvfs.serialization;
+package nijakow.four.server.serialization.fs;
 
 import nijakow.four.server.nvfs.files.File;
 

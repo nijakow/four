@@ -1,6 +1,6 @@
 package nijakow.four.server.nvfs;
 
-import nijakow.four.server.nvfs.serialization.IFSSerializer;
+import nijakow.four.server.serialization.fs.IFSSerializer;
 import nijakow.four.server.runtime.objects.blue.Blueprint;
 import nijakow.four.server.runtime.security.users.Group;
 import nijakow.four.server.runtime.security.users.Identity;

@@ -1,6 +1,6 @@
 package nijakow.four.server.runtime;
 
-import nijakow.four.server.nvfs.serialization.BasicFSSerializer;
+import nijakow.four.server.serialization.fs.BasicFSSerializer;
 import nijakow.four.server.runtime.objects.blue.Blue;
 import nijakow.four.server.runtime.objects.blue.Blueprint;
 import nijakow.four.server.runtime.objects.collections.FList;

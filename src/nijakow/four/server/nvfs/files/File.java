@@ -1,7 +1,7 @@
 package nijakow.four.server.nvfs.files;
 
 import nijakow.four.server.nvfs.FileParent;
-import nijakow.four.server.nvfs.serialization.IFSSerializer;
+import nijakow.four.server.serialization.fs.IFSSerializer;
 import nijakow.four.server.runtime.security.fs.FileAccessRights;
 import nijakow.four.server.runtime.security.users.Group;
 import nijakow.four.server.runtime.security.users.Identity;
