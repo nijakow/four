@@ -127,6 +127,7 @@ public class Directory extends File implements FileParent {
 
     @Override
     public void writeOutPayload(IFSSerializer serializer) {
+        serializer.writeType("directory");
         StringBuilder contents = new StringBuilder();
         for (String key : files.keySet()) {
             File file = files.get(key);

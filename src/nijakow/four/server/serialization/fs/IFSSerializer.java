@@ -8,6 +8,7 @@ public interface IFSSerializer {
     void writeOwner(String name);
     void writeGroup(String name);
     void writePermissions(int permissions);
+    void writeType(String type);
     void writeBase64Encoded(byte[] bytes);
     void queue(File file);
 }

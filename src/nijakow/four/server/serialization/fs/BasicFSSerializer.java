@@ -50,6 +50,11 @@ public class BasicFSSerializer implements IFSSerializer {
     }
 
     @Override
+    public void writeType(String type) {
+         stream.println("Type: " + type);
+    }
+
+    @Override
     public void writeBase64Encoded(byte[] bytes) {
         String encoded = new String(Base64.getEncoder().encode(bytes));
         stream.print('\t');

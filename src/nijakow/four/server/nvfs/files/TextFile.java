@@ -110,6 +110,7 @@ public class TextFile extends File {
 
     @Override
     public void writeOutPayload(IFSSerializer serializer) {
+        serializer.writeType("data-file");
         serializer.writeBase64Encoded(this.contents);
     }
 }
