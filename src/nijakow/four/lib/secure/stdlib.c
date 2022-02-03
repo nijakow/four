@@ -541,6 +541,11 @@ string chsh(string user, string shell)
     return $chsh(user, shell);
 }
 
+bool isroot()
+{
+    return getuid() == finduser("root");
+}
+
 any eval(any target, string code, ...)
 {
     return $eval(target, code, ...);

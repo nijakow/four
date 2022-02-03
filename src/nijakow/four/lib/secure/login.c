@@ -90,9 +90,8 @@ bool dologin(string username, string password)
     }
 }
 
-void setuname(string uname)
+void prepare(object player, string uname)
 {
-    object player = the("/secure/logman.c")->get_player(name);
     player->activate_as(uname);
     object sword = new("/world/lantern.c");
     sword->set_name(uname + "'s lantern");
@@ -100,8 +99,27 @@ void setuname(string uname)
     sword->add_IDs(uname + "'s");
     sword->move_to(player);
     player->act_goto(the("/world/42/hn/reception.c"));
+}
+
+void launch_shell()
+{
+    string shell = getshell(getuid());
+    if (shell == nil) {
+        if (isroot()) {
+            shell = "/bin/sh.c";
+        } else {
+            shell = "/usr/bin/ctrl.c";
+        }
+    }
+    execappfromcli(this->logout, shell);
+}
+
+void setuname(string uname)
+{
+    object player = the("/secure/logman.c")->get_player(name);
+    prepare(player, uname);
     set_me(player);
-    execappfromcli(this->logout, "/usr/bin/ctrl.c");
+    launch_shell();
 }
 
 void startup()
