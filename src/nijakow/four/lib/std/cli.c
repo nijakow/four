@@ -8,7 +8,7 @@ object connection() { return the_connection; }
 void printf(...) { connection()->printf(...); }
 void prompt(...) { connection()->prompt(...); }
 void password(...) { connection()->password(...); }
-void edit(...) { connection()->edit(...); }
+any edit(...) { return connection()->edit(...); }
 
 object me() { return _me; }
 void set_me(object value) { this._me = value; }
