@@ -47,7 +47,7 @@ void no_login()
 void setname(string name)
 {
     this.name = name;
-    password(this::setpass, "Password: ");
+    password(this::setpass, "password: ");
 }
 
 void setpass(string pass)
@@ -120,5 +120,5 @@ void logout()
 void start()
 {
     banner();
-    prompt(this::setname, "What's your intra name? ");
+    prompt(this::setname, "login: ");
 }
