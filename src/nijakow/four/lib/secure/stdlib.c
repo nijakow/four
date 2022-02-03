@@ -541,7 +541,7 @@ string getshell(string user)
     return $getshell(user);
 }
 
-string chsh(string user, string shell)
+bool chsh(string user, string shell)
 {
     return $chsh(user, shell);
 }
