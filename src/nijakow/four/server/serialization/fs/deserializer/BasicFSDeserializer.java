@@ -42,19 +42,25 @@ public class BasicFSDeserializer {
         if (entry == null)
             return;
         boolean isDir = entry.isDirectory();
+        int permissions = entry.getPermissions();
         User owner = db.getIdentityByName(entry.getOwner()).asUser();
         Group group = db.getIdentityByName(entry.getGroup()).asGroup();
         if (isDir) {
             Directory child = parent.mkdir(name, null, owner, group);
-            String text = entry.getPayloadAsString();
-            for (final String line : text.split("\n")) {
-                final String[] toks = line.split(":");
-                extractFileByID(child, toks[0], toks[1], db);
+            if (child != null) {
+                child.setmod(permissions);
+                String text = entry.getPayloadAsString();
+                for (final String line : text.split("\n")) {
+                    final String[] toks = line.split(":");
+                    extractFileByID(child, toks[0], toks[1], db);
+                }
             }
         } else {
             TextFile file = parent.touch(name, null, owner, group);
-            if (file != null)
+            if (file != null) {
+                file.setmod(permissions);
                 file.setContents(entry.getPayloadAsBytes());
+            }
         }
     }
 

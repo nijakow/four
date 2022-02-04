@@ -76,9 +76,7 @@ public abstract class File implements ISerializable {
         return flags;
     }
 
-    public boolean chmod(Identity identity, int flags) {
-        if (!getRights().getUserAccessRights().getIdentity().includes(identity))
-            return false;
+    public void setmod(int flags) {
         getRights().getUserAccessRights().setReadable(   (flags & 0b100000000) != 0);
         getRights().getUserAccessRights().setWritable(   (flags & 0b010000000) != 0);
         getRights().getUserAccessRights().setExecutable( (flags & 0b001000000) != 0);
@@ -88,6 +86,12 @@ public abstract class File implements ISerializable {
         getRights().getOtherAccessRights().setReadable(  (flags & 0b000000100) != 0);
         getRights().getOtherAccessRights().setWritable(  (flags & 0b000000010) != 0);
         getRights().getOtherAccessRights().setExecutable((flags & 0b000000001) != 0);
+    }
+
+    public boolean chmod(Identity identity, int flags) {
+        if (!getRights().getUserAccessRights().getIdentity().includes(identity))
+            return false;
+        setmod(flags);
         return true;
     }
 

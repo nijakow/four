@@ -32,6 +32,7 @@ public class FileEntry {
         return "directory".equals(this.type);
     }
 
+    public int getPermissions() { return permissions; }
     public String getOwner() { return user; }
     public String getGroup() { return group; }
 
