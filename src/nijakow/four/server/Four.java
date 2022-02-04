@@ -4,7 +4,7 @@ import nijakow.four.server.net.Server;
 import nijakow.four.server.runtime.objects.blue.Blue;
 import nijakow.four.server.runtime.exceptions.FourRuntimeException;
 import nijakow.four.server.runtime.Key;
-import nijakow.four.server.runtime.nvfs.NVFileSystem;
+import nijakow.four.server.nvfs.NVFileSystem;
 import nijakow.four.server.runtime.security.users.IdentityDatabase;
 import nijakow.four.server.runtime.vm.VM;
 

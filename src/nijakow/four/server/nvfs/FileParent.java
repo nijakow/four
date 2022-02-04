@@ -1,6 +1,6 @@
-package nijakow.four.server.runtime.nvfs;
+package nijakow.four.server.nvfs;
 
-import nijakow.four.server.runtime.nvfs.files.File;
+import nijakow.four.server.nvfs.files.File;
 import nijakow.four.server.runtime.security.users.Identity;
 
 public interface FileParent {

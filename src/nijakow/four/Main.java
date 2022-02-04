@@ -5,7 +5,7 @@ import nijakow.four.share.lang.base.CompilationException;
 import nijakow.four.share.lang.c.parser.ParseException;
 import nijakow.four.client.ClientWindow;
 import nijakow.four.server.Four;
-import nijakow.four.server.runtime.nvfs.NVFileSystem;
+import nijakow.four.server.nvfs.NVFileSystem;
 
 import java.io.IOException;
 import java.util.ArrayList;
