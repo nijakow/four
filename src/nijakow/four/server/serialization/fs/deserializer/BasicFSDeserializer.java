@@ -1,7 +1,12 @@
 package nijakow.four.server.serialization.fs.deserializer;
 
 import nijakow.four.server.nvfs.NVFileSystem;
+import nijakow.four.server.nvfs.files.Directory;
+import nijakow.four.server.nvfs.files.File;
+import nijakow.four.server.nvfs.files.TextFile;
+import nijakow.four.server.runtime.security.users.Group;
 import nijakow.four.server.runtime.security.users.IdentityDatabase;
+import nijakow.four.server.runtime.security.users.User;
 
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
@@ -26,6 +31,28 @@ public class BasicFSDeserializer {
 
     private String decodeBase64AsString(String b64) {
         return new String(decodeBase64AsBytes(b64), StandardCharsets.UTF_8);
+    }
+
+    private FileEntry getEntry(String id) {
+        return files.get(id);
+    }
+
+    private void extractFileByID(Directory parent, String name, String id, IdentityDatabase db) {
+        final FileEntry entry = getEntry(id);
+        if (entry == null)
+            return;
+        boolean isDir = entry.isDirectory();
+        User owner = db.getIdentityByName(entry.getOwner()).asUser();
+        Group group = db.getIdentityByName(entry.getGroup()).asGroup();
+        if (isDir) {
+            parent.mkdir(name, null, owner, group);
+        } else {
+            parent.touch(name, null, owner, group);
+        }
+    }
+
+    private void restore(NVFileSystem nvfs) {
+
     }
 
     public void ensureParsed() {

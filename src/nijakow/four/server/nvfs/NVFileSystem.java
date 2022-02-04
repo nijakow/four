@@ -50,6 +50,7 @@ public class NVFileSystem implements FileParent, ISerializable {
     public Directory getRoot() {
         return root;
     }
+    public Directory setRoot(Directory dir) { this.root = dir; }
 
     public File resolve(String file) { return getRoot().resolve(file); }
 
