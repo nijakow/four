@@ -6,12 +6,13 @@ import java.util.prefs.Preferences;
 import nijakow.four.server.Four;
 
 public class PreferencesHelper {
+	private static PreferencesHelper instance;
 	private final Preferences prefs;
 	
-	public PreferencesHelper() {
+	private PreferencesHelper() {
 		prefs = Preferences.userNodeForPackage(Four.class);
 	}
-	
+
 	public int getWindowPositionX() {
 		return prefs.getInt(Key.WINDOW_POS_X, -1);
 	}
@@ -58,6 +59,14 @@ public class PreferencesHelper {
 
 	public boolean getDarkMode() {
 		return prefs.getBoolean(Key.DARK_MODE, false);
+	}
+
+	public boolean getEditorAlwaysHighlight() {
+		return prefs.getBoolean(Key.EDITOR_HIGHLIGHT, false);
+	}
+
+	public void setEditorAlwaysHighlight(boolean highlight) {
+		prefs.putBoolean(Key.EDITOR_HIGHLIGHT, highlight);
 	}
 
 	public void setLineBreaking(boolean breaking) {
@@ -117,18 +126,26 @@ public class PreferencesHelper {
 		return true;
 	}
 
+	public static PreferencesHelper getInstance() {
+		if (instance == null) {
+			instance = new PreferencesHelper();
+		}
+		return instance;
+	}
+
 	public abstract static class Key {
-		public static final String WINDOW_POS_X  = "windowPosX";
-		public static final String WINDOW_POS_Y  = "windowPosY";
-		public static final String WINDOW_WIDTH  = "windowWidth";
-		public static final String WINDOW_HEIGHT = "windowHeight";
-		public static final String HOSTNAME      = "hostname";
-		public static final String PORT_NUMBER   = "portNumber";
-		public static final String LINE_BREAKING = "lineBreaking";
-		public static final String DARK_MODE     = "darkMode";
-		public static final String EDITOR_WIDTH  = "editorWidth";
-		public static final String EDITOR_HEIGHT = "editorHeight";
-		public static final String EDITOR_POS_X  = "editorPosX";
-		public static final String EDITOR_POS_Y  = "editorPosY";
+		public static final String WINDOW_POS_X     = "windowPosX";
+		public static final String WINDOW_POS_Y     = "windowPosY";
+		public static final String WINDOW_WIDTH     = "windowWidth";
+		public static final String WINDOW_HEIGHT    = "windowHeight";
+		public static final String HOSTNAME         = "hostname";
+		public static final String PORT_NUMBER      = "portNumber";
+		public static final String LINE_BREAKING    = "lineBreaking";
+		public static final String DARK_MODE        = "darkMode";
+		public static final String EDITOR_WIDTH     = "editorWidth";
+		public static final String EDITOR_HEIGHT    = "editorHeight";
+		public static final String EDITOR_POS_X     = "editorPosX";
+		public static final String EDITOR_POS_Y     = "editorPosY";
+		public static final String EDITOR_HIGHLIGHT = "editorHighlighting";
 	}
 }

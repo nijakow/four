@@ -87,7 +87,7 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 		// TODO iterate through ports
 		buffer = "";
 		bother = true;
-		prefs = new PreferencesHelper();
+		prefs = PreferencesHelper.getInstance();
 		queue = Executors.newScheduledThreadPool(2);
 		if (ports.length > 0)
 			prefs.setPort(ports[0]);

@@ -3,6 +3,8 @@ package nijakow.four.client.editor;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.util.concurrent.*;
 import java.util.regex.Matcher;
@@ -15,6 +17,7 @@ import javax.swing.text.StyleContext;
 import javax.swing.text.StyledDocument;
 
 import nijakow.four.client.Commands;
+import nijakow.four.client.PreferencesHelper;
 import nijakow.four.client.net.ClientConnection;
 
 public class ClientEditor extends JFrame implements ActionListener {
@@ -65,7 +68,7 @@ public class ClientEditor extends JFrame implements ActionListener {
 				stopSyntaxHighlighting();
 			}
 		});
-		if (path.endsWith(".c")) {
+		if (path.endsWith(".c") || PreferencesHelper.getInstance().getEditorAlwaysHighlight()) {
 			highlight.setSelected(true);
 		}
 		JPanel buttons = new JPanel();
@@ -111,9 +114,21 @@ public class ClientEditor extends JFrame implements ActionListener {
 
 	private void showSettingsWindow() {
 		JDialog settingsWindow = new JDialog(this, "Editor: Settings", true);
+		JCheckBox alwaysHighlight = new JCheckBox("Always enable syntax highlighting");
+		alwaysHighlight.addItemListener(event -> PreferencesHelper.getInstance().setEditorAlwaysHighlight(alwaysHighlight.isSelected()));
+		settingsWindow.getContentPane().add(alwaysHighlight);
+		alwaysHighlight.setSelected(PreferencesHelper.getInstance().getEditorAlwaysHighlight());
 		if (dark) {
 			settingsWindow.getContentPane().setBackground(Color.darkGray);
+			alwaysHighlight.setBackground(Color.darkGray);
+			alwaysHighlight.setForeground(Color.white);
 		}
+		settingsWindow.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosed(WindowEvent e) {
+				PreferencesHelper.getInstance().flush();
+			}
+		});
 		settingsWindow.pack();
 		settingsWindow.setResizable(false);
 		settingsWindow.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
