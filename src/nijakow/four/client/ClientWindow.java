@@ -125,7 +125,6 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 		area.setEditable(false);
 		area.setCursor(new Cursor(Cursor.TEXT_CURSOR));
 		area.setFont(font);
-		toggleMode(prefs.getDarkMode());
 		term = area.getStyledDocument();
 		term.addDocumentListener(new DocumentListener() {
 			@Override
@@ -156,6 +155,7 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 		int width = prefs.getWindowWidth();
 		int height = prefs.getWindowHeight();
 		editors = new LinkedList<>();
+		toggleMode(prefs.getDarkMode());
 		setMinimumSize(new Dimension(300, 200));
 		setPreferredSize(new Dimension(750, 500));
 		if (width == -1 || height == -1)
@@ -198,6 +198,9 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 			connectionStatus.setBackground(null);
 			getContentPane().setBackground(null);
 		}
+		for (ClientEditor clientEditor : editors) {
+			clientEditor.toggleMode(dark);
+		}
 	}
 
 	private void setLineBreaking(boolean breaking) {
@@ -235,6 +238,7 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 		}
 	}
 
+	@Override
 	public void dispose() {
 		prefs.setWindowDimensions(getX(), getY(), getWidth(), getHeight());
 		prefs.flush();
@@ -504,6 +508,7 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 				editor.setLocation(x + 25, y + 25);
 		}
 		editors.add(editor);
+		editor.toggleMode(prefs.getDarkMode());
 		editor.setVisible(true);
 	}
 	

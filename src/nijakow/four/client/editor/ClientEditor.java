@@ -20,12 +20,14 @@ import nijakow.four.client.net.ClientConnection;
 public class ClientEditor extends JFrame implements ActionListener {
 	private static final long serialVersionUID = 1L;
 	private final JTextPane pane;
+	private final JCheckBox highlight;
 	private final StyledDocument doc;
 	private final ClientConnection connection;
 	private final String id;
 	private final String path;
 	private final ScheduledExecutorService queue;
 	private ScheduledFuture<?> future;
+	private boolean dark;
 	private final Runnable highlighter = this::updateSyntaxHighlighting;
 
 	public ClientEditor(ClientConnection c, String id, String path, String content) {
@@ -41,6 +43,7 @@ public class ClientEditor extends JFrame implements ActionListener {
 		addStyles();
 		getContentPane().setLayout(new BorderLayout());
 		JScrollPane sp = new JScrollPane(pane);
+		sp.setOpaque(false);
 		getContentPane().add(sp, BorderLayout.CENTER);
 		JButton save = new JButton("Save");
 		save.addActionListener(this);
@@ -51,7 +54,10 @@ public class ClientEditor extends JFrame implements ActionListener {
 		JButton close = new JButton("Close");
 		close.addActionListener(this);
 		close.setActionCommand(Commands.Actions.ACTION_EDIT_CLOSE);
-		JCheckBox highlight = new JCheckBox("Enable syntax highlighting");
+		JButton settings = new JButton("Settings...");
+		settings.setActionCommand(Commands.Actions.ACTION_SETTINGS);
+		settings.addActionListener(this);
+		highlight = new JCheckBox("Enable syntax highlighting");
 		highlight.addItemListener(event -> {
 			if (highlight.isSelected()) {
 				startSyntaxHighlighting();
@@ -63,11 +69,14 @@ public class ClientEditor extends JFrame implements ActionListener {
 			highlight.setSelected(true);
 		}
 		JPanel buttons = new JPanel();
-		buttons.setLayout(new GridLayout(1, 3));
+		buttons.setOpaque(false);
+		buttons.setLayout(new GridLayout(1, 4));
 		buttons.add(close);
 		buttons.add(saveAs);
 		buttons.add(save);
+		buttons.add(settings);
 		JPanel allButtons = new JPanel();
+		allButtons.setOpaque(false);
 		allButtons.setLayout(new GridLayout(2, 1));
 		allButtons.add(buttons);
 		allButtons.add(highlight);
@@ -83,6 +92,36 @@ public class ClientEditor extends JFrame implements ActionListener {
 		future.cancel(false);
 	}
 
+	public void toggleMode(boolean dark) {
+		this.dark = dark;
+		if (dark) {
+			getContentPane().setBackground(Color.darkGray);
+			highlight.setBackground(Color.darkGray);
+			highlight.setForeground(Color.white);
+			pane.setBackground(Color.black);
+			pane.setForeground(Color.lightGray);
+		} else {
+			getContentPane().setBackground(null);
+			highlight.setForeground(null);
+			highlight.setBackground(null);
+			pane.setBackground(null);
+			pane.setForeground(null);
+		}
+	}
+
+	private void showSettingsWindow() {
+		JDialog settingsWindow = new JDialog(this, "Editor: Settings", true);
+		if (dark) {
+			settingsWindow.getContentPane().setBackground(Color.darkGray);
+		}
+		settingsWindow.pack();
+		settingsWindow.setResizable(false);
+		settingsWindow.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+		settingsWindow.setLocationRelativeTo(this);
+		settingsWindow.setVisible(true);
+	}
+
+	@Override
 	public void dispose() {
 		send(false, null);
 		super.dispose();
@@ -159,17 +198,13 @@ public class ClientEditor extends JFrame implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		switch (e.getActionCommand()) {
-			case Commands.Actions.ACTION_EDIT_SAVE:
-				send(true, null);
-				break;
+			case Commands.Actions.ACTION_EDIT_SAVE: send(true, null); break;
 
-			case Commands.Actions.ACTION_EDIT_SAVE_AS:
-				saveAs();
-				break;
+			case Commands.Actions.ACTION_EDIT_SAVE_AS: saveAs(); break;
 
-			case Commands.Actions.ACTION_EDIT_CLOSE:
-				dispose();
-				break;
+			case Commands.Actions.ACTION_SETTINGS: showSettingsWindow(); break;
+
+			case Commands.Actions.ACTION_EDIT_CLOSE: dispose(); break;
 		}
 	}
 }
