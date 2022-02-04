@@ -1,9 +1,9 @@
-package nijakow.four.server.runtime.nvfs.files;
+package nijakow.four.server.nvfs.files;
 
 import nijakow.four.server.runtime.FourClassLoader;
 import nijakow.four.server.runtime.Key;
-import nijakow.four.server.runtime.nvfs.FileParent;
-import nijakow.four.server.runtime.nvfs.serialization.IFSSerializer;
+import nijakow.four.server.nvfs.FileParent;
+import nijakow.four.server.serialization.fs.IFSSerializer;
 import nijakow.four.server.runtime.objects.blue.Blue;
 import nijakow.four.server.runtime.objects.blue.Blueprint;
 import nijakow.four.server.runtime.security.users.Group;
@@ -37,9 +37,9 @@ public class TextFile extends File {
     }
 
     public String getContents() { return new String(contents, StandardCharsets.UTF_8); }
+    public void setContents(byte[] bytes) { this.contents = bytes; this.isDirty = true; }
     public void setContents(String contents) {
-        this.contents = contents.getBytes(StandardCharsets.UTF_8);
-        this.isDirty = true;
+        setContents(contents.getBytes(StandardCharsets.UTF_8));
     }
 
     public String readContents(Identity identity) {
@@ -110,6 +110,7 @@ public class TextFile extends File {
 
     @Override
     public void writeOutPayload(IFSSerializer serializer) {
+        serializer.writeType("data-file");
         serializer.writeBase64Encoded(this.contents);
     }
 }

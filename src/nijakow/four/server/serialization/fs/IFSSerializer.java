@@ -1,6 +1,6 @@
-package nijakow.four.server.runtime.nvfs.serialization;
+package nijakow.four.server.serialization.fs;
 
-import nijakow.four.server.runtime.nvfs.files.File;
+import nijakow.four.server.nvfs.files.File;
 
 public interface IFSSerializer {
     void newMetaEntry(String type, byte[] payload);
@@ -8,6 +8,7 @@ public interface IFSSerializer {
     void writeOwner(String name);
     void writeGroup(String name);
     void writePermissions(int permissions);
+    void writeType(String type);
     void writeBase64Encoded(byte[] bytes);
     void queue(File file);
 }

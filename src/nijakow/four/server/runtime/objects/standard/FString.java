@@ -8,7 +8,7 @@ import nijakow.four.share.lang.c.ast.ASTExpression;
 import nijakow.four.share.lang.c.parser.ParseException;
 import nijakow.four.server.runtime.vm.code.Code;
 import nijakow.four.server.runtime.Key;
-import nijakow.four.server.runtime.nvfs.NVFileSystem;
+import nijakow.four.server.nvfs.NVFileSystem;
 import nijakow.four.server.runtime.vm.VM;
 import nijakow.four.server.serialization.base.ISerializer;
 import nijakow.four.share.lang.c.parser.Parser;

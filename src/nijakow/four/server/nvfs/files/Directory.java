@@ -1,7 +1,7 @@
-package nijakow.four.server.runtime.nvfs.files;
+package nijakow.four.server.nvfs.files;
 
-import nijakow.four.server.runtime.nvfs.FileParent;
-import nijakow.four.server.runtime.nvfs.serialization.IFSSerializer;
+import nijakow.four.server.nvfs.FileParent;
+import nijakow.four.server.serialization.fs.IFSSerializer;
 import nijakow.four.server.runtime.security.users.Group;
 import nijakow.four.server.runtime.security.users.Identity;
 import nijakow.four.server.runtime.security.users.User;
@@ -127,6 +127,7 @@ public class Directory extends File implements FileParent {
 
     @Override
     public void writeOutPayload(IFSSerializer serializer) {
+        serializer.writeType("directory");
         StringBuilder contents = new StringBuilder();
         for (String key : files.keySet()) {
             File file = files.get(key);
