@@ -47,7 +47,9 @@ public class BasicFSDeserializer {
         if (isDir) {
             parent.mkdir(name, null, owner, group);
         } else {
-            parent.touch(name, null, owner, group);
+            TextFile file = parent.touch(name, null, owner, group);
+            if (file != null)
+                file.setContents(entry.getPayloadAsBytes());
         }
     }
 

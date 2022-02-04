@@ -37,9 +37,9 @@ public class TextFile extends File {
     }
 
     public String getContents() { return new String(contents, StandardCharsets.UTF_8); }
+    public void setContents(byte[] bytes) { this.contents = bytes; this.isDirty = true; }
     public void setContents(String contents) {
-        this.contents = contents.getBytes(StandardCharsets.UTF_8);
-        this.isDirty = true;
+        setContents(contents.getBytes(StandardCharsets.UTF_8));
     }
 
     public String readContents(Identity identity) {
