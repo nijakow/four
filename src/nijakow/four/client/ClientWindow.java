@@ -208,6 +208,7 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 			pane.setViewportView(area);
 		else {
 			JPanel wrap = new JPanel();
+			wrap.setOpaque(false);
 			wrap.setLayout(new BorderLayout());
 			wrap.add(area);
 			pane.setViewportView(wrap);

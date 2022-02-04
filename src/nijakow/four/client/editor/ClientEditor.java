@@ -22,8 +22,9 @@ import nijakow.four.client.net.ClientConnection;
 
 public class ClientEditor extends JFrame implements ActionListener {
 	private static final long serialVersionUID = 1L;
-	private final JTextPane pane;
+	private final JScrollPane scrollPane;
 	private final JCheckBox highlight;
+	private final JTextPane pane;
 	private final StyledDocument doc;
 	private final ClientConnection connection;
 	private final String id;
@@ -45,9 +46,10 @@ public class ClientEditor extends JFrame implements ActionListener {
 		doc = pane.getStyledDocument();
 		addStyles();
 		getContentPane().setLayout(new BorderLayout());
-		JScrollPane sp = new JScrollPane(pane);
-		sp.setOpaque(false);
-		getContentPane().add(sp, BorderLayout.CENTER);
+		scrollPane = new JScrollPane();
+		scrollPane.setOpaque(false);
+		toggleLineBreaking(PreferencesHelper.getInstance().getEditorLineBreaking());
+		getContentPane().add(scrollPane, BorderLayout.CENTER);
 		JButton save = new JButton("Save");
 		save.addActionListener(this);
 		save.setActionCommand(Commands.Actions.ACTION_EDIT_SAVE);
@@ -114,16 +116,39 @@ public class ClientEditor extends JFrame implements ActionListener {
 		}
 	}
 
+	private void toggleLineBreaking(boolean breaking) {
+		if (breaking) {
+			scrollPane.setViewportView(pane);
+		} else {
+			JPanel wrap = new JPanel();
+			wrap.setOpaque(false);
+			wrap.setLayout(new BorderLayout());
+			wrap.add(pane);
+			scrollPane.setViewportView(wrap);
+		}
+	}
+
 	private void showSettingsWindow() {
 		JDialog settingsWindow = new JDialog(this, "Editor: Settings", true);
+		settingsWindow.getContentPane().setLayout(new GridLayout(2, 1));
 		JCheckBox alwaysHighlight = new JCheckBox("Always enable syntax highlighting");
+		alwaysHighlight.setSelected(PreferencesHelper.getInstance().getEditorAlwaysHighlight());
 		alwaysHighlight.addItemListener(event -> PreferencesHelper.getInstance().setEditorAlwaysHighlight(alwaysHighlight.isSelected()));
 		settingsWindow.getContentPane().add(alwaysHighlight);
-		alwaysHighlight.setSelected(PreferencesHelper.getInstance().getEditorAlwaysHighlight());
+		JCheckBox lineBreaking = new JCheckBox("Automatic line breaking");
+		lineBreaking.setSelected(PreferencesHelper.getInstance().getEditorLineBreaking());
+		lineBreaking.addItemListener(event -> {
+			boolean  breaking = lineBreaking.isSelected();
+			toggleLineBreaking(breaking);
+			PreferencesHelper.getInstance().setEditorLineBreaking(breaking);
+		});
+		settingsWindow.getContentPane().add(lineBreaking);
 		if (dark) {
 			settingsWindow.getContentPane().setBackground(Color.darkGray);
 			alwaysHighlight.setBackground(Color.darkGray);
 			alwaysHighlight.setForeground(Color.white);
+			lineBreaking.setBackground(Color.darkGray);
+			lineBreaking.setForeground(Color.white);
 		}
 		settingsWindow.addWindowListener(new WindowAdapter() {
 			@Override
