@@ -4,9 +4,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -30,14 +28,14 @@ public class ClientEditor extends JFrame implements ActionListener {
 	private ScheduledFuture<?> future;
 	private final Runnable highlighter = this::updateSyntaxHighlighting;
 
-	public ClientEditor(ClientConnection c, ScheduledExecutorService queue, String[] args) {
-		super(args[1]);
-		path = args[1];
-		id = args[0];
-		this.queue = queue;
+	public ClientEditor(ClientConnection c, String id, String path, String content) {
+		super(path);
+		this.path = path;
+		this.id = id;
+		this.queue = Executors.newScheduledThreadPool(2);
 		connection = c;
 		pane = new JTextPane();
-		pane.setText(args[2]);
+		pane.setText(content);
 		pane.setFont(new Font("Monospaced", Font.PLAIN, 14));
 		doc = pane.getStyledDocument();
 		addStyles();

@@ -88,7 +88,7 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 		buffer = "";
 		bother = true;
 		prefs = new PreferencesHelper();
-		queue = Executors.newScheduledThreadPool(3);
+		queue = Executors.newScheduledThreadPool(2);
 		if (ports.length > 0)
 			prefs.setPort(ports[0]);
 		getContentPane().setLayout(new BorderLayout());
@@ -458,7 +458,7 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 			if (i1 < 0) return;
 			String title = splitter.substring(0, i1);
 			splitter = splitter.substring(i1 + 1);
-			openEditor(new String[]{id, title, splitter});
+			openEditor(id, title, splitter);
 		} else if (arg.startsWith(Commands.Codes.SPECIAL_IMG)) {
 			try {
 				term.insertString(term.getLength(), " ", current);
@@ -473,8 +473,8 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 			current = getStyleByName(arg);
 	}
 
-	private void openEditor(String[] args) {
-		ClientEditor editor = new ClientEditor(connection, queue, args);
+	private void openEditor(String id, String path, String content) {
+		ClientEditor editor = new ClientEditor(connection, id, path, content);
 		editor.addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowDeactivated(WindowEvent e) {
