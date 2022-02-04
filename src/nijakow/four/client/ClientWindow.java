@@ -170,14 +170,14 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 
 	private void toggleMode(boolean dark) {
 		if (dark) {
-			pwf.setForeground(Color.black);
-			pwf.setBackground(Color.lightGray);
-			pwf.setCaretColor(Color.black);
+			pwf.setForeground(Color.white);
+			pwf.setBackground(Color.gray);
+			pwf.setCaretColor(Color.white);
 			area.setForeground(Color.lightGray);
 			area.setBackground(Color.black);
-			prompt.setForeground(Color.black);
-			prompt.setBackground(Color.lightGray);
-			prompt.setCaretColor(Color.black);
+			prompt.setForeground(Color.white);
+			prompt.setBackground(Color.gray);
+			prompt.setCaretColor(Color.white);
 			promptText.setForeground(Color.white);
 			promptText.setBackground(Color.darkGray);
 			connectionStatus.setForeground(Color.white);
@@ -289,8 +289,12 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 				darkMode.setBackground(Color.darkGray);
 				lineBreak.setForeground(Color.white);
 				lineBreak.setBackground(Color.darkGray);
-				hostname.setBackground(Color.lightGray);
-				portNo.setBackground(Color.lightGray);
+				hostname.setBackground(Color.gray);
+				hostname.setCaretColor(Color.white);
+				hostname.setForeground(Color.white);
+				portNo.setBackground(Color.gray);
+				portNo.setCaretColor(Color.white);
+				portNo.setForeground(Color.white);
 				hostPaLabel.setForeground(Color.white);
 				portPaLabel.setForeground(Color.white);
 			} else {
@@ -300,7 +304,11 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 				lineBreak.setForeground(null);
 				lineBreak.setBackground(null);
 				hostname.setBackground(Color.white);
+				hostname.setCaretColor(null);
+				hostname.setForeground(null);
 				portNo.setBackground(Color.white);
+				portNo.setCaretColor(null);
+				portNo.setForeground(null);
 				hostPaLabel.setForeground(null);
 				portPaLabel.setForeground(null);
 			}
