@@ -356,9 +356,9 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 			}
 		});
 		settingsWindow.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-		settingsWindow.setLocationRelativeTo(this);
 		settingsWindow.setResizable(false);
 		settingsWindow.pack();
+		settingsWindow.setLocationRelativeTo(this);
 		settingsWindow.setVisible(true);
 	}
 	
