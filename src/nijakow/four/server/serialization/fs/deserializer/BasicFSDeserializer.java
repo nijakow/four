@@ -16,6 +16,7 @@ public class BasicFSDeserializer {
     private final Scanner scanner;
     private final Map<String, FileEntry> files = new HashMap<>();
     private boolean parsed = false;
+    private String firstID = null;
 
     public BasicFSDeserializer(InputStream input) {
         scanner = new Scanner(input);
@@ -37,7 +38,7 @@ public class BasicFSDeserializer {
         return files.get(id);
     }
 
-    private void extractFileByID(Directory parent, String name, String id, IdentityDatabase db) {
+    private void extractFileByID(NVFileSystem nvfs, Directory parent, String name, String id, IdentityDatabase db) {
         final FileEntry entry = getEntry(id);
         if (entry == null)
             return;
@@ -46,13 +47,20 @@ public class BasicFSDeserializer {
         User owner = db.getIdentityByName(entry.getOwner()).asUser();
         Group group = db.getIdentityByName(entry.getGroup()).asGroup();
         if (isDir) {
-            Directory child = parent.mkdir(name, null, owner, group);
+            Directory child = null;
+            if (parent == null) {
+                child = nvfs.getRoot();
+                child.getRights().getUserAccessRights().setIdentity(owner);
+                child.getRights().getGroupAccessRights().setIdentity(group);
+            } else {
+                child = parent.mkdir(name, null, owner, group);
+            }
             if (child != null) {
                 child.setmod(permissions);
                 String text = entry.getPayloadAsString();
                 for (final String line : text.split("\n")) {
                     final String[] toks = line.split(":");
-                    extractFileByID(child, toks[0], toks[1], db);
+                    extractFileByID(nvfs, child, toks[0], toks[1], db);
                 }
             }
         } else {
@@ -64,8 +72,8 @@ public class BasicFSDeserializer {
         }
     }
 
-    private void restore(NVFileSystem nvfs) {
-
+    public void restore(NVFileSystem nvfs, IdentityDatabase db) {
+        extractFileByID(nvfs, null, "", firstID, db);
     }
 
     public void ensureParsed() {
@@ -86,6 +94,7 @@ public class BasicFSDeserializer {
                 // TODO: Process the special declarations
             } else if (line.startsWith("--- ")) {
                 final String id = line.substring(4);
+                if (firstID == null) firstID = id;
                 entry = new FileEntry(id);
                 files.put(id, entry);
             } else if (line.startsWith("Owner: ")) {
