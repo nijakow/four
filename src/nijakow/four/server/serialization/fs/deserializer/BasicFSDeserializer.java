@@ -45,7 +45,12 @@ public class BasicFSDeserializer {
         User owner = db.getIdentityByName(entry.getOwner()).asUser();
         Group group = db.getIdentityByName(entry.getGroup()).asGroup();
         if (isDir) {
-            parent.mkdir(name, null, owner, group);
+            Directory child = parent.mkdir(name, null, owner, group);
+            String text = entry.getPayloadAsString();
+            for (final String line : text.split("\n")) {
+                final String[] toks = line.split(":");
+                extractFileByID(child, toks[0], toks[1], db);
+            }
         } else {
             TextFile file = parent.touch(name, null, owner, group);
             if (file != null)
