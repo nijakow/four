@@ -17,14 +17,14 @@ public class Four implements Runnable {
 	private final VM vm;
 	private boolean wasStarted = false;
 
-	public Four(IdentityDatabase db, NVFileSystem fs, int[] ports) throws IOException {
+	public Four(IdentityDatabase db, NVFileSystem fs, String hostname, int[] ports) throws IOException {
 		this.db = db;
 		this.fs = fs;
 		this.server = new Server();
 		this.vm = new VM(this.db, this.fs, this.server);
 		
 		for (int port : ports)
-			server.serveOn(port);
+			server.serveOn(hostname, port);
 	}
 	
 	public void start() throws FourRuntimeException {
