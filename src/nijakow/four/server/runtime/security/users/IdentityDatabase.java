@@ -64,6 +64,16 @@ public class IdentityDatabase {
         return null;
     }
 
+    public User getUserByName(String username) {
+        Identity identity = getIdentityByName(username);
+        return (identity == null) ? null : identity.asUser();
+    }
+
+    public Group getGroupByName(String username) {
+        Identity identity = getIdentityByName(username);
+        return (identity == null) ? null : identity.asGroup();
+    }
+
     public User login(String username, String password) {
         Identity identity = getIdentityByName(username);
         User user = (identity != null) ? identity.asUser() : null;
@@ -82,6 +92,7 @@ public class IdentityDatabase {
                 builder.append(user.getPasswordHash());
             } else if (identity.asGroup() != null) {
                 builder.append(",group");
+                // TODO: Serialize group members
             } else {
                 builder.append(",unknown");
             }
@@ -100,11 +111,16 @@ public class IdentityDatabase {
             String id = toks[0];
             String name = toks[1];
             String type = toks[2];
-            String pass;
-            if ("user".equals(type) && toks.length > 3) {
-                pass = toks[3];
+            if ("user".equals(type)) {
+                String pass = toks[3];
+                User user = getUserByName(name);
+                if (user == null) user = newUser(name);
+                user.setPassword(pass);
+            } else if ("group".equals(type)) {
+                Group group = getGroupByName(name);
+                if (group == null) group = newGroup(name);
+                // TODO: Add members
             }
-            // TODO
         }
     }
 }
