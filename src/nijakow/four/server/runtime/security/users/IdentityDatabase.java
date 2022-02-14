@@ -93,4 +93,18 @@ public class IdentityDatabase {
     public Identity[] getIdentities() {
         return identities.values().toArray(new Identity[0]);
     }
+
+    public void restore(String serialized) {
+        for (String line : serialized.split("\n")) {
+            String[] toks = line.split(",");
+            String id = toks[0];
+            String name = toks[1];
+            String type = toks[2];
+            String pass;
+            if ("user".equals(type) && toks.length > 3) {
+                pass = toks[3];
+            }
+            // TODO
+        }
+    }
 }

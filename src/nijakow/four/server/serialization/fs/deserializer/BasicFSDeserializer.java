@@ -17,6 +17,7 @@ public class BasicFSDeserializer {
     private final Map<String, FileEntry> files = new HashMap<>();
     private boolean parsed = false;
     private String firstID = null;
+    private Map<String, String> specials = new HashMap<>();
 
     public BasicFSDeserializer(InputStream input) {
         scanner = new Scanner(input);
@@ -73,6 +74,7 @@ public class BasicFSDeserializer {
     }
 
     public void restore(NVFileSystem nvfs, IdentityDatabase db) {
+        db.restore(specials.getOrDefault("users", ""));
         extractFileByID(nvfs, null, "", firstID, db);
     }
 
