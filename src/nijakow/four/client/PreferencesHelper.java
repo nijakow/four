@@ -69,6 +69,14 @@ public class PreferencesHelper {
 		return prefs.getBoolean(Key.EDITOR_LINE_BREAK, true);
 	}
 
+	public String getUIManagerName() {
+		return prefs.get(Key.UI_MANAGER_NAME, null);
+	}
+
+	public void setUIManagerName(String name) {
+		prefs.put(Key.UI_MANAGER_NAME, name);
+	}
+
 	public void setEditorLineBreaking(boolean breaking) {
 		prefs.putBoolean(Key.EDITOR_LINE_BREAK, breaking);
 	}
@@ -150,6 +158,7 @@ public class PreferencesHelper {
 		public static final String PORT_NUMBER       = "portNumber";
 		public static final String LINE_BREAKING     = "lineBreaking";
 		public static final String DARK_MODE         = "darkMode";
+		public static final String UI_MANAGER_NAME   = "uiName";
 		public static final String EDITOR_WIDTH      = "editorWidth";
 		public static final String EDITOR_HEIGHT     = "editorHeight";
 		public static final String EDITOR_POS_X      = "editorPosX";
