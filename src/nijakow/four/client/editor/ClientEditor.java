@@ -1,20 +1,14 @@
 package nijakow.four.client.editor;
 
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import java.awt.event.*;
 import java.io.IOException;
 import java.util.concurrent.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.swing.*;
-import javax.swing.text.Style;
-import javax.swing.text.StyleConstants;
-import javax.swing.text.StyleContext;
-import javax.swing.text.StyledDocument;
+import javax.swing.text.*;
 
 import nijakow.four.client.Commands;
 import nijakow.four.client.PreferencesHelper;
@@ -44,6 +38,7 @@ public class ClientEditor extends JFrame implements ActionListener {
 		pane = new JTextPane();
 		pane.setText(content);
 		pane.setFont(new Font("Monospaced", Font.PLAIN, 14));
+		setKeyStrokes();
 		doc = pane.getStyledDocument();
 		def = pane.getLogicalStyle();
 		addStyles();
@@ -89,6 +84,34 @@ public class ClientEditor extends JFrame implements ActionListener {
 		allButtons.add(highlight);
 		getContentPane().add(allButtons, BorderLayout.SOUTH);
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+	}
+
+	private void setKeyStrokes() {
+		final Keymap m = pane.getKeymap();
+		m.addActionForKeyStroke(KeyStroke.getKeyStroke(KeyEvent.VK_HOME, 0), new AbstractAction() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					int i;
+					for (i = pane.getCaretPosition() - 1; i >= 0 && !pane.getText(i, 1).equals("\n"); i--);
+					pane.setCaretPosition(i + 1);
+				} catch (BadLocationException ex) {
+					ex.printStackTrace();
+				}
+			}
+		});
+		m.addActionForKeyStroke(KeyStroke.getKeyStroke(KeyEvent.VK_END, 0), new AbstractAction() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					int i;
+					for (i = pane.getCaretPosition(); !pane.getText(i, 1).equals("\n"); i++);
+					pane.setCaretPosition(i);
+				} catch (BadLocationException ex) {
+					ex.printStackTrace();
+				}
+			}
+		});
 	}
 
 	private void startSyntaxHighlighting() {
