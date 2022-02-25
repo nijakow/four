@@ -26,6 +26,7 @@ public class ClientEditor extends JFrame implements ActionListener {
 	private final JCheckBox highlight;
 	private final JTextPane pane;
 	private final StyledDocument doc;
+	private final Style def;
 	private final ClientConnection connection;
 	private final String id;
 	private final String path;
@@ -44,6 +45,7 @@ public class ClientEditor extends JFrame implements ActionListener {
 		pane.setText(content);
 		pane.setFont(new Font("Monospaced", Font.PLAIN, 14));
 		doc = pane.getStyledDocument();
+		def = pane.getLogicalStyle();
 		addStyles();
 		getContentPane().setLayout(new BorderLayout());
 		scrollPane = new JScrollPane();
@@ -95,6 +97,7 @@ public class ClientEditor extends JFrame implements ActionListener {
 
 	private  void stopSyntaxHighlighting() {
 		future.cancel(false);
+		doc.setCharacterAttributes(0, doc.getLength(), def, true);
 	}
 
 	public void toggleMode(boolean dark) {
@@ -170,7 +173,6 @@ public class ClientEditor extends JFrame implements ActionListener {
 	}
 
 	private void addStyles() {
-		final Style def = pane.getLogicalStyle();
 		Style s = doc.addStyle(Commands.Styles.STYLE_KEYWORD, def);
 		StyleConstants.setForeground(s, Color.red);
 		StyleConstants.setBold(s, true);
