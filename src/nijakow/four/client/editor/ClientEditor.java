@@ -1,20 +1,14 @@
 package nijakow.four.client.editor;
 
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import java.awt.event.*;
 import java.io.IOException;
 import java.util.concurrent.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.swing.*;
-import javax.swing.text.Style;
-import javax.swing.text.StyleConstants;
-import javax.swing.text.StyleContext;
-import javax.swing.text.StyledDocument;
+import javax.swing.text.*;
 
 import nijakow.four.client.Commands;
 import nijakow.four.client.PreferencesHelper;
@@ -22,9 +16,11 @@ import nijakow.four.client.net.ClientConnection;
 
 public class ClientEditor extends JFrame implements ActionListener {
 	private static final long serialVersionUID = 1L;
-	private final JTextPane pane;
+	private final JScrollPane scrollPane;
 	private final JCheckBox highlight;
+	private final JTextPane pane;
 	private final StyledDocument doc;
+	private final Style def;
 	private final ClientConnection connection;
 	private final String id;
 	private final String path;
@@ -42,12 +38,15 @@ public class ClientEditor extends JFrame implements ActionListener {
 		pane = new JTextPane();
 		pane.setText(content);
 		pane.setFont(new Font("Monospaced", Font.PLAIN, 14));
+		setKeyStrokes();
 		doc = pane.getStyledDocument();
+		def = pane.getLogicalStyle();
 		addStyles();
 		getContentPane().setLayout(new BorderLayout());
-		JScrollPane sp = new JScrollPane(pane);
-		sp.setOpaque(false);
-		getContentPane().add(sp, BorderLayout.CENTER);
+		scrollPane = new JScrollPane();
+		scrollPane.setOpaque(false);
+		toggleLineBreaking(PreferencesHelper.getInstance().getEditorLineBreaking());
+		getContentPane().add(scrollPane, BorderLayout.CENTER);
 		JButton save = new JButton("Save");
 		save.addActionListener(this);
 		save.setActionCommand(Commands.Actions.ACTION_EDIT_SAVE);
@@ -87,12 +86,41 @@ public class ClientEditor extends JFrame implements ActionListener {
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 	}
 
+	private void setKeyStrokes() {
+		final Keymap m = pane.getKeymap();
+		m.addActionForKeyStroke(KeyStroke.getKeyStroke(KeyEvent.VK_HOME, 0), new AbstractAction() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					int i;
+					for (i = pane.getCaretPosition() - 1; i >= 0 && !pane.getText(i, 1).equals("\n"); i--);
+					pane.setCaretPosition(i + 1);
+				} catch (BadLocationException ex) {
+					ex.printStackTrace();
+				}
+			}
+		});
+		m.addActionForKeyStroke(KeyStroke.getKeyStroke(KeyEvent.VK_END, 0), new AbstractAction() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					int i;
+					for (i = pane.getCaretPosition(); !pane.getText(i, 1).equals("\n"); i++);
+					pane.setCaretPosition(i);
+				} catch (BadLocationException ex) {
+					ex.printStackTrace();
+				}
+			}
+		});
+	}
+
 	private void startSyntaxHighlighting() {
 		future = queue.scheduleWithFixedDelay(highlighter, 0, 500, TimeUnit.MILLISECONDS);
 	}
 
 	private  void stopSyntaxHighlighting() {
 		future.cancel(false);
+		doc.setCharacterAttributes(0, doc.getLength(), def, true);
 	}
 
 	public void toggleMode(boolean dark) {
@@ -103,25 +131,50 @@ public class ClientEditor extends JFrame implements ActionListener {
 			highlight.setForeground(Color.white);
 			pane.setBackground(Color.black);
 			pane.setForeground(Color.lightGray);
+			pane.setCaretColor(Color.white);
 		} else {
 			getContentPane().setBackground(null);
 			highlight.setForeground(null);
 			highlight.setBackground(null);
 			pane.setBackground(null);
 			pane.setForeground(null);
+			pane.setCaretColor(null);
+		}
+	}
+
+	private void toggleLineBreaking(boolean breaking) {
+		if (breaking) {
+			scrollPane.setViewportView(pane);
+		} else {
+			JPanel wrap = new JPanel();
+			wrap.setOpaque(false);
+			wrap.setLayout(new BorderLayout());
+			wrap.add(pane);
+			scrollPane.setViewportView(wrap);
 		}
 	}
 
 	private void showSettingsWindow() {
 		JDialog settingsWindow = new JDialog(this, "Editor: Settings", true);
+		settingsWindow.getContentPane().setLayout(new GridLayout(2, 1));
 		JCheckBox alwaysHighlight = new JCheckBox("Always enable syntax highlighting");
+		alwaysHighlight.setSelected(PreferencesHelper.getInstance().getEditorAlwaysHighlight());
 		alwaysHighlight.addItemListener(event -> PreferencesHelper.getInstance().setEditorAlwaysHighlight(alwaysHighlight.isSelected()));
 		settingsWindow.getContentPane().add(alwaysHighlight);
-		alwaysHighlight.setSelected(PreferencesHelper.getInstance().getEditorAlwaysHighlight());
+		JCheckBox lineBreaking = new JCheckBox("Automatic line breaking");
+		lineBreaking.setSelected(PreferencesHelper.getInstance().getEditorLineBreaking());
+		lineBreaking.addItemListener(event -> {
+			boolean  breaking = lineBreaking.isSelected();
+			toggleLineBreaking(breaking);
+			PreferencesHelper.getInstance().setEditorLineBreaking(breaking);
+		});
+		settingsWindow.getContentPane().add(lineBreaking);
 		if (dark) {
 			settingsWindow.getContentPane().setBackground(Color.darkGray);
 			alwaysHighlight.setBackground(Color.darkGray);
 			alwaysHighlight.setForeground(Color.white);
+			lineBreaking.setBackground(Color.darkGray);
+			lineBreaking.setForeground(Color.white);
 		}
 		settingsWindow.addWindowListener(new WindowAdapter() {
 			@Override
@@ -143,7 +196,6 @@ public class ClientEditor extends JFrame implements ActionListener {
 	}
 
 	private void addStyles() {
-		final Style def = pane.getLogicalStyle();
 		Style s = doc.addStyle(Commands.Styles.STYLE_KEYWORD, def);
 		StyleConstants.setForeground(s, Color.red);
 		StyleConstants.setBold(s, true);

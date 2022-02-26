@@ -26,6 +26,7 @@ import nijakow.four.client.editor.ClientEditor;
 import nijakow.four.client.net.ClientConnection;
 import nijakow.four.client.net.ClientConnectionListener;
 import nijakow.four.client.utils.StringHelper;
+import nijakow.four.client.utils.UIHelper;
 
 public class ClientWindow extends JFrame implements ActionListener, ClientConnectionListener {
 	private static final long serialVersionUID = 1L;
@@ -88,6 +89,13 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 		buffer = "";
 		bother = true;
 		prefs = PreferencesHelper.getInstance();
+		try {
+			if (!UIHelper.setLookAndFeelByName(prefs.getUIManagerName())) {
+				UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+			}
+		} catch (Exception e) {
+			System.err.println("Could not set UI - will use default UI.");
+		}
 		queue = Executors.newScheduledThreadPool(2);
 		if (ports.length > 0)
 			prefs.setPort(ports[0]);
@@ -208,6 +216,7 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 			pane.setViewportView(area);
 		else {
 			JPanel wrap = new JPanel();
+			wrap.setOpaque(false);
 			wrap.setLayout(new BorderLayout());
 			wrap.add(area);
 			pane.setViewportView(wrap);
@@ -257,6 +266,38 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 	private void openSettingsWindow() {
 		JDialog settingsWindow = new JDialog(this, "Four: Settings", true);
 		settingsWindow.getContentPane().setLayout(new BoxLayout(settingsWindow.getContentPane(), BoxLayout.Y_AXIS));
+		JPanel uis = new JPanel();
+		uis.setLayout(new GridLayout(2, 1));
+		uis.setOpaque(false);
+		JLabel uiDesc = new JLabel("The Look & Feel to use:");
+		JComboBox<String> uiManagers = new JComboBox<>();
+		uiManagers.setEditable(false);
+		for (UIManager.LookAndFeelInfo i : UIManager.getInstalledLookAndFeels()) {
+			uiManagers.addItem(i.getName());
+			if (i.getName().equals(UIManager.getLookAndFeel().getName())) {
+				uiManagers.setSelectedItem(i.getName());
+			}
+		}
+		uiManagers.addItemListener(e -> {
+			String selected = (String) uiManagers.getSelectedItem();
+			if (!UIManager.getLookAndFeel().getName().equals(selected)) {
+				try {
+					UIHelper.setLookAndFeelByName(selected);
+				} catch (Exception ex) {
+					ex.printStackTrace();
+				}
+				SwingUtilities.updateComponentTreeUI(settingsWindow);
+				SwingUtilities.updateComponentTreeUI(this);
+				/*
+				 * Warning: above setting may cause internal NullPointerException by the combo-box!
+				 * - mhahnFr
+				 */
+				prefs.setUIManagerName(selected);
+			}
+		});
+		uis.add(uiDesc);
+		uis.add(uiManagers);
+		settingsWindow.getContentPane().add(uis);
 		JPanel hostPa = new JPanel();
 		hostPa.setOpaque(false);
 		hostPa.setLayout(new GridLayout(2, 1));
@@ -301,6 +342,8 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 				portNo.setForeground(Color.white);
 				hostPaLabel.setForeground(Color.white);
 				portPaLabel.setForeground(Color.white);
+				uiDesc.setForeground(Color.white);
+				uiDesc.setBackground(Color.darkGray);
 			} else {
 				settingsWindow.getContentPane().setBackground(null);
 				darkMode.setForeground(null);
@@ -315,6 +358,8 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 				portNo.setForeground(null);
 				hostPaLabel.setForeground(null);
 				portPaLabel.setForeground(null);
+				uiDesc.setForeground(null);
+				uiDesc.setBackground(null);
 			}
 		});
 		settingsWindow.addWindowListener(new WindowAdapter() {
@@ -612,11 +657,6 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 	}
 	
 	public static void openWindow(int[] ports) {
-		try {
-			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-		} catch (Exception e) {
-			System.err.println("Could not set UI - will use default UI.");
-		}
 		EventQueue.invokeLater(() -> new ClientWindow(ports).setVisible(true));
 	}
 }
