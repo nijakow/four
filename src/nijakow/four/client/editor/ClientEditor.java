@@ -112,6 +112,16 @@ public class ClientEditor extends JFrame implements ActionListener {
 				}
 			}
 		});
+		m.addActionForKeyStroke(KeyStroke.getKeyStroke(KeyEvent.VK_TAB, 0), new AbstractAction() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					doc.insertString(pane.getCaretPosition(), "    ", doc.getLogicalStyle(pane.getCaretPosition()));
+				} catch (BadLocationException ex) {
+					ex.printStackTrace();
+				}
+			}
+		});
 	}
 
 	private void startSyntaxHighlighting() {
