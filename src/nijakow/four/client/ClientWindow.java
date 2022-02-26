@@ -17,6 +17,8 @@ import javax.swing.*;
 import javax.swing.border.EtchedBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.event.PopupMenuEvent;
+import javax.swing.event.PopupMenuListener;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
@@ -271,6 +273,7 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 		JPanel uis = new JPanel();
 		uis.setLayout(new GridLayout(2, 1));
 		uis.setOpaque(false);
+		uis.setBorder(new EtchedBorder());
 		JLabel uiDesc = new JLabel("The Look & Feel to use:");
 		JComboBox<String> uiManagers = new JComboBox<>();
 		uiManagers.setEditable(false);
@@ -288,13 +291,14 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 				} catch (Exception ex) {
 					ex.printStackTrace();
 				}
-				SwingUtilities.updateComponentTreeUI(settingsWindow);
-				SwingUtilities.updateComponentTreeUI(this);
 				/*
-				 * Warning: above setting may cause internal NullPointerException by the combo-box!
+				 * Warning: updating the UI may cause internal NullPointerException by the combo-box!
 				 * - mhahnFr
 				 */
+				SwingUtilities.updateComponentTreeUI(settingsWindow);
+				SwingUtilities.updateComponentTreeUI(this);
 				prefs.setUIManagerName(selected);
+				settingsWindow.pack();
 			}
 		});
 		uis.add(uiDesc);
