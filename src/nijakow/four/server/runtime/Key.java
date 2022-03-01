@@ -645,10 +645,20 @@ public class Key {
 
 			@Override
 			public void run(Fiber fiber, Instance self, Instance[] args) throws CastException {
+				final String imgpath = args[0].asFString().asString();
+				Directory mountpoint = null;
+				if (args.length == 2) {
+					mountpoint = fiber.getVM().getFilesystem().resolveDirectory(args[1].asFString().asString());
+					if (mountpoint == null) {
+						// TODO: Error
+						fiber.setAccu(new FInteger(0));
+						return;
+					}
+				}
 				try {
-					FileInputStream fileInputStream = new FileInputStream(args[0].asFString().asString());
+					FileInputStream fileInputStream = new FileInputStream(imgpath);
 					BasicFSDeserializer deserializer = new BasicFSDeserializer(fileInputStream);
-					deserializer.restore(fiber.getVM().getFilesystem(), fiber.getVM().getIdentityDB());
+					deserializer.restore(fiber.getVM().getFilesystem(), fiber.getVM().getIdentityDB(), mountpoint);
 					fiber.setAccu(new FInteger(1));
 				} catch (FileNotFoundException e) {
 					fiber.setAccu(new FInteger(0));

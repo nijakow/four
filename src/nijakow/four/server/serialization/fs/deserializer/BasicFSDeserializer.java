@@ -15,16 +15,12 @@ import java.util.*;
 public class BasicFSDeserializer {
     private final Scanner scanner;
     private final Map<String, FileEntry> files = new HashMap<>();
-    private boolean parsed = false;
     private String firstID = null;
     private Map<String, String> specials = new HashMap<>();
+    private boolean parsed = false;
 
     public BasicFSDeserializer(InputStream input) {
         scanner = new Scanner(input);
-    }
-
-    public void constructOn(NVFileSystem nvfs, IdentityDatabase db) {
-        ensureParsed();
     }
 
     private byte[] decodeBase64AsBytes(String b64) {
@@ -64,12 +60,7 @@ public class BasicFSDeserializer {
             if (child == null)
                 return false;
             child.setmod(permissions);
-            String text = entry.getPayloadAsString();
-            for (final String line : text.split("\n")) {
-                final String[] toks = line.split(":");
-                if (!extractFileByID(nvfs, child, toks[1], toks[0], db))
-                    result = false;
-            }
+            extractDirectoryChildren(nvfs, child, entry, db);
         } else {
             TextFile file = parent.touch(name, db.getRootUser(), owner, group);
             if (file == null)
@@ -80,13 +71,36 @@ public class BasicFSDeserializer {
         return result;
     }
 
+    private boolean extractDirectoryChildren(NVFileSystem nvfs, Directory parent, FileEntry entry, IdentityDatabase db) {
+        boolean result = true;
+        String text = entry.getPayloadAsString();
+        for (final String line : text.split("\n")) {
+            final String[] toks = line.split(":");
+            if (!extractFileByID(nvfs, parent, toks[1], toks[0], db))
+                result = false;
+        }
+        return result;
+    }
+
     public void restore(NVFileSystem nvfs, IdentityDatabase db) {
+        restore(nvfs, db, null, "");
+    }
+
+    public void restore(NVFileSystem nvfs, IdentityDatabase db, Directory parent) {
         ensureParsed();
         db.restore(specials.getOrDefault("users", ""));
-        extractFileByID(nvfs, null, "", firstID, db);
+        extractDirectoryChildren(nvfs, parent, getEntry(firstID), db);
+    }
+
+    public void restore(NVFileSystem nvfs, IdentityDatabase db, Directory parent, String name) {
+        ensureParsed();
+        db.restore(specials.getOrDefault("users", ""));
+        extractFileByID(nvfs, parent, name, firstID, db);
     }
 
     public void ensureParsed() {
+        if (parsed) return;
+
         FileEntry entry = null;
 
         while (scanner.hasNextLine()) {
