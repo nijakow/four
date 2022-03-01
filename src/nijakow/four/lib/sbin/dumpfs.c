@@ -8,7 +8,7 @@ void start()
         printf("Error: No path was given!\n");
     else {
         printf("Dumping the FS...");
-        $dumpfs("/tmp/" + argv[1]);
+        $dumpfs(argv[1]);
         printf("done!\n");
     }
     exit();
