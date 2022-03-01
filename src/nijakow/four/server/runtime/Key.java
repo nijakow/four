@@ -9,6 +9,7 @@ import nijakow.four.server.runtime.objects.standard.FString;
 import nijakow.four.server.runtime.security.users.Group;
 import nijakow.four.server.runtime.security.users.Identity;
 import nijakow.four.server.runtime.security.users.User;
+import nijakow.four.server.serialization.fs.deserializer.BasicFSDeserializer;
 import nijakow.four.share.lang.base.CompilationException;
 import nijakow.four.share.lang.c.parser.ParseException;
 import nijakow.four.server.runtime.exceptions.CastException;
@@ -23,6 +24,7 @@ import nijakow.four.server.runtime.vm.code.Code;
 import nijakow.four.server.serialization.textserializer.Serializer;
 import nijakow.four.share.util.Pair;
 
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.StringWriter;
@@ -632,6 +634,21 @@ public class Key {
 					BasicFSSerializer serializer = new BasicFSSerializer(fileOutputStream);
 					serializer.newMetaEntry("users", fiber.getVM().getIdentityDB().serializeAsBytes());
 					serializer.serialize(fiber.getVM().getFilesystem());
+					fiber.setAccu(new FInteger(1));
+				} catch (FileNotFoundException e) {
+					fiber.setAccu(new FInteger(0));
+					e.printStackTrace();
+				}
+			}
+		};
+		get("$loadfs").code = new BuiltinCode() {
+
+			@Override
+			public void run(Fiber fiber, Instance self, Instance[] args) throws CastException {
+				try {
+					FileInputStream fileInputStream = new FileInputStream(args[0].asFString().asString());
+					BasicFSDeserializer deserializer = new BasicFSDeserializer(fileInputStream);
+					deserializer.restore(fiber.getVM().getFilesystem(), fiber.getVM().getIdentityDB());
 					fiber.setAccu(new FInteger(1));
 				} catch (FileNotFoundException e) {
 					fiber.setAccu(new FInteger(0));
