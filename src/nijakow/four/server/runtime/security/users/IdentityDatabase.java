@@ -106,16 +106,17 @@ public class IdentityDatabase {
     }
 
     public void restore(String serialized) {
+        if (serialized.isEmpty()) return;
         for (String line : serialized.split("\n")) {
             String[] toks = line.split(",");
             String id = toks[0];
             String name = toks[1];
             String type = toks[2];
             if ("user".equals(type)) {
-                String pass = toks[3];
                 User user = getUserByName(name);
                 if (user == null) user = newUser(name);
-                user.setPassword(pass);
+                if (toks.length >= 4)
+                    user.setPassword(toks[3]);
             } else if ("group".equals(type)) {
                 Group group = getGroupByName(name);
                 if (group == null) group = newGroup(name);

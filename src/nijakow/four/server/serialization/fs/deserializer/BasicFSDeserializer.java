@@ -74,6 +74,7 @@ public class BasicFSDeserializer {
     }
 
     public void restore(NVFileSystem nvfs, IdentityDatabase db) {
+        ensureParsed();
         db.restore(specials.getOrDefault("users", ""));
         extractFileByID(nvfs, null, "", firstID, db);
     }
@@ -91,9 +92,9 @@ public class BasicFSDeserializer {
                     final String xline = scanner.nextLine();
                     if (!xline.startsWith("\t"))
                         break;
-                    payload.append(xline);
+                    payload.append(xline.substring(1));
                 }
-                // TODO: Process the special declarations
+                specials.put(type, decodeBase64AsString(payload.toString()));
             } else if (line.startsWith("--- ")) {
                 final String id = line.substring(4);
                 if (firstID == null) firstID = id;
@@ -108,7 +109,9 @@ public class BasicFSDeserializer {
             } else if (line.startsWith("Type: ")) {
                 entry.setType(line.substring(6));
             } else if (line.startsWith("\t")) {
-                entry.appendPayload(line);
+                entry.appendPayload(line.substring(1));
+            } else {
+                System.err.println("WARNING: Unknown line from dump file: " + line);
             }
         }
         parsed = true;
