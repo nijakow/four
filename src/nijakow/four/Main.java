@@ -117,6 +117,8 @@ public class Main {
 		int[] ps = new int[ports.size()];
 		for (int i = 0; i < ps.length; i++)
 			ps[i] = ports.get(i);
+		if (!server && clients == 0)
+			clients = 1;
 		while (clients --> 0)
 			ClientWindow.openWindow(hostname, ps);
 		if (server) {
