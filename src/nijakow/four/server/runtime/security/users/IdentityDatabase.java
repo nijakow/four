@@ -9,12 +9,14 @@ public class IdentityDatabase {
     private final Group usersGroup;
     private final User rootUser;
     private final Group rootGroup;
+    private final User unprivilegedUser;
 
     public IdentityDatabase() {
         this.usersGroup = newGroup("users");
         this.rootUser = newUser("root");
         this.rootGroup = newGroup("admin");
         this.rootGroup.add(this.rootUser);
+        this.unprivilegedUser = newUser("nouser");
     }
 
     static String newID() {
@@ -31,10 +33,6 @@ public class IdentityDatabase {
 
     public Identity find(String id) { return identities.get(id); }
 
-    public User getNewUnprivilegedUser() {
-        return new User(this, newID());
-    }
-
     public User newUser(String name) {
         if (getIdentityByName(name) != null)
             return null;
@@ -46,6 +44,10 @@ public class IdentityDatabase {
 
     public User getRootUser() {
         return rootUser;
+    }
+
+    public User getUnprivilegedUser() {
+        return unprivilegedUser;
     }
 
     public Group getRootGroup() {

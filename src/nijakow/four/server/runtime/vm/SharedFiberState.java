@@ -12,7 +12,7 @@ public class SharedFiberState {
     }
 
     public SharedFiberState(VM vm) {
-        this(vm, vm.getIdentityDB().newUser("tmpuser" + Long.toHexString(System.currentTimeMillis())));
+        this(vm, vm.getIdentityDB().getUnprivilegedUser());
     }
 
     public FMapping getStatics() { return statics; }
