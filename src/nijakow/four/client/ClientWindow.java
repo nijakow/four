@@ -79,7 +79,7 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 		}
 	};
 	
-	public ClientWindow(int[] ports) {
+	public ClientWindow(String hostname, int[] ports) {
 		super("Nijakow's \"Four\"");
 
 		final Font font = new Font("Monospaced", Font.PLAIN, 14);
@@ -89,6 +89,8 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 		buffer = "";
 		bother = true;
 		prefs = PreferencesHelper.getInstance();
+		if (hostname != null)
+			prefs.setHostname(hostname);
 		try {
 			if (!UIHelper.setLookAndFeelByName(prefs.getUIManagerName())) {
 				UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -656,7 +658,7 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 		}
 	}
 	
-	public static void openWindow(int[] ports) {
-		EventQueue.invokeLater(() -> new ClientWindow(ports).setVisible(true));
+	public static void openWindow(String hostname, int[] ports) {
+		EventQueue.invokeLater(() -> new ClientWindow(hostname, ports).setVisible(true));
 	}
 }

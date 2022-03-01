@@ -16,7 +16,7 @@ public class Main {
 		IdentityDatabase db = new IdentityDatabase();
 		NVFileSystem fileSystem = new NVFileSystem(db);
 
-		String hostname = "localhost";
+		String hostname = null;
 		ArrayList<Integer> ports = new ArrayList<>();
 
 		boolean server = false;
@@ -113,9 +113,9 @@ public class Main {
 		for (int i = 0; i < ps.length; i++)
 			ps[i] = ports.get(i);
 		while (clients --> 0)
-			ClientWindow.openWindow(ps);
+			ClientWindow.openWindow(hostname, ps);
 		if (server) {
-			Four four = new Four(db, fileSystem, hostname, ps);
+			Four four = new Four(db, fileSystem, hostname == null ? "localhost" : hostname, ps);
 			four.run();
 		}
 	}
