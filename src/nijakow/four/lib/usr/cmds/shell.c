@@ -2,5 +2,7 @@ inherits "/std/cmd.c";
 
 void start()
 {
-    execappfromcli(this->exit, "/bin/sh.c");
+    printf("Shell access is not allowed.\n");
+    printf("Please ask the server admin to get access.\n");
+    exit();
 }
