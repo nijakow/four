@@ -23,6 +23,9 @@ import nijakow.four.server.runtime.vm.code.Code;
 import nijakow.four.server.serialization.textserializer.Serializer;
 import nijakow.four.share.util.Pair;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -624,10 +627,16 @@ public class Key {
 
 			@Override
 			public void run(Fiber fiber, Instance self, Instance[] args) throws CastException {
-				BasicFSSerializer serializer = new BasicFSSerializer(System.out);
-				serializer.newMetaEntry("users", fiber.getVM().getIdentityDB().serializeAsBytes());
-				serializer.serialize(fiber.getVM().getFilesystem());
-				fiber.setAccu(Instance.getNil());
+				try {
+					FileOutputStream fileOutputStream = new FileOutputStream(args[0].asFString().asString());
+					BasicFSSerializer serializer = new BasicFSSerializer(fileOutputStream);
+					serializer.newMetaEntry("users", fiber.getVM().getIdentityDB().serializeAsBytes());
+					serializer.serialize(fiber.getVM().getFilesystem());
+					fiber.setAccu(new FInteger(1));
+				} catch (FileNotFoundException e) {
+					fiber.setAccu(new FInteger(0));
+					e.printStackTrace();
+				}
 			}
 		};
 	}
