@@ -20,6 +20,7 @@ public class Main {
 		ArrayList<Integer> ports = new ArrayList<>();
 
 		boolean server = false;
+		boolean guest = false;
 		int clients = 0;
 		for (int i = 0; i < args.length; i++) {
 			switch (args[i]) {
@@ -60,6 +61,10 @@ public class Main {
 
 			case "--root-password":
 				db.getRootUser().setPassword(args[++i]);
+				break;
+
+			case "--enable-guest":
+				guest = true;
 				break;
 			
 			case "--license":
@@ -116,6 +121,9 @@ public class Main {
 			ClientWindow.openWindow(hostname, ps);
 		if (server) {
 			Four four = new Four(db, fileSystem, hostname == null ? "localhost" : hostname, ps);
+			if (guest) {
+				db.newUser("guest").setPassword("42");
+			}
 			four.run();
 		}
 	}
