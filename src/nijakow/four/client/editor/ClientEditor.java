@@ -8,6 +8,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.text.*;
 
 import nijakow.four.client.Commands;
@@ -40,6 +42,21 @@ public class ClientEditor extends JFrame implements ActionListener {
 		pane.setFont(new Font("Monospaced", Font.PLAIN, 14));
 		setKeyStrokes();
 		doc = pane.getStyledDocument();
+		doc.addDocumentListener(new DocumentListener() {
+			@Override
+			public void insertUpdate(DocumentEvent e) {
+				startSyntaxHighlighting();
+			}
+
+			@Override
+			public void removeUpdate(DocumentEvent e) {
+				startSyntaxHighlighting();
+			}
+
+			@Override
+			public void changedUpdate(DocumentEvent e) {
+			}
+		});
 		def = pane.getLogicalStyle();
 		addStyles();
 		getContentPane().setLayout(new BorderLayout());
@@ -125,7 +142,7 @@ public class ClientEditor extends JFrame implements ActionListener {
 	}
 
 	private void startSyntaxHighlighting() {
-		future = queue.scheduleWithFixedDelay(highlighter, 0, 500, TimeUnit.MILLISECONDS);
+		future = queue.schedule(highlighter, 0, TimeUnit.MILLISECONDS);
 	}
 
 	private  void stopSyntaxHighlighting() {
