@@ -35,7 +35,7 @@ public class Directory extends File implements FileParent {
     }
 
     public TextFile touch(String name, Identity identity, User owner, Group gowner) {
-        if (getRights().checkWriteAccess(identity)) {
+        if (getRights().checkWriteAccess(identity) && !files.containsKey(name)) {
             TextFile file = new TextFile(this, owner, gowner);
             files.put(name, file);
             return file;
@@ -45,7 +45,7 @@ public class Directory extends File implements FileParent {
     }
 
     public Directory mkdir(String name, Identity identity, User owner, Group gowner) {
-        if (getRights().checkWriteAccess(identity)) {
+        if (getRights().checkWriteAccess(identity) && !files.containsKey(name)) {
             Directory dir = new Directory(this, owner, gowner);
             files.put(name, dir);
             return dir;

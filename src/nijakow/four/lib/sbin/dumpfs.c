@@ -4,8 +4,12 @@ use $dumpfs;
 
 void start()
 {
-    printf("Dumping the FS...");
-    $dumpfs();
-    printf("done!\n");
+    if (length(argv) != 2)
+        printf("Error: No path was given!\n");
+    else {
+        printf("Dumping the FS...");
+        $dumpfs(argv[1]);
+        printf("done!\n");
+    }
     exit();
 }

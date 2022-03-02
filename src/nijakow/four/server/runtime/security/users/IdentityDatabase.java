@@ -9,12 +9,14 @@ public class IdentityDatabase {
     private final Group usersGroup;
     private final User rootUser;
     private final Group rootGroup;
+    private final User unprivilegedUser;
 
     public IdentityDatabase() {
         this.usersGroup = newGroup("users");
         this.rootUser = newUser("root");
         this.rootGroup = newGroup("admin");
         this.rootGroup.add(this.rootUser);
+        this.unprivilegedUser = newUser("nouser");
     }
 
     static String newID() {
@@ -31,10 +33,6 @@ public class IdentityDatabase {
 
     public Identity find(String id) { return identities.get(id); }
 
-    public User getNewUnprivilegedUser() {
-        return new User(this, newID());
-    }
-
     public User newUser(String name) {
         if (getIdentityByName(name) != null)
             return null;
@@ -46,6 +44,10 @@ public class IdentityDatabase {
 
     public User getRootUser() {
         return rootUser;
+    }
+
+    public User getUnprivilegedUser() {
+        return unprivilegedUser;
     }
 
     public Group getRootGroup() {
@@ -62,6 +64,16 @@ public class IdentityDatabase {
                 return identity;
         }
         return null;
+    }
+
+    public User getUserByName(String username) {
+        Identity identity = getIdentityByName(username);
+        return (identity == null) ? null : identity.asUser();
+    }
+
+    public Group getGroupByName(String username) {
+        Identity identity = getIdentityByName(username);
+        return (identity == null) ? null : identity.asGroup();
     }
 
     public User login(String username, String password) {
@@ -82,6 +94,7 @@ public class IdentityDatabase {
                 builder.append(user.getPasswordHash());
             } else if (identity.asGroup() != null) {
                 builder.append(",group");
+                // TODO: Serialize group members
             } else {
                 builder.append(",unknown");
             }
@@ -92,5 +105,25 @@ public class IdentityDatabase {
 
     public Identity[] getIdentities() {
         return identities.values().toArray(new Identity[0]);
+    }
+
+    public void restore(String serialized) {
+        if (serialized.isEmpty()) return;
+        for (String line : serialized.split("\n")) {
+            String[] toks = line.split(",");
+            String id = toks[0];
+            String name = toks[1];
+            String type = toks[2];
+            if ("user".equals(type)) {
+                User user = getUserByName(name);
+                if (user == null) user = newUser(name);
+                if (toks.length >= 4)
+                    user.setPassword(toks[3]);
+            } else if ("group".equals(type)) {
+                Group group = getGroupByName(name);
+                if (group == null) group = newGroup(name);
+                // TODO: Add members
+            }
+        }
     }
 }

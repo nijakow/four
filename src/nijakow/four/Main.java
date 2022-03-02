@@ -16,9 +16,11 @@ public class Main {
 		IdentityDatabase db = new IdentityDatabase();
 		NVFileSystem fileSystem = new NVFileSystem(db);
 
+		String hostname = null;
 		ArrayList<Integer> ports = new ArrayList<>();
 
 		boolean server = false;
+		boolean guest = false;
 		int clients = 0;
 		for (int i = 0; i < args.length; i++) {
 			switch (args[i]) {
@@ -36,7 +38,13 @@ public class Main {
 			case "-s":
 				server = true;
 				break;
-				
+
+			case "-b":
+			case "--bind":
+			case "--host":
+			case "--hostname":
+				hostname = args[++i];
+				break;
 			case "--port":
 			case "-p":
 				int j = 0;
@@ -53,6 +61,10 @@ public class Main {
 
 			case "--root-password":
 				db.getRootUser().setPassword(args[++i]);
+				break;
+
+			case "--enable-guest":
+				guest = true;
 				break;
 			
 			case "--license":
@@ -105,10 +117,15 @@ public class Main {
 		int[] ps = new int[ports.size()];
 		for (int i = 0; i < ps.length; i++)
 			ps[i] = ports.get(i);
+		if (!server && clients == 0)
+			clients = 1;
 		while (clients --> 0)
-			ClientWindow.openWindow(ps);
+			ClientWindow.openWindow(hostname, ps);
 		if (server) {
-			Four four = new Four(db, fileSystem, ps);
+			Four four = new Four(db, fileSystem, hostname == null ? "localhost" : hostname, ps);
+			if (guest) {
+				db.newUser("guest").setPassword("42");
+			}
 			four.run();
 		}
 	}

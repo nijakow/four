@@ -6,6 +6,7 @@
 !*.md
 !.gitignore
 !Makefile
+!Dockerfile
 .idea
 .eclipse
 ./bin/

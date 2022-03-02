@@ -24,10 +24,11 @@ public class Server {
 		this.onConnectFunc = onConnectFunc;
 	}
 	
-	public void serveOn(int port) throws IOException {
+	public void serveOn(String hostname, int port) throws IOException {
+		System.out.println("Serving on " + hostname + " " + port);
 		ServerSocketChannel serverSocket = ServerSocketChannel.open();
 		serverSocket.setOption(StandardSocketOptions.SO_REUSEADDR, true);
-		serverSocket.bind(new InetSocketAddress("localhost", port));
+		serverSocket.bind(new InetSocketAddress(hostname, port));
 		serverSocket.configureBlocking(false);
 		serverSocket.register(selector, SelectionKey.OP_ACCEPT);
 	}

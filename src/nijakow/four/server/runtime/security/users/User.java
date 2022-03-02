@@ -31,6 +31,9 @@ public class User extends Identity {
 
     public String getPasswordHash() {
         if (this.password == null)
+            return "";  // TODO, FIXME, XXX: This is a security issue!
+        return this.password;
+        /*if (this.password == null)
             return "";
         SecureRandom random = new SecureRandom();
         byte[] salt = new byte[16];
@@ -48,7 +51,7 @@ public class User extends Identity {
             return Base64.getEncoder().encodeToString(both);
         } catch (NoSuchAlgorithmException e) {
             return "";
-        }
+        }*/
     }
 
     public String getShell() { return this.shell; }

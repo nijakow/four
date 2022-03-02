@@ -38,6 +38,11 @@ void resume()
 
 void start()
 {
-    me()->submit_lines_to(connection()->write);
-    resume();
+    if (me() == nil) {
+        printf("Game access is only allowed for player accounts.\n");
+        exit();
+    } else {
+        me()->submit_lines_to(connection()->write);
+        resume();
+    }
 }

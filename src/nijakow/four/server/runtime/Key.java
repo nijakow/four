@@ -9,6 +9,7 @@ import nijakow.four.server.runtime.objects.standard.FString;
 import nijakow.four.server.runtime.security.users.Group;
 import nijakow.four.server.runtime.security.users.Identity;
 import nijakow.four.server.runtime.security.users.User;
+import nijakow.four.server.serialization.fs.deserializer.BasicFSDeserializer;
 import nijakow.four.share.lang.base.CompilationException;
 import nijakow.four.share.lang.c.parser.ParseException;
 import nijakow.four.server.runtime.exceptions.CastException;
@@ -23,6 +24,10 @@ import nijakow.four.server.runtime.vm.code.Code;
 import nijakow.four.server.serialization.textserializer.Serializer;
 import nijakow.four.share.util.Pair;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -624,10 +629,41 @@ public class Key {
 
 			@Override
 			public void run(Fiber fiber, Instance self, Instance[] args) throws CastException {
-				BasicFSSerializer serializer = new BasicFSSerializer(System.out);
-				serializer.newMetaEntry("users", fiber.getVM().getIdentityDB().serializeAsBytes());
-				serializer.serialize(fiber.getVM().getFilesystem());
-				fiber.setAccu(Instance.getNil());
+				try {
+					FileOutputStream fileOutputStream = new FileOutputStream(args[0].asFString().asString());
+					BasicFSSerializer serializer = new BasicFSSerializer(fileOutputStream);
+					serializer.newMetaEntry("users", fiber.getVM().getIdentityDB().serializeAsBytes());
+					serializer.serialize(fiber.getVM().getFilesystem());
+					fiber.setAccu(new FInteger(1));
+				} catch (FileNotFoundException e) {
+					fiber.setAccu(new FInteger(0));
+					e.printStackTrace();
+				}
+			}
+		};
+		get("$loadfs").code = new BuiltinCode() {
+
+			@Override
+			public void run(Fiber fiber, Instance self, Instance[] args) throws CastException {
+				final String imgpath = args[0].asFString().asString();
+				Directory mountpoint = null;
+				if (args.length == 2) {
+					mountpoint = fiber.getVM().getFilesystem().resolveDirectory(args[1].asFString().asString());
+					if (mountpoint == null) {
+						// TODO: Error
+						fiber.setAccu(new FInteger(0));
+						return;
+					}
+				}
+				try {
+					FileInputStream fileInputStream = new FileInputStream(imgpath);
+					BasicFSDeserializer deserializer = new BasicFSDeserializer(fileInputStream);
+					deserializer.restore(fiber.getVM().getFilesystem(), fiber.getVM().getIdentityDB(), mountpoint);
+					fiber.setAccu(new FInteger(1));
+				} catch (FileNotFoundException e) {
+					fiber.setAccu(new FInteger(0));
+					e.printStackTrace();
+				}
 			}
 		};
 	}
