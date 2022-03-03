@@ -27,6 +27,7 @@ public class ClientEditor extends JFrame implements ActionListener {
 	private final String id;
 	private final String path;
 	private final ScheduledExecutorService queue;
+	private JDialog settingsWindow;
 	private ScheduledFuture<?> future;
 	private boolean dark;
 	private final Runnable highlighter = this::updateSyntaxHighlighting;
@@ -181,29 +182,33 @@ public class ClientEditor extends JFrame implements ActionListener {
 		}
 	}
 
-	private void showSettingsWindow() {
+	private JDialog createSettingsWindow() {
 		JDialog settingsWindow = new JDialog(this, "Editor: Settings", true);
 		settingsWindow.getContentPane().setLayout(new GridLayout(2, 1));
 		JCheckBox alwaysHighlight = new JCheckBox("Always enable syntax highlighting");
-		alwaysHighlight.setSelected(PreferencesHelper.getInstance().getEditorAlwaysHighlight());
 		alwaysHighlight.addItemListener(event -> PreferencesHelper.getInstance().setEditorAlwaysHighlight(alwaysHighlight.isSelected()));
 		settingsWindow.getContentPane().add(alwaysHighlight);
 		JCheckBox lineBreaking = new JCheckBox("Automatic line breaking");
-		lineBreaking.setSelected(PreferencesHelper.getInstance().getEditorLineBreaking());
 		lineBreaking.addItemListener(event -> {
 			boolean  breaking = lineBreaking.isSelected();
 			toggleLineBreaking(breaking);
 			PreferencesHelper.getInstance().setEditorLineBreaking(breaking);
 		});
 		settingsWindow.getContentPane().add(lineBreaking);
-		if (dark) {
-			settingsWindow.getContentPane().setBackground(Color.darkGray);
-			alwaysHighlight.setBackground(Color.darkGray);
-			alwaysHighlight.setForeground(Color.white);
-			lineBreaking.setBackground(Color.darkGray);
-			lineBreaking.setForeground(Color.white);
-		}
 		settingsWindow.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowActivated(WindowEvent e) {
+				alwaysHighlight.setSelected(PreferencesHelper.getInstance().getEditorAlwaysHighlight());
+				lineBreaking.setSelected(PreferencesHelper.getInstance().getEditorLineBreaking());
+				if (dark) {
+					settingsWindow.getContentPane().setBackground(Color.darkGray);
+					alwaysHighlight.setBackground(Color.darkGray);
+					alwaysHighlight.setForeground(Color.white);
+					lineBreaking.setBackground(Color.darkGray);
+					lineBreaking.setForeground(Color.white);
+				}
+			}
+
 			@Override
 			public void windowClosed(WindowEvent e) {
 				PreferencesHelper.getInstance().flush();
@@ -211,14 +216,22 @@ public class ClientEditor extends JFrame implements ActionListener {
 		});
 		settingsWindow.pack();
 		settingsWindow.setResizable(false);
-		settingsWindow.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+		settingsWindow.setDefaultCloseOperation(HIDE_ON_CLOSE);
 		settingsWindow.setLocationRelativeTo(this);
+		return settingsWindow;
+	}
+
+	private void showSettingsWindow() {
+		if (settingsWindow == null) {
+			settingsWindow = createSettingsWindow();
+		}
 		settingsWindow.setVisible(true);
 	}
 
 	@Override
 	public void dispose() {
 		send(false, null);
+		settingsWindow.dispose();
 		super.dispose();
 	}
 
