@@ -8,8 +8,10 @@ void start()
         printf("Error: No path was given!\n");
     else {
         printf("Dumping the FS...");
-        $dumpfs(argv[1]);
-        printf("done!\n");
+        if ($dumpfs(argv[1]))
+            printf("done!\n");
+        else
+            printf("failed!\n");
     }
     exit();
 }

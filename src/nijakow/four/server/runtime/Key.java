@@ -24,10 +24,7 @@ import nijakow.four.server.runtime.vm.code.Code;
 import nijakow.four.server.serialization.textserializer.Serializer;
 import nijakow.four.share.util.Pair;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.StringWriter;
+import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -616,15 +613,6 @@ public class Key {
 				fiber.setAccu(new FInteger(success ? 1 : 0));
 			}
 		};
-		get("$dump").code = new BuiltinCode() {
-
-			@Override
-			public void run(Fiber fiber, Instance self, Instance[] args) throws CastException {
-				Serializer serializer = new Serializer();
-				fiber.getVM().getFilesystem().serialize(serializer);
-				System.out.println(serializer.asString());
-			}
-		};
 		get("$dumpfs").code = new BuiltinCode() {
 
 			@Override
@@ -634,8 +622,9 @@ public class Key {
 					BasicFSSerializer serializer = new BasicFSSerializer(fileOutputStream);
 					serializer.newMetaEntry("users", fiber.getVM().getIdentityDB().serializeAsBytes());
 					serializer.serialize(fiber.getVM().getFilesystem());
+					fileOutputStream.close();
 					fiber.setAccu(new FInteger(1));
-				} catch (FileNotFoundException e) {
+				} catch (IOException e) {
 					fiber.setAccu(new FInteger(0));
 					e.printStackTrace();
 				}
@@ -659,8 +648,9 @@ public class Key {
 					FileInputStream fileInputStream = new FileInputStream(imgpath);
 					BasicFSDeserializer deserializer = new BasicFSDeserializer(fileInputStream);
 					deserializer.restore(fiber.getVM().getFilesystem(), fiber.getVM().getIdentityDB(), mountpoint);
+					fileInputStream.close();
 					fiber.setAccu(new FInteger(1));
-				} catch (FileNotFoundException e) {
+				} catch (IOException e) {
 					fiber.setAccu(new FInteger(0));
 					e.printStackTrace();
 				}
