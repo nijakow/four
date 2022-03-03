@@ -3,16 +3,14 @@ package nijakow.four.server.runtime.security.users;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
-import java.util.Base64;
 
 public class User extends Identity {
-    private String password;
+    private byte[] passwordHash;
     private String shell;
 
     protected User(IdentityDatabase db, String name) {
         super(db, name);
-        this.password = null;
+        this.passwordHash = null;
         this.shell = null;
     }
 
@@ -21,40 +19,57 @@ public class User extends Identity {
         return this;
     }
 
+    public byte[] getPasswordHash() {
+        return this.passwordHash.clone();
+    }
+
     public void setPassword(String password) {
-        this.password = password;
+        if (password == null)
+            setPasswordHash(null);
+        else {
+            byte[] hashed = hash(password);
+            if (hashed != null)
+                setPasswordHash(hashed);
+        }
+    }
+    public void setPasswordHash(byte[] hash) {
+        if (hash == null)
+            this.passwordHash = null;
+        else
+            this.passwordHash = hash.clone();
+    }
+
+    public void setPasswordHashIfNotSet(byte[] hash) {
+        if (this.passwordHash == null)
+            this.passwordHash = hash.clone();
     }
 
     public boolean checkPassword(String password) {
-        return this.password != null && this.password.equals(password);
-    }
-
-    public String getPasswordHash() {
-        if (this.password == null)
-            return "";  // TODO, FIXME, XXX: This is a security issue!
-        return this.password;
-        /*if (this.password == null)
-            return "";
-        SecureRandom random = new SecureRandom();
-        byte[] salt = new byte[16];
-        random.nextBytes(salt);
-        MessageDigest md = null;
-        try {
-            md = MessageDigest.getInstance("SHA-512");
-            md.update(salt);
-            byte[] hashedPassword = md.digest(this.password.getBytes(StandardCharsets.UTF_8));
-            byte[] both = new byte[salt.length + hashedPassword.length];
-            for (int i = 0; i < salt.length; i++)
-                both[i] = salt[i];
-            for (int i = 0; i < hashedPassword.length; i++)
-                both[salt.length + i] = hashedPassword[i];
-            return Base64.getEncoder().encodeToString(both);
-        } catch (NoSuchAlgorithmException e) {
-            return "";
-        }*/
+        byte[] ourpass = getPasswordHash();
+        if (ourpass == null)
+            return false;
+        byte[] hashed = hash(password);
+        if (hashed == null)
+            return false;
+        if (hashed.length != ourpass.length)
+            return false;
+        for (int i = 0; i < ourpass.length; i++)
+            if (ourpass[i] != hashed[i])
+                return false;
+        return true;
     }
 
     public String getShell() { return this.shell; }
 
     public void setShell(String shell) { this.shell = shell; }
+
+
+    private static byte[] hash(String text) {
+        try {
+            MessageDigest md = MessageDigest.getInstance("SHA-512");
+            return md.digest(text.getBytes(StandardCharsets.UTF_8));
+        } catch (NoSuchAlgorithmException e) {
+            return null;
+        }
+    }
 }

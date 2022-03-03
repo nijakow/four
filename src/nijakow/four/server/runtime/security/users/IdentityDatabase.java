@@ -1,8 +1,7 @@
 package nijakow.four.server.runtime.security.users;
 
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class IdentityDatabase {
     private final Map<String, Identity> identities = new HashMap<>();
@@ -91,10 +90,16 @@ public class IdentityDatabase {
             User user = identity.asUser();
             if (user != null) {
                 builder.append(",user,");
-                builder.append(user.getPasswordHash());
+                builder.append(new String(Base64.getEncoder().encode(user.getPasswordHash()), StandardCharsets.UTF_8));
             } else if (identity.asGroup() != null) {
-                builder.append(",group");
-                // TODO: Serialize group members
+                builder.append(",group,");
+                boolean hasPrev = false;
+                for (Identity i : identity.asGroup().getMembers()) {
+                    if (hasPrev)
+                        builder.append(':');
+                    builder.append(i.getName());
+                    hasPrev = true;
+                }
             } else {
                 builder.append(",unknown");
             }
@@ -108,6 +113,7 @@ public class IdentityDatabase {
     }
 
     public void restore(String serialized) {
+        List<Runnable> runLater = new ArrayList<>();
         if (serialized.isEmpty()) return;
         for (String line : serialized.split("\n")) {
             String[] toks = line.split(",");
@@ -116,13 +122,20 @@ public class IdentityDatabase {
             String type = toks[2];
             if ("user".equals(type)) {
                 User user = getUserByName(name);
-                if (user == null) user = newUser(name);
+                if (user == null)
+                    user = newUser(name);
                 if (toks.length >= 4)
-                    user.setPassword(toks[3]);
+                    user.setPasswordHashIfNotSet(Base64.getDecoder().decode(toks[3]));
             } else if ("group".equals(type)) {
                 Group group = getGroupByName(name);
                 if (group == null) group = newGroup(name);
-                // TODO: Add members
+                final Group theGroup = group;
+                final String[] members = toks[3].split(":");
+                runLater.add(() -> {
+                    for (String member : members) {
+                        theGroup.add(getIdentityByName(member));
+                    }
+                });
             }
         }
     }
