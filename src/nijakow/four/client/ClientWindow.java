@@ -177,7 +177,7 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 		labelTimer = new Timer(5000, this);
 		labelTimer.setActionCommand(Commands.Actions.ACTION_STATUS_LABEL_TIMER);
 		labelTimer.setRepeats(false);
-		reconnectorHandler = queue.scheduleWithFixedDelay(reconnector, 0, 5, TimeUnit.SECONDS);
+		reconnectorHandler = queue.scheduleWithFixedDelay(reconnector, 0, 2500, TimeUnit.MILLISECONDS);
 	}
 
 	private void toggleMode(boolean dark) {
