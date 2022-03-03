@@ -231,7 +231,9 @@ public class ClientEditor extends JFrame implements ActionListener {
 	@Override
 	public void dispose() {
 		send(false, null);
-		settingsWindow.dispose();
+		if (settingsWindow != null) {
+			settingsWindow.dispose();
+		}
 		super.dispose();
 	}
 
