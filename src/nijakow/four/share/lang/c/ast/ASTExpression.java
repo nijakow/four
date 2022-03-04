@@ -2,8 +2,13 @@ package nijakow.four.share.lang.c.ast;
 
 import nijakow.four.share.lang.base.CompilationException;
 import nijakow.four.share.lang.base.FCompiler;
+import nijakow.four.share.lang.c.parser.StreamPosition;
 
 public abstract class ASTExpression extends ASTInstruction {
+
+	public ASTExpression(StreamPosition pos) {
+		super(pos);
+	}
 
 	public void compileCall(FCompiler compiler, int args, boolean hasVarargs) throws CompilationException {
 		this.compile(compiler);
@@ -11,7 +16,7 @@ public abstract class ASTExpression extends ASTInstruction {
 	}
 
 	public void compileAssignment(FCompiler compiler, ASTExpression right) throws CompilationException {
-		compilationError("Oof.");
+		compilationError("Can not assign to this AST!");
 	}
 
 }

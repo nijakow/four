@@ -5,12 +5,14 @@ import nijakow.four.server.runtime.Key;
 import nijakow.four.server.runtime.objects.blue.Blueprint;
 import nijakow.four.share.lang.base.CompilationException;
 import nijakow.four.share.lang.c.parser.ParseException;
+import nijakow.four.share.lang.c.parser.StreamPosition;
 
 public class ASTClassDef extends ASTDecl {
     private final Key name;
     private final ASTClass clazz;
 
-    public ASTClassDef(Key name, ASTClass clazz) {
+    public ASTClassDef(StreamPosition pos, Key name, ASTClass clazz) {
+        super(pos);
         this.name = name;
         this.clazz = clazz;
     }

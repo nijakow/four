@@ -6,6 +6,7 @@ import nijakow.four.share.lang.base.Label;
 import nijakow.four.server.runtime.objects.standard.FInteger;
 import nijakow.four.server.runtime.Key;
 import nijakow.four.server.runtime.types.Type;
+import nijakow.four.share.lang.c.parser.StreamPosition;
 
 public class ASTForeach extends ASTInstruction {
 	private final Type type;
@@ -13,7 +14,8 @@ public class ASTForeach extends ASTInstruction {
 	private final ASTInstruction initialization;
 	private final ASTInstruction body;
 
-	public ASTForeach(Type type, Key var, ASTExpression initialization, ASTInstruction body) {
+	public ASTForeach(StreamPosition pos, Type type, Key var, ASTExpression initialization, ASTInstruction body) {
+		super(pos);
 		this.type = type;
 		this.var = var;
 		this.initialization = initialization;

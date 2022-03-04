@@ -3,11 +3,13 @@ package nijakow.four.share.lang.c.ast;
 import nijakow.four.share.lang.base.CompilationException;
 import nijakow.four.share.lang.base.FCompiler;
 import nijakow.four.server.runtime.Key;
+import nijakow.four.share.lang.c.parser.StreamPosition;
 
 public class ASTIdent extends ASTExpression {
 	private final Key identifier;
 	
-	public ASTIdent(Key identifier) {
+	public ASTIdent(StreamPosition pos, Key identifier) {
+		super(pos);
 		this.identifier = identifier;
 	}
 

@@ -15,6 +15,8 @@ import nijakow.four.share.util.Pair;
 public class Parser {
 	private final Tokenizer tokenizer;
 
+	private StreamPosition p() { return tokenizer.getPosition(); }
+
 	private void error(String message) throws ParseException {
 		throw new ParseException(tokenizer.getPosition(), message);
 	}
@@ -100,19 +102,19 @@ public class Parser {
 	
 	private ASTExpression parseSimpleExpression() throws ParseException {
 		if (check(TokenType.THIS)) {
-			return new ASTThis();
+			return new ASTThis(p());
 		} else if (check(TokenType.NIL)) {
-			return new ASTConstant(Instance.getNil());
+			return new ASTConstant(p(), Instance.getNil());
 		} else if (check(TokenType.TRUE)) {
-			return new ASTConstant(FInteger.getBoolean(true));
+			return new ASTConstant(p(), FInteger.getBoolean(true));
 		} else if (check(TokenType.FALSE)) {
-			return new ASTConstant(FInteger.getBoolean(false));
+			return new ASTConstant(p(), FInteger.getBoolean(false));
 		} else if (check(TokenType.VA_NEXT)) {
-			return new ASTVaNext();
+			return new ASTVaNext(p());
 		} else if (check(TokenType.VA_COUNT)) {
-			return new ASTVaCount();
+			return new ASTVaCount(p());
 		} else if (checkKeep(TokenType.CONSTANT)) {
-			return new ASTConstant((Instance) tokenizer.nextToken().getPayload());
+			return new ASTConstant(p(), (Instance) tokenizer.nextToken().getPayload());
 		} else if (check(TokenType.LPAREN)) {
 			ASTExpression expr = parseExpression();
 			expect(TokenType.RPAREN);
@@ -127,7 +129,7 @@ public class Parser {
 					expect(TokenType.COMMA);
 				}
 			}
-			return new ASTList(Type.getList(), exprs.toArray(new ASTExpression[0]));
+			return new ASTList(p(), Type.getList(), exprs.toArray(new ASTExpression[0]));
 		} else if (check(TokenType.LBRACK)) {
 			List<ASTExpression> exprs = new ArrayList<>();
 			if (!check(TokenType.RBRACK)) {
@@ -139,11 +141,11 @@ public class Parser {
 						expect(TokenType.COMMA);
 				}
 			}
-			return new ASTMapping(exprs.toArray(new ASTExpression[0]));
+			return new ASTMapping(p(), exprs.toArray(new ASTExpression[0]));
 		} else if (checkKeep(TokenType.IDENT)) {
-			return new ASTIdent(Key.get((String) tokenizer.nextToken().getPayload()));
+			return new ASTIdent(p(), Key.get((String) tokenizer.nextToken().getPayload()));
 		} else {
-			return new ASTThis();
+			return new ASTThis(p());
 		}
 	}
 	
@@ -153,7 +155,7 @@ public class Parser {
 		if (checkKeep(TokenType.OPERATOR)) {
 			Token t = tokenizer.nextToken();
 			OperatorInfo info = (OperatorInfo) t.getPayload();
-			expr = new ASTUnaryOp(info.getType(), parseExpression(info.getUnaryPrecedence()));
+			expr = new ASTUnaryOp(p(), info.getType(), parseExpression(info.getUnaryPrecedence()));
 		} else if (check(TokenType.NEW)) {
 			if (check(TokenType.LPAREN)) {
 				/*
@@ -165,12 +167,12 @@ public class Parser {
 				 *                                           - nijakow
 				 */
 				Pair<ASTExpression[], Boolean> arglistData = parseArglist();
-				expr = new ASTCall(new ASTDot(new ASTThis(), Key.get("_new")), arglistData.getFirst(), arglistData.getSecond());
+				expr = new ASTCall(p(), new ASTDot(null, new ASTThis(null), Key.get("_new")), arglistData.getFirst(), arglistData.getSecond());
 			} else {
 				Key clazz = expectKey();
 				expect(TokenType.LPAREN);
 				Pair<ASTExpression[], Boolean> arglistData = parseArglist();
-				expr = new ASTNew(clazz, arglistData.getFirst(), arglistData.getSecond());
+				expr = new ASTNew(p(), clazz, arglistData.getFirst(), arglistData.getSecond());
 			}
 		} else {
 			expr = parseSimpleExpression(); 
@@ -183,30 +185,30 @@ public class Parser {
 				ASTExpression consequent = parseExpression();
 				expect(TokenType.COLON);
 				ASTExpression alternative = parseExpression();
-				expr = new ASTTernary(expr, consequent, alternative);
+				expr = new ASTTernary(p(), expr, consequent, alternative);
 			} else if (check(TokenType.DOT) || check(TokenType.RARROW)) {
-				expr = new ASTDot(expr, expectKey());
+				expr = new ASTDot(p(), expr, expectKey());
 			} else if (check(TokenType.LPAREN)) {
 				Pair<ASTExpression[], Boolean> arglistData = parseArglist();
-				expr = new ASTCall(expr, arglistData.getFirst(), arglistData.getSecond());
+				expr = new ASTCall(p(), expr, arglistData.getFirst(), arglistData.getSecond());
 			} else if (check(TokenType.LBRACK)) {
-				expr = new ASTIndex(expr, parseExpression());
+				expr = new ASTIndex(p(), expr, parseExpression());
 				expect(TokenType.RBRACK);
 			} else if (check(TokenType.SCOPE)) {
-				expr = new ASTScope(expr, expectKey());
+				expr = new ASTScope(p(), expr, expectKey());
 			} else if (check(TokenType.ASSIGNMENT)) {
-				expr = new ASTAssignment(expr, parseExpression());
+				expr = new ASTAssignment(p(), expr, parseExpression());
 			} else if (check(TokenType.INC1)) {
-				expr = new ASTIncrement(expr, 1, true);
+				expr = new ASTIncrement(p(), expr, 1, true);
 			} else if (check(TokenType.DEC1)) {
-				expr = new ASTIncrement(expr, -1, true);
+				expr = new ASTIncrement(p(), expr, -1, true);
 			} else if (checkKeep(TokenType.OPERATOR)) {
 				Token t = tokenizer.nextToken();
 				OperatorInfo info = (OperatorInfo) t.getPayload();
 				if (info.getBinaryPrecedence() > prec || (info.isLeftToRight() && info.getBinaryPrecedence() == prec)) {
 					t.fail();
 				} else {
-					expr = new ASTBinOp(info.getType(), expr, parseExpression(info.getBinaryPrecedence()));
+					expr = new ASTBinOp(p(), info.getType(), expr, parseExpression(info.getBinaryPrecedence()));
 				}
 			}
 		}
@@ -219,12 +221,13 @@ public class Parser {
 	
 	private ASTBlock parseBlock() throws ParseException {
 		List<ASTInstruction> instructions = new ArrayList<>();
-		
+		StreamPosition pos = p();
+
 		while (!check(TokenType.RCURLY)) {
 			instructions.add(parseInstruction());
 		}
 		
-		return new ASTBlock(instructions.toArray(new ASTInstruction[0]));
+		return new ASTBlock(pos, instructions.toArray(new ASTInstruction[0]));
 	}
 
 	private Pair<Type, Key> parseVarAndType() throws ParseException {
@@ -238,12 +241,13 @@ public class Parser {
 	private ASTVarDecl parseVarDecl() throws ParseException {
 		Type type = parseType();
 		if (type != null) {
+			StreamPosition pos = p();
 			Key name = expectKey();
 			ASTExpression value = null;
 			if (check(TokenType.ASSIGNMENT))
 				value = parseExpression();
 			expect(TokenType.SEMICOLON);
-			return new ASTVarDecl(type, name, value);
+			return new ASTVarDecl(pos, type, name, value);
 		} else {
 			return null;
 		}
@@ -256,21 +260,24 @@ public class Parser {
 		} else if (check(TokenType.LCURLY)) {
 			return parseBlock();
 		} else if (check(TokenType.IF)) {
+			StreamPosition pos = p();
 			expect(TokenType.LPAREN);
 			ASTExpression condition = parseExpression();
 			expect(TokenType.RPAREN);
 			ASTInstruction ifClause = parseInstruction();
 			if (check(TokenType.ELSE)) {
-				return new ASTIf(condition, ifClause, parseInstruction());
+				return new ASTIf(pos, condition, ifClause, parseInstruction());
 			} else {
-				return new ASTIf(condition, ifClause);
+				return new ASTIf(pos, condition, ifClause);
 			}
 		} else if (check(TokenType.WHILE)) {
+			StreamPosition pos = p();
 			expect(TokenType.LPAREN);
 			ASTExpression condition = parseExpression();
 			expect(TokenType.RPAREN);
-			return new ASTWhile(condition, parseInstruction());
+			return new ASTWhile(pos, condition, parseInstruction());
 		} else if (check(TokenType.FOR)) {
+			StreamPosition pos = p();
 			expect(TokenType.LPAREN);
 			ASTInstruction init = parseVarDecl();
 			if (init == null) {
@@ -281,8 +288,9 @@ public class Parser {
 			expect(TokenType.SEMICOLON);
 			ASTExpression update = parseExpression();
 			expect(TokenType.RPAREN);
-			return new ASTFor(init, condition, update, parseInstruction());
+			return new ASTFor(p(), init, condition, update, parseInstruction());
 		} else if (check(TokenType.FOREACH)) {
+			StreamPosition pos = p();
 			expect(TokenType.LPAREN);
 			Pair<Type, Key> vt = parseVarAndType();
 			if (vt == null || vt.getFirst() == null || vt.getSecond() == null)
@@ -291,20 +299,23 @@ public class Parser {
 			ASTExpression init = parseExpression();
 			expect(TokenType.RPAREN);
 			ASTInstruction body = parseInstruction();
-			return new ASTForeach(vt.getFirst(), vt.getSecond(), init, body);
+			return new ASTForeach(pos, vt.getFirst(), vt.getSecond(), init, body);
 		} else if (check(TokenType.BREAK)) {
+			StreamPosition pos = p();
 			expect(TokenType.SEMICOLON);
-			return new ASTBreak();
+			return new ASTBreak(pos);
 		} else if (check(TokenType.CONTINUE)) {
+			StreamPosition pos = p();
 			expect(TokenType.SEMICOLON);
-			return new ASTContinue();	
+			return new ASTContinue(pos);
 		} else if (check(TokenType.RETURN)) {
+			StreamPosition pos = p();
 			if (check(TokenType.SEMICOLON)) {
-				return new ASTReturn(null);
+				return new ASTReturn(pos, null);
 			} else {
 				ASTExpression expr = parseExpression();
 				expect(TokenType.SEMICOLON);
-				return new ASTReturn(expr);
+				return new ASTReturn(pos, expr);
 			}
 		} else {
 			ASTExpression expr = parseExpression();
@@ -315,19 +326,23 @@ public class Parser {
 	
 	private ASTClass parseClass(TokenType terminator) throws ParseException {
 		List<ASTDecl> defs = new ArrayList<>();
+		StreamPosition cpos = p();
 	
 		while (!check(terminator)) {
 			if (check(TokenType.USE)) {
+				StreamPosition pos = p();
 				Key name = expectKey();
-				defs.add(new ASTDefaultDef(name));
+				defs.add(new ASTDefaultDef(pos, name));
 				expect(TokenType.SEMICOLON);
 			} else if (check(TokenType.INHERITS)) {
-				defs.add(new ASTInheritanceDef(((Instance) expect(TokenType.CONSTANT).getPayload()).asString()));
+				StreamPosition pos = p();
+				defs.add(new ASTInheritanceDef(pos, ((Instance) expect(TokenType.CONSTANT).getPayload()).asString()));
 				expect(TokenType.SEMICOLON);
 			} else if (check(TokenType.STRUCT) || check(TokenType.CLASS)) {
+				StreamPosition pos = p();
 				Key name = expectKey();
 				expect(TokenType.LCURLY);
-				defs.add(new ASTClassDef(name, parseClass()));
+				defs.add(new ASTClassDef(pos, name, parseClass()));
 				expect(TokenType.SEMICOLON);
 			} else {
 				SlotVisibility visibility = SlotVisibility.NONE;
@@ -340,19 +355,20 @@ public class Parser {
 
 				Type type = parseType();
 				Key name = expectKey();
+				StreamPosition pos = p();
 				if (check(TokenType.LPAREN)) {
 					Pair<Pair<Type, Key>[], Boolean> args = parseArgdefs();
 					expect(TokenType.LCURLY);
 					ASTInstruction body = parseBlock();
-					defs.add(new ASTFunctionDef(visibility, type, name, args.getFirst(), args.getSecond(), body));
+					defs.add(new ASTFunctionDef(pos, visibility, type, name, args.getFirst(), args.getSecond(), body));
 				} else {
-					defs.add(new ASTInstanceVarDef(visibility, type, name));
+					defs.add(new ASTInstanceVarDef(pos, visibility, type, name));
 					expect(TokenType.SEMICOLON);
 				}
 			}
 		}
 		
-		return new ASTClass(defs.toArray(new ASTDecl[0]));
+		return new ASTClass(cpos, defs.toArray(new ASTDecl[0]));
 	}
 
 	private ASTClass parseClass() throws ParseException {

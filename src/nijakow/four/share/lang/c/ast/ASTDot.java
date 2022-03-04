@@ -3,12 +3,14 @@ package nijakow.four.share.lang.c.ast;
 import nijakow.four.share.lang.base.CompilationException;
 import nijakow.four.share.lang.base.FCompiler;
 import nijakow.four.server.runtime.Key;
+import nijakow.four.share.lang.c.parser.StreamPosition;
 
 public class ASTDot extends ASTExpression {
 	private final ASTExpression expr;
 	private final Key key;
 	
-	public ASTDot(ASTExpression expr, Key key) {
+	public ASTDot(StreamPosition pos, ASTExpression expr, Key key) {
+		super(pos);
 		this.expr = expr;
 		this.key = key;
 	}

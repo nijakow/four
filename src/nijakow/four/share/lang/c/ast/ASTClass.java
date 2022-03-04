@@ -4,11 +4,13 @@ import nijakow.four.share.lang.base.CompilationException;
 import nijakow.four.share.lang.c.parser.ParseException;
 import nijakow.four.server.runtime.objects.blue.Blueprint;
 import nijakow.four.server.runtime.FourClassLoader;
+import nijakow.four.share.lang.c.parser.StreamPosition;
 
 public class ASTClass extends AST {
 	private final ASTDecl[] defs;
 	
-	public ASTClass(ASTDecl[] defs) {
+	public ASTClass(StreamPosition pos, ASTDecl[] defs) {
+		super(pos);
 		this.defs = defs;
 	}
 

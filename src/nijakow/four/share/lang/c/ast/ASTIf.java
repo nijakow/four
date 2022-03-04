@@ -3,17 +3,19 @@ package nijakow.four.share.lang.c.ast;
 import nijakow.four.share.lang.base.CompilationException;
 import nijakow.four.share.lang.base.FCompiler;
 import nijakow.four.share.lang.base.Label;
+import nijakow.four.share.lang.c.parser.StreamPosition;
 
 public class ASTIf extends ASTInstruction {
 	private final ASTExpression condition;
 	private final ASTInstruction ifClause;
 	private final ASTInstruction elseClause;
 	
-	public ASTIf(ASTExpression condition, ASTInstruction ifClause) {
-		this(condition, ifClause, null);
+	public ASTIf(StreamPosition pos, ASTExpression condition, ASTInstruction ifClause) {
+		this(pos, condition, ifClause, null);
 	}
 	
-	public ASTIf(ASTExpression condition, ASTInstruction ifClause, ASTInstruction elseClause) {
+	public ASTIf(StreamPosition pos, ASTExpression condition, ASTInstruction ifClause, ASTInstruction elseClause) {
+		super(pos);
 		this.condition = condition;
 		this.ifClause = ifClause;
 		this.elseClause = elseClause;

@@ -3,6 +3,7 @@ package nijakow.four.share.lang.c.ast;
 import nijakow.four.share.lang.base.CompilationException;
 import nijakow.four.share.lang.base.FCompiler;
 import nijakow.four.share.lang.base.Label;
+import nijakow.four.share.lang.c.parser.StreamPosition;
 
 public class ASTFor extends ASTInstruction {
 	private final ASTInstruction initialization;
@@ -10,7 +11,8 @@ public class ASTFor extends ASTInstruction {
 	private final ASTExpression update;
 	private final ASTInstruction body;
 
-	public ASTFor(ASTInstruction init, ASTExpression condition, ASTExpression update, ASTInstruction body) {
+	public ASTFor(StreamPosition pos, ASTInstruction init, ASTExpression condition, ASTExpression update, ASTInstruction body) {
+		super(pos);
 		this.initialization = init;
 		this.condition = condition;
 		this.update = update;

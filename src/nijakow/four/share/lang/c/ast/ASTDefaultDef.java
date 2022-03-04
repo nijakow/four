@@ -6,11 +6,12 @@ import nijakow.four.server.runtime.vm.code.Code;
 import nijakow.four.server.runtime.FourClassLoader;
 import nijakow.four.server.runtime.Key;
 import nijakow.four.share.lang.c.SlotVisibility;
+import nijakow.four.share.lang.c.parser.StreamPosition;
 
 public class ASTDefaultDef extends ASTDefinition {
 
-	public ASTDefaultDef(Key name) {
-		super(SlotVisibility.PRIVATE, null, name);
+	public ASTDefaultDef(StreamPosition pos, Key name) {
+		super(pos, SlotVisibility.PRIVATE, null, name);
 	}
 
 	@Override

@@ -3,13 +3,15 @@ package nijakow.four.share.lang.c.ast;
 import nijakow.four.share.lang.base.CompilationException;
 import nijakow.four.share.lang.base.FCompiler;
 import nijakow.four.share.lang.base.Label;
+import nijakow.four.share.lang.c.parser.StreamPosition;
 
 public class ASTBinOp extends ASTExpression {
 	private final OperatorType type;
 	private final ASTExpression left;
 	private final ASTExpression right;
 	
-	public ASTBinOp(OperatorType type, ASTExpression left, ASTExpression right) {
+	public ASTBinOp(StreamPosition pos, OperatorType type, ASTExpression left, ASTExpression right) {
+		super(pos);
 		this.type = type;
 		this.left = left;
 		this.right = right;
