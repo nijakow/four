@@ -159,6 +159,7 @@ public class Parser {
 			expr = new ASTUnaryOp(p(), info.getType(), parseExpression(info.getUnaryPrecedence()));
 		} else if (check(TokenType.NEW)) {
 			if (check(TokenType.LPAREN)) {
+				StreamPosition pos = p();
 				/*
 				 * We do have cases where the "new" operator works like a function call:
 				 *
@@ -168,12 +169,13 @@ public class Parser {
 				 *                                           - nijakow
 				 */
 				Pair<ASTExpression[], Boolean> arglistData = parseArglist();
-				expr = new ASTCall(p(), new ASTDot(null, new ASTThis(null), Key.get("_new")), arglistData.getFirst(), arglistData.getSecond());
+				expr = new ASTCall(pos, new ASTDot(null, new ASTThis(null), Key.get("_new")), arglistData.getFirst(), arglistData.getSecond());
 			} else {
 				Key clazz = expectKey();
 				expect(TokenType.LPAREN);
+				StreamPosition pos = p();
 				Pair<ASTExpression[], Boolean> arglistData = parseArglist();
-				expr = new ASTNew(p(), clazz, arglistData.getFirst(), arglistData.getSecond());
+				expr = new ASTNew(pos, clazz, arglistData.getFirst(), arglistData.getSecond());
 			}
 		} else {
 			expr = parseSimpleExpression(); 
@@ -190,8 +192,9 @@ public class Parser {
 			} else if (check(TokenType.DOT) || check(TokenType.RARROW)) {
 				expr = new ASTDot(p(), expr, expectKey());
 			} else if (check(TokenType.LPAREN)) {
+				StreamPosition pos = p();
 				Pair<ASTExpression[], Boolean> arglistData = parseArglist();
-				expr = new ASTCall(p(), expr, arglistData.getFirst(), arglistData.getSecond());
+				expr = new ASTCall(pos, expr, arglistData.getFirst(), arglistData.getSecond());
 			} else if (check(TokenType.LBRACK)) {
 				expr = new ASTIndex(p(), expr, parseExpression());
 				expect(TokenType.RBRACK);

@@ -154,11 +154,8 @@ public class ScopedCompiler implements FCompiler {
 
 	@Override
 	public void tell(AST ast) {
-		// TODO: Take the AST offset, and store it in the bytecode info
 		StreamPosition pos = ast.getPos();
-		if (pos != null) {
-			//System.out.println(pos.makeErrorText(ast.toString()));
-		}
+		// TODO: Take the AST offset, and store it in the bytecode info
 	}
 
 	@Override
