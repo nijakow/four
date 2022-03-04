@@ -36,10 +36,6 @@ public class BasicFSDeserializer {
     }
 
     private boolean extractFileByID(NVFileSystem nvfs, Directory parent, String name, String id, IdentityDatabase db) {
-        if (parent != null)
-            System.out.println("Restoring " + id + " (" + parent.getFullName() + "/" + name + ")");
-        else
-            System.out.println("Restoring " + id);
         final FileEntry entry = getEntry(id);
         if (entry == null)
             return false;
