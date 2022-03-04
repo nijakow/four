@@ -448,9 +448,9 @@ bool mv(string from, string to)
     return $mv(from, to);
 }
 
-bool recompile(string path)
+bool recompile(string path, func cb)
 {
-    return $recompile(path);
+    return $recompile(path, cb);
 }
 
 bool checkexec(string path)

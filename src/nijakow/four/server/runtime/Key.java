@@ -12,6 +12,7 @@ import nijakow.four.server.runtime.objects.Instance;
 import nijakow.four.server.runtime.objects.blue.Blue;
 import nijakow.four.server.runtime.objects.blue.Blueprint;
 import nijakow.four.server.runtime.objects.collections.FList;
+import nijakow.four.server.runtime.objects.standard.FClosure;
 import nijakow.four.server.runtime.objects.standard.FInteger;
 import nijakow.four.server.runtime.objects.standard.FString;
 import nijakow.four.server.runtime.security.users.Group;
@@ -22,6 +23,7 @@ import nijakow.four.server.runtime.vm.code.BuiltinCode;
 import nijakow.four.server.runtime.vm.code.Code;
 import nijakow.four.server.serialization.fs.BasicFSSerializer;
 import nijakow.four.server.serialization.fs.deserializer.BasicFSDeserializer;
+import nijakow.four.share.lang.FourCompilerException;
 import nijakow.four.share.lang.base.CompilationException;
 import nijakow.four.share.lang.c.parser.ParseException;
 import nijakow.four.share.util.Pair;
@@ -372,8 +374,9 @@ public class Key {
 		get("$recompile").code = new BuiltinCode() {
 			
 			@Override
-			public void run(Fiber fiber, Instance self, Instance[] args) throws CastException {
+			public void run(Fiber fiber, Instance self, Instance[] args) throws FourRuntimeException {
 				String path = args[0].asFString().asString();
+				FClosure callback = (args.length > 1) ? args[1].asFClosure() : null;
 				CompilationLogger logger = fiber.getVM().getLogger().newCompilationLogger();
 				try {
 					TextFile file = fiber.getVM().getFilesystem().resolveTextFile(path);
@@ -383,10 +386,14 @@ public class Key {
 						file.compile(logger);
 						fiber.setAccu(FInteger.getBoolean(true));
 					}
-				} catch (ParseException | NullPointerException | CompilationException e) {
-					// TODO: Handle this gracefully, tell the CompilationLogger about the exceptions (should be done by the compiler)
-					fiber.getVM().getLogger().printException(e);
-					fiber.setAccu(FInteger.getBoolean(false));
+				} catch (FourCompilerException e) {
+					logger.tell(e);
+					if (callback != null) {
+						fiber.push(new FString(logger.getTranscript()));
+						callback.invoke(fiber, 1);
+					} else {
+						fiber.setAccu(FInteger.getBoolean(false));
+					}
 				}
 			}
 		};

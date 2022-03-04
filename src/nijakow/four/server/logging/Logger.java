@@ -1,5 +1,6 @@
 package nijakow.four.server.logging;
 
+import nijakow.four.share.lang.c.parser.ParseException;
 import nijakow.four.share.util.Pair;
 
 import java.io.*;
