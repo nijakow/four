@@ -1,5 +1,6 @@
 package nijakow.four.server.runtime.objects.collections;
 
+import nijakow.four.server.runtime.exceptions.FourRuntimeException;
 import nijakow.four.server.runtime.objects.FloatingInstance;
 import nijakow.four.server.runtime.objects.Instance;
 import nijakow.four.server.runtime.types.ListType;
@@ -41,9 +42,13 @@ public class FList extends FloatingInstance {
 	}
 	
 	@Override
-	public Instance putIndex(Instance index, Instance value) throws CastException {
+	public Instance putIndex(Instance index, Instance value) throws FourRuntimeException {
 		type.getParent().expect(value);
-		list.set(index.asInt(), value);
+		try {
+			list.set(index.asInt(), value);
+		} catch (IndexOutOfBoundsException e) {
+			throw new FourRuntimeException("Index " + index.asInt() + " out of bounds!");
+		}
 		return this;
 	}
 

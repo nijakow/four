@@ -1,5 +1,6 @@
 package nijakow.four.server.runtime.objects.standard;
 
+import nijakow.four.server.runtime.exceptions.FourRuntimeException;
 import nijakow.four.server.runtime.objects.FloatingInstance;
 import nijakow.four.server.runtime.objects.Instance;
 import nijakow.four.server.runtime.objects.blue.Blue;
@@ -68,13 +69,13 @@ public class FString extends FloatingInstance {
 	}
 	
 	@Override
-	public Instance index(Instance index) {
+	public Instance index(Instance index) throws FourRuntimeException {
 		try {
 			int i = index.asInt();
 			if (i < 0) i = value.length() + i;
 			return FInteger.get(value.charAt(i));
 		} catch (StringIndexOutOfBoundsException e) {
-			return FInteger.get(0);
+			throw new FourRuntimeException("String index " + index.asInt() + " out of bounds!");
 		}
 	}
 
