@@ -21,45 +21,27 @@ public class ClientEditor extends JFrame implements ActionListener {
 	private final JScrollPane scrollPane;
 	private final JCheckBox highlight;
 	private final JTextPane pane;
-	private final StyledDocument doc;
-	private final Style def;
+	private final FDocument doc;
 	private final ClientConnection connection;
 	private final String id;
 	private final String path;
 	private final ScheduledExecutorService queue;
 	private JDialog settingsWindow;
-	private ScheduledFuture<?> future;
+	//private ScheduledFuture<?> future;
 	private boolean dark;
-	private final Runnable highlighter = this::updateSyntaxHighlighting;
 
 	public ClientEditor(ClientConnection c, String id, String path, String content) {
 		super(path);
 		this.path = path;
 		this.id = id;
-		this.queue = Executors.newScheduledThreadPool(2);
+		queue = Executors.newSingleThreadScheduledExecutor();
 		connection = c;
 		pane = new JTextPane();
+		doc = new FDocument();
+		pane.setDocument(doc);
 		pane.setText(content);
 		pane.setFont(new Font("Monospaced", Font.PLAIN, 14));
 		setKeyStrokes();
-		doc = pane.getStyledDocument();
-		doc.addDocumentListener(new DocumentListener() {
-			@Override
-			public void insertUpdate(DocumentEvent e) {
-				startSyntaxHighlighting();
-			}
-
-			@Override
-			public void removeUpdate(DocumentEvent e) {
-				startSyntaxHighlighting();
-			}
-
-			@Override
-			public void changedUpdate(DocumentEvent e) {
-			}
-		});
-		def = pane.getLogicalStyle();
-		addStyles();
 		getContentPane().setLayout(new BorderLayout());
 		scrollPane = new JScrollPane();
 		scrollPane.setOpaque(false);
@@ -130,7 +112,7 @@ public class ClientEditor extends JFrame implements ActionListener {
 				}
 			}
 		});
-		m.addActionForKeyStroke(KeyStroke.getKeyStroke(KeyEvent.VK_TAB, 0), new AbstractAction() {
+		/*m.addActionForKeyStroke(KeyStroke.getKeyStroke(KeyEvent.VK_TAB, 0), new AbstractAction() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				try {
@@ -139,16 +121,15 @@ public class ClientEditor extends JFrame implements ActionListener {
 					ex.printStackTrace();
 				}
 			}
-		});
+		});*/
 	}
 
 	private void startSyntaxHighlighting() {
-		future = queue.schedule(highlighter, 0, TimeUnit.MILLISECONDS);
+		doc.setHighlightingEnabled(true);
 	}
 
 	private  void stopSyntaxHighlighting() {
-		future.cancel(false);
-		doc.setCharacterAttributes(0, doc.getLength(), def, true);
+		doc.setHighlightingEnabled(false);
 	}
 
 	public void toggleMode(boolean dark) {
@@ -235,46 +216,6 @@ public class ClientEditor extends JFrame implements ActionListener {
 			settingsWindow.dispose();
 		}
 		super.dispose();
-	}
-
-	private void addStyles() {
-		Style s = doc.addStyle(Commands.Styles.STYLE_KEYWORD, def);
-		StyleConstants.setForeground(s, Color.red);
-		StyleConstants.setBold(s, true);
-		s = doc.addStyle(Commands.Styles.STYLE_TYPE, def);
-		StyleConstants.setForeground(s, Color.green);
-		s = doc.addStyle(Commands.Styles.STYLE_SPECIAL_WORD, def);
-		StyleConstants.setItalic(s, true);
-		StyleConstants.setForeground(s, Color.blue);
-		s = doc.addStyle(Commands.Styles.STYLE_STDLIB, def);
-		StyleConstants.setForeground(s, Color.orange);
-	}
-	
-	private void updateSyntaxHighlighting() {
-		Style defaultStyle = StyleContext.
-				   getDefaultStyleContext().
-				   getStyle(StyleContext.DEFAULT_STYLE);
-		doc.setCharacterAttributes(0, doc.getLength(), defaultStyle, true);
-		String keywords = "\\b(new|struct|class|inherits|use|this|if|else|while|for|break|continue|switch|case|return|private|protected|public)\\b";
-		Matcher matcher = Pattern.compile(keywords).matcher(pane.getText());
-		while (matcher.find())
-			doc.setCharacterAttributes(matcher.start(), matcher.end() - matcher.start(),
-					doc.getStyle(Commands.Styles.STYLE_KEYWORD), true);
-		keywords = "\\b(any|void|int|char|bool|string|object|list|mapping)\\b";
-		matcher = Pattern.compile(keywords).matcher(pane.getText());
-		while (matcher.find())
-			doc.setCharacterAttributes(matcher.start(), matcher.end() - matcher.start(),
-					doc.getStyle(Commands.Styles.STYLE_TYPE), true);
-		keywords = "\\b(true|false|nil|va_next|va_count)\\b";
-		matcher = Pattern.compile(keywords).matcher(pane.getText());
-		while (matcher.find())
-			doc.setCharacterAttributes(matcher.start(), matcher.end() - matcher.start(),
-					doc.getStyle(Commands.Styles.STYLE_SPECIAL_WORD), true);
-		keywords = "\\b(create|the|call|log|length|insert|append|remove|strlen|chr|write|prompt|password|edit)\\b";
-		matcher = Pattern.compile(keywords).matcher(pane.getText());
-		while (matcher.find())
-			doc.setCharacterAttributes(matcher.start(), matcher.end() - matcher.start(),
-					doc.getStyle(Commands.Styles.STYLE_STDLIB), true);
 	}
 
 	public void send(final boolean save, final String newPath) {
