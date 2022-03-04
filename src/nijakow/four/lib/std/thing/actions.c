@@ -99,6 +99,7 @@ bool act_take(object obj)
         return false;
     } else if (try_move(this, obj, this)) {
         me_act("takes ", obj->get_short(), ".\n");
+        printf("You take %s.\n", obj->get_short());
         obj->move_to(this);
         return true;
     }
@@ -113,10 +114,18 @@ bool act_drop(object obj)
         return false;
     } else if (try_move(this, obj, location)) {
         me_act("drops ", obj->get_short(), ".\n");
+        printf("You drop %s.\n", obj->get_short());
         obj->move_to(location);
         return true;
     }
     return false;
+}
+
+bool act_say(string text)
+{
+    me_act("says: ", text);
+    printf("You say: %s\n", text);
+    return true;
 }
 
 void create()

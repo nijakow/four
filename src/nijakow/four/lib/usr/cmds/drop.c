@@ -6,8 +6,6 @@ void cmd_drop_act(object obj)
         printf("There is no such thing here!\n");
     else if (!me()->act_drop(obj))
         printf("You can't drop that!\n");
-    else
-        printf("Dropped.\n");
     exit();
 }
 

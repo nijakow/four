@@ -6,8 +6,6 @@ void cmd_take_act(object obj)
         printf("There is no such thing here!\n");
     else if (!me()->act_take(obj))
         printf("You can't take that!\n");
-    else
-        printf("Taken.\n");
     exit();
 }
 
