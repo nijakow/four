@@ -1,5 +1,7 @@
 package nijakow.four.share.lang.c.parser;
 
+import nijakow.four.share.util.Pair;
+
 public class StringCharStreamPosition implements StreamPosition {
 	private final StringCharStream stream;
 	private final String text;
@@ -21,4 +23,19 @@ public class StringCharStreamPosition implements StreamPosition {
 		return index;
 	}
 
+	public Pair<Integer, Integer> getPos() {
+		int l = 1;
+		int c = 1;
+		int i = 0;
+		for (i = 0; i < index && i < text.length(); i++) {
+			final char p = text.charAt(i);
+			if (p == '\n') {
+				l++;
+				c = 1;
+			} else {
+				c++;
+			}
+		}
+		return new Pair(l, c);
+	}
 }

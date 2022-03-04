@@ -9,7 +9,7 @@ public class CompilationException extends FourCompilerException {
 
     public CompilationException(String message) { this(null, message); }
     public CompilationException(AST ast, String message) {
-        super(message);
+        super(null, message);
         this.ast = ast;
     }
 }
