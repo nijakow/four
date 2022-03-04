@@ -106,13 +106,15 @@ public class VM {
 					x++;
 				}
 			} catch (FourRuntimeException e) {
-				logger.printException(e);
 				StreamPosition lastTell = fiber.getLastTell();
 				if (lastTell != null) {
-					logger.println(LogLevel.INFO, "Execution context:");
-					logger.println(LogLevel.INFO, fiber.getLastTell().makeErrorText(e.getMessage()));
+					logger.println(LogLevel.ERROR, "Caught " + e.getClass());
+					logger.println(LogLevel.ERROR, "Execution context:");
+					logger.println(LogLevel.ERROR, fiber.getLastTell().makeErrorText(e.getMessage()));
+				} else {
+					logger.printException(e);
+					logger.println(LogLevel.INFO, "The exception was caught, the VM will continue to run.");
 				}
-				logger.println(LogLevel.INFO, "The exception was caught, the VM will continue to run.");
 				reportError("four", e.getClass().getName(), e.getMessage());
 			}
 		}
