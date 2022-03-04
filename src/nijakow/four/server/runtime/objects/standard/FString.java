@@ -83,13 +83,13 @@ public class FString extends FloatingInstance {
 		return value.length();
 	}
 
-	private Blue getBlue(NVFileSystem fs) throws CompilationException, ParseException {
-		return fs.getBlue(value);
+	private Blue getBlue(VM vm, NVFileSystem fs) throws CompilationException, ParseException {
+		return fs.getBlue(vm, value);
 	}
 
 	@Override
 	public Code extractMethod(VM vm, Key key) throws CompilationException, ParseException {
-		Blue blue = getBlue(vm.getFilesystem());
+		Blue blue = getBlue(vm, vm.getFilesystem());
 		return blue.extractMethod(vm, key);
 	}
 

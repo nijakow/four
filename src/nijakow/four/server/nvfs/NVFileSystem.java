@@ -1,5 +1,6 @@
 package nijakow.four.server.nvfs;
 
+import nijakow.four.server.runtime.vm.VM;
 import nijakow.four.server.serialization.fs.IFSSerializer;
 import nijakow.four.server.runtime.objects.blue.Blueprint;
 import nijakow.four.server.runtime.security.users.Group;
@@ -178,11 +179,11 @@ public class NVFileSystem implements FileParent, ISerializable {
         }
     }
 
-    public Blue getBlue(String name) throws CompilationException, ParseException {
+    public Blue getBlue(VM vm, String name) throws CompilationException, ParseException {
         TextFile file = resolveTextFile(name);
         if (file == null)
             return null;
-        file.ensureCompiled();
+        file.ensureCompiled(vm.getLogger().newCompilationLogger());
         return file.getInstance();
     }
 

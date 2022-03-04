@@ -1,6 +1,14 @@
 package nijakow.four.server.runtime;
 
-import nijakow.four.server.serialization.fs.BasicFSSerializer;
+import nijakow.four.server.logging.CompilationLogger;
+import nijakow.four.server.logging.LogLevel;
+import nijakow.four.server.logging.Logger;
+import nijakow.four.server.nvfs.files.Directory;
+import nijakow.four.server.nvfs.files.File;
+import nijakow.four.server.nvfs.files.TextFile;
+import nijakow.four.server.runtime.exceptions.CastException;
+import nijakow.four.server.runtime.exceptions.FourRuntimeException;
+import nijakow.four.server.runtime.objects.Instance;
 import nijakow.four.server.runtime.objects.blue.Blue;
 import nijakow.four.server.runtime.objects.blue.Blueprint;
 import nijakow.four.server.runtime.objects.collections.FList;
@@ -9,22 +17,18 @@ import nijakow.four.server.runtime.objects.standard.FString;
 import nijakow.four.server.runtime.security.users.Group;
 import nijakow.four.server.runtime.security.users.Identity;
 import nijakow.four.server.runtime.security.users.User;
-import nijakow.four.server.serialization.fs.deserializer.BasicFSDeserializer;
-import nijakow.four.share.lang.base.CompilationException;
-import nijakow.four.share.lang.c.parser.ParseException;
-import nijakow.four.server.runtime.exceptions.CastException;
-import nijakow.four.server.runtime.exceptions.FourRuntimeException;
-import nijakow.four.server.nvfs.files.Directory;
-import nijakow.four.server.nvfs.files.File;
-import nijakow.four.server.nvfs.files.TextFile;
-import nijakow.four.server.runtime.objects.*;
 import nijakow.four.server.runtime.vm.Fiber;
 import nijakow.four.server.runtime.vm.code.BuiltinCode;
 import nijakow.four.server.runtime.vm.code.Code;
-import nijakow.four.server.serialization.textserializer.Serializer;
+import nijakow.four.server.serialization.fs.BasicFSSerializer;
+import nijakow.four.server.serialization.fs.deserializer.BasicFSDeserializer;
+import nijakow.four.share.lang.base.CompilationException;
+import nijakow.four.share.lang.c.parser.ParseException;
 import nijakow.four.share.util.Pair;
 
-import java.io.*;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -90,7 +94,7 @@ public class Key {
 			
 			@Override
 			public void run(Fiber fiber, Instance self, Instance[] args) throws CastException, CompilationException, ParseException {
-				Blue blue = fiber.getVM().getFilesystem().getBlue(args[0].asFString().asString());
+				Blue blue = fiber.getVM().getFilesystem().getBlue(fiber.getVM(), args[0].asFString().asString());
 				if (blue == null)
 					fiber.setAccu(Instance.getNil());
 				else
@@ -163,7 +167,10 @@ public class Key {
 			
 			@Override
 			public void run(Fiber fiber, Instance self, Instance[] args) {
-				for (Instance arg : args) System.out.print(arg.asString());
+				final Logger logger = fiber.getVM().getLogger();
+				for (Instance arg : args) {
+					logger.print(LogLevel.INTERNAL, arg.asString());
+				}
 			}
 		};
 		get("$pause").code = new BuiltinCode() {
@@ -367,17 +374,18 @@ public class Key {
 			@Override
 			public void run(Fiber fiber, Instance self, Instance[] args) throws CastException {
 				String path = args[0].asFString().asString();
+				CompilationLogger logger = fiber.getVM().getLogger().newCompilationLogger();
 				try {
 					TextFile file = fiber.getVM().getFilesystem().resolveTextFile(path);
 					if (file == null)
 						fiber.setAccu(new FInteger(0));
 					else {
-						file.compile();
+						file.compile(logger);
 						fiber.setAccu(new FInteger(1));
 					}
 				} catch (ParseException | NullPointerException | CompilationException e) {
-					// TODO: Handle this gracefully
-					e.printStackTrace();
+					// TODO: Handle this gracefully, tell the CompilationLogger about the exceptions (should be done by the compiler)
+					fiber.getVM().getLogger().printException(e);
 					fiber.setAccu(new FInteger(0));
 				}
 			}
@@ -625,8 +633,8 @@ public class Key {
 					fileOutputStream.close();
 					fiber.setAccu(new FInteger(1));
 				} catch (IOException e) {
+					fiber.getVM().getLogger().printException(e);
 					fiber.setAccu(new FInteger(0));
-					e.printStackTrace();
 				}
 			}
 		};
@@ -652,7 +660,7 @@ public class Key {
 					fiber.setAccu(new FInteger(1));
 				} catch (IOException e) {
 					fiber.setAccu(new FInteger(0));
-					e.printStackTrace();
+					fiber.getVM().getLogger().printException(e);
 				}
 			}
 		};

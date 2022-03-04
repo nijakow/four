@@ -58,4 +58,8 @@ public class Logger {
     public void printException(Throwable e) {
         printException(LogLevel.ERROR, e);
     }
+
+    public CompilationLogger newCompilationLogger() {
+        return new CompilationLogger(this);
+    }
 }

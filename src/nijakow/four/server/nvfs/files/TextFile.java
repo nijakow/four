@@ -1,5 +1,6 @@
 package nijakow.four.server.nvfs.files;
 
+import nijakow.four.server.logging.CompilationLogger;
 import nijakow.four.server.runtime.FourClassLoader;
 import nijakow.four.server.runtime.Key;
 import nijakow.four.server.nvfs.FileParent;
@@ -67,20 +68,20 @@ public class TextFile extends File {
         return blue;
     }
 
-    public void ensureCompiled() throws CompilationException, ParseException {
+    public void ensureCompiled(CompilationLogger logger) throws CompilationException, ParseException {
         if (blueprint == null)
-            compile();
+            compile(logger);
     }
 
-    public Blueprint compile() throws ParseException, CompilationException {
+    public Blueprint compile(CompilationLogger logger) throws ParseException, CompilationException {
         if (blueprint == null || isDirty) {
-            System.out.println("Compiling " + getFullName() + "...");
+            logger.visitFile(getFullName());
             Parser parser = new Parser(new Tokenizer(new StringCharStream(getContents())));
             ASTClass file = parser.parseFile();
             blueprint = file.compile(getFullName(), new FourClassLoader() {
                 @Override
                 public Blueprint load(String path) throws ParseException, CompilationException {
-                    return resolve(path).asTextFile().compile();
+                    return resolve(path).asTextFile().compile(logger);
                 }
 
                 @Override
