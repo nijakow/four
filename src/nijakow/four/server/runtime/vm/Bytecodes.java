@@ -27,4 +27,5 @@ public class Bytecodes {
 	public static final byte BYTECODE_MAKE_MAPPING = 0x17;
 	public static final byte BYTECODE_LOAD_INDEX = 0x18;
 	public static final byte BYTECODE_STORE_INDEX = 0x19;
+    public static final int BYTECODE_TELL = 0x20;
 }

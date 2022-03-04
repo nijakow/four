@@ -225,6 +225,11 @@ public class Frame {
 			fiber.setAccu(new FMapping(instances));
 			break;
 		}
+		case Bytecodes.BYTECODE_TELL: {
+			fiber.setLastTell(code.tell(code.u16(ip)));
+			ip += 2;
+			break;
+		}
 		default:
 			throw new FourRuntimeException("Unknown bytecode!");
 		}

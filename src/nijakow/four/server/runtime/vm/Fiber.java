@@ -6,6 +6,7 @@ import nijakow.four.server.runtime.objects.blue.Blue;
 import nijakow.four.server.runtime.vm.code.ByteCode;
 import nijakow.four.server.runtime.exceptions.FourRuntimeException;
 import nijakow.four.server.runtime.objects.Instance;
+import nijakow.four.share.lang.c.parser.StreamPosition;
 
 public class Fiber {
 	private final VM vm;
@@ -13,6 +14,7 @@ public class Fiber {
 	private Instance accumulator;
 	private final Stack<Instance> stack = new Stack<>();
 	private Frame top = null;
+	private StreamPosition lastTell = null;
 
 	Fiber(VM vm) { this(vm, new SharedFiberState(vm)); }
 	Fiber(VM vm, SharedFiberState state) {
@@ -30,6 +32,14 @@ public class Fiber {
 
 	public void setAccu(Instance value) {
 		accumulator = value;
+	}
+
+	public StreamPosition getLastTell() {
+		return this.lastTell;
+	}
+
+	public void setLastTell(StreamPosition tell) {
+		this.lastTell = tell;
 	}
 
 	public void push(Instance value) {

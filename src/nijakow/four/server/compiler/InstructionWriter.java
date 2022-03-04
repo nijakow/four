@@ -11,12 +11,14 @@ import nijakow.four.server.runtime.Key;
 import nijakow.four.server.runtime.types.ListType;
 import nijakow.four.server.runtime.types.Type;
 import nijakow.four.server.runtime.vm.Bytecodes;
+import nijakow.four.share.lang.c.parser.StreamPosition;
 
 public class InstructionWriter {	
 	private final List<Byte> out = new ArrayList<>();
 	private final List<Key> keys = new ArrayList<>();
 	private final List<Instance> constants = new ArrayList<>();
 	private final List<Type> types = new ArrayList<>();
+	private final List<StreamPosition> tells = new ArrayList<>();
 	private int maxLocal = 0;
 	private int paramCount = 0;
 	private boolean hasVarargs = false;
@@ -56,6 +58,15 @@ public class InstructionWriter {
 			types.add(value);
 		}
 	}
+	private void tell(StreamPosition pos) {
+		int i = tells.indexOf(pos);
+		if (i >= 0) {
+			u16(i);
+		} else {
+			u16(tells.size());
+			tells.add(pos);
+		}
+	}
 
 	public Integer getOffset() {
 		return out.size();
@@ -88,6 +99,11 @@ public class InstructionWriter {
 	public void writeTypeCheck(Type type) {
 		u8(Bytecodes.BYTECODE_TYPE_CHECK);
 		type(type);
+	}
+
+	public void writeTell(StreamPosition pos) {
+		u8(Bytecodes.BYTECODE_TELL);
+		tell(pos);
 	}
 
 	public void writeLoadThis() {
@@ -195,6 +211,7 @@ public class InstructionWriter {
 							bytes,
 							keys.toArray(new Key[0]),
 							constants.toArray(new Instance[0]),
-							types.toArray(new Type[0]));
+							types.toArray(new Type[0]),
+							tells.toArray(new StreamPosition[0]));
 	}
 }

@@ -5,6 +5,7 @@ import nijakow.four.server.runtime.exceptions.CastException;
 import nijakow.four.server.runtime.objects.Instance;
 import nijakow.four.server.runtime.types.Type;
 import nijakow.four.server.runtime.vm.Fiber;
+import nijakow.four.share.lang.c.parser.StreamPosition;
 
 public class ByteCode implements Code {
 	private final int params;
@@ -14,8 +15,9 @@ public class ByteCode implements Code {
 	private final Key[] keys;
 	private final Instance[] constants;
 	private final Type[] types;
+	private final StreamPosition[] tells;
 	
-	public ByteCode(int params, boolean hasVarargs, int locals, byte[] bytecodes, Key[] keys, Instance[] constants, Type[] types) {
+	public ByteCode(int params, boolean hasVarargs, int locals, byte[] bytecodes, Key[] keys, Instance[] constants, Type[] types, StreamPosition[] tells) {
 		this.params = params;
 		this.hasVarargs = hasVarargs;
 		this.locals = locals;
@@ -23,6 +25,7 @@ public class ByteCode implements Code {
 		this.keys = keys;
 		this.constants = constants;
 		this.types = types;
+		this.tells = tells;
 	}
 
 	public int getLocalCount() {
@@ -52,6 +55,8 @@ public class ByteCode implements Code {
 	public Type type(int index) {
 		return types[index];
 	}
+
+	public StreamPosition tell(int index) { return tells[index]; }
 
 	public boolean argCheck(int args) {
 		return (args == params) || (hasVarargs && args > params);

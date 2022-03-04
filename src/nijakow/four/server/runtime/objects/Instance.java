@@ -57,9 +57,9 @@ public abstract class Instance implements ISerializable {
 	public FClosure asFClosure() throws CastException { throw new CastException(Type.getFunc(), this); }
 	public FConnection asFConnection() throws FourRuntimeException { throw new FourRuntimeException("Conversion failed:" + this + " to FConnection!"); }
 	
-	public Instance plus(Instance y) { throw new RuntimeException("Addition failed!"); }
+	public Instance plus(Instance y) throws FourRuntimeException { throw new FourRuntimeException("Addition failed!"); }
 	
-	public Instance index(Instance index) { throw new RuntimeException("Invalid index!"); }
+	public Instance index(Instance index) throws FourRuntimeException { throw new FourRuntimeException("Invalid index!"); }
 	public Instance putIndex(Instance index, Instance value) throws FourRuntimeException { throw new FourRuntimeException("Invalid index!"); }
 	public int length() { return 0; }
 

@@ -12,6 +12,7 @@ import nijakow.four.server.runtime.objects.misc.FConnection;
 import nijakow.four.server.runtime.objects.standard.FClosure;
 import nijakow.four.server.runtime.objects.standard.FString;
 import nijakow.four.server.runtime.security.users.IdentityDatabase;
+import nijakow.four.share.lang.c.parser.StreamPosition;
 import nijakow.four.share.util.ComparablePair;
 
 import java.util.LinkedList;
@@ -106,6 +107,11 @@ public class VM {
 				}
 			} catch (FourRuntimeException e) {
 				logger.printException(e);
+				StreamPosition lastTell = fiber.getLastTell();
+				if (lastTell != null) {
+					logger.println(LogLevel.INFO, "Execution context:");
+					logger.println(LogLevel.INFO, fiber.getLastTell().makeErrorText(e.getMessage()));
+				}
 				logger.println(LogLevel.INFO, "The exception was caught, the VM will continue to run.");
 				reportError("four", e.getClass().getName(), e.getMessage());
 			}
