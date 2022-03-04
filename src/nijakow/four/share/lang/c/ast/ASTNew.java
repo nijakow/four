@@ -19,6 +19,7 @@ public class ASTNew extends ASTExpression {
 
 	@Override
 	void compile(FCompiler compiler) throws CompilationException {
+		compiler.tell(this);
 		for (ASTExpression expr : args) {
 			expr.compile(compiler);
 			compiler.compilePush();

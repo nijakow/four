@@ -17,6 +17,7 @@ public class ASTScope extends ASTExpression {
 
 	@Override
 	public void compile(FCompiler compiler) throws CompilationException {
+		compiler.tell(this);
 		expr.compile(compiler);
 		compiler.compileScope(member);
 	}

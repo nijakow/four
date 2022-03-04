@@ -19,6 +19,7 @@ public class ASTTernary extends ASTExpression {
 
 	@Override
 	void compile(FCompiler compiler) throws CompilationException {
+		compiler.tell(this);
 		Label elseBegin = compiler.openLabel();
 		Label end = compiler.openLabel();
 		

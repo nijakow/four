@@ -15,6 +15,7 @@ public class ASTReturn extends ASTInstruction {
 
 	@Override
 	void compile(FCompiler compiler) throws CompilationException {
+		compiler.tell(this);
 		if (this.value == null) {
 			compiler.compileLoadConstant(Instance.getNil());
 		} else {

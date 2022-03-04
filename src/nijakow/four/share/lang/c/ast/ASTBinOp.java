@@ -19,6 +19,7 @@ public class ASTBinOp extends ASTExpression {
 
 	@Override
 	void compile(FCompiler compiler) throws CompilationException {
+		compiler.tell(this);
 		switch (type) {
 		case LOGAND: {
 			Label label = compiler.openLabel();

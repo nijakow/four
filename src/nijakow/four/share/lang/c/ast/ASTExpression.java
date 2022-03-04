@@ -11,6 +11,7 @@ public abstract class ASTExpression extends ASTInstruction {
 	}
 
 	public void compileCall(FCompiler compiler, int args, boolean hasVarargs) throws CompilationException {
+		compiler.tell(this);
 		this.compile(compiler);
 		compiler.compileCall(args, hasVarargs);
 	}

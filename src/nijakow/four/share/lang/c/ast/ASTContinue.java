@@ -11,6 +11,7 @@ public class ASTContinue extends ASTInstruction {
 
 	@Override
 	void compile(FCompiler compiler) {
+		compiler.tell(this);
 		compiler.getContinueLabel().compileJump();
 	}
 }

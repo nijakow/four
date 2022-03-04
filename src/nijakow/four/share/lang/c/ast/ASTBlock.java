@@ -14,6 +14,7 @@ public class ASTBlock extends ASTInstruction {
 
 	@Override
 	void compile(FCompiler compiler) throws CompilationException {
+		compiler.tell(this);
 		compiler = compiler.subscope();
 		for (ASTInstruction instruction : instructions) {
 			instruction.compile(compiler);

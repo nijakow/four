@@ -11,6 +11,7 @@ public class ASTBreak extends ASTInstruction {
 
 	@Override
 	void compile(FCompiler compiler) {
+		compiler.tell(this);
 		compiler.getBreakLabel().compileJump();
 	}
 }

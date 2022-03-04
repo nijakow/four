@@ -16,6 +16,7 @@ public class ASTIndex extends ASTExpression {
 
 	@Override
 	void compile(FCompiler compiler) throws CompilationException {
+		compiler.tell(this);
 		expr.compile(compiler);
 		compiler.compilePush();
 		index.compile(compiler);
@@ -24,6 +25,7 @@ public class ASTIndex extends ASTExpression {
 
 	@Override
 	public void compileAssignment(FCompiler compiler, ASTExpression right) throws CompilationException {
+		compiler.tell(this);
 		expr.compile(compiler);
 		compiler.compilePush();
 		index.compile(compiler);

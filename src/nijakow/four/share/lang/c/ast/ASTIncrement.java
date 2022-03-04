@@ -19,6 +19,7 @@ public class ASTIncrement extends ASTExpression {
 
 	@Override
 	void compile(FCompiler compiler) throws CompilationException {
+		compiler.tell(this);
 		expr.compileAssignment(compiler, new ASTBinOp(null, OperatorType.PLUS, expr, new ASTConstant(null, FInteger.get(inc))));
 		if (post) {
 			compiler.compilePush();

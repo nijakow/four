@@ -23,12 +23,14 @@ public class ASTDot extends ASTExpression {
 
 	@Override
 	public void compileCall(FCompiler compiler, int args, boolean hasVarargs) throws CompilationException {
+		compiler.tell(this);
 		expr.compile(compiler);
 		compiler.compileDotCall(key, args, hasVarargs);
 	}
 
 	@Override
 	public void compileAssignment(FCompiler compiler, ASTExpression right) throws CompilationException {
+		compiler.tell(this);
 		right.compile(compiler);
 		compiler.compilePush();
 		expr.compile(compiler);

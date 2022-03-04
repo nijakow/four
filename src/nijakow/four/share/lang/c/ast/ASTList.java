@@ -17,6 +17,7 @@ public class ASTList extends ASTExpression {
 
 	@Override
 	void compile(FCompiler compiler) throws CompilationException {
+		compiler.tell(this);
 		for (ASTExpression expr : exprs) {
 			expr.compile(compiler);
 			compiler.compilePush();

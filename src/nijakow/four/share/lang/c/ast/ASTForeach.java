@@ -24,6 +24,7 @@ public class ASTForeach extends ASTInstruction {
 
 	@Override
 	void compile(FCompiler compiler) throws CompilationException {
+		compiler.tell(this);
 		final Key indexVarName = Key.newGensym();
 		final Type indexVarType = Type.getInt();
 		final Key listVarName = Key.newGensym();

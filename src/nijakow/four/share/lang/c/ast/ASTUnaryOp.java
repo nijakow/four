@@ -20,6 +20,7 @@ public class ASTUnaryOp extends ASTExpression {
 
 	@Override
 	void compile(FCompiler compiler) throws CompilationException {
+		compiler.tell(this);
 		operand.compile(compiler);
 		compiler.compileOp(type);
 	}

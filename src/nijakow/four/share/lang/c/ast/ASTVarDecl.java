@@ -24,6 +24,7 @@ public class ASTVarDecl extends ASTInstruction {
 
 	@Override
 	void compile(FCompiler compiler) throws CompilationException {
+		compiler.tell(this);
 		if (value != null) {
 			value.compile(compiler);
 			compiler.addLocal(type, name);

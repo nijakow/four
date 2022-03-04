@@ -10,6 +10,7 @@ public class ASTThis extends ASTExpression {
 
 	@Override
 	public void compile(FCompiler compiler) {
+		compiler.tell(this);
 		compiler.compileLoadThis();
 	}
 }

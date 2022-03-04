@@ -17,6 +17,7 @@ public class ASTWhile extends ASTInstruction {
 
 	@Override
 	void compile(FCompiler compiler) throws CompilationException {
+		compiler.tell(this);
 		compiler = compiler.subscope();
 		Label breakLabel = compiler.openBreakLabel();
 		Label continueLabel = compiler.openContinueLabel();

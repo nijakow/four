@@ -1,5 +1,7 @@
 package nijakow.four.share.lang.base;
 
+import nijakow.four.share.lang.c.ast.AST;
+import nijakow.four.share.lang.c.ast.ASTScope;
 import nijakow.four.share.lang.c.ast.OperatorType;
 import nijakow.four.server.runtime.objects.Instance;
 import nijakow.four.server.runtime.Key;
@@ -44,4 +46,6 @@ public interface FCompiler {
 	
 	void compileMakeList(ListType type, int length);
 	void compileMakeMapping(int length);
+
+    void tell(AST ast);
 }

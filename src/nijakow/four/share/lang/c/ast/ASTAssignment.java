@@ -16,6 +16,7 @@ public class ASTAssignment extends ASTExpression {
 
 	@Override
 	void compile(FCompiler compiler) throws CompilationException {
+		compiler.tell(this);
 		left.compileAssignment(compiler, right);
 	}
 }

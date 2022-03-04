@@ -20,6 +20,7 @@ public class ASTIdent extends ASTExpression {
 
 	@Override
 	public void compileCall(FCompiler compiler, int args, boolean hasVarargs) throws CompilationException {
+		compiler.tell(this);
 		if (compiler.isLocal(identifier)) {
 			super.compileCall(compiler, args, hasVarargs);
 		} else {
@@ -30,6 +31,7 @@ public class ASTIdent extends ASTExpression {
 
 	@Override
 	public void compileAssignment(FCompiler compiler, ASTExpression right) throws CompilationException {
+		compiler.tell(this);
 		right.compile(compiler);
 		compiler.compileStoreVariable(identifier);
 	}

@@ -14,6 +14,7 @@ public class ASTConstant extends ASTExpression {
 
 	@Override
 	void compile(FCompiler compiler) {
+		compiler.tell(this);
 		compiler.compileLoadConstant(this.value);
 	}
 }

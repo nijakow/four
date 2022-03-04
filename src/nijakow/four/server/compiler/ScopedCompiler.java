@@ -6,12 +6,14 @@ import java.util.function.Consumer;
 
 import nijakow.four.share.lang.base.FCompiler;
 import nijakow.four.share.lang.base.Label;
+import nijakow.four.share.lang.c.ast.AST;
 import nijakow.four.share.lang.c.ast.OperatorType;
 import nijakow.four.server.runtime.vm.code.Code;
 import nijakow.four.server.runtime.objects.Instance;
 import nijakow.four.server.runtime.Key;
 import nijakow.four.server.runtime.types.ListType;
 import nijakow.four.server.runtime.types.Type;
+import nijakow.four.share.lang.c.parser.StreamPosition;
 import nijakow.four.share.util.Pair;
 
 class ScopedCompilerLabel implements Label {
@@ -148,6 +150,15 @@ public class ScopedCompiler implements FCompiler {
 			return parent.getContinueLabel();
 		else
 			return null;
+	}
+
+	@Override
+	public void tell(AST ast) {
+		// TODO: Take the AST offset, and store it in the bytecode info
+		StreamPosition pos = ast.getPos();
+		if (pos != null) {
+			//System.out.println(pos.makeErrorText(ast.toString()));
+		}
 	}
 
 	@Override
