@@ -37,6 +37,8 @@ use $adduser;
 use $deluser;
 use $addgroup;
 use $delgroup;
+use $addtogroup;
+use $removefromgroup;
 use $chpass;
 use $getshell;
 use $chsh;
@@ -542,6 +544,16 @@ string addgroup(string name)
 bool delgroup(string name)
 {
     return $delgroup(name);
+}
+
+bool addtogroup(string name, string group)
+{
+    return $addtogroup(name, group);
+}
+
+bool removefromgroup(string name, string group)
+{
+    return $removefromgroup(name, group);
 }
 
 bool chpass(string user, string pass)

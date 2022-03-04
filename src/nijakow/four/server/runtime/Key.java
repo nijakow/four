@@ -598,6 +598,28 @@ public class Key {
 				fiber.setAccu(FInteger.getBoolean(result));
 			}
 		};
+		get("$addtogroup").code = new BuiltinCode() {
+			@Override
+			public void run(Fiber fiber, Instance self, Instance[] args) throws FourRuntimeException {
+				final Identity ident = fiber.getVM().getIdentityDB().getIdentityByName(args[0].asFString().asString());
+				final Group group = fiber.getVM().getIdentityDB().getGroupByName(args[1].asFString().asString());
+				boolean result = fiber.isRoot() && ident != null && group != null;
+				if (result)
+					group.add(ident);
+				fiber.setAccu(FInteger.getBoolean(result));
+			}
+		};
+		get("$removefromgroup").code = new BuiltinCode() {
+			@Override
+			public void run(Fiber fiber, Instance self, Instance[] args) throws FourRuntimeException {
+				final Identity ident = fiber.getVM().getIdentityDB().getIdentityByName(args[0].asFString().asString());
+				final Group group = fiber.getVM().getIdentityDB().getGroupByName(args[1].asFString().asString());
+				boolean result = fiber.isRoot() && ident != null && group != null;
+				if (result)
+					group.remove(ident);
+				fiber.setAccu(FInteger.getBoolean(result));
+			}
+		};
 		get("$chpass").code = new BuiltinCode() {
 			@Override
 			public void run(Fiber fiber, Instance self, Instance[] args) throws FourRuntimeException {
