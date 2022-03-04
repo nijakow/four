@@ -408,7 +408,7 @@ public class Parser {
 	private Token expect(TokenType type) throws ParseException {
 		Token t = nextToken();
 		if (t.is(type)) return t;
-		else throw new ParseException(t, "Expected different token! " + type + ", got " + t.getType());
+		else throw new ParseException(t, "Expected " + type + ", got " + t.getType() + "!");
 	}
 	
 	private Key expectKey() throws ParseException {

@@ -18,7 +18,7 @@ public class ASTDefaultDef extends ASTDefinition {
 	public void compileInto(Blueprint blueprint, FourClassLoader fs) throws CompilationException {
 		Code code = getName().getCode();
 		if (code == null)
-			throw new CompilationException("Oof. Can't import this code!");
+			compilationError("Import not possible.");
 		blueprint.addMethod(getVisibility(), getName(), code);
 	}
 }
