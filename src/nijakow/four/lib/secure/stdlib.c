@@ -34,7 +34,9 @@ use $groups;
 use $finduser;
 use $findgroup;
 use $adduser;
+use $deluser;
 use $addgroup;
+use $delgroup;
 use $chpass;
 use $getshell;
 use $chsh;
@@ -527,9 +529,19 @@ string adduser(string name)
     return $adduser(name);
 }
 
+bool deluser(string name)
+{
+    return $deluser(name);
+}
+
 string addgroup(string name)
 {
     return $addgroup(name);
+}
+
+bool delgroup(string name)
+{
+    return $delgroup(name);
 }
 
 bool chpass(string user, string pass)

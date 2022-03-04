@@ -567,6 +567,16 @@ public class Key {
 				fiber.setAccu((user != null) ? new FString(user.getName()) : Instance.getNil());
 			}
 		};
+		get("$deluser").code = new BuiltinCode() {
+			@Override
+			public void run(Fiber fiber, Instance self, Instance[] args) throws FourRuntimeException {
+				final String username = args[0].asFString().asString();
+				boolean result = fiber.isRoot();
+				if (result)
+					result = fiber.getVM().getIdentityDB().deleteIdentity(username);
+				fiber.setAccu(FInteger.getBoolean(result));
+			}
+		};
 		get("$addgroup").code = new BuiltinCode() {
 			@Override
 			public void run(Fiber fiber, Instance self, Instance[] args) throws FourRuntimeException {
@@ -576,6 +586,16 @@ public class Key {
 					group = fiber.getVM().getIdentityDB().newGroup(username);
 				}
 				fiber.setAccu((group != null) ? new FString(group.getName()) : Instance.getNil());
+			}
+		};
+		get("$delgroup").code = new BuiltinCode() {
+			@Override
+			public void run(Fiber fiber, Instance self, Instance[] args) throws FourRuntimeException {
+				final String username = args[0].asFString().asString();
+				boolean result = fiber.isRoot();
+				if (result)
+					result = fiber.getVM().getIdentityDB().deleteIdentity(username);
+				fiber.setAccu(FInteger.getBoolean(result));
 			}
 		};
 		get("$chpass").code = new BuiltinCode() {

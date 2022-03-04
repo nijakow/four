@@ -137,4 +137,17 @@ public class IdentityDatabase {
             }
         }
     }
+
+    public boolean deleteIdentity(String name) {
+        Identity identity = getIdentityByName(name);
+        if (identity == getRootUser() || identity == getUnprivilegedUser() || identity == usersGroup || identity == rootGroup)
+            return false;
+        else if (identity != null) {
+            identities.remove(identity);
+            identity.unlink();
+            return true;
+        } else {
+            return false;
+        }
+    }
 }

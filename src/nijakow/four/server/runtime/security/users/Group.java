@@ -29,13 +29,24 @@ public class Group extends Identity {
         if (identity == null || identity.includes(this))
             return;
         members.add(identity);
+        identity.inGroup(this);
     }
 
     public void remove(Identity identity) {
-        members.remove(identity);
+        if (identity != null && members.contains(identity)) {
+            members.remove(identity);
+            identity.notInGroup(this);
+        }
     }
 
     public Identity[] getMembers() {
         return members.toArray(new Identity[0]);
+    }
+
+    @Override
+    public void unlink() {
+        for (Identity i : getMembers())
+            remove(i);
+        super.unlink();
     }
 }
