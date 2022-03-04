@@ -404,14 +404,14 @@ public class Key {
 		get("$getuid").code = new BuiltinCode() {
 			@Override
 			public void run(Fiber fiber, Instance self, Instance[] args) throws FourRuntimeException {
-				fiber.setAccu(new FString(fiber.getSharedState().getUser().getID()));
+				fiber.setAccu(new FString(fiber.getSharedState().getUser().getName()));
 			}
 		};
 		get("$uname").code = new BuiltinCode() {
 			@Override
 			public void run(Fiber fiber, Instance self, Instance[] args) throws FourRuntimeException {
 				final String id = args[0].asFString().asString();
-				Identity user = fiber.getVM().getIdentityDB().find(id);
+				Identity user = fiber.getVM().getIdentityDB().getIdentityByName(id);
 				if (user != null && user.asUser() != null)
 					fiber.setAccu(new FString(user.getName()));
 				else
@@ -422,7 +422,7 @@ public class Key {
 			@Override
 			public void run(Fiber fiber, Instance self, Instance[] args) throws FourRuntimeException {
 				final String id = args[0].asFString().asString();
-				Identity user = fiber.getVM().getIdentityDB().find(id);
+				Identity user = fiber.getVM().getIdentityDB().getIdentityByName(id);
 				if (user != null && user.asGroup() != null)
 					fiber.setAccu(new FString(user.getName()));
 				else
@@ -450,7 +450,7 @@ public class Key {
 			public void run(Fiber fiber, Instance self, Instance[] args) throws FourRuntimeException {
 				final String curPath = args[0].asFString().asString();
 				File file = fiber.getVM().getFilesystem().resolve(curPath);
-				fiber.setAccu((file != null) ? new FString(file.getRights().getUserAccessRights().getIdentity().getID()) : Instance.getNil());
+				fiber.setAccu((file != null) ? new FString(file.getRights().getUserAccessRights().getIdentity().getName()) : Instance.getNil());
 			}
 		};
 		get("$getgrp").code = new BuiltinCode() {
@@ -458,7 +458,7 @@ public class Key {
 			public void run(Fiber fiber, Instance self, Instance[] args) throws FourRuntimeException {
 				final String curPath = args[0].asFString().asString();
 				File file = fiber.getVM().getFilesystem().resolve(curPath);
-				fiber.setAccu((file != null) ? new FString(file.getRights().getGroupAccessRights().getIdentity().getID()) : Instance.getNil());
+				fiber.setAccu((file != null) ? new FString(file.getRights().getGroupAccessRights().getIdentity().getName()) : Instance.getNil());
 			}
 		};
 		get("$chmod").code = new BuiltinCode() {
@@ -474,7 +474,7 @@ public class Key {
 			@Override
 			public void run(Fiber fiber, Instance self, Instance[] args) throws FourRuntimeException {
 				final String curPath = args[0].asFString().asString();
-				final Identity identity = fiber.getVM().getIdentityDB().find(args[1].asFString().asString());
+				final Identity identity = fiber.getVM().getIdentityDB().getIdentityByName(args[1].asFString().asString());
 				File file = fiber.getVM().getFilesystem().resolve(curPath);
 				fiber.setAccu(FInteger.getBoolean((file != null && file.chown(fiber.getSharedState().getUser(), identity))));
 			}
@@ -483,7 +483,7 @@ public class Key {
 			@Override
 			public void run(Fiber fiber, Instance self, Instance[] args) throws FourRuntimeException {
 				final String curPath = args[0].asFString().asString();
-				final Identity identity = fiber.getVM().getIdentityDB().find(args[1].asFString().asString());
+				final Identity identity = fiber.getVM().getIdentityDB().getIdentityByName(args[1].asFString().asString());
 				File file = fiber.getVM().getFilesystem().resolve(curPath);
 				fiber.setAccu(FInteger.getBoolean((file != null && file.chgrp(fiber.getSharedState().getUser(), identity))));
 			}
@@ -508,7 +508,7 @@ public class Key {
 				final String username = args[0].asFString().asString();
 				Identity identity = fiber.getVM().getIdentityDB().getIdentityByName(username);
 				if (identity != null && identity.asUser() != null)
-					fiber.setAccu(new FString(identity.getID()));
+					fiber.setAccu(new FString(identity.getName()));
 				else
 					fiber.setAccu(Instance.getNil());
 			}
@@ -519,19 +519,20 @@ public class Key {
 				final String username = args[0].asFString().asString();
 				Identity identity = fiber.getVM().getIdentityDB().getIdentityByName(username);
 				if (identity != null && identity.asGroup() != null)
-					fiber.setAccu(new FString(identity.getID()));
+					fiber.setAccu(new FString(identity.getName()));
 				else
 					fiber.setAccu(Instance.getNil());
 			}
 		};
-		get("$users").code = new BuiltinCode() {
+		get("$members").code = new BuiltinCode() {
 			@Override
 			public void run(Fiber fiber, Instance self, Instance[] args) throws FourRuntimeException {
-				FList list = new FList();
-				for (Identity identity : fiber.getVM().getIdentityDB().getIdentities()) {
-					User user = identity.asUser();
-					if (user != null)
-						list.insert(list.length(), new FString(user.getID()));
+				final FList list = new FList();
+				final Group group = fiber.getVM().getIdentityDB().getGroupByName(args[0].asFString().asString());
+				if (group != null) {
+					for (Identity identity : group.getMembers()) {
+						list.insert(list.length(), new FString(identity.getName()));
+					}
 				}
 				fiber.setAccu(list);
 			}
@@ -543,7 +544,7 @@ public class Key {
 				for (Identity identity : fiber.getVM().getIdentityDB().getIdentities()) {
 					Group group = identity.asGroup();
 					if (group != null)
-						list.insert(list.length(), new FString(group.getID()));
+						list.insert(list.length(), new FString(group.getName()));
 				}
 				fiber.setAccu(list);
 			}
@@ -556,7 +557,7 @@ public class Key {
 				if (fiber.isRoot()) {
 					user = fiber.getVM().getIdentityDB().newUser(username);
 				}
-				fiber.setAccu((user != null) ? new FString(user.getID()) : Instance.getNil());
+				fiber.setAccu((user != null) ? new FString(user.getName()) : Instance.getNil());
 			}
 		};
 		get("$addgroup").code = new BuiltinCode() {
@@ -567,7 +568,7 @@ public class Key {
 				if (fiber.isRoot()) {
 					group = fiber.getVM().getIdentityDB().newGroup(username);
 				}
-				fiber.setAccu((group != null) ? new FString(group.getID()) : Instance.getNil());
+				fiber.setAccu((group != null) ? new FString(group.getName()) : Instance.getNil());
 			}
 		};
 		get("$chpass").code = new BuiltinCode() {
@@ -576,10 +577,7 @@ public class Key {
 				boolean success = false;
 				final String uid = args[0].asFString().asString();
 				final String password = args[1].asFString().asString();
-				Identity identity = fiber.getVM().getIdentityDB().find(uid);
-				User user = null;
-				if (identity != null)
-					user = identity.asUser();
+				User user = fiber.getVM().getIdentityDB().getUserByName(uid);
 				if (user != null && (fiber.getSharedState().getUser() == user || fiber.isRoot())) {
 					user.setPassword(password);
 					success = true;
@@ -592,10 +590,7 @@ public class Key {
 			public void run(Fiber fiber, Instance self, Instance[] args) throws FourRuntimeException {
 				Instance value = Instance.getNil();
 				final String username = args[0].asFString().asString();
-				Identity identity = fiber.getVM().getIdentityDB().find(username);
-				User user = null;
-				if (identity != null)
-					user = identity.asUser();
+				User user = fiber.getVM().getIdentityDB().getUserByName(username);
 				if (user != null && (fiber.getSharedState().getUser() == user || fiber.isRoot())) {
 					String shell = user.getShell();
 					if (shell != null)
@@ -610,10 +605,7 @@ public class Key {
 				boolean success = false;
 				final String username = args[0].asFString().asString();
 				final String shell = args[1].asFString().asString();
-				Identity identity = fiber.getVM().getIdentityDB().find(username);
-				User user = null;
-				if (identity != null)
-					user = identity.asUser();
+				User user = fiber.getVM().getIdentityDB().getUserByName(username);
 				if (user != null && (fiber.getSharedState().getUser() == user || fiber.isRoot())) {
 					user.setShell(shell);
 					success = true;

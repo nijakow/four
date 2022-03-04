@@ -4,7 +4,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 public class IdentityDatabase {
-    private final Map<String, Identity> identities = new HashMap<>();
+    private final Set<Identity> identities = new HashSet<>();
     private final Group usersGroup;
     private final User rootUser;
     private final Group rootGroup;
@@ -27,10 +27,8 @@ public class IdentityDatabase {
     }
 
     void add(Identity identity) {
-        identities.put(identity.getID(), identity);
+        identities.add(identity);
     }
-
-    public Identity find(String id) { return identities.get(id); }
 
     public User newUser(String name) {
         if (getIdentityByName(name) != null)
@@ -58,7 +56,7 @@ public class IdentityDatabase {
     }
 
     public Identity getIdentityByName(String username) {
-        for (Identity identity : identities.values()) {
+        for (Identity identity : identities) {
             if (username.equals(identity.getName()))
                 return identity;
         }
@@ -83,9 +81,7 @@ public class IdentityDatabase {
 
     public byte[] serializeAsBytes() {
         StringBuilder builder = new StringBuilder();
-        for (Identity identity : identities.values()) {
-            builder.append(identity.getID());
-            builder.append(',');
+        for (Identity identity : identities) {
             builder.append(identity.getName());
             User user = identity.asUser();
             if (user != null) {
@@ -111,7 +107,7 @@ public class IdentityDatabase {
     }
 
     public Identity[] getIdentities() {
-        return identities.values().toArray(new Identity[0]);
+        return identities.toArray(new Identity[0]);
     }
 
     public void restore(String serialized) {
