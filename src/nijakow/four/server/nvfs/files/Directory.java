@@ -84,6 +84,7 @@ public class Directory extends File implements FileParent {
         for (String key : files.keySet()) {
             elements.add(new Pair<>(key, files.get(key)));
         }
+        elements.sort((p1, p2) -> p1.getFirst().compareToIgnoreCase(p2.getFirst()));
         return elements.toArray(new Pair[0]);
     }
 
