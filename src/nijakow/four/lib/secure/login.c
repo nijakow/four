@@ -114,8 +114,11 @@ void launch_shell()
 void setuname(string uname)
 {
     object player = the("/secure/logman.c")->get_player(name);
-    prepare(player, uname);
     set_me(player);
+    player->submit_lines_to(connection()->write);
+    connection()->add_close_cb(player->freeze);
+    prepare(player, uname);
+    player->thaw();
     launch_shell();
 }
 

@@ -10,6 +10,7 @@ inherits "/std/thing/light.c";
  */
 
 void write(...) {}
+void printf(...) { fprintf(this, ...); }
 
 bool query_is_container() { return false; }
 bool query_is_heavy() { return false; }

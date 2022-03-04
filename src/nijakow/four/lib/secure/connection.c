@@ -12,6 +12,7 @@ mapping mapped_callbacks;
 string line;
 string escline;
 int id_counter;
+list close_cbs;
 
 void prompt(func cb, ...)
 {
@@ -50,28 +51,7 @@ void write(...)
     }
 }
 
-void printf(string format, ...)
-{
-    int index = 0;
-    int limit = strlen(format);
-
-    while (index < limit)
-    {
-        if (format[index] != '%') {
-            write(chr(format[index]));
-        } else {
-            index = index + 1;
-            if (index >= limit) break;
-            else if (format[index] == '%') write("%");
-            else if (format[index] == 'a') write(va_next);
-            else if (format[index] == 's') write(va_next);
-            else if (format[index] == 'c') write(chr(va_next));
-            else if (format[index] == 'd') write(itoa(va_next));
-            else if (format[index] == 'x') write(itoax(va_next));
-        }
-        index = index + 1;
-    }
-}
+void printf(...) { fprintf(this, ...); }
 
 void mode_normal()     { write("\{RESET\}"); }
 void mode_red()        { write("\{RED\}"); }
@@ -153,12 +133,28 @@ void receive(string text)
     }
 }
 
+void add_close_cb(func cb)
+{
+    append(close_cbs, cb);
+}
+
+void call_close_cbs()
+{
+    list cbs = close_cbs;
+    close_cbs = {};
+    foreach (func f : cbs) {
+        call(f);
+    }
+}
+
 void handle_disconnect()
 {
+    call_close_cbs();
 }
 
 void close()
 {
+    call_close_cbs();
     $close(port);
 }
 
@@ -172,6 +168,7 @@ void create(any the_port)
 	escline = nil;
 	mapped_callbacks = [];
 	id_counter = 0;
+	close_cbs = {};
 	$on_receive(port, this::receive);
 	$on_disconnect(port, this::handle_disconnect);
 }

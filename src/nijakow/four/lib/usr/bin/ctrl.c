@@ -42,7 +42,6 @@ void start()
         printf("Game access is only allowed for player accounts.\n");
         exit();
     } else {
-        me()->submit_lines_to(connection()->write);
         resume();
     }
 }

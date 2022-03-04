@@ -21,9 +21,10 @@ public class RawConnection implements IConnection {
 	@Override
 	public void writeBytes(byte[] bytes) {
 		try {
-			socket.write(ByteBuffer.wrap(bytes));
+			if (socket.isOpen())
+				socket.write(ByteBuffer.wrap(bytes));
 		} catch (IOException e) {
-			// TODO: Handle error gracefully
+			// TODO: Write to the logger
 			e.printStackTrace();
 		}
 	}
@@ -33,6 +34,8 @@ public class RawConnection implements IConnection {
 		try {
 			socket.close();
 		} catch (IOException e) {
+			// TODO: Write to the logger
+			e.printStackTrace();
 		}
 	}
 
