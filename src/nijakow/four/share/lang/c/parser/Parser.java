@@ -14,8 +14,9 @@ import nijakow.four.share.util.Pair;
 
 public class Parser {
 	private final Tokenizer tokenizer;
+	private StreamPosition lastPos;
 
-	private StreamPosition p() { return tokenizer.getPosition(); }
+	private StreamPosition p() { return lastPos == null ? tokenizer.getPosition() : lastPos; }
 
 	private void error(String message) throws ParseException {
 		throw new ParseException(tokenizer.getPosition(), message);
@@ -114,7 +115,7 @@ public class Parser {
 		} else if (check(TokenType.VA_COUNT)) {
 			return new ASTVaCount(p());
 		} else if (checkKeep(TokenType.CONSTANT)) {
-			return new ASTConstant(p(), (Instance) tokenizer.nextToken().getPayload());
+			return new ASTConstant(p(), (Instance) nextToken().getPayload());
 		} else if (check(TokenType.LPAREN)) {
 			ASTExpression expr = parseExpression();
 			expect(TokenType.RPAREN);
@@ -143,7 +144,7 @@ public class Parser {
 			}
 			return new ASTMapping(p(), exprs.toArray(new ASTExpression[0]));
 		} else if (checkKeep(TokenType.IDENT)) {
-			return new ASTIdent(p(), Key.get((String) tokenizer.nextToken().getPayload()));
+			return new ASTIdent(p(), Key.get((String) nextToken().getPayload()));
 		} else {
 			return new ASTThis(p());
 		}
@@ -153,7 +154,7 @@ public class Parser {
 		ASTExpression expr;
 		
 		if (checkKeep(TokenType.OPERATOR)) {
-			Token t = tokenizer.nextToken();
+			Token t = nextToken();
 			OperatorInfo info = (OperatorInfo) t.getPayload();
 			expr = new ASTUnaryOp(p(), info.getType(), parseExpression(info.getUnaryPrecedence()));
 		} else if (check(TokenType.NEW)) {
@@ -203,7 +204,7 @@ public class Parser {
 			} else if (check(TokenType.DEC1)) {
 				expr = new ASTIncrement(p(), expr, -1, true);
 			} else if (checkKeep(TokenType.OPERATOR)) {
-				Token t = tokenizer.nextToken();
+				Token t = nextToken();
 				OperatorInfo info = (OperatorInfo) t.getPayload();
 				if (info.getBinaryPrecedence() > prec || (info.isLeftToRight() && info.getBinaryPrecedence() == prec)) {
 					t.fail();
@@ -384,22 +385,28 @@ public class Parser {
 		check(TokenType.SEMICOLON);
 		return expr;
 	}
+
+	private Token nextToken() throws ParseException {
+		Token t = tokenizer.nextToken();
+		this.lastPos = t.getPosition();
+		return t;
+	}
 	
 	private boolean checkKeep(TokenType type) throws ParseException {
-		Token t = tokenizer.nextToken();
+		Token t = nextToken();
 		t.fail();
 		return t.is(type);
 	}
-	
+
 	private boolean check(TokenType type) throws ParseException {
-		Token t = tokenizer.nextToken();
+		Token t = nextToken();
 		if (t.is(type)) return true;
 		t.fail();
 		return false;
 	}
 	
 	private Token expect(TokenType type) throws ParseException {
-		Token t = tokenizer.nextToken();
+		Token t = nextToken();
 		if (t.is(type)) return t;
 		else throw new ParseException(t, "Expected different token! " + type + ", got " + t.getType());
 	}

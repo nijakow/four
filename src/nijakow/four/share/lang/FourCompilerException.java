@@ -21,7 +21,6 @@ public class FourCompilerException extends FourRuntimeException {
         if (pos == null) {
             sb.append("?:?: ");
             sb.append(message);
-            sb.append('\n');
         } else {
             Pair<Integer, Integer> lp = pos.getPos();
             sb.append(lp.getFirst() + ":" + lp.getSecond() + ": ");
