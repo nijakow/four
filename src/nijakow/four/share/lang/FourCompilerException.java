@@ -22,26 +22,36 @@ public class FourCompilerException extends FourRuntimeException {
             sb.append("?:?: ");
             sb.append(message);
         } else {
-            Pair<Integer, Integer> lp = pos.getPos();
-            sb.append(lp.getFirst() + ":" + lp.getSecond() + ": ");
-            sb.append(message);
-            sb.append('\n');
             String text = pos.getText();
-            int min = -30;
-            int max = 30;
-            for (int x = min; x <= max; x++) {
-                if (x == 0) sb.append(" --> ");
-                char c;
+            Pair<Integer, Integer> lp = pos.getPos();
 
-                try {
-                    c = text.charAt(pos.getIndex() + x);
-                } catch (StringIndexOutOfBoundsException e) {
-                    c = ' ';
+            int l = 1;
+            int c = 1;
+            boolean newline = true;
+            for (int index = 0; index < text.length(); index++) {
+                if (l > lp.getFirst() - 5 && l < lp.getFirst() + 5) {
+                    if (newline)
+                        sb.append(String.format("%04d  ", l));
+                    newline = false;
+                    sb.append(text.charAt(index));
                 }
-                if (c < 32 || c >= 127)
-                    c = ' ';
-                sb.append(c);
-                if (x == 0) sb.append(" <-- ");
+                if (text.charAt(index) == '\n') {
+                    newline = true;
+                    if (l == lp.getFirst()) {
+                        sb.append("      ");    // Line spacing
+                        for (int xx = 1; xx < lp.getSecond(); xx++)
+                            sb.append(' ');
+                        sb.append('^');
+                        sb.append(' ');
+                        sb.append(lp.getFirst() + ":" + lp.getSecond() + ": ");
+                        sb.append(message);
+                        sb.append('\n');
+                    }
+                    l++;
+                    c = 1;
+                } else {
+                    c++;
+                }
             }
         }
         return sb.toString();
