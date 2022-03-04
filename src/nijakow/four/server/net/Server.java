@@ -1,5 +1,8 @@
 package nijakow.four.server.net;
 
+import nijakow.four.server.logging.LogLevel;
+import nijakow.four.server.logging.Logger;
+
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.StandardSocketOptions;
@@ -13,10 +16,12 @@ import java.util.Set;
 import java.util.function.Consumer;
 
 public class Server {
+	private final Logger logger;
 	private final Selector selector;
 	private Consumer<IConnection> onConnectFunc = null;
 
-	public Server() throws IOException {
+	public Server(Logger logger) throws IOException {
+		this.logger = logger;
 		this.selector = Selector.open();
 	}
 	
@@ -25,7 +30,7 @@ public class Server {
 	}
 	
 	public void serveOn(String hostname, int port) throws IOException {
-		System.out.println("Serving on " + hostname + " " + port);
+		logger.println(LogLevel.INFO, "Serving on " + hostname + " " + port);
 		ServerSocketChannel serverSocket = ServerSocketChannel.open();
 		serverSocket.setOption(StandardSocketOptions.SO_REUSEADDR, true);
 		serverSocket.bind(new InetSocketAddress(hostname, port));
@@ -47,7 +52,7 @@ public class Server {
 					clientSocket.write(bb);
 					clientSocket.close();
 				} else {
-					RawConnection connection = new RawConnection(clientSocket);
+					RawConnection connection = new RawConnection(this.logger, clientSocket);
 					clientSocket.register(selector, SelectionKey.OP_READ, connection);
 					onConnectFunc.accept(connection);
 				}

@@ -23,7 +23,7 @@ public class Four implements Runnable {
 		this.logger = new Logger();
 		this.db = db;
 		this.fs = fs;
-		this.server = new Server();
+		this.server = new Server(this.logger);
 		this.vm = new VM(this.logger, this.db, this.fs, this.server);
 		
 		for (int port : ports)

@@ -12,6 +12,7 @@ import nijakow.four.server.runtime.objects.misc.FConnection;
 import nijakow.four.server.runtime.objects.standard.FClosure;
 import nijakow.four.server.runtime.objects.standard.FString;
 import nijakow.four.server.runtime.security.users.IdentityDatabase;
+import nijakow.four.server.runtime.security.users.User;
 import nijakow.four.share.lang.c.parser.StreamPosition;
 import nijakow.four.share.util.ComparablePair;
 
@@ -96,6 +97,9 @@ public class VM {
 			int x = 0;
 			Fiber fiber = fibers.poll();
 			try {
+				User user = fiber.getSharedState().getUser();
+				if (user != null)
+					user.notifyActive();
 				while (!fiber.isTerminated()) {
 					if (x >= 10000000) {
 						throw new FourRuntimeException("Process timed out!");
@@ -144,12 +148,13 @@ public class VM {
 		startFiber(self, key, new Instance[0]);
 	}
 	
-	public void startFiber(SharedFiberState state, FClosure closure, Instance[] args) throws FourRuntimeException {
+	public Fiber startFiber(SharedFiberState state, FClosure closure, Instance[] args) throws FourRuntimeException {
 		Fiber fiber = spawnFiber(state);
 		for (Instance arg : args)
 			fiber.push(arg);
 		closure.invoke(fiber, args.length);
 		fibers.add(fiber);
+		return fiber;
 	}
 	
 	public void invokeIn(SharedFiberState state, Blue subject, Key message, long millis) {

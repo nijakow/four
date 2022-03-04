@@ -7,6 +7,7 @@ import java.security.NoSuchAlgorithmException;
 public class User extends Identity {
     private byte[] passwordHash;
     private String shell;
+    private long lastActive = 0;
 
     protected User(IdentityDatabase db, String name) {
         super(db, name);
@@ -73,5 +74,13 @@ public class User extends Identity {
         } catch (NoSuchAlgorithmException e) {
             return null;
         }
+    }
+
+    public boolean isCurrentlyActive() {
+        return System.currentTimeMillis() - lastActive < 60 * 1000;
+    }
+
+    public void notifyActive() {
+        lastActive = System.currentTimeMillis();
     }
 }

@@ -21,7 +21,7 @@ public class Callback {
 		this.closure = closure;
 	}
 
-	public void invoke(Instance... args) throws FourRuntimeException {
-		vm.startFiber(state, closure, args);
+	public Fiber invoke(Instance... args) throws FourRuntimeException {
+		return vm.startFiber(state, closure, args);
 	}
 }

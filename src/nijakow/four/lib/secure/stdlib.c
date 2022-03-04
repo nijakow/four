@@ -39,6 +39,7 @@ use $addgroup;
 use $delgroup;
 use $addtogroup;
 use $removefromgroup;
+use $isactive;
 use $chpass;
 use $getshell;
 use $chsh;
@@ -554,6 +555,11 @@ bool addtogroup(string name, string group)
 bool removefromgroup(string name, string group)
 {
     return $removefromgroup(name, group);
+}
+
+bool isactive(string name)
+{
+    return $isactive(name);
 }
 
 bool chpass(string user, string pass)

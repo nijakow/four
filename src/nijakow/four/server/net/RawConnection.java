@@ -1,5 +1,7 @@
 package nijakow.four.server.net;
 
+import nijakow.four.server.logging.Logger;
+
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
@@ -7,13 +9,14 @@ import java.nio.charset.StandardCharsets;
 import java.util.function.Consumer;
 
 public class RawConnection implements IConnection {
-
+	private final Logger logger;
 	private final SocketChannel socket;
 	private Consumer<String> inputHandler = null;
 	private Runnable disconnectHandler = null;
 	
 	
-	public RawConnection(SocketChannel socket) {
+	public RawConnection(Logger logger, SocketChannel socket) {
+		this.logger = logger;
 		this.socket = socket;
 	}
 
@@ -24,8 +27,7 @@ public class RawConnection implements IConnection {
 			if (socket.isOpen())
 				socket.write(ByteBuffer.wrap(bytes));
 		} catch (IOException e) {
-			// TODO: Write to the logger
-			e.printStackTrace();
+			logger.printException(e);
 		}
 	}
 	
@@ -34,8 +36,7 @@ public class RawConnection implements IConnection {
 		try {
 			socket.close();
 		} catch (IOException e) {
-			// TODO: Write to the logger
-			e.printStackTrace();
+			logger.printException(e);
 		}
 	}
 

@@ -502,6 +502,7 @@ public class Key {
 				final String password = args[1].asFString().asString();
 				User user = fiber.getVM().getIdentityDB().login(username, password);
 				if (user != null) {
+					fiber.getVM().getLogger().println(LogLevel.INFO, "Login user '" + user.getName() + "'");
 					fiber.getSharedState().setUser(user);
 					fiber.setAccu(FInteger.getBoolean(true));
 				} else {
@@ -618,6 +619,13 @@ public class Key {
 				if (result)
 					group.remove(ident);
 				fiber.setAccu(FInteger.getBoolean(result));
+			}
+		};
+		get("$isactive").code = new BuiltinCode() {
+			@Override
+			public void run(Fiber fiber, Instance self, Instance[] args) throws FourRuntimeException {
+				final User user = fiber.getVM().getIdentityDB().getUserByName(args[0].asFString().asString());
+				fiber.setAccu(FInteger.getBoolean(user != null && user.isCurrentlyActive()));
 			}
 		};
 		get("$chpass").code = new BuiltinCode() {
