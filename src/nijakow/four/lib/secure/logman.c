@@ -1,7 +1,7 @@
 inherits "/secure/object.c";
 
 use $login;
-
+mapping players;
 
 bool login(string name, string password)
 {
@@ -10,10 +10,18 @@ bool login(string name, string password)
 
 object get_player(string name)
 {
-    return new("/std/player.c");
+    object player = nil;
+    if (name != "guest")
+        player = players[name];
+    if (player == nil) {
+        player = new("/std/player.c");
+        players[name] = player;
+    }
+    return player;
 }
 
-void create()
+void _init()
 {
-    "/secure/object.c"::create();
+    "/secure/object.c"::_init();
+    this.players = [];
 }

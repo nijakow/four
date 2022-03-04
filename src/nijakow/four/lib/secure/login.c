@@ -113,12 +113,15 @@ void launch_shell()
 
 void setuname(string uname)
 {
-    object player = the("/secure/logman.c")->get_player(name);
-    set_me(player);
-    player->submit_lines_to(connection()->write);
-    connection()->add_close_cb(player->freeze);
-    prepare(player, uname);
-    player->thaw();
+    prepare(me(), uname);
+    kickoff();
+}
+
+void kickoff()
+{
+    me()->submit_lines_to(connection()->write);
+    connection()->add_close_cb(me()->freeze);
+    me()->thaw();
     launch_shell();
 }
 
@@ -127,7 +130,12 @@ void startup()
     if (isroot()) {
         launch_shell();
     } else {
-        prompt(this::setuname, "By what name will you be known? ");
+        object player = the("/secure/logman.c")->get_player(name);
+        set_me(player);
+        if (!me()->query_is_activated())
+            prompt(this::setuname, "By what name will you be known? ");
+        else
+            kickoff();
     }
 }
 

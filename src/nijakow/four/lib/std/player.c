@@ -3,6 +3,7 @@ inherits "/std/container.c";
 
 func line_cb;
 object frozen_loc;
+bool is_activated;
 
 void write(...)
 {
@@ -15,10 +16,13 @@ void submit_lines_to(func cb)
     this.line_cb = cb;
 }
 
+bool query_is_activated() { return this.is_activated; }
+
 void activate_as(string name)
 {
     set_name(name);
     add_IDs(name);
+    this.is_activated = true;
 }
 
 void freeze()
@@ -33,11 +37,11 @@ void freeze()
 
 void thaw()
 {
-    if (get_parent() == nil && loc != nil) {
-        me_act("appears in a cloud of smoke.\n");
-        printf("You appear in a cloud of smoke.\n");
+    if (get_parent() == nil && frozen_loc != nil) {
         move_to(frozen_loc);
         frozen_loc = nil;
+        me_act("appears in a cloud of smoke.\n");
+        printf("You appear in a cloud of smoke.\n");
     }
 }
 
@@ -48,4 +52,5 @@ void create()
     "/std/thing.c"::create();
     set_properly_named();
     this.frozen_loc = nil;
+    this.is_activated = false;
 }
