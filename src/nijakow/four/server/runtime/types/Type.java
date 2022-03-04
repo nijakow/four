@@ -48,7 +48,7 @@ public abstract class Type {
 			if (check(instance))
 				return instance;
 			else
-				return new FInteger(instance.asInt());
+				return FInteger.get(instance.asInt());
 		}
 		
 		@Override

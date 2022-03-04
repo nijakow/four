@@ -17,10 +17,10 @@ public class ASTIncrement extends ASTExpression {
 
 	@Override
 	void compile(FCompiler compiler) throws CompilationException {
-		expr.compileAssignment(compiler, new ASTBinOp(OperatorType.PLUS, expr, new ASTConstant(new FInteger(inc))));
+		expr.compileAssignment(compiler, new ASTBinOp(OperatorType.PLUS, expr, new ASTConstant(FInteger.get(inc))));
 		if (post) {
 			compiler.compilePush();
-			compiler.compileLoadConstant(new FInteger(inc));
+			compiler.compileLoadConstant(FInteger.get(inc));
 			compiler.compileOp(OperatorType.MINUS);
 		}
 	}

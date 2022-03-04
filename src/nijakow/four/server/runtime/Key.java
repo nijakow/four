@@ -105,7 +105,7 @@ public class Key {
 			
 			@Override
 			public void run(Fiber fiber, Instance self, Instance[] args) throws CastException {
-				fiber.setAccu(args[0].asBlue().isInitialized() ? new FInteger(1) : new FInteger(0));
+				fiber.setAccu(FInteger.getBoolean(args[0].asBlue().isInitialized()));
 			}
 		};
 		get("$get_parent").code = new BuiltinCode() {
@@ -244,7 +244,7 @@ public class Key {
 
 			@Override
 			public void run(Fiber fiber, Instance self, Instance[] args) {
-				fiber.setAccu(new FInteger(args[0].length()));
+				fiber.setAccu(FInteger.get(args[0].length()));
 			}
 		};
 		get("$listinsert").code = new BuiltinCode() {
@@ -265,7 +265,7 @@ public class Key {
 			
 			@Override
 			public void run(Fiber fiber, Instance self, Instance[] args) {
-				fiber.setAccu(new FInteger((int) (Math.random() * Integer.MAX_VALUE)));
+				fiber.setAccu(FInteger.get((int) (Math.random() * Integer.MAX_VALUE)));
 			}
 		};
 		get("$filetext").code = new BuiltinCode() {
@@ -294,9 +294,9 @@ public class Key {
 				File file = fiber.getVM().getFilesystem().resolve(path);
 				if (file != null && file.asTextFile() != null
 						&& file.asTextFile().writeContents(value, fiber.getSharedState().getUser())) {
-					fiber.setAccu(new FInteger(1));
+					fiber.setAccu(FInteger.getBoolean(true));
 				} else {
-					fiber.setAccu(new FInteger(0));
+					fiber.setAccu(FInteger.getBoolean(false));
 				}
 			}
 		};
@@ -328,7 +328,7 @@ public class Key {
 						fiber.getSharedState().getUser(),
 						fiber.getSharedState().getUser(),
 						fiber.getVM().getIdentityDB().getUsersGroup());
-				fiber.setAccu(new FInteger(file != null ? 1 : 0));
+				fiber.setAccu(FInteger.getBoolean(file != null));
 			}
 		};
 		get("$mkdir").code = new BuiltinCode() {
@@ -339,9 +339,9 @@ public class Key {
 						fiber.getSharedState().getUser(),
 						fiber.getSharedState().getUser(),
 						fiber.getVM().getIdentityDB().getUsersGroup()) != null) {
-					fiber.setAccu(new FInteger(1));
+					fiber.setAccu(FInteger.getBoolean(true));
 				} else {
-					fiber.setAccu(new FInteger(0));
+					fiber.setAccu(FInteger.getBoolean(false));
 				}
 			}
 		};
@@ -351,9 +351,9 @@ public class Key {
 				String curPath = args[0].asFString().asString();
 				File file = fiber.getVM().getFilesystem().resolve(curPath);
 				if (file != null) {
-					fiber.setAccu(new FInteger(file.rm(fiber.getSharedState().getUser()) ? 1 : 0));
+					fiber.setAccu(FInteger.getBoolean(file.rm(fiber.getSharedState().getUser())));
 				} else {
-					fiber.setAccu(new FInteger(0));
+					fiber.setAccu(FInteger.getBoolean(false));
 				}
 			}
 		};
@@ -364,9 +364,9 @@ public class Key {
 				if (fiber.getVM().getFilesystem().mv(args[0].asFString().asString(),
 						args[1].asFString().asString(),
 						fiber.getSharedState().getUser()))
-					fiber.setAccu(new FInteger(1));
+					fiber.setAccu(FInteger.getBoolean(true));
 				else
-					fiber.setAccu(new FInteger(0));
+					fiber.setAccu(FInteger.getBoolean(false));
 			}
 		};
 		get("$recompile").code = new BuiltinCode() {
@@ -378,15 +378,15 @@ public class Key {
 				try {
 					TextFile file = fiber.getVM().getFilesystem().resolveTextFile(path);
 					if (file == null)
-						fiber.setAccu(new FInteger(0));
+						fiber.setAccu(FInteger.getBoolean(false));
 					else {
 						file.compile(logger);
-						fiber.setAccu(new FInteger(1));
+						fiber.setAccu(FInteger.getBoolean(true));
 					}
 				} catch (ParseException | NullPointerException | CompilationException e) {
 					// TODO: Handle this gracefully, tell the CompilationLogger about the exceptions (should be done by the compiler)
 					fiber.getVM().getLogger().printException(e);
-					fiber.setAccu(new FInteger(0));
+					fiber.setAccu(FInteger.getBoolean(false));
 				}
 			}
 		};
@@ -434,7 +434,7 @@ public class Key {
 			public void run(Fiber fiber, Instance self, Instance[] args) throws FourRuntimeException {
 				final String curPath = args[0].asFString().asString();
 				File file = fiber.getVM().getFilesystem().resolve(curPath);
-				fiber.setAccu(new FInteger((file != null && file.getRights().checkExecuteAccess(fiber.getSharedState().getUser())) ? 1 : 0));
+				fiber.setAccu(FInteger.getBoolean((file != null && file.getRights().checkExecuteAccess(fiber.getSharedState().getUser()))));
 			}
 		};
 		get("$stat").code = new BuiltinCode() {
@@ -442,7 +442,7 @@ public class Key {
 			public void run(Fiber fiber, Instance self, Instance[] args) throws FourRuntimeException {
 				final String curPath = args[0].asFString().asString();
 				File file = fiber.getVM().getFilesystem().resolve(curPath);
-				fiber.setAccu(new FInteger((file != null) ? file.getmod() : -1));
+				fiber.setAccu(FInteger.get((file != null) ? file.getmod() : -1));
 			}
 		};
 		get("$getown").code = new BuiltinCode() {
@@ -467,7 +467,7 @@ public class Key {
 				final String curPath = args[0].asFString().asString();
 				final int flags = args[1].asInt();
 				File file = fiber.getVM().getFilesystem().resolve(curPath);
-				fiber.setAccu(new FInteger((file != null && file.chmod(fiber.getSharedState().getUser(), flags)) ? 1 : 0));
+				fiber.setAccu(FInteger.getBoolean((file != null && file.chmod(fiber.getSharedState().getUser(), flags))));
 			}
 		};
 		get("$chown").code = new BuiltinCode() {
@@ -476,7 +476,7 @@ public class Key {
 				final String curPath = args[0].asFString().asString();
 				final Identity identity = fiber.getVM().getIdentityDB().find(args[1].asFString().asString());
 				File file = fiber.getVM().getFilesystem().resolve(curPath);
-				fiber.setAccu(new FInteger((file != null && file.chown(fiber.getSharedState().getUser(), identity)) ? 1 : 0));
+				fiber.setAccu(FInteger.getBoolean((file != null && file.chown(fiber.getSharedState().getUser(), identity))));
 			}
 		};
 		get("$chgrp").code = new BuiltinCode() {
@@ -485,7 +485,7 @@ public class Key {
 				final String curPath = args[0].asFString().asString();
 				final Identity identity = fiber.getVM().getIdentityDB().find(args[1].asFString().asString());
 				File file = fiber.getVM().getFilesystem().resolve(curPath);
-				fiber.setAccu(new FInteger((file != null && file.chgrp(fiber.getSharedState().getUser(), identity)) ? 1 : 0));
+				fiber.setAccu(FInteger.getBoolean((file != null && file.chgrp(fiber.getSharedState().getUser(), identity))));
 			}
 		};
 		get("$login").code = new BuiltinCode() {
@@ -496,9 +496,9 @@ public class Key {
 				User user = fiber.getVM().getIdentityDB().login(username, password);
 				if (user != null) {
 					fiber.getSharedState().setUser(user);
-					fiber.setAccu(new FInteger(1));
+					fiber.setAccu(FInteger.getBoolean(true));
 				} else {
-					fiber.setAccu(new FInteger(0));
+					fiber.setAccu(FInteger.getBoolean(false));
 				}
 			}
 		};
@@ -584,7 +584,7 @@ public class Key {
 					user.setPassword(password);
 					success = true;
 				}
-				fiber.setAccu(new FInteger(success ? 1 : 0));
+				fiber.setAccu(FInteger.getBoolean(success));
 			}
 		};
 		get("$getshell").code = new BuiltinCode() {
@@ -618,7 +618,7 @@ public class Key {
 					user.setShell(shell);
 					success = true;
 				}
-				fiber.setAccu(new FInteger(success ? 1 : 0));
+				fiber.setAccu(FInteger.getBoolean(success));
 			}
 		};
 		get("$dumpfs").code = new BuiltinCode() {
@@ -631,10 +631,10 @@ public class Key {
 					serializer.newMetaEntry("users", fiber.getVM().getIdentityDB().serializeAsBytes());
 					serializer.serialize(fiber.getVM().getFilesystem());
 					fileOutputStream.close();
-					fiber.setAccu(new FInteger(1));
+					fiber.setAccu(FInteger.getBoolean(true));
 				} catch (IOException e) {
 					fiber.getVM().getLogger().printException(e);
-					fiber.setAccu(new FInteger(0));
+					fiber.setAccu(FInteger.getBoolean(false));
 				}
 			}
 		};
@@ -648,7 +648,7 @@ public class Key {
 					mountpoint = fiber.getVM().getFilesystem().resolveDirectory(args[1].asFString().asString());
 					if (mountpoint == null) {
 						// TODO: Error
-						fiber.setAccu(new FInteger(0));
+						fiber.setAccu(FInteger.getBoolean(false));
 						return;
 					}
 				}
@@ -657,9 +657,9 @@ public class Key {
 					BasicFSDeserializer deserializer = new BasicFSDeserializer(fileInputStream);
 					deserializer.restore(fiber.getVM().getFilesystem(), fiber.getVM().getIdentityDB(), mountpoint);
 					fileInputStream.close();
-					fiber.setAccu(new FInteger(1));
+					fiber.setAccu(FInteger.getBoolean(true));
 				} catch (IOException e) {
-					fiber.setAccu(new FInteger(0));
+					fiber.setAccu(FInteger.getBoolean(false));
 					fiber.getVM().getLogger().printException(e);
 				}
 			}

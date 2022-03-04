@@ -72,9 +72,9 @@ public class FString extends FloatingInstance {
 		try {
 			int i = index.asInt();
 			if (i < 0) i = value.length() + i;
-			return new FInteger(value.charAt(i));
+			return FInteger.get(value.charAt(i));
 		} catch (StringIndexOutOfBoundsException e) {
-			return new FInteger(0);
+			return FInteger.get(0);
 		}
 	}
 

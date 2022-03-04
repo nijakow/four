@@ -39,7 +39,7 @@ public class ASTForeach extends ASTInstruction {
 		Label start = compiler.openLabel();
 		Label end = compiler.openLabel();
 
-		compiler.compileLoadConstant(new FInteger(0));
+		compiler.compileLoadConstant(FInteger.get(0));
 		compiler.compileStoreVariable(indexVarName);
 		initialization.compile(compiler);
 		compiler.compileStoreVariable(listVarName);
@@ -60,7 +60,7 @@ public class ASTForeach extends ASTInstruction {
 		continueLabel.place();
 		compiler.compileLoadVariable(indexVarName);
 		compiler.compilePush();
-		compiler.compileLoadConstant(new FInteger(1));
+		compiler.compileLoadConstant(FInteger.get(1));
 		compiler.compileOp(OperatorType.PLUS);
 		compiler.compileStoreVariable(indexVarName);
 		start.compileJump();

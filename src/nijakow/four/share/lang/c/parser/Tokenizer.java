@@ -130,7 +130,7 @@ public class Tokenizer {
 			char c = (char) parseChar('\'');
 			if (stream.next() != '\'')
 				throw new ParseException(pos, "Expected \"\'\"!");
-			return new Token(this, pos, TokenType.CONSTANT, new FInteger(c));
+			return new Token(this, pos, TokenType.CONSTANT, FInteger.get(c));
 		}
 		
 		
@@ -142,7 +142,7 @@ public class Tokenizer {
 		final String text = builder.toString();
 		
 		try {
-			return new Token(this, pos, TokenType.CONSTANT, new FInteger(Integer.decode(text)));
+			return new Token(this, pos, TokenType.CONSTANT, FInteger.get(Integer.decode(text)));
 		} catch (NumberFormatException e) {
 		}
 		

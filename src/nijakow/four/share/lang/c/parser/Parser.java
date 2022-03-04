@@ -104,9 +104,9 @@ public class Parser {
 		} else if (check(TokenType.NIL)) {
 			return new ASTConstant(Instance.getNil());
 		} else if (check(TokenType.TRUE)) {
-			return new ASTConstant(new FInteger(1));
+			return new ASTConstant(FInteger.getBoolean(true));
 		} else if (check(TokenType.FALSE)) {
-			return new ASTConstant(new FInteger(0));
+			return new ASTConstant(FInteger.getBoolean(false));
 		} else if (check(TokenType.VA_NEXT)) {
 			return new ASTVaNext();
 		} else if (check(TokenType.VA_COUNT)) {

@@ -6,9 +6,12 @@ import nijakow.four.server.serialization.base.ISerializer;
 public class FInteger extends Instance {
 	private final int value;
 	
-	public FInteger(int value) {
+	private FInteger(int value) {
 		this.value = value;
 	}
+
+	public static FInteger get(int value) { return new FInteger(value); }
+	public static FInteger getBoolean(boolean value) { return get(value ? 1 : 0); }
 	
 	@Override
 	public int hashCode() {

@@ -42,21 +42,21 @@ public class Frame {
 	private Instance operate(OperatorType type, Instance x, Instance y) throws FourRuntimeException {
 		switch (type) {
 		case PLUS: return x.plus(y);
-		case MINUS: return new FInteger(x.asInt() - y.asInt());
-		case MULT: return new FInteger(x.asInt() * y.asInt());
-		case DIV: return new FInteger(x.asInt() / y.asInt());
-		case MOD: return new FInteger(x.asInt() % y.asInt());
-		case EQ: return x.equals(y) ? new FInteger(1) : new FInteger(0);
-		case INEQ: return x.equals(y) ? new FInteger(0) : new FInteger(1);
-		case LESS: return (x.asInt() < y.asInt()) ? new FInteger(1) : new FInteger(0);
-		case GREATER: return (x.asInt() > y.asInt()) ? new FInteger(1) : new FInteger(0);
-		case LEQ: return (x.asInt() <= y.asInt()) ? new FInteger(1) : new FInteger(0);
-		case GEQ: return (x.asInt() >= y.asInt()) ? new FInteger(1) : new FInteger(0);
-		case SHL: return new FInteger(x.asInt() << y.asInt());
-		case SHR: return new FInteger(x.asInt() >> y.asInt());
-		case BITAND: return new FInteger(x.asInt() & y.asInt());
-		case BITOR: return new FInteger(x.asInt() | y.asInt());
-		case BITXOR: return new FInteger(x.asInt() ^ y.asInt());
+		case MINUS: return FInteger.get(x.asInt() - y.asInt());
+		case MULT: return FInteger.get(x.asInt() * y.asInt());
+		case DIV: return FInteger.get(x.asInt() / y.asInt());
+		case MOD: return FInteger.get(x.asInt() % y.asInt());
+		case EQ: return x.equals(y) ? FInteger.get(1) : FInteger.get(0);
+		case INEQ: return x.equals(y) ? FInteger.get(0) : FInteger.get(1);
+		case LESS: return (x.asInt() < y.asInt()) ? FInteger.get(1) : FInteger.get(0);
+		case GREATER: return (x.asInt() > y.asInt()) ? FInteger.get(1) : FInteger.get(0);
+		case LEQ: return (x.asInt() <= y.asInt()) ? FInteger.get(1) : FInteger.get(0);
+		case GEQ: return (x.asInt() >= y.asInt()) ? FInteger.get(1) : FInteger.get(0);
+		case SHL: return FInteger.get(x.asInt() << y.asInt());
+		case SHR: return FInteger.get(x.asInt() >> y.asInt());
+		case BITAND: return FInteger.get(x.asInt() & y.asInt());
+		case BITOR: return FInteger.get(x.asInt() | y.asInt());
+		case BITXOR: return FInteger.get(x.asInt() ^ y.asInt());
 		default: 
 			throw new FourRuntimeException("Whoopsie, didn't catch the op type!");
 		}
@@ -167,18 +167,18 @@ public class Frame {
 			OperatorType operation = OperatorType.values()[code.u8(ip++)];
 			if (operation == OperatorType.LOGNOT) {
 				if (fiber.getAccu().asBoolean()) {
-					fiber.setAccu(new FInteger(0));
+					fiber.setAccu(FInteger.get(0));
 				} else {
-					fiber.setAccu(new FInteger(1));
+					fiber.setAccu(FInteger.get(1));
 				}
 			} else if (operation == OperatorType.BITNOT) {
-				fiber.setAccu(new FInteger(~fiber.getAccu().asInt()));
+				fiber.setAccu(FInteger.get(~fiber.getAccu().asInt()));
 			} else if (operation == OperatorType.UPLUS) {
 				// Do nothing
 			} else if (operation == OperatorType.UMINUS) {
-				fiber.setAccu(new FInteger(-fiber.getAccu().asInt()));
+				fiber.setAccu(FInteger.get(-fiber.getAccu().asInt()));
 			} else if (operation == OperatorType.LENGTH) {
-				fiber.setAccu(new FInteger(fiber.getAccu().length()));
+				fiber.setAccu(FInteger.get(fiber.getAccu().length()));
 			} else {
 				Instance a1 = fiber.pop();
 				Instance a2 = fiber.getAccu();
@@ -193,7 +193,7 @@ public class Frame {
 			fiber.setAccu(varargs.remove(0));
 			break;
 		case Bytecodes.BYTECODE_LOAD_VACOUNT:
-			fiber.setAccu(new FInteger(varargs.size()));
+			fiber.setAccu(FInteger.get(varargs.size()));
 			break;
 		case Bytecodes.BYTECODE_TYPE_CHECK:
 			Type type = code.type(code.u16(ip));
