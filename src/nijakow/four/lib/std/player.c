@@ -37,7 +37,13 @@ void freeze()
 
 void thaw()
 {
-    if (get_parent() == nil && frozen_loc != nil) {
+    if (get_parent() == nil) {
+        if (frozen_loc == nil) {
+            printf("We're having issues finding the location where you left the game.\n");
+            printf("You're going to be dropped off in the introductory area.\n");
+            log(this, " is having trouble finding their frozen_loc!\n");
+            frozen_loc = the("/world/welcome.c");
+        }
         move_to(frozen_loc);
         frozen_loc = nil;
         me_act("appears in a cloud of smoke.\n");
@@ -53,4 +59,5 @@ void create()
     set_properly_named();
     this.frozen_loc = nil;
     this.is_activated = false;
+    set_brightness(10);
 }

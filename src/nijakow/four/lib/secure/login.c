@@ -4,6 +4,10 @@ use $adduser;
 
 string name;
 
+/*
+ *    B a n n e r
+ */
+
 void banner()
 {
     printf("\{^64x64,nijakow,https://avatars.githubusercontent.com/u/79372954?v=4\}\{^64x64,mhahnFr,https://avatars.githubusercontent.com/u/83553794?v=4\}\n");
@@ -34,6 +38,10 @@ void banner()
     printf("\n");
 }
 
+/*
+ *    E r r o r   H a n d l i n g
+ */
+
 void no_login()
 {
     printf("\n");
@@ -54,6 +62,10 @@ void no_shell()
     connection()->close();
 }
 
+/*
+ *    L o g i n   P r o m p t s
+ */
+
 void setname(string name)
 {
     this.name = name;
@@ -63,17 +75,22 @@ void setname(string name)
 void setpass(string pass)
 {
     if (dologin(this.name, pass))
-        startup();
+        player_activation_and_go();
 }
 
-bool trylogin(string username, string password)
+void setuname(string uname)
 {
-    return the("/secure/logman.c")->login(name, password);
+    setup_new_player(me(), uname);
+    thaw_and_go();
 }
+
+/*
+ *    U s e r   A c c o u n t   H a n d l i n g
+ */
 
 bool dologin(string username, string password)
 {
-    if (!trylogin(username, password)) {
+    if (!the("/secure/logman.c")->login(name, password)) {
         no_login();
         return false;
     } else {
@@ -81,16 +98,27 @@ bool dologin(string username, string password)
     }
 }
 
-void prepare(object player, string uname)
+/*
+ *    P l a y e r   S e t u p
+ */
+
+void setup_new_player(object player, string uname)
 {
     player->activate_as(uname);
-    object sword = new("/world/lantern.c");
-    sword->set_name(uname + "'s lantern");
-    sword->set_properly_named();
-    sword->add_IDs(uname + "'s");
-    sword->move_to(player);
-    player->act_goto(the("/world/42/hn/reception.c"));
+    player->act_goto(the("/world/welcome.c"));
 }
+
+void thaw_and_go()
+{
+    me()->submit_lines_to(connection()->write);
+    connection()->add_close_cb(me()->freeze);
+    me()->thaw();
+    launch_shell();
+}
+
+/*
+ *    S h e l l   F i n d i n g   a n d   P l a y e r   S e t u p
+ */
 
 void launch_shell()
 {
@@ -111,21 +139,7 @@ void launch_shell()
     }
 }
 
-void setuname(string uname)
-{
-    prepare(me(), uname);
-    kickoff();
-}
-
-void kickoff()
-{
-    me()->submit_lines_to(connection()->write);
-    connection()->add_close_cb(me()->freeze);
-    me()->thaw();
-    launch_shell();
-}
-
-void startup()
+void player_activation_and_go()
 {
     if (isroot()) {
         launch_shell();
@@ -135,9 +149,10 @@ void startup()
         if (!me()->query_is_activated())
             prompt(this::setuname, "By what name will you be known? ");
         else
-            kickoff();
+            thaw_and_go();
     }
 }
+
 
 void logout()
 {
