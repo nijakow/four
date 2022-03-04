@@ -1,5 +1,6 @@
 package nijakow.four.server;
 
+import nijakow.four.server.logging.Logger;
 import nijakow.four.server.net.Server;
 import nijakow.four.server.runtime.objects.blue.Blue;
 import nijakow.four.server.runtime.exceptions.FourRuntimeException;
@@ -11,6 +12,7 @@ import nijakow.four.server.runtime.vm.VM;
 import java.io.IOException;
 
 public class Four implements Runnable {
+	private final Logger logger;
 	private final IdentityDatabase db;
 	private final NVFileSystem fs;
 	private final Server server;
@@ -18,10 +20,11 @@ public class Four implements Runnable {
 	private boolean wasStarted = false;
 
 	public Four(IdentityDatabase db, NVFileSystem fs, String hostname, int[] ports) throws IOException {
+		this.logger = new Logger();
 		this.db = db;
 		this.fs = fs;
 		this.server = new Server();
-		this.vm = new VM(this.db, this.fs, this.server);
+		this.vm = new VM(this.logger, this.db, this.fs, this.server);
 		
 		for (int port : ports)
 			server.serveOn(hostname, port);

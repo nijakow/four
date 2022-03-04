@@ -1,5 +1,7 @@
 package nijakow.four.server.runtime.vm;
 
+import nijakow.four.server.logging.LogLevel;
+import nijakow.four.server.logging.Logger;
 import nijakow.four.server.net.Server;
 import nijakow.four.server.runtime.*;
 import nijakow.four.server.runtime.exceptions.FourRuntimeException;
@@ -17,6 +19,7 @@ import java.util.PriorityQueue;
 import java.util.Queue;
 
 public class VM {
+	private final Logger logger;
 	private final IdentityDatabase identityDB;
 	private final NVFileSystem fs;
 	private final Server server;
@@ -24,12 +27,16 @@ public class VM {
 	private final PriorityQueue<ComparablePair<Long, Callback>> pendingCallbacks = new PriorityQueue<>();
 	private Callback errorCallback = null;
 	
-	public VM(IdentityDatabase identityDB, NVFileSystem fs, Server server) {
+	public VM(Logger logger, IdentityDatabase identityDB, NVFileSystem fs, Server server) {
+		this.logger = logger;
 		this.identityDB = identityDB;
 		this.fs = fs;
 		this.server = server;
+
+		getLogger().println(LogLevel.INFO,"Initialized VM");
 	}
 
+	public Logger getLogger() { return logger; }
 	public IdentityDatabase getIdentityDB() { return identityDB; }
 	public NVFileSystem getFilesystem() {
 		return fs;
@@ -44,11 +51,13 @@ public class VM {
 	}
 
 	public void setConnectCallback(Callback callback) {
+		logger.println(LogLevel.DEBUG, "Connect callback was set to " + callback);
 		this.server.onConnect((theConnection) -> {
+			logger.println(LogLevel.DEBUG, "Connect callback was invoked (" + callback + ")");
 			try {
 				callback.invoke(new FConnection(theConnection));
 			} catch (FourRuntimeException e) {
-				e.printStackTrace(); // TODO: Handle this gracefully (use smth different than Consumer)
+				logger.printException(e);
 			}
 		});
 	}
@@ -96,9 +105,9 @@ public class VM {
 					x++;
 				}
 			} catch (FourRuntimeException e) {
-				e.printStackTrace();
+				logger.printException(e);
+				logger.println(LogLevel.INFO, "The exception was caught, the VM will continue to run.");
 				reportError("four", e.getClass().getName(), e.getMessage());
-				System.out.println("The exception was caught, the VM will continue to run.");
 			}
 		}
 	}
