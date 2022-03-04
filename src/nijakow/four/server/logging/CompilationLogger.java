@@ -17,7 +17,7 @@ public class CompilationLogger {
     }
 
     public void tell(FourCompilerException e) {
-        this.logger.printException(e);
+        this.logger.println(LogLevel.WARNING, "Received a compilation error: " + e.getMessage());
         transcript.append(e.getErrorText());
     }
 

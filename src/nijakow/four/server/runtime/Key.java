@@ -663,5 +663,15 @@ public class Key {
 				}
 			}
 		};
+		get("$getmsgs").code = new BuiltinCode() {
+
+			@Override
+			public void run(Fiber fiber, Instance self, Instance[] args) throws CastException {
+				FList lst = new FList();
+				for (String s : fiber.getVM().getLogger().getLines())
+					lst.append(new FString(s));
+				fiber.setAccu(lst);
+			}
+		};
 	}
 }

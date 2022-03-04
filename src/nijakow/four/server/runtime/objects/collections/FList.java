@@ -70,6 +70,10 @@ public class FList extends FloatingInstance {
 		if (i < 0) i = list.size() + i + 1;
 		list.add(i, value);
 	}
+
+	public void append(Instance value) {
+		list.add(value);
+	}
 	
 	public Instance remove(int i) {
 		return list.remove(i);

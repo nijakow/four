@@ -15,9 +15,7 @@ import nijakow.four.server.runtime.security.users.IdentityDatabase;
 import nijakow.four.share.lang.c.parser.StreamPosition;
 import nijakow.four.share.util.ComparablePair;
 
-import java.util.LinkedList;
-import java.util.PriorityQueue;
-import java.util.Queue;
+import java.util.*;
 
 public class VM {
 	private final Logger logger;

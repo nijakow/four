@@ -39,6 +39,7 @@ use $chpass;
 use $getshell;
 use $chsh;
 use $eval;
+use $getmsgs;
 
 
 string type(any obj)
@@ -577,4 +578,9 @@ void fprintf(object file, string format, ...)
         }
         index = index + 1;
     }
+}
+
+list getmsgs()
+{
+    return $getmsgs();
 }

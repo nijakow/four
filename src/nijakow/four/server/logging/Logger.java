@@ -63,4 +63,12 @@ public class Logger {
     public CompilationLogger newCompilationLogger() {
         return new CompilationLogger(this);
     }
+
+    public String[] getLines() {
+        List<String> lines = new ArrayList<>();
+        for (Pair<Instant, String> line : logHistory) {
+            lines.add(formatLine(line.getFirst(), line.getSecond()));
+        }
+        return lines.toArray(new String[0]);
+    }
 }
