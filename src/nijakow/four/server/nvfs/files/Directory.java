@@ -30,6 +30,22 @@ public class Directory extends File implements FileParent {
     }
 
     @Override
+    public boolean isEssential() {
+        for (File f : files.values())
+            if (f.isEssential())
+                return true;
+        return super.isEssential();
+    }
+
+    @Override
+    public boolean shouldBeSerialized() {
+        for (File f : files.values())
+            if (f.shouldBeSerialized())
+                return true;
+        return super.shouldBeSerialized();
+    }
+
+    @Override
     public boolean hasWriteAccess(Identity identity) {
         return getRights().checkWriteAccess(identity);
     }
@@ -132,11 +148,13 @@ public class Directory extends File implements FileParent {
         StringBuilder contents = new StringBuilder();
         for (String key : files.keySet()) {
             File file = files.get(key);
-            contents.append(file.getID());
-            contents.append(":");
-            contents.append(key);
-            contents.append('\n');
-            serializer.queue(file);
+            if (file.shouldBeSerialized()) {
+                contents.append(file.getID());
+                contents.append(":");
+                contents.append(key);
+                contents.append('\n');
+                serializer.queue(file);
+            }
         }
         serializer.writeBase64Encoded(contents.toString().getBytes(StandardCharsets.UTF_8));
     }

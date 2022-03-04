@@ -15,12 +15,25 @@ public abstract class File implements ISerializable {
     private final UUID uuid;
     private FileParent parent;
     private FileAccessRights rights;
+    private boolean partOfStandardLibrary;
+    private boolean essential;
 
     protected File(FileParent parent, User owner, Group gowner) {
         this.uuid = UUID.randomUUID();
         this.parent = parent;
         this.rights = new FileAccessRights(owner, gowner);
+        this.partOfStandardLibrary = false;
+        this.essential = false;
     }
+
+    public boolean isPartOfStandardLibrary() { return this.partOfStandardLibrary; }
+    public void makePartOfStandardLibrary() { this.partOfStandardLibrary = true; }
+
+    public boolean isEssential() { return this.essential; }
+    public void makeEssential() { this.essential = true; }
+    public void makeUnessential() { this.essential = false; }
+
+    public boolean shouldBeSerialized() { return (!this.isPartOfStandardLibrary()) || (this.isEssential()); }
 
     protected void serializeCore(ISerializer serializer) {
         serializer.openProperty("file.name").writeString(getName()).close();
@@ -30,9 +43,12 @@ public abstract class File implements ISerializable {
 
     public final void writeOut(IFSSerializer serializer) {
         serializer.newEntry(getID());
+        serializer.writePath(getFullName());
         serializer.writeOwner(rights.getUserAccessRights().getIdentity().getName());
         serializer.writeGroup(rights.getGroupAccessRights().getIdentity().getName());
         serializer.writePermissions(getmod());
+        serializer.writeIsPartOfStdlib(isPartOfStandardLibrary());
+        serializer.writeIsEssential(isEssential());
         writeOutPayload(serializer);
     }
 
@@ -130,7 +146,8 @@ public abstract class File implements ISerializable {
     }
 
     public String getFullName() {
-        return getParent().getMyFullName(this);
+        final String name = getParent().getMyFullName(this);
+        return (name.isEmpty() ? "/" : name);
     }
 
     public File resolve1(String name) {

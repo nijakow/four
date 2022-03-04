@@ -35,18 +35,33 @@ public class BasicFSSerializer implements IFSSerializer {
     }
 
     @Override
+    public void writePath(String path) {
+        stream.println("Path: " + path);
+    }
+
+    @Override
     public void writeOwner(String name) {
-        stream.println("Owner: " + new String(Base64.getEncoder().encode(name.getBytes(StandardCharsets.UTF_8)), StandardCharsets.UTF_8));
+        stream.println("Owner: " + name);
     }
 
     @Override
     public void writeGroup(String name) {
-        stream.println("Group: " + new String(Base64.getEncoder().encode(name.getBytes(StandardCharsets.UTF_8)), StandardCharsets.UTF_8));
+        stream.println("Group: " + name);
     }
 
     @Override
     public void writePermissions(int permissions) {
         stream.println("Permissions: 0" + Integer.toOctalString(permissions));
+    }
+
+    @Override
+    public void writeIsPartOfStdlib(boolean flag) {
+        stream.println("StandardLib: " + (flag ? "yes" : "no"));
+    }
+
+    @Override
+    public void writeIsEssential(boolean flag) {
+        stream.println("Essential: " + (flag ? "yes" : "no"));
     }
 
     @Override
@@ -60,7 +75,7 @@ public class BasicFSSerializer implements IFSSerializer {
         stream.print('\t');
         for (int c = 0; c < encoded.length(); c++) {
             stream.print(encoded.charAt(c));
-            if (c % 72 == 71) {
+            if (c % 64 == 63) {
                 stream.println();
                 stream.print('\t');
             }
@@ -80,7 +95,12 @@ public class BasicFSSerializer implements IFSSerializer {
     }
 
     private void serialize(File file) {
-        queue(file);
+        /*
+         * TODO: Add an extra mode for unessential files? If so, change Directory.writeOutPayload(...)!
+         *                                                                                - nijakow
+         */
+        if (file.isEssential())
+            queue(file);
     }
 
     public void serialize(NVFileSystem fs) {

@@ -60,12 +60,16 @@ public class BasicFSDeserializer {
             if (child == null)
                 return false;
             child.setmod(permissions);
+            if (entry.isEssential())
+                child.makeEssential();
             extractDirectoryChildren(nvfs, child, entry, db);
         } else {
             TextFile file = parent.touch(name, db.getRootUser(), owner, group);
             if (file == null)
                 return false;
             file.setmod(permissions);
+            if (entry.isEssential())
+                file.makeEssential();
             file.setContents(entry.getPayloadAsBytes());
         }
         return result;
@@ -121,12 +125,18 @@ public class BasicFSDeserializer {
                 if (firstID == null) firstID = id;
                 entry = new FileEntry(id);
                 files.put(id, entry);
+            } else if (line.startsWith("Path: ")) {
+                // Do nothing
             } else if (line.startsWith("Owner: ")) {
-                entry.setOwner(decodeBase64AsString(line.substring(7)));
+                entry.setOwner(line.substring(7).trim());
             } else if (line.startsWith("Group: ")) {
-                entry.setGroup(decodeBase64AsString(line.substring(7)));
+                entry.setGroup(line.substring(7).trim());
             } else if (line.startsWith("Permissions: ")) {
                 entry.setPermissions(Integer.parseInt(line.substring(13), 8));
+            } else if (line.startsWith("StandardLib: ")) {
+                // Do nothing
+            } else if (line.startsWith("Essential: ")) {
+                entry.setEssential("yes".equals(line.substring(11)));
             } else if (line.startsWith("Type: ")) {
                 entry.setType(line.substring(6));
             } else if (line.startsWith("\t")) {

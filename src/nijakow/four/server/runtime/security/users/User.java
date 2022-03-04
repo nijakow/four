@@ -20,6 +20,8 @@ public class User extends Identity {
     }
 
     public byte[] getPasswordHash() {
+        if (this.passwordHash == null)
+            return null;
         return this.passwordHash.clone();
     }
 

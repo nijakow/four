@@ -146,17 +146,29 @@ public class NVFileSystem implements FileParent, ISerializable {
         final String newPath = path + "/" + name;
 
         final boolean secure = newPath.equals("/") || newPath.startsWith("/secure");
+        final boolean essential = newPath.startsWith("/world/");    // Everything except /world/ is stdlib stuff
+
         final User user = db.getRootUser();
         final Group group = secure ? db.getRootGroup() : db.getUsersGroup();
 
         if (file.isDirectory()) {
-            mkdir(newPath, user, user, group);
-            for (java.io.File f : file.listFiles()) {
-                load(f, newPath, db);
+            Directory dir = mkdir(newPath, user, user, group);
+            if (dir != null) {
+                dir.makePartOfStandardLibrary();
+                if (essential)
+                    dir.makeEssential();
+                for (java.io.File f : file.listFiles()) {
+                    load(f, newPath, db);
+                }
             }
         } else if (file.isFile()) {
             TextFile textFile = touch(newPath, user, user, group);
-            textFile.setContents(getResourceText(file));
+            if (textFile != null) {
+                textFile.makePartOfStandardLibrary();
+                if (essential)
+                    textFile.makeEssential();
+                textFile.setContents(getResourceText(file));
+            }
         }
     }
 

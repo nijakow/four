@@ -90,7 +90,9 @@ public class IdentityDatabase {
             User user = identity.asUser();
             if (user != null) {
                 builder.append(",user,");
-                builder.append(new String(Base64.getEncoder().encode(user.getPasswordHash()), StandardCharsets.UTF_8));
+                byte[] hash = user.getPasswordHash();
+                if (hash != null)
+                    builder.append(new String(Base64.getEncoder().encode(hash), StandardCharsets.UTF_8));
             } else if (identity.asGroup() != null) {
                 builder.append(",group,");
                 boolean hasPrev = false;
@@ -124,7 +126,7 @@ public class IdentityDatabase {
                 User user = getUserByName(name);
                 if (user == null)
                     user = newUser(name);
-                if (toks.length >= 4)
+                if (toks.length >= 4 && !toks[3].isEmpty())
                     user.setPasswordHashIfNotSet(Base64.getDecoder().decode(toks[3]));
             } else if ("group".equals(type)) {
                 Group group = getGroupByName(name);
