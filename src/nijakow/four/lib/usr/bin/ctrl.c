@@ -7,6 +7,7 @@ void docmd(string cmd, string args)
     } else if (cmd == "quit" || cmd == "logout") {
         exit();
     } else {
+        log("Player '", me()->get_short(), "' issued the command '", cmd, "'.\n");
         if (!exec(this::resume, "/usr/cmds/" + cmd + ".c", args)) {
             printf("I didn't quite get that, sorry...\n");
             resume();

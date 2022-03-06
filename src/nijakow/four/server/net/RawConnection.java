@@ -77,4 +77,8 @@ public class RawConnection implements IConnection {
 		 */
 		this.disconnectHandler = runnable;
 	}
+
+	public void blockAllIO() {
+		close();
+	}
 }

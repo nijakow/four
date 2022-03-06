@@ -58,7 +58,18 @@ public class Server {
 				}
 			} else if (key.isReadable()) {
 				ByteBuffer bb = ByteBuffer.allocate(1024);
-				int br = ((SocketChannel) key.channel()).read(bb);
+				int br;
+				try {
+					br = ((SocketChannel) key.channel()).read(bb);
+				} catch (Exception e) {
+					logger.printException(e);
+					RawConnection attachment = (RawConnection) key.attachment();
+					attachment.blockAllIO();
+					key.cancel();
+					key.channel().close();
+					attachment.handleDisconnect();
+					continue;
+				}
 				if (br <= 0) {
 					key.cancel();
 					((RawConnection) key.attachment()).handleDisconnect();
