@@ -22,10 +22,7 @@ public class Parser {
 		throw new ParseException(tokenizer.getPosition(), message);
 	}
 	
-	private Type parseType() throws ParseException {
-		/*
-		 * TODO: More types
-		 */
+	private Type parseCoreType() throws ParseException {
 		if (check(TokenType.ANY)) {
 			return Type.getAny();
 		} else if (check(TokenType.VOID)) {
@@ -55,6 +52,14 @@ public class Parser {
 		} else {
 			return null;
 		}
+	}
+
+	private Type parseType() throws ParseException {
+		Type t = parseCoreType();
+		if (t == null) return null;
+		while (checkStar())
+			t = t.listType();
+		return t;
 	}
 	
 	private Pair<Pair<Type, Key>[], Boolean> parseArgdefs() throws ParseException {
@@ -404,6 +409,14 @@ public class Parser {
 	private boolean check(TokenType type) throws ParseException {
 		Token t = nextToken();
 		if (t.is(type)) return true;
+		t.fail();
+		return false;
+	}
+
+	private boolean checkStar() throws ParseException {
+		Token t = nextToken();
+		if (t.is(TokenType.OPERATOR) && ((OperatorInfo) t.getPayload()).getType() == OperatorType.MULT)
+			return true;
 		t.fail();
 		return false;
 	}

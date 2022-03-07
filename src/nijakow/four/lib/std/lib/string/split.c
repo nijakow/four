@@ -1,5 +1,5 @@
 
-list splitson(string s, func predicate)
+string* splitson(string s, func predicate)
 {
     int pos = 0;
     int start = 0;
@@ -18,7 +18,7 @@ list splitson(string s, func predicate)
     return lst;
 }
 
-list spliton(string s, func predicate)
+string* spliton(string s, func predicate)
 {
     int pos = 0;
     int start = 0;
@@ -39,7 +39,7 @@ list spliton(string s, func predicate)
     return lst;
 }
 
-list split(string s)
+string* split(string s)
 {
     return spliton(s, this->isspace);
 }
