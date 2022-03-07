@@ -57,7 +57,11 @@ public class Blueprint {
 		this.filename = filename;
 		instances.add(this);
 	}
-	
+
+	public Blueprint[] getSupers() {
+		return supers.toArray(new Blueprint[0]);
+	}
+
 	@Override
 	public String toString() {
 		return filename;
@@ -112,17 +116,24 @@ public class Blueprint {
 		return new Blue(this);
 	}
 
-	public Key[] getInterface(boolean privatesAlso) {
-		Set<Key> theInterface = new HashSet<>();
+	public String[] getInterface(boolean privatesAlso) {
+		List<String> theInterface = new ArrayList<>();
 		for (Slot s : slots) {
-			if (s.getVisibility() != SlotVisibility.PRIVATE || privatesAlso)
-				theInterface.add(s.getName());
+			if (s.getVisibility() != SlotVisibility.PRIVATE || privatesAlso) {
+				theInterface.add(s.getType() + " " + s.getName().getName());
+			}
 		}
+		theInterface.sort((s1, s2) -> s1.compareToIgnoreCase(s2));
+		List<String> theInterface2 = new ArrayList<>();
 		for (Key key : methods.keySet()) {
-			if (methods.get(key).getVisibility() != SlotVisibility.PRIVATE || privatesAlso)
-				theInterface.add(key);
+			Method m = methods.get(key);
+			if (m.getVisibility() != SlotVisibility.PRIVATE || privatesAlso) {
+				theInterface2.add(key.getName() + "(...)");
+			}
 		}
-		return theInterface.toArray(new Key[0]);
+		theInterface2.sort((s1, s2) -> s1.compareToIgnoreCase(s2));
+		theInterface.addAll(theInterface2);
+		return theInterface.toArray(new String[0]);
 	}
 
 	private boolean implementsKey(Key key) {

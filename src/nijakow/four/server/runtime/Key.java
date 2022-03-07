@@ -776,8 +776,8 @@ public class Key {
 				final boolean privatesAlso = false;
 				FList lst = new FList();
 				if (blueprint != null) {
-					for (Key key : blueprint.getInterface(privatesAlso)) {
-						lst.append(new FString(key.getName()));
+					for (String line : blueprint.getInterface(privatesAlso)) {
+						lst.append(new FString(line));
 					}
 				}
 				fiber.setAccu(lst);
@@ -803,6 +803,20 @@ public class Key {
 				FList lst = new FList();
 				for (Blueprint bp : Blueprint.findBlueprintsExtending(blueprint)) {
 					lst.append(new FString(bp.getFilename()));
+				}
+				fiber.setAccu(lst);
+			}
+		};
+		get("$supers").code = new BuiltinCode() {
+
+			@Override
+			public void run(Fiber fiber, Instance self, Instance[] args) throws CastException {
+				final Blueprint blueprint = Blueprint.findBlueprint(args[0].asFString().asString());
+				FList lst = new FList();
+				if (blueprint != null) {
+					for (Blueprint bp : blueprint.getSupers()) {
+						lst.append(new FString(bp.getFilename()));
+					}
 				}
 				fiber.setAccu(lst);
 			}

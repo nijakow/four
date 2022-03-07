@@ -11,7 +11,7 @@ public class ListType extends Type {
 		this.parent = type;
 	}
 
-	public String getName() { return "list of " + parent.getName(); }
+	public String getName() { return parent.getName() + "*"; }
 
 	public Type getParent() { return parent; }
 

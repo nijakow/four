@@ -148,7 +148,7 @@ public abstract class Type {
 
 	@Override
 	public String toString() {
-		return "c_type(" + getName() + ")";
+		return getName();
 	}
 
 	public abstract String getName();
