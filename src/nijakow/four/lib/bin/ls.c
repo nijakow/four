@@ -45,18 +45,25 @@ void do_ls(string dir, bool long_mode, bool dir_mode)
 void start()
 {
     int off        = 1;
-    bool long_mode = false;
+    bool long_mode = true;
     bool dir_mode  = false;
 
     while (off < length(argv))
     {
         if (argv[off] == "-l")
             long_mode = true;
+        else if (argv[off] == "-s")
+            long_mode = false;
         else if (argv[off] == "-d")
             dir_mode = true;
         else if (argv[off] == "-ld")
         {
             long_mode = true;
+            dir_mode  = true;
+        }
+        else if (argv[off] == "-sd")
+        {
+            long_mode = false;
             dir_mode  = true;
         }
         else

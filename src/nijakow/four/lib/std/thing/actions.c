@@ -123,7 +123,7 @@ bool act_drop(object obj)
 
 bool act_say(string text)
 {
-    me_act("says: ", text);
+    me_act("says: ", text, "\n");
     printf("You say: %s\n", text);
     return true;
 }

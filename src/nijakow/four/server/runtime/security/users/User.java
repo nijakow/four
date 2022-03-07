@@ -77,7 +77,7 @@ public class User extends Identity {
     }
 
     public boolean isCurrentlyActive() {
-        return System.currentTimeMillis() - lastActive < 60 * 1000;
+        return System.currentTimeMillis() - lastActive < (10*60) * 1000;
     }
 
     public void notifyActive() {
