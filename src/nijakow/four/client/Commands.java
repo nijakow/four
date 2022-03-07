@@ -45,6 +45,7 @@ public abstract class Commands {
 		public static final String STYLE_TYPE = "editor/type";
 		public static final String STYLE_SPECIAL_WORD = "editor/specialWord";
 		public static final String STYLE_STDLIB = "editor/stdlib";
+		public static final String STYLE_COMMENT = "editor/comment";
 	}
 
 	public abstract static class Codes {

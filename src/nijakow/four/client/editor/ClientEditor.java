@@ -206,6 +206,8 @@ public class ClientEditor extends JFrame implements ActionListener {
 		StyleConstants.setForeground(s, Color.blue);
 		s = doc.addStyle(Commands.Styles.STYLE_STDLIB, def);
 		StyleConstants.setForeground(s, Color.orange);
+		s= doc.addStyle(Commands.Styles.STYLE_COMMENT, def);
+		StyleConstants.setForeground(s, Color.gray);
 	}
 	
 	private void updateSyntaxHighlighting() {
@@ -233,6 +235,11 @@ public class ClientEditor extends JFrame implements ActionListener {
 		while (matcher.find())
 			doc.setCharacterAttributes(matcher.start(), matcher.end() - matcher.start(),
 					doc.getStyle(Commands.Styles.STYLE_STDLIB), true);
+		keywords = "/\\*(.*)\\*/";
+		matcher = Pattern.compile(keywords).matcher(pane.getText());
+		while (matcher.find())
+			doc.setCharacterAttributes(matcher.start(), matcher.end() - matcher.start(),
+					doc.getStyle(Commands.Styles.STYLE_COMMENT), true);
 	}
 
 	public void send(final boolean save, final String newPath) {
