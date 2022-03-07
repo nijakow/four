@@ -28,9 +28,12 @@ import nijakow.four.share.lang.base.CompilationException;
 import nijakow.four.share.lang.c.parser.ParseException;
 import nijakow.four.share.util.Pair;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -721,6 +724,37 @@ public class Key {
 				for (String s : fiber.getVM().getLogger().getLines())
 					lst.append(new FString(s));
 				fiber.setAccu(lst);
+			}
+		};
+		get("$httpdl").code = new BuiltinCode() {
+
+			private byte[] slurp(InputStream input) throws IOException {
+				ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+
+				int nRead;
+				byte[] data = new byte[16384];
+
+				while ((nRead = input.read(data, 0, data.length)) != -1) {
+					buffer.write(data, 0, nRead);
+				}
+
+				return buffer.toByteArray();
+			}
+
+			@Override
+			public void run(Fiber fiber, Instance self, Instance[] args) throws CastException {
+				try {
+					final URL url = new URL(args[0].asFString().asString());
+					HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+					InputStream responseStream = connection.getInputStream();
+					byte[] result = slurp(responseStream);
+					fiber.setAccu(new FString(new String(result, StandardCharsets.UTF_8)));
+				} catch (MalformedURLException e) {
+					fiber.setAccu(Instance.getNil());
+				} catch (IOException e) {
+					fiber.getVM().getLogger().printException(e);
+					fiber.setAccu(Instance.getNil());
+				}
 			}
 		};
 	}
