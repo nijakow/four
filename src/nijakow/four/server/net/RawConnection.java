@@ -28,6 +28,7 @@ public class RawConnection implements IConnection {
 				socket.write(ByteBuffer.wrap(bytes));
 		} catch (IOException e) {
 			logger.printException(e);
+			blockAllIO();
 		}
 	}
 	
