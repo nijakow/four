@@ -25,7 +25,7 @@ void start()
     if (length(argv) != 2)
         printf("Argument error!\n");
     else {
-        list_interface(argv[1], 0);
+        list_interface(resolve(pwd(), argv[1]), 0);
     }
     exit();
 }
