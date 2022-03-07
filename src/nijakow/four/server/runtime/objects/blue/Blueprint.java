@@ -112,6 +112,19 @@ public class Blueprint {
 		return new Blue(this);
 	}
 
+	public Key[] getInterface(boolean privatesAlso) {
+		Set<Key> theInterface = new HashSet<>();
+		for (Slot s : slots) {
+			if (s.getVisibility() != SlotVisibility.PRIVATE || privatesAlso)
+				theInterface.add(s.getName());
+		}
+		for (Key key : methods.keySet()) {
+			if (methods.get(key).getVisibility() != SlotVisibility.PRIVATE || privatesAlso)
+				theInterface.add(key);
+		}
+		return theInterface.toArray(new Key[0]);
+	}
+
 	private boolean implementsKey(Key key) {
 		for (Slot s : slots)
 			if (s.getName() == key)

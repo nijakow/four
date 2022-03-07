@@ -1,8 +1,8 @@
 inherits "/secure/object.c";
 
-object the_connection;
-func   finish_cb;
-object _me;
+private object the_connection;
+private func   finish_cb;
+private object _me;
 
 object connection() { return the_connection; }
 void printf(...) { connection()->printf(...); }

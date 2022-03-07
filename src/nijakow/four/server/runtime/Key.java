@@ -768,6 +768,21 @@ public class Key {
 				fiber.setAccu(lst);
 			}
 		};
+		get("$interface").code = new BuiltinCode() {
+
+			@Override
+			public void run(Fiber fiber, Instance self, Instance[] args) throws CastException {
+				final Blueprint blueprint = Blueprint.findBlueprint(args[0].asFString().asString());
+				final boolean privatesAlso = false;
+				FList lst = new FList();
+				if (blueprint != null) {
+					for (Key key : blueprint.getInterface(privatesAlso)) {
+						lst.append(new FString(key.getName()));
+					}
+				}
+				fiber.setAccu(lst);
+			}
+		};
 		get("$definitions").code = new BuiltinCode() {
 
 			@Override
