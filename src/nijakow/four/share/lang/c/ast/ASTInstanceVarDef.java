@@ -9,8 +9,8 @@ import nijakow.four.share.lang.c.parser.StreamPosition;
 
 public class ASTInstanceVarDef extends ASTDefinition {
 
-	public ASTInstanceVarDef(StreamPosition pos, SlotVisibility visibility, Type type, Key name) {
-		super(pos, visibility, type, name);
+	public ASTInstanceVarDef(StreamPosition pos, String cDoc, SlotVisibility visibility, Type type, Key name) {
+		super(pos, cDoc, visibility, type, name);
 	}
 
 	@Override

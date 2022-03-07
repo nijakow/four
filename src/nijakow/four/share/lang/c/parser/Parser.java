@@ -347,13 +347,15 @@ public class Parser {
 				StreamPosition pos = p();
 				defs.add(new ASTInheritanceDef(pos, ((Instance) expect(TokenType.CONSTANT).getPayload()).asString()));
 				expect(TokenType.SEMICOLON);
-			} else if (check(TokenType.STRUCT) || check(TokenType.CLASS)) {
+			} /*else if (check(TokenType.STRUCT) || check(TokenType.CLASS)) {
 				StreamPosition pos = p();
 				Key name = expectKey();
 				expect(TokenType.LCURLY);
 				defs.add(new ASTClassDef(pos, name, parseClass()));
 				expect(TokenType.SEMICOLON);
-			} else {
+			}*/ else {
+				String cDoc = checkKeep(TokenType.C_DOC) ? (String) nextToken().getPayload() : "";
+
 				SlotVisibility visibility = SlotVisibility.NONE;
 
 				if (check(TokenType.PUBLIC)) {
@@ -369,9 +371,9 @@ public class Parser {
 					Pair<Pair<Type, Key>[], Boolean> args = parseArgdefs();
 					expect(TokenType.LCURLY);
 					ASTInstruction body = parseBlock();
-					defs.add(new ASTFunctionDef(pos, visibility, type, name, args.getFirst(), args.getSecond(), body));
+					defs.add(new ASTFunctionDef(pos, cDoc, visibility, type, name, args.getFirst(), args.getSecond(), body));
 				} else {
-					defs.add(new ASTInstanceVarDef(pos, visibility, type, name));
+					defs.add(new ASTInstanceVarDef(pos, cDoc, visibility, type, name));
 					expect(TokenType.SEMICOLON);
 				}
 			}

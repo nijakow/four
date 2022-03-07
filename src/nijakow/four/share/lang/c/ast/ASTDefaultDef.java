@@ -11,7 +11,7 @@ import nijakow.four.share.lang.c.parser.StreamPosition;
 public class ASTDefaultDef extends ASTDefinition {
 
 	public ASTDefaultDef(StreamPosition pos, Key name) {
-		super(pos, SlotVisibility.PRIVATE, null, name);
+		super(pos, null, SlotVisibility.PRIVATE, null, name);
 	}
 
 	@Override

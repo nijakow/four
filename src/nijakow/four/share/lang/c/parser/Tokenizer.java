@@ -32,9 +32,12 @@ public class Tokenizer {
 			stream.advance();
 	}
 	
-	private void skipBlockComment() {
-		while (!stream.peeks("*/"))
-			stream.advance();
+	private String parseBlockComment() {
+		StringBuilder builder = new StringBuilder();
+		while (!stream.peeks("*/")) {
+			builder.append(stream.next());
+		}
+		return builder.toString();
 	}
 	
 	private int parseChar(char terminator) {
@@ -83,8 +86,10 @@ public class Tokenizer {
 		if (peeks("//")) {
 			skipLineComment();
 			return nextToken();
+		} else if (peeks("/**")) {
+			return new Token(this, pos, TokenType.C_DOC, parseBlockComment());
 		} else if (peeks("/*")) {
-			skipBlockComment();
+			parseBlockComment();
 			return nextToken();
 		} else if (peeks("(")) return new Token(this, pos, TokenType.LPAREN);
 		else if (peeks(")")) return new Token(this, pos, TokenType.RPAREN);

@@ -10,7 +10,7 @@ public class ASTInheritanceDef extends ASTDecl {
 	private final String path;
 	
 	public ASTInheritanceDef(StreamPosition pos, String path) {
-		super(pos);
+		super(pos, null);
 		this.path = path;
 	}
 

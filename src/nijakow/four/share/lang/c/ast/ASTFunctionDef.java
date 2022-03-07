@@ -15,8 +15,8 @@ public class ASTFunctionDef extends ASTDefinition {
 	private final boolean hasVarargs;
 	private final ASTInstruction body;
 
-	public ASTFunctionDef(StreamPosition pos, SlotVisibility visibility, Type type, Key name, Pair<Type, Key>[] args, boolean hasVarargs, ASTInstruction body) {
-		super(pos, visibility, type, name);
+	public ASTFunctionDef(StreamPosition pos, String cDoc, SlotVisibility visibility, Type type, Key name, Pair<Type, Key>[] args, boolean hasVarargs, ASTInstruction body) {
+		super(pos, cDoc, visibility, type, name);
 		this.args = args;
 		this.hasVarargs = hasVarargs;
 		this.body = body;

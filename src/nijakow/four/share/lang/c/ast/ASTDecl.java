@@ -8,8 +8,11 @@ import nijakow.four.share.lang.c.parser.StreamPosition;
 
 public abstract class ASTDecl extends AST {
 
-	public ASTDecl(StreamPosition pos) {
+	private final String cDoc;
+
+	public ASTDecl(StreamPosition pos, String cDoc) {
 		super(pos);
+		this.cDoc = cDoc;
 	}
 
 	public abstract void compileInto(Blueprint blueprint, FourClassLoader fs) throws ParseException, CompilationException;

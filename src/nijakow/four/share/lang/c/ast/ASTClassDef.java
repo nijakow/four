@@ -11,8 +11,8 @@ public class ASTClassDef extends ASTDecl {
     private final Key name;
     private final ASTClass clazz;
 
-    public ASTClassDef(StreamPosition pos, Key name, ASTClass clazz) {
-        super(pos);
+    public ASTClassDef(StreamPosition pos, String cDoc, Key name, ASTClass clazz) {
+        super(pos, cDoc);
         this.name = name;
         this.clazz = clazz;
     }

@@ -10,8 +10,8 @@ public abstract class ASTDefinition extends ASTDecl {
 	private final Type type;
 	private final Key name;
 	
-	public ASTDefinition(StreamPosition pos, SlotVisibility visibility, Type type, Key name) {
-		super(pos);
+	public ASTDefinition(StreamPosition pos, String cDoc, SlotVisibility visibility, Type type, Key name) {
+		super(pos, cDoc);
 		this.visibility = visibility;
 		this.type = type;
 		this.name = name;
