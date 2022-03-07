@@ -757,5 +757,40 @@ public class Key {
 				}
 			}
 		};
+		get("$blueprints").code = new BuiltinCode() {
+
+			@Override
+			public void run(Fiber fiber, Instance self, Instance[] args) throws CastException {
+				FList lst = new FList();
+				for (Blueprint bp : Blueprint.getAllBlueprints()) {
+					lst.append(new FString(bp.getFilename()));
+				}
+				fiber.setAccu(lst);
+			}
+		};
+		get("$definitions").code = new BuiltinCode() {
+
+			@Override
+			public void run(Fiber fiber, Instance self, Instance[] args) throws CastException {
+				final Key key = Key.get(args[0].asFString().asString());
+				FList lst = new FList();
+				for (Blueprint bp : Blueprint.findBlueprintsImplementingKey(key)) {
+					lst.append(new FString(bp.getFilename()));
+				}
+				fiber.setAccu(lst);
+			}
+		};
+		get("$implementors").code = new BuiltinCode() {
+
+			@Override
+			public void run(Fiber fiber, Instance self, Instance[] args) throws CastException {
+				final Blueprint blueprint = Blueprint.findBlueprint(args[0].asFString().asString());
+				FList lst = new FList();
+				for (Blueprint bp : Blueprint.findBlueprintsExtending(blueprint)) {
+					lst.append(new FString(bp.getFilename()));
+				}
+				fiber.setAccu(lst);
+			}
+		};
 	}
 }

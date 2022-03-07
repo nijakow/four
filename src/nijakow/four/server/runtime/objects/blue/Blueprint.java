@@ -1,16 +1,53 @@
 package nijakow.four.server.runtime.objects.blue;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
+import nijakow.four.server.runtime.objects.FloatingInstance;
 import nijakow.four.server.runtime.vm.code.Code;
 import nijakow.four.server.runtime.Key;
 import nijakow.four.server.runtime.types.Type;
 import nijakow.four.share.lang.c.SlotVisibility;
 
 public class Blueprint {
+	private static final Set<Blueprint> instances;
+
+	static {
+		instances = Collections.newSetFromMap(new WeakHashMap<>());
+	}
+
+	public static Blueprint[] getAllBlueprints() {
+		return instances.toArray(new Blueprint[0]);
+	}
+
+	public static Blueprint findBlueprint(String name) {
+		for (Blueprint bp : getAllBlueprints())
+			if (name.equals(bp.getFilename()))
+				return bp;
+		return null;
+	}
+
+	public static Blueprint[] findBlueprintsImplementingKey(Key key) {
+		List<Blueprint> implementors = new ArrayList<>();
+		for (Blueprint bp : instances) {
+			if (bp == null) continue;
+			if (bp.implementsKey(key)) {
+				implementors.add(bp);
+			}
+		}
+		return implementors.toArray(new Blueprint[0]);
+	}
+
+	public static Blueprint[] findBlueprintsExtending(Blueprint blueprint) {
+		List<Blueprint> implementors = new ArrayList<>();
+		for (Blueprint bp : instances) {
+			if (bp == null) continue;
+			if (bp.extendsBlueprint(blueprint)) {
+				implementors.add(bp);
+			}
+		}
+		return implementors.toArray(new Blueprint[0]);
+	}
+
 	private final String filename;
 	private final List<Blueprint> supers = new ArrayList<>();
 	private final List<Slot> slots = new ArrayList<>();
@@ -18,10 +55,15 @@ public class Blueprint {
 
 	public Blueprint(String filename) {
 		this.filename = filename;
+		instances.add(this);
 	}
 	
 	@Override
 	public String toString() {
+		return filename;
+	}
+
+	public String getFilename() {
 		return filename;
 	}
 
@@ -68,5 +110,20 @@ public class Blueprint {
 
 	public Blue createBlue() {
 		return new Blue(this);
+	}
+
+	private boolean implementsKey(Key key) {
+		for (Slot s : slots)
+			if (s.getName() == key)
+				return true;
+		return methods.containsKey(key);
+	}
+
+	private boolean extendsBlueprint(Blueprint bp) {
+		for (Blueprint parent : supers) {
+			if (parent == bp)
+				return true;
+		}
+		return false;
 	}
 }
