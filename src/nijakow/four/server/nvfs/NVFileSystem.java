@@ -1,5 +1,7 @@
 package nijakow.four.server.nvfs;
 
+import nijakow.four.server.logging.CompilationLogger;
+import nijakow.four.server.logging.LogLevel;
 import nijakow.four.server.runtime.vm.VM;
 import nijakow.four.server.serialization.fs.IFSSerializer;
 import nijakow.four.server.runtime.objects.blue.Blueprint;
@@ -183,7 +185,14 @@ public class NVFileSystem implements FileParent, ISerializable {
         TextFile file = resolveTextFile(name);
         if (file == null)
             return null;
-        file.ensureCompiled(vm.getLogger().newCompilationLogger());
+        CompilationLogger logger = vm.getLogger().newCompilationLogger();
+        try {
+            file.ensureCompiled(logger);
+        } catch (CompilationException | ParseException e) {
+            logger.tell(e);
+            vm.getLogger().println(LogLevel.ERROR, logger.getTranscript());
+            throw e;
+        }
         return file.getInstance();
     }
 

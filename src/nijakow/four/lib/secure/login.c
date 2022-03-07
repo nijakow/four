@@ -127,7 +127,7 @@ void launch_shell()
         if (isroot()) {
             shell = "/bin/sh.c";
         } else {
-            shell = "/usr/bin/ctrl.c";
+            shell = "/bin/ctrl.c";
         }
     }
     if (!execappfromcli(this->logout, shell)) {

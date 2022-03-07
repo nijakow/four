@@ -1,5 +1,7 @@
 inherits "/std/app.c";
 
+private int bad_cmds;
+
 void docmd(string cmd, string args)
 {
     if (cmd == "") {
@@ -8,8 +10,16 @@ void docmd(string cmd, string args)
         exit();
     } else {
         log("Player '", me()->get_short(), "' issued the command '", cmd, "'.\n");
-        if (!exec(this::resume, "/usr/cmds/" + cmd + ".c", args)) {
-            printf("I didn't quite get that, sorry...\n");
+        if (exec(this::resume, "/usr/cmds/" + cmd + ".c", args)) {
+            bad_cmds = 0;
+        } else {
+            bad_cmds++;
+            if (bad_cmds >= 2) {
+                bad_cmds = 0;
+                printf("Looking for something? Try 'help' ;-)\n");
+            } else {
+                printf("I didn't quite get that, sorry...\n");
+            }
             resume();
         }
     }
@@ -39,10 +49,12 @@ void resume()
 
 void start()
 {
+    bad_cmds = 0;
     if (me() == nil) {
         printf("Game access is only allowed for player accounts.\n");
         exit();
     } else {
+        printf("Please type 'look' to open your eyes.\n");
         resume();
     }
 }
