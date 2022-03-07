@@ -37,6 +37,11 @@ public class TextFile extends File {
         return this;
     }
 
+    @Override
+    public boolean isDirty() {
+        return isDirty;
+    }
+
     public String getContents() { return new String(contents, StandardCharsets.UTF_8); }
     public void setContents(byte[] bytes) { this.contents = bytes; this.isDirty = true; }
     public void setContents(String contents) {

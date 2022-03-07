@@ -55,6 +55,7 @@ public abstract class File implements ISerializable {
     public abstract void writeOutPayload(IFSSerializer serializer);
 
     public String getID() { return uuid.toString(); }
+    public boolean isDirty() { return false; }
 
     protected FileParent getParent() { return parent; }
     public File getRoot() { return getParent().getRoot(); }
@@ -79,16 +80,18 @@ public abstract class File implements ISerializable {
     }
 
     public int getmod() {
-        int flags = 0b000000000;
-        if (getRights().getUserAccessRights().isReadable())    flags |= 0b100000000;
-        if (getRights().getUserAccessRights().isWritable())    flags |= 0b010000000;
-        if (getRights().getUserAccessRights().isExecutable())  flags |= 0b001000000;
-        if (getRights().getGroupAccessRights().isReadable())   flags |= 0b000100000;
-        if (getRights().getGroupAccessRights().isWritable())   flags |= 0b000010000;
-        if (getRights().getGroupAccessRights().isExecutable()) flags |= 0b000001000;
-        if (getRights().getOtherAccessRights().isReadable())   flags |= 0b000000100;
-        if (getRights().getOtherAccessRights().isWritable())   flags |= 0b000000010;
-        if (getRights().getOtherAccessRights().isExecutable()) flags |= 0b000000001;
+        int flags = 0b00000000000;
+        if (isDirty())                                         flags |= 0b10000000000;
+        if (asDirectory() != null)                             flags |= 0b01000000000;
+        if (getRights().getUserAccessRights().isReadable())    flags |= 0b00100000000;
+        if (getRights().getUserAccessRights().isWritable())    flags |= 0b00010000000;
+        if (getRights().getUserAccessRights().isExecutable())  flags |= 0b00001000000;
+        if (getRights().getGroupAccessRights().isReadable())   flags |= 0b00000100000;
+        if (getRights().getGroupAccessRights().isWritable())   flags |= 0b00000010000;
+        if (getRights().getGroupAccessRights().isExecutable()) flags |= 0b00000001000;
+        if (getRights().getOtherAccessRights().isReadable())   flags |= 0b00000000100;
+        if (getRights().getOtherAccessRights().isWritable())   flags |= 0b00000000010;
+        if (getRights().getOtherAccessRights().isExecutable()) flags |= 0b00000000001;
         return flags;
     }
 

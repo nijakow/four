@@ -14,7 +14,13 @@ string rwxstr(int flags)
 
 string rwx3str(int flags)
 {
-    return rwxstr(flags >> 6) + rwxstr(flags >> 3) + rwxstr(flags);
+    string head = "";
+    string tail = "";
+    if ((flags >> 10) & 0x01) tail = tail + "*";
+    else                      tail = tail + " ";
+    if ((flags >>  9) & 0x01) head = head + "d";
+    else                      head = head + "-";
+    return head + rwxstr(flags >> 6) + rwxstr(flags >> 3) + rwxstr(flags) + tail;
 }
 
 void do_ls1(string path, string file, bool long_mode)
