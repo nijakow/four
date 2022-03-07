@@ -87,7 +87,10 @@ public class TextFile extends File {
             blueprint = file.compile(getFullName(), new FourClassLoader() {
                 @Override
                 public Blueprint load(String path) throws ParseException, CompilationException {
-                    return resolve(path).asTextFile().compile(logger);
+                    final File resolved = resolve(path);
+                    if (resolved == null || resolved.asTextFile() == null)
+                        throw new CompilationException("Resource not found: " + path);
+                    return resolved.asTextFile().compile(logger);
                 }
 
                 @Override

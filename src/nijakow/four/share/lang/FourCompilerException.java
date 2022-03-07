@@ -8,7 +8,7 @@ public class FourCompilerException extends FourRuntimeException {
 
     public FourCompilerException(StreamPosition pos, String message) {
         super(message);
-        this.errorText = pos.makeErrorText(message);
+        this.errorText = (pos == null) ? message : pos.makeErrorText(message);
     }
 
     public String getErrorText() {

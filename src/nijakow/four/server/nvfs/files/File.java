@@ -66,14 +66,14 @@ public abstract class File implements ISerializable {
     public FileAccessRights getRights() { return this.rights; }
 
     public boolean chown(Identity actor, Identity newOwner) {
-        if (!getRights().getUserAccessRights().getIdentity().includes(actor) || newOwner.asUser() == null)
+        if (!(getRights().getUserAccessRights().getIdentity().includes(actor) || actor.isSuperuser()) || newOwner.asUser() == null)
             return false;
         getRights().getUserAccessRights().setIdentity(newOwner.asUser());
         return true;
     }
 
     public boolean chgrp(Identity actor, Identity newOwner) {
-        if (!getRights().getUserAccessRights().getIdentity().includes(actor) || newOwner.asGroup() == null)
+        if (!(getRights().getUserAccessRights().getIdentity().includes(actor) || actor.isSuperuser()) || newOwner.asGroup() == null)
             return false;
         getRights().getGroupAccessRights().setIdentity(newOwner.asGroup());
         return true;
@@ -108,7 +108,7 @@ public abstract class File implements ISerializable {
     }
 
     public boolean chmod(Identity identity, int flags) {
-        if (!getRights().getUserAccessRights().getIdentity().includes(identity))
+        if (!(getRights().getUserAccessRights().getIdentity().includes(identity) || identity.isSuperuser()))
             return false;
         setmod(flags);
         return true;

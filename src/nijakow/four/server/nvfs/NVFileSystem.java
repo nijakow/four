@@ -47,7 +47,7 @@ public class NVFileSystem implements FileParent, ISerializable {
 
     @Override
     public boolean hasWriteAccess(Identity identity) {
-        return getRoot().hasWriteAccess(identity);
+        return getRoot().hasWriteAccess(identity) || identity.isSuperuser();
     }
 
     public Directory getRoot() {
@@ -148,7 +148,7 @@ public class NVFileSystem implements FileParent, ISerializable {
         final String name = file.getName();
         final String newPath = path + "/" + name;
 
-        final boolean secure = newPath.equals("/") || newPath.startsWith("/secure");
+        final boolean secure = newPath.equals("/") || newPath.startsWith("/secure") || newPath.startsWith("/root");
         final boolean essential = newPath.startsWith("/world/");    // Everything except /world/ is stdlib stuff
 
         final User user = db.getRootUser();

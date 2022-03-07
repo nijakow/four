@@ -1,5 +1,6 @@
 package nijakow.four.server;
 
+import nijakow.four.server.logging.LogLevel;
 import nijakow.four.server.logging.Logger;
 import nijakow.four.server.net.Server;
 import nijakow.four.server.runtime.objects.blue.Blue;
@@ -10,6 +11,8 @@ import nijakow.four.server.runtime.security.users.IdentityDatabase;
 import nijakow.four.server.runtime.vm.VM;
 
 import java.io.IOException;
+import java.util.LinkedList;
+import java.util.Queue;
 
 public class Four implements Runnable {
 	private final Logger logger;
@@ -50,8 +53,8 @@ public class Four implements Runnable {
 		try {
 			start();
 		} catch (FourRuntimeException e) {
-			e.printStackTrace();
-			System.err.println("Fatal error! Stopping...");
+			logger.printException(LogLevel.CRITICAL, e);
+			logger.println(LogLevel.CRITICAL, "Fatal error! Stopping...");
 			return;
 		}
 
@@ -59,12 +62,13 @@ public class Four implements Runnable {
 			try {
 				vm.tick();
 			} catch (Exception e) {
-				e.printStackTrace();
-				System.err.println("This error was not fatal. Execution will continue.");
+				logger.printException(e);
+				logger.println(LogLevel.ERROR, "This error was not fatal. Execution will continue.");
 				try {
 					vm.reportError("exception", e.getClass().getName(), e.getMessage());
 				} catch (FourRuntimeException ex) {
-					ex.printStackTrace();
+					logger.printException(e);
+					logger.println(LogLevel.CRITICAL, "Unable to notify the server of exceptions!");
 				}
 			}
 			long wish = vm.notificationWish();

@@ -10,6 +10,8 @@ list args() { return argv; }
 
 bool execapp(func our_cb, string name, list args)
 {
+    if (name == nil)
+        return false;
     return exec(our_cb, name, pwd(), args);
 }
 

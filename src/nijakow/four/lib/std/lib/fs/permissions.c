@@ -16,17 +16,17 @@ string getgrp(string path)
     return $getgrp(path);
 }
 
-int chmod(string path, int flags)
+bool chmod(string path, int flags)
 {
     return $chmod(path, flags);
 }
 
-int chown(string path, string uid)
+bool chown(string path, string uid)
 {
     return $chown(path, uid);
 }
 
-int chgrp(string path, string gid)
+bool chgrp(string path, string gid)
 {
     return $chgrp(path, gid);
 }

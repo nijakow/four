@@ -47,7 +47,7 @@ public class Directory extends File implements FileParent {
 
     @Override
     public boolean hasWriteAccess(Identity identity) {
-        return getRights().checkWriteAccess(identity);
+        return getRights().checkWriteAccess(identity) || identity.isSuperuser();
     }
 
     public TextFile touch(String name, Identity identity, User owner, Group gowner) {

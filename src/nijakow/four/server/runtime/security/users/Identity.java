@@ -19,6 +19,7 @@ public abstract class Identity {
 
     public User asUser() { return null; }
     public Group asGroup() { return null; }
+    public boolean isSuperuser() { return this == db.getRootUser(); }
 
     void inGroup(Group g) { groups.add(g); }
     void notInGroup(Group g) { groups.remove(g); }
