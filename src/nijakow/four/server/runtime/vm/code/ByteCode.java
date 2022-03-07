@@ -14,18 +14,27 @@ public class ByteCode implements Code {
 	private final byte[] bytecodes;
 	private final Key[] keys;
 	private final Instance[] constants;
+	private final Type returnType;
+	private final Type[] argTypes;
 	private final Type[] types;
 	private final StreamPosition[] tells;
 	
-	public ByteCode(int params, boolean hasVarargs, int locals, byte[] bytecodes, Key[] keys, Instance[] constants, Type[] types, StreamPosition[] tells) {
+	public ByteCode(int params, boolean hasVarargs, int locals, byte[] bytecodes, Key[] keys, Instance[] constants, Type returnType, Type[] argTypes, Type[] types, StreamPosition[] tells) {
 		this.params = params;
 		this.hasVarargs = hasVarargs;
 		this.locals = locals;
 		this.bytecodes = bytecodes;
 		this.keys = keys;
 		this.constants = constants;
+		this.returnType = returnType;
+		this.argTypes = argTypes;
 		this.types = types;
 		this.tells = tells;
+	}
+
+	@Override
+	public ByteCode asByteCode() {
+		return this;
 	}
 
 	public int getLocalCount() {
@@ -69,5 +78,15 @@ public class ByteCode implements Code {
 	@Override
 	public void invoke(Fiber fiber, int args, Instance self) throws CastException {
 		fiber.enter(self.asBlue(), this, args);
+	}
+
+	public Type getReturnType() {
+		return this.returnType;
+	}
+
+	public Type[] getArgTypes() {
+		if (this.argTypes == null)
+			return null;
+		return this.argTypes.clone();
 	}
 }

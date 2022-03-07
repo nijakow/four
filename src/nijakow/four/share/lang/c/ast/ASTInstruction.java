@@ -18,7 +18,7 @@ public abstract class ASTInstruction extends AST {
 	}
 
 	public Code compileStandalone() throws CompilationException {
-		ScopedCompiler compiler = new ScopedCompiler(Type.getAny());
+		ScopedCompiler compiler = new ScopedCompiler(Type.getAny(), new Type[0]);
 		compiler.tell(this);
 		compile(compiler);
 		compiler.compileReturn();

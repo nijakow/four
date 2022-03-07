@@ -3,6 +3,7 @@ package nijakow.four.server.runtime.objects.blue;
 import java.util.*;
 
 import nijakow.four.server.runtime.objects.FloatingInstance;
+import nijakow.four.server.runtime.vm.code.ByteCode;
 import nijakow.four.server.runtime.vm.code.Code;
 import nijakow.four.server.runtime.Key;
 import nijakow.four.server.runtime.types.Type;
@@ -128,7 +129,24 @@ public class Blueprint {
 		for (Key key : methods.keySet()) {
 			Method m = methods.get(key);
 			if (m.getVisibility() != SlotVisibility.PRIVATE || privatesAlso) {
-				theInterface2.add(key.getName() + "(...)");
+				Code code = m.getCode();
+				ByteCode bc = code.asByteCode();
+				if (bc != null) {
+					Type[] args = bc.getArgTypes();
+					StringBuilder sb = new StringBuilder("(");
+					if (args != null) {
+						for (int x = 0; x < args.length; x++) {
+							if (x > 0) sb.append(", ");
+							sb.append(args[x]);
+						}
+					} else {
+						sb.append("...");
+					}
+					sb.append(")");
+					theInterface2.add(bc.getReturnType() + " " + key.getName() + sb.toString());
+				} else {
+					theInterface2.add("? " + key.getName() + "(...)");
+				}
 			}
 		}
 		theInterface2.sort((s1, s2) -> s1.compareToIgnoreCase(s2));

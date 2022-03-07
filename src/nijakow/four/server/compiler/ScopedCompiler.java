@@ -59,20 +59,22 @@ public class ScopedCompiler implements FCompiler {
 	private final InstructionWriter writer;
 	private final List<Pair<Type, Key>> locals = new ArrayList<>();
 	private final Type returnType;
+	private final Type[] argTypes;
 	private int params = 0;
 	private Label breakLabel = null, continueLabel = null;
 	
-	public ScopedCompiler(Type returnType) {
-		this(null, returnType);
+	public ScopedCompiler(Type returnType, Type[] argTypes) {
+		this(null, returnType, argTypes);
 	}
 	
-	private ScopedCompiler(ScopedCompiler parent, Type returnType) {
+	private ScopedCompiler(ScopedCompiler parent, Type returnType, Type[] argTypes) {
 		this.parent = parent;
 		if (parent == null)
-			this.writer = new InstructionWriter();
+			this.writer = new InstructionWriter(returnType, argTypes);
 		else
 			this.writer = parent.writer;
 		this.returnType = returnType;
+		this.argTypes = argTypes;
 	}
 
 	private Integer getParentLocalCount() {
@@ -110,7 +112,7 @@ public class ScopedCompiler implements FCompiler {
 	}
 
 	public FCompiler subscope() {
-		return new ScopedCompiler(this, returnType);
+		return new ScopedCompiler(this, returnType, argTypes);
 	}
 	
 	@Override

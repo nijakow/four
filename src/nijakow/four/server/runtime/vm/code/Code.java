@@ -5,5 +5,6 @@ import nijakow.four.server.runtime.objects.Instance;
 import nijakow.four.server.runtime.vm.Fiber;
 
 public interface Code {
+    ByteCode asByteCode();
 	void invoke(Fiber fiber, int args, Instance self) throws FourRuntimeException;
 }

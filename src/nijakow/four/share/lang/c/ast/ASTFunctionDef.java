@@ -24,7 +24,10 @@ public class ASTFunctionDef extends ASTDefinition {
 
 	@Override
 	public void compileInto(Blueprint blueprint, FourClassLoader fs) throws CompilationException {
-		ScopedCompiler compiler = new ScopedCompiler(getType());	// TODO: body.openCompilation();
+		Type[] argTypes = new Type[args.length];
+		for (int x = 0; x < argTypes.length; x++)
+			argTypes[x] = args[x].getFirst();
+		ScopedCompiler compiler = new ScopedCompiler(getType(), argTypes);	// TODO: body.openCompilation();
 		for (Pair<Type, Key> arg : args) {
 			compiler.addParam(arg.getFirst(), arg.getSecond());
 		}
