@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
+import nijakow.four.server.runtime.vm.code.CodeMeta;
 import nijakow.four.share.lang.base.FCompiler;
 import nijakow.four.share.lang.base.Label;
 import nijakow.four.share.lang.c.ast.AST;
@@ -55,28 +56,24 @@ class ScopedCompilerLabel implements Label {
 }
 
 public class ScopedCompiler implements FCompiler {
-	private final StreamPosition pos;
+	private final CodeMeta meta;
 	private final ScopedCompiler parent;
 	private final InstructionWriter writer;
 	private final List<Pair<Type, Key>> locals = new ArrayList<>();
-	private final Type returnType;
-	private final Type[] argTypes;
 	private int params = 0;
 	private Label breakLabel = null, continueLabel = null;
 	
-	public ScopedCompiler(StreamPosition pos, Type returnType, Type[] argTypes) {
-		this(pos, null, returnType, argTypes);
+	public ScopedCompiler(CodeMeta meta) {
+		this(meta, null);
 	}
 	
-	private ScopedCompiler(StreamPosition pos, ScopedCompiler parent, Type returnType, Type[] argTypes) {
-		this.pos = pos;
+	private ScopedCompiler(CodeMeta meta, ScopedCompiler parent) {
+		this.meta = meta;
 		this.parent = parent;
 		if (parent == null)
-			this.writer = new InstructionWriter(returnType, argTypes, pos);
+			this.writer = new InstructionWriter(meta);
 		else
 			this.writer = parent.writer;
-		this.returnType = returnType;
-		this.argTypes = argTypes;
 	}
 
 	private Integer getParentLocalCount() {
@@ -114,7 +111,7 @@ public class ScopedCompiler implements FCompiler {
 	}
 
 	public FCompiler subscope() {
-		return new ScopedCompiler(pos, this, returnType, argTypes);
+		return new ScopedCompiler(meta,this);
 	}
 	
 	@Override
@@ -213,7 +210,7 @@ public class ScopedCompiler implements FCompiler {
 	
 	@Override
 	public void compileReturn() {
-		writer.writeTypeCheck(returnType);
+		writer.writeTypeCheck(meta.getReturnType());
 		writer.writeReturn();
 	}
 

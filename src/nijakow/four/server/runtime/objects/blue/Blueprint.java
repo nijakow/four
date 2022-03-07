@@ -122,7 +122,7 @@ public class Blueprint {
 		Code code = m.getCode();
 		ByteCode bc = code.asByteCode();
 		if (bc != null) {
-			Type[] args = bc.getArgTypes();
+			Type[] args = bc.getMeta().getArgTypes();
 			StringBuilder sb = new StringBuilder("(");
 			if (args != null) {
 				for (int x = 0; x < args.length; x++) {
@@ -133,7 +133,7 @@ public class Blueprint {
 				sb.append("...");
 			}
 			sb.append(")");
-			return bc.getReturnType() + " " + key.getName() + sb.toString();
+			return bc.getMeta().getReturnType() + " " + key.getName() + sb.toString();
 		} else {
 			return "? " + key.getName() + "(...)";
 		}
@@ -179,7 +179,7 @@ public class Blueprint {
 		if (m != null) {
 			ByteCode bc = m.getCode().asByteCode();
 			if (bc != null) {
-				StreamPosition pos = bc.getPos();
+				StreamPosition pos = bc.getMeta().getStreamPosition();
 				if (pos != null)
 					return pos.makeErrorText("Definition of " + getMethodString(sym, m));
 			}

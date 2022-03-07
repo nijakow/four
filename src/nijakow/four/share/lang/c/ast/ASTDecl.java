@@ -7,13 +7,14 @@ import nijakow.four.server.runtime.FourClassLoader;
 import nijakow.four.share.lang.c.parser.StreamPosition;
 
 public abstract class ASTDecl extends AST {
-
 	private final String cDoc;
 
 	public ASTDecl(StreamPosition pos, String cDoc) {
 		super(pos);
 		this.cDoc = cDoc;
 	}
+
+	protected String getCDoc() { return this.cDoc; }
 
 	public abstract void compileInto(Blueprint blueprint, FourClassLoader fs) throws ParseException, CompilationException;
 }

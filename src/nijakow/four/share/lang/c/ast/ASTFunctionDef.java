@@ -1,5 +1,6 @@
 package nijakow.four.share.lang.c.ast;
 
+import nijakow.four.server.runtime.vm.code.CodeMeta;
 import nijakow.four.share.lang.base.CompilationException;
 import nijakow.four.server.compiler.ScopedCompiler;
 import nijakow.four.server.runtime.*;
@@ -27,7 +28,7 @@ public class ASTFunctionDef extends ASTDefinition {
 		Type[] argTypes = new Type[args.length];
 		for (int x = 0; x < argTypes.length; x++)
 			argTypes[x] = args[x].getFirst();
-		ScopedCompiler compiler = new ScopedCompiler(getPos(), getType(), argTypes);	// TODO: body.openCompilation();
+		ScopedCompiler compiler = new ScopedCompiler(new CodeMeta(getPos(), getCDoc(), getType(), argTypes));	// TODO: body.openCompilation();
 		for (Pair<Type, Key> arg : args) {
 			compiler.addParam(arg.getFirst(), arg.getSecond());
 		}
