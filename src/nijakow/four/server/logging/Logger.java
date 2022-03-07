@@ -64,9 +64,11 @@ public class Logger {
         return new CompilationLogger(this);
     }
 
-    public String[] getLines() {
+    public String[] getLines(int amount) {
+
         List<String> lines = new ArrayList<>();
-        for (Pair<Instant, String> line : logHistory) {
+        for (int start = (amount < 0) ? 0 : Math.max(0, logHistory.size() - amount); start < logHistory.size(); start++) {
+            final Pair<Instant, String> line = logHistory.get(start);
             lines.add(formatLine(line.getFirst(), line.getSecond()));
         }
         return lines.toArray(new String[0]);

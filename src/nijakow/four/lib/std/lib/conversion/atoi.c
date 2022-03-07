@@ -4,16 +4,17 @@ int atoi(string s)
 	int index = 0;
 	int factor = 1;
 	int num = 0;
+	int len = strlen(s);
 
-	while (isspace(s[index]))
+	while (index < len && isspace(s[index]))
 		index++;
-	if (s[index] == '-') {
+	if (index < len && s[index] == '-') {
 		factor = -1;
 		index++;
-	} else if (s[index] == '+') {
+	} else if (index < len && s[index] == '+') {
 		index++;
 	}
-	while (isdigit(s[index])) {
+	while (index < len && isdigit(s[index])) {
 		num = (num * 10) + (s[index] - '0');
 		index++;
 	}

@@ -720,8 +720,9 @@ public class Key {
 
 			@Override
 			public void run(Fiber fiber, Instance self, Instance[] args) throws CastException {
+				final int amount = args[0].asInt();
 				FList lst = new FList();
-				for (String s : fiber.getVM().getLogger().getLines())
+				for (String s : fiber.getVM().getLogger().getLines(amount))
 					lst.append(new FString(s));
 				fiber.setAccu(lst);
 			}

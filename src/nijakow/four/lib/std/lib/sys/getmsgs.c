@@ -1,6 +1,6 @@
 use $getmsgs;
 
-list getmsgs()
+list getmsgs(int amount)
 {
-    return $getmsgs();
+    return $getmsgs(amount);
 }

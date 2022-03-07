@@ -2,7 +2,14 @@ inherits "/std/app.c";
 
 void start()
 {
-    foreach (string s : getmsgs())
-        printf("%s\n", s);
+    int amount = -1;
+    if (length(argv) == 2)
+        amount = atoi(argv[1]);
+    if (length(argv) < 1 || length(argv) > 2)
+        printf("Argument error!\n");
+    else {
+        foreach (string s : getmsgs(amount))
+            printf("%s\n", s);
+    }
     exit();
 }
