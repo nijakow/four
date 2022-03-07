@@ -5,7 +5,7 @@ use $implementors;
 void list_implementors(string bp, int depth)
 {
     for (int x = 0; x < depth; x++)
-        printf("  ");
+        printf("    ");
     printf(" - %s\n", bp);
     foreach (string s : $implementors(bp))
     {
