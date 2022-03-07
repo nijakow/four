@@ -55,6 +55,7 @@ class ScopedCompilerLabel implements Label {
 }
 
 public class ScopedCompiler implements FCompiler {
+	private final StreamPosition pos;
 	private final ScopedCompiler parent;
 	private final InstructionWriter writer;
 	private final List<Pair<Type, Key>> locals = new ArrayList<>();
@@ -63,14 +64,15 @@ public class ScopedCompiler implements FCompiler {
 	private int params = 0;
 	private Label breakLabel = null, continueLabel = null;
 	
-	public ScopedCompiler(Type returnType, Type[] argTypes) {
-		this(null, returnType, argTypes);
+	public ScopedCompiler(StreamPosition pos, Type returnType, Type[] argTypes) {
+		this(pos, null, returnType, argTypes);
 	}
 	
-	private ScopedCompiler(ScopedCompiler parent, Type returnType, Type[] argTypes) {
+	private ScopedCompiler(StreamPosition pos, ScopedCompiler parent, Type returnType, Type[] argTypes) {
+		this.pos = pos;
 		this.parent = parent;
 		if (parent == null)
-			this.writer = new InstructionWriter(returnType, argTypes);
+			this.writer = new InstructionWriter(returnType, argTypes, pos);
 		else
 			this.writer = parent.writer;
 		this.returnType = returnType;
@@ -112,7 +114,7 @@ public class ScopedCompiler implements FCompiler {
 	}
 
 	public FCompiler subscope() {
-		return new ScopedCompiler(this, returnType, argTypes);
+		return new ScopedCompiler(pos, this, returnType, argTypes);
 	}
 	
 	@Override

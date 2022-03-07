@@ -821,5 +821,18 @@ public class Key {
 				fiber.setAccu(lst);
 			}
 		};
+		get("$syminfo").code = new BuiltinCode() {
+
+			@Override
+			public void run(Fiber fiber, Instance self, Instance[] args) throws CastException {
+				final Blueprint blueprint = Blueprint.findBlueprint(args[0].asFString().asString());
+				final Key sym = Key.get(args[1].asFString().asString());
+				FList lst = new FList();
+				String result = null;
+				if (blueprint != null)
+					result = blueprint.getSymInfo(sym);
+				fiber.setAccu(result == null ? Instance.getNil() : new FString(result));
+			}
+		};
 	}
 }

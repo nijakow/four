@@ -21,13 +21,15 @@ public class InstructionWriter {
 	private final List<StreamPosition> tells = new ArrayList<>();
 	private final Type returnType;
 	private final Type[] argTypes;
+	private final StreamPosition pos;
 	private int maxLocal = 0;
 	private int paramCount = 0;
 	private boolean hasVarargs = false;
 	
-	public InstructionWriter(Type returnType, Type[] argTypes) {
+	public InstructionWriter(Type returnType, Type[] argTypes, StreamPosition pos) {
 		this.returnType = returnType;
 		this.argTypes = argTypes;
+		this.pos = pos;
 	}
 	
 	private void u8(int v) { out.add((byte) v); }
@@ -217,6 +219,7 @@ public class InstructionWriter {
 							returnType,
 							argTypes,
 							types.toArray(new Type[0]),
+							pos,
 							tells.toArray(new StreamPosition[0]));
 	}
 }

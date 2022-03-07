@@ -8,6 +8,7 @@ import nijakow.four.server.runtime.vm.code.Code;
 import nijakow.four.server.runtime.Key;
 import nijakow.four.server.runtime.types.Type;
 import nijakow.four.share.lang.c.SlotVisibility;
+import nijakow.four.share.lang.c.parser.StreamPosition;
 
 public class Blueprint {
 	private static final Set<Blueprint> instances;
@@ -117,6 +118,27 @@ public class Blueprint {
 		return new Blue(this);
 	}
 
+	private String getMethodString(Key key, Method m) {
+		Code code = m.getCode();
+		ByteCode bc = code.asByteCode();
+		if (bc != null) {
+			Type[] args = bc.getArgTypes();
+			StringBuilder sb = new StringBuilder("(");
+			if (args != null) {
+				for (int x = 0; x < args.length; x++) {
+					if (x > 0) sb.append(", ");
+					sb.append(args[x]);
+				}
+			} else {
+				sb.append("...");
+			}
+			sb.append(")");
+			return bc.getReturnType() + " " + key.getName() + sb.toString();
+		} else {
+			return "? " + key.getName() + "(...)";
+		}
+	}
+
 	public String[] getInterface(boolean privatesAlso) {
 		List<String> theInterface = new ArrayList<>();
 		for (Slot s : slots) {
@@ -129,24 +151,7 @@ public class Blueprint {
 		for (Key key : methods.keySet()) {
 			Method m = methods.get(key);
 			if (m.getVisibility() != SlotVisibility.PRIVATE || privatesAlso) {
-				Code code = m.getCode();
-				ByteCode bc = code.asByteCode();
-				if (bc != null) {
-					Type[] args = bc.getArgTypes();
-					StringBuilder sb = new StringBuilder("(");
-					if (args != null) {
-						for (int x = 0; x < args.length; x++) {
-							if (x > 0) sb.append(", ");
-							sb.append(args[x]);
-						}
-					} else {
-						sb.append("...");
-					}
-					sb.append(")");
-					theInterface2.add(bc.getReturnType() + " " + key.getName() + sb.toString());
-				} else {
-					theInterface2.add("? " + key.getName() + "(...)");
-				}
+				theInterface2.add(getMethodString(key, m));
 			}
 		}
 		theInterface2.sort((s1, s2) -> s1.compareToIgnoreCase(s2));
@@ -168,4 +173,17 @@ public class Blueprint {
 		}
 		return false;
 	}
+
+    public String getSymInfo(Key sym) {
+		Method m = methods.get(sym);
+		if (m != null) {
+			ByteCode bc = m.getCode().asByteCode();
+			if (bc != null) {
+				StreamPosition pos = bc.getPos();
+				if (pos != null)
+					return pos.makeErrorText("Definition of " + getMethodString(sym, m));
+			}
+		}
+		return getMethodString(sym, m);
+    }
 }
