@@ -1,6 +1,7 @@
 package nijakow.four.share.lang.c.parser;
 
 public class StringCharStream implements CharStream {
+	private final String fileName;
 	private final String string;
 	private int offset;
 
@@ -44,12 +45,12 @@ public class StringCharStream implements CharStream {
 	}
 	
 	public StringCharStreamPosition getPosition() {
-		return new StringCharStreamPosition(this, this.string, this.offset);
+		return new StringCharStreamPosition(this, this.fileName, this.string, this.offset);
 	}
 	
-	public StringCharStream(String in) {
+	public StringCharStream(String fileName, String in) {
+		this.fileName = fileName;
 		this.string = in;
 		this.offset = 0;
 	}
-
 }

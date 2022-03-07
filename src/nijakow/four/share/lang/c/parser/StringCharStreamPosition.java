@@ -4,11 +4,13 @@ import nijakow.four.share.util.Pair;
 
 public class StringCharStreamPosition implements StreamPosition {
 	private final StringCharStream stream;
+	private final String fileName;
 	private final String text;
 	private final int index;
 	
-	public StringCharStreamPosition(StringCharStream stream, String text, int index) {
+	public StringCharStreamPosition(StringCharStream stream, String fileName, String text, int index) {
 		this.stream = stream;
+		this.fileName = fileName;
 		this.text = text;
 		this.index = index;
 	}
@@ -52,6 +54,10 @@ public class StringCharStreamPosition implements StreamPosition {
 			int l = 1;
 			int c = 1;
 			boolean newline = true;
+			boolean hasWritten = false;
+			sb.append("      --- ");
+			sb.append(fileName);
+			sb.append(" ---\n");
 			for (int index = 0; index < text.length(); index++) {
 				if (l > lp.getFirst() - 5 && l < lp.getFirst() + 5) {
 					if (newline)
@@ -70,12 +76,24 @@ public class StringCharStreamPosition implements StreamPosition {
 						sb.append(lp.getFirst() + ":" + lp.getSecond() + ": ");
 						sb.append(message);
 						sb.append('\n');
+						hasWritten = true;
 					}
 					l++;
 					c = 1;
 				} else {
 					c++;
 				}
+			}
+			if (!newline) sb.append('\n');
+			if (!hasWritten) {
+				sb.append("      ");    // Line spacing
+				for (int xx = 1; xx < lp.getSecond(); xx++)
+					sb.append(' ');
+				sb.append('^');
+				sb.append(' ');
+				sb.append(lp.getFirst() + ":" + lp.getSecond() + ": ");
+				sb.append(message);
+				sb.append('\n');
 			}
 		}
 		return sb.toString();

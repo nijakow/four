@@ -105,7 +105,7 @@ public class FString extends FloatingInstance {
 	}
 
     public Code compileAsCode() throws ParseException, CompilationException {
-		Parser parser = new Parser(new Tokenizer(new StringCharStream(this.value)));
+		Parser parser = new Parser(new Tokenizer(new StringCharStream("<string>", this.value)));
 		ASTExpression expr = parser.parseLine();
 		return expr.compileStandalone();
     }

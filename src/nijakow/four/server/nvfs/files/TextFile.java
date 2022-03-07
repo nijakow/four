@@ -80,8 +80,9 @@ public class TextFile extends File {
 
     public Blueprint compile(CompilationLogger logger) throws ParseException, CompilationException {
         if (blueprint == null || isDirty) {
-            logger.visitFile(getFullName());
-            Parser parser = new Parser(new Tokenizer(new StringCharStream(getContents())));
+            final String name = getFullName();
+            logger.visitFile(name);
+            Parser parser = new Parser(new Tokenizer(new StringCharStream(name, getContents())));
             ASTClass file = parser.parseFile();
             blueprint = file.compile(getFullName(), new FourClassLoader() {
                 @Override
