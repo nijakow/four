@@ -26,6 +26,7 @@ void add_archwizard(string name)
         chmod(dir, 0744);
         chpass(name, code);
         chsh(name, "/bin/sh.c");
+        addtogroup(name, "wizards");
     }
 }
 

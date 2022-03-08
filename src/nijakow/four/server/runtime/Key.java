@@ -312,7 +312,8 @@ public class Key {
 				String path = args[0].asFString().asString();
 				Directory dir = fiber.getVM().getFilesystem().resolveDirectory(path);
 				Pair<String, File>[] contents = null;
-				if (dir != null) contents = dir.ls();
+				if (dir != null && dir.getRights().checkReadAccess(fiber.getSharedState().getUser()))
+					contents = dir.ls();
 				if (contents == null) {
 					fiber.setAccu(Instance.getNil());
 				} else {
@@ -383,7 +384,7 @@ public class Key {
 				CompilationLogger logger = fiber.getVM().getLogger().newCompilationLogger();
 				try {
 					TextFile file = fiber.getVM().getFilesystem().resolveTextFile(path);
-					if (file == null)
+					if (file == null || !file.getRights().checkReadAccess(fiber.getSharedState().getUser()))
 						fiber.setAccu(FInteger.getBoolean(false));
 					else {
 						file.compile(logger);

@@ -26,18 +26,21 @@ public class FileAccessRights {
     public boolean checkReadAccess(Identity identity) {
         return userAccessRights.checkReadAccess(identity)
                 || groupAccessRights.checkReadAccess(identity)
-                || otherAccessRights.isReadable();
+                || otherAccessRights.isReadable()
+                || identity.isSuperuser();
     }
 
     public boolean checkWriteAccess(Identity identity) {
         return userAccessRights.checkWriteAccess(identity)
                 || groupAccessRights.checkWriteAccess(identity)
-                || otherAccessRights.isWritable();
+                || otherAccessRights.isWritable()
+                || identity.isSuperuser();
     }
 
     public boolean checkExecuteAccess(Identity identity) {
         return userAccessRights.checkExecuteAccess(identity)
                 || groupAccessRights.checkExecuteAccess(identity)
-                || otherAccessRights.isExecutable();
+                || otherAccessRights.isExecutable()
+                || identity.isSuperuser();
     }
 }
