@@ -7,11 +7,14 @@ import nijakow.four.server.runtime.objects.blue.Blue;
 import nijakow.four.server.runtime.exceptions.FourRuntimeException;
 import nijakow.four.server.runtime.Key;
 import nijakow.four.server.nvfs.NVFileSystem;
+import nijakow.four.server.runtime.objects.standard.FInteger;
 import nijakow.four.server.storage.StorageManager;
+import nijakow.four.server.storage.serialization.fs.BasicFSSerializer;
 import nijakow.four.server.users.IdentityDatabase;
 import nijakow.four.server.runtime.vm.VM;
 
 import java.io.IOException;
+import java.io.OutputStream;
 
 public class Four implements Runnable {
 	private final Logger logger;
@@ -54,6 +57,20 @@ public class Four implements Runnable {
 				
 				vm.startFiber(master, Key.get("create"));
 			}
+		}
+	}
+
+	public boolean takeSnapshot() {
+		try {
+			final OutputStream outputStream = getStorageManager().startNewSnapshot();
+			final BasicFSSerializer serializer = new BasicFSSerializer(outputStream);
+			serializer.newMetaEntry("users", getIdentityDB().serializeAsBytes());
+			serializer.serialize(getFilesystem());
+			outputStream.close();
+			return true;
+		} catch (IOException e) {
+			getLogger().printException(e);
+			return false;
 		}
 	}
 	

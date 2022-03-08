@@ -685,17 +685,7 @@ public class Key {
 
 			@Override
 			public void run(Fiber fiber, Instance self, Instance[] args) throws CastException {
-				try {
-					final OutputStream outputStream = fiber.getVM().getStorageManager().startNewSnapshot();
-					final BasicFSSerializer serializer = new BasicFSSerializer(outputStream);
-					serializer.newMetaEntry("users", fiber.getVM().getIdentityDB().serializeAsBytes());
-					serializer.serialize(fiber.getVM().getFilesystem());
-					outputStream.close();
-					fiber.setAccu(FInteger.getBoolean(true));
-				} catch (IOException e) {
-					fiber.getVM().getLogger().printException(e);
-					fiber.setAccu(FInteger.getBoolean(false));
-				}
+				fiber.setAccu(FInteger.getBoolean(fiber.getVM().getFour().takeSnapshot()));
 			}
 		};
 		get("$loadfs").code = new BuiltinCode() {
