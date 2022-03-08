@@ -31,6 +31,10 @@ public class FClosure extends Instance {
 		instance.extractMethod(fiber.getVM(), key).invoke(fiber, args, this.self);
 	}
 
+	public void invokeIn(Fiber fiber, int millis, int args) {
+		fiber.getVM().invokeIn(fiber.getSharedState(), this, millis);
+	}
+
 	@Override
 	public String getSerializationClassID() {
 		return "closure";

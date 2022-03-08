@@ -163,4 +163,9 @@ public class VM {
 		long time = System.currentTimeMillis();
 		pendingCallbacks.add(new ComparablePair<>(time + millis, createCallback(state, subject, message)));
 	}
+
+	public void invokeIn(Process state, FClosure closure, long millis) {
+		long time = System.currentTimeMillis();
+		pendingCallbacks.add(new ComparablePair<>(time + millis, new Callback(this, state, closure)));
+	}
 }

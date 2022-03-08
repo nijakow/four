@@ -168,6 +168,13 @@ public class Key {
 				args[0].asFClosure().invoke(fiber, args.length - 1);
 			}
 		};
+		get("$sleep").code = new BuiltinCode() {
+
+			@Override
+			public void run(Fiber fiber, Instance self, Instance[] args) throws FourRuntimeException {
+				args[0].asFClosure().invokeIn(fiber, args[1].asInt(), args.length - 1);
+			}
+		};
 		get("$log").code = new BuiltinCode() {
 			
 			@Override
