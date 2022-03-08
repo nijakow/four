@@ -35,7 +35,23 @@ public class Tokenizer {
 	private String parseBlockComment() {
 		StringBuilder builder = new StringBuilder();
 		while (!stream.peeks("*/")) {
-			builder.append(stream.next());
+			builder.append((char) stream.next());
+		}
+		return builder.toString();
+	}
+
+	private String parseCDoc() {
+		String line = parseBlockComment();
+		String[] lines = line.split("\n");
+		for (int x = 0; x < lines.length; x++) {
+			lines[x] = lines[x].trim();
+			if (lines[x].startsWith("*"))
+				lines[x] = lines[x].substring(1).trim();
+		}
+		StringBuilder builder = new StringBuilder();
+		for (String s : lines) {
+			builder.append(s);
+			builder.append('\n');
 		}
 		return builder.toString();
 	}
@@ -87,7 +103,7 @@ public class Tokenizer {
 			skipLineComment();
 			return nextToken();
 		} else if (peeks("/**")) {
-			return new Token(this, pos, TokenType.C_DOC, parseBlockComment());
+			return new Token(this, pos, TokenType.C_DOC, parseCDoc());
 		} else if (peeks("/*")) {
 			parseBlockComment();
 			return nextToken();

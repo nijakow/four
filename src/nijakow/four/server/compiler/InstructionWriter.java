@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
+import nijakow.four.server.runtime.vm.code.CodeMeta;
 import nijakow.four.share.lang.c.ast.OperatorType;
 import nijakow.four.server.runtime.vm.code.ByteCode;
 import nijakow.four.server.runtime.objects.Instance;
@@ -13,23 +14,19 @@ import nijakow.four.server.runtime.types.Type;
 import nijakow.four.server.runtime.vm.Bytecodes;
 import nijakow.four.share.lang.c.parser.StreamPosition;
 
-public class InstructionWriter {	
+public class InstructionWriter {
+	private final CodeMeta meta;
 	private final List<Byte> out = new ArrayList<>();
 	private final List<Key> keys = new ArrayList<>();
 	private final List<Instance> constants = new ArrayList<>();
 	private final List<Type> types = new ArrayList<>();
 	private final List<StreamPosition> tells = new ArrayList<>();
-	private final Type returnType;
-	private final Type[] argTypes;
-	private final StreamPosition pos;
 	private int maxLocal = 0;
 	private int paramCount = 0;
 	private boolean hasVarargs = false;
 	
-	public InstructionWriter(Type returnType, Type[] argTypes, StreamPosition pos) {
-		this.returnType = returnType;
-		this.argTypes = argTypes;
-		this.pos = pos;
+	public InstructionWriter(CodeMeta meta) {
+		this.meta = meta;
 	}
 	
 	private void u8(int v) { out.add((byte) v); }
@@ -210,16 +207,14 @@ public class InstructionWriter {
 			bytes[i] = out.get(i);
 		if (maxLocal + 1 < paramCount)
 			maxLocal = paramCount - 1;
-		return new ByteCode(paramCount,
+		return new ByteCode(meta,
+							paramCount,
 							hasVarargs,
 							maxLocal + 1,
 							bytes,
 							keys.toArray(new Key[0]),
 							constants.toArray(new Instance[0]),
-							returnType,
-							argTypes,
 							types.toArray(new Type[0]),
-							pos,
 							tells.toArray(new StreamPosition[0]));
 	}
 }

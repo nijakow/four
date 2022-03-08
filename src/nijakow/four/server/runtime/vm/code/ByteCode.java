@@ -8,29 +8,25 @@ import nijakow.four.server.runtime.vm.Fiber;
 import nijakow.four.share.lang.c.parser.StreamPosition;
 
 public class ByteCode implements Code {
+	private final CodeMeta meta;
 	private final int params;
 	private final boolean hasVarargs;
 	private final int locals;
 	private final byte[] bytecodes;
 	private final Key[] keys;
 	private final Instance[] constants;
-	private final Type returnType;
-	private final Type[] argTypes;
 	private final Type[] types;
-	private final StreamPosition pos;
 	private final StreamPosition[] tells;
 	
-	public ByteCode(int params, boolean hasVarargs, int locals, byte[] bytecodes, Key[] keys, Instance[] constants, Type returnType, Type[] argTypes, Type[] types, StreamPosition pos, StreamPosition[] tells) {
+	public ByteCode(CodeMeta meta, int params, boolean hasVarargs, int locals, byte[] bytecodes, Key[] keys, Instance[] constants, Type[] types, StreamPosition[] tells) {
+		this.meta = meta;
 		this.params = params;
 		this.hasVarargs = hasVarargs;
 		this.locals = locals;
 		this.bytecodes = bytecodes;
 		this.keys = keys;
 		this.constants = constants;
-		this.returnType = returnType;
-		this.argTypes = argTypes;
 		this.types = types;
-		this.pos = pos;
 		this.tells = tells;
 	}
 
@@ -82,17 +78,5 @@ public class ByteCode implements Code {
 		fiber.enter(self.asBlue(), this, args);
 	}
 
-	public Type getReturnType() {
-		return this.returnType;
-	}
-
-	public Type[] getArgTypes() {
-		if (this.argTypes == null)
-			return null;
-		return this.argTypes.clone();
-	}
-
-	public StreamPosition getPos() {
-		return this.pos;
-	}
+	public CodeMeta getMeta() { return meta; }
 }
