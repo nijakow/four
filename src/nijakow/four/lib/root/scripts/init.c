@@ -12,14 +12,21 @@ inherits "/std/app.c";
  */
 void add_archwizard(string name)
 {
-    printf("Setting up wizard %s...\n", name);
-    string dir = "/home/" + name;
-    adduser(name);
-    mkdir(dir);
-    chown(dir, name);
-    chgrp(dir, "users");
-    chmod(dir, 0744);
-    chpass(name, "42");
+    if (finduser(name)) {
+        printf("User '%s' already exists!\n", name);
+        return;
+    } else {
+        string code = itoa(rand() % 10000);
+        printf("Setting up wizard %s (access code %s)...\n", name, code);
+        string dir = "/home/" + name;
+        adduser(name);
+        mkdir(dir);
+        chown(dir, name);
+        chgrp(dir, "users");
+        chmod(dir, 0744);
+        chpass(name, code);
+        chsh(name, "/bin/sh.c");
+    }
 }
 
 void start()

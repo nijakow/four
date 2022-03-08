@@ -54,9 +54,9 @@ public class Fiber {
 		top = frame;
 	}
 
-	public void enter(Blue self, ByteCode code, int args) {
+	public void enter(Blue self, ByteCode code, int args) throws FourRuntimeException {
 		if (!code.argCheck(args))
-			throw new RuntimeException("Ouch! Arg error!");
+			throw new FourRuntimeException("Ouch! Arg error!");
 		int varargCount = args - code.getFixedArgCount();
 		Frame f = new Frame(top, code, self);
 		while (varargCount --> 0) {
