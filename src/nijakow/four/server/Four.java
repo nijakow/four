@@ -28,12 +28,18 @@ public class Four implements Runnable {
 		this.fs = fs;
 		this.storageManager = new StorageManager(storagePath);
 		this.server = new Server(this.logger);
-		this.vm = new VM(this.logger, this.db, this.fs, this.storageManager, this.server);
+		this.vm = new VM(this);
 
 		logger.println(LogLevel.INFO, "Storage path is '" + storagePath + "'.");
 		for (int port : ports)
 			server.serveOn(hostname, port);
 	}
+
+	public Logger getLogger() { return this.logger; }
+	public IdentityDatabase getIdentityDB() { return this.db; }
+	public NVFileSystem getFilesystem() { return this.fs; }
+	public StorageManager getStorageManager() { return this.storageManager; }
+	public Server getServer() { return this.server; }
 	
 	public void start() throws FourRuntimeException {
 		if (!wasStarted) {

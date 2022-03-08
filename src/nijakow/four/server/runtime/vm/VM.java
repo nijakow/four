@@ -1,5 +1,6 @@
 package nijakow.four.server.runtime.vm;
 
+import nijakow.four.server.Four;
 import nijakow.four.server.logging.LogLevel;
 import nijakow.four.server.logging.Logger;
 import nijakow.four.server.net.Server;
@@ -23,30 +24,22 @@ import java.io.FileOutputStream;
 import java.util.*;
 
 public class VM {
-	private final Logger logger;
-	private final IdentityDatabase identityDB;
-	private final NVFileSystem fs;
-	private final StorageManager storageManager;
-	private final Server server;
+	private final Four four;
 	private final Queue<Fiber> fibers = new LinkedList<>();
 	private final PriorityQueue<ComparablePair<Long, Callback>> pendingCallbacks = new PriorityQueue<>();
 	private Callback errorCallback = null;
 	
-	public VM(Logger logger, IdentityDatabase identityDB, NVFileSystem fs, StorageManager storageManager, Server server) {
-		this.logger = logger;
-		this.identityDB = identityDB;
-		this.fs = fs;
-		this.storageManager = storageManager;
-		this.server = server;
+	public VM(Four four) {
+		this.four = four;
 		getLogger().println(LogLevel.INFO,"Initialized VM");
 	}
 
-	public Logger getLogger() { return logger; }
-	public IdentityDatabase getIdentityDB() { return identityDB; }
-	public NVFileSystem getFilesystem() {
-		return fs;
-	}
-	public StorageManager getStorageManager() { return storageManager; }
+	public Four getFour() { return this.four; }
+	public Logger getLogger() { return getFour().getLogger(); }
+	public IdentityDatabase getIdentityDB() { return getFour().getIdentityDB(); }
+	public NVFileSystem getFilesystem() { return getFour().getFilesystem(); }
+	public StorageManager getStorageManager() { return getFour().getStorageManager(); }
+	private Server getServer() { return getFour().getServer(); }
 	
 	public Callback createCallback(Process state, FClosure closure) {
 		return new Callback(this, state, closure);
@@ -57,13 +50,13 @@ public class VM {
 	}
 
 	public void setConnectCallback(Callback callback) {
-		logger.println(LogLevel.DEBUG, "Connect callback was set to " + callback);
-		this.server.onConnect((theConnection) -> {
-			logger.println(LogLevel.DEBUG, "Connect callback was invoked (" + callback + ")");
+		getLogger().println(LogLevel.DEBUG, "Connect callback was set to " + callback);
+		this.getServer().onConnect((theConnection) -> {
+			getLogger().println(LogLevel.DEBUG, "Connect callback was invoked (" + callback + ")");
 			try {
 				callback.invoke(new FConnection(theConnection));
 			} catch (FourRuntimeException e) {
-				logger.printException(e);
+				getLogger().printException(e);
 			}
 		});
 	}
@@ -116,12 +109,12 @@ public class VM {
 			} catch (FourRuntimeException e) {
 				StreamPosition lastTell = fiber.getLastTell();
 				if (lastTell != null) {
-					logger.println(LogLevel.ERROR, "Caught " + e.getClass());
-					logger.println(LogLevel.ERROR, "Execution context:");
-					logger.println(LogLevel.ERROR, fiber.getLastTell().makeErrorText(e.getMessage()));
+					getLogger().println(LogLevel.ERROR, "Caught " + e.getClass());
+					getLogger().println(LogLevel.ERROR, "Execution context:");
+					getLogger().println(LogLevel.ERROR, fiber.getLastTell().makeErrorText(e.getMessage()));
 				} else {
-					logger.printException(e);
-					logger.println(LogLevel.INFO, "The exception was caught, the VM will continue to run.");
+					getLogger().printException(e);
+					getLogger().println(LogLevel.INFO, "The exception was caught, the VM will continue to run.");
 				}
 				reportError("four", e.getClass().getName(), e.getMessage());
 			}
