@@ -20,7 +20,11 @@ void cmd_cd(list argv)
     else {
         string newpwd = resolve(pwd(), argv[1]);
         if (newpwd != nil && is_dir(newpwd)) {
-            chdir(newpwd);
+            if (!checkexec(newpwd)) {
+                printf("Permission denied!\n");
+            } else {
+                chdir(newpwd);
+            }
         } else {
             file_not_found_error();
         }
