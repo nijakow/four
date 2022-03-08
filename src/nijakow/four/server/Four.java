@@ -84,7 +84,7 @@ public class Four implements Runnable {
 				try {
 					server.tick(wish);
 				} catch (IOException e) {
-					e.printStackTrace();
+					logger.printException(e);
 				}
 			}
 		}
