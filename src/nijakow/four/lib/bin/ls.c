@@ -23,28 +23,37 @@ string rwx3str(int flags)
     return head + rwxstr(flags >> 6) + rwxstr(flags >> 3) + rwxstr(flags) + tail;
 }
 
-void do_ls1(string path, string file, bool long_mode)
+void do_ls1(string path, bool long_mode)
 {
-    if (!exists(path)) {
-        printf("%s: file not found!\n", path);
-    } else {
-        if (long_mode) {
-            printf("%s %s %s ", rwx3str(stat(path)), strwid(uname(getown(path)), 8), strwid(gname(getgrp(path)), 8));
-        }
-        printf("%s\n", file);
+    if (long_mode) {
+        printf("%s %s %s    ", rwx3str(stat(path)), strwid(uname(getown(path)), 8), strwid(gname(getgrp(path)), 8));
     }
+    printf("%s\n", basename(path));
 }
 
-void do_ls(string dir, bool long_mode, bool dir_mode)
+void do_ls(string dir, string name, bool long_mode, bool dir_mode)
 {
+    if (!exists(dir)) {
+        printf("%s: file not found!\n", name);
+        return;
+    }
+
+    if (!is_dir(dir)) dir_mode = true;
+
+    if (dir_mode) {
+        do_ls1(dir, long_mode);
+        return;
+    }
+
     list files = ls(dir);
-    if (files == nil || dir_mode) {
-        do_ls1(dir, basename(dir), long_mode);
-    } else {
-        foreach (string f : files)
-        {
-            do_ls1(dir + "/" + f, f, long_mode);
-        }
+    if (files == nil) {
+        printf("%s: permission denied!\n", name);
+        return;
+    }
+
+    foreach (string f : files)
+    {
+        do_ls1(dir + "/" + f, long_mode);
     }
 }
 
@@ -78,12 +87,14 @@ void start()
     }
 
     if (length(argv) - off <= 0)
-        do_ls(pwd(), long_mode, dir_mode);
+        do_ls(pwd(), ".", long_mode, dir_mode);
     else if (length(argv) >= 2) {
         for (int i = off; i < length(argv); i++)
         {
             string path = resolve(pwd(), argv[i]);
-            do_ls(path, long_mode, dir_mode);
+            do_ls(path, argv[i], long_mode, dir_mode);
+            if (i < length(argv) - 1)
+                printf("\n");
         }
     } else {
         printf("Argument error!\n");
