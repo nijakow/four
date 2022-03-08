@@ -2,7 +2,6 @@ inherits "/std/cli.c";
 
 use $adduser;
 
-string name;
 
 /*
  *    B a n n e r
@@ -68,14 +67,13 @@ void no_shell()
 
 void setname(string name)
 {
-    this.name = name;
-    password(this::setpass, "password: ");
+    password(this::(name)setpass, "password: ");
 }
 
-void setpass(string pass)
+void setpass(string pass, string name)
 {
-    if (dologin(this.name, pass))
-        player_activation_and_go();
+    if (dologin(name, pass))
+        player_activation_and_go(name);
 }
 
 void setuname(string uname)
@@ -90,7 +88,7 @@ void setuname(string uname)
 
 bool dologin(string username, string password)
 {
-    if (!the("/secure/logman.c")->login(name, password)) {
+    if (!the("/secure/logman.c")->login(username, password)) {
         no_login();
         return false;
     } else {
@@ -139,7 +137,7 @@ void launch_shell()
     }
 }
 
-void player_activation_and_go()
+void player_activation_and_go(string name)
 {
     if (isroot()) {
         launch_shell();
