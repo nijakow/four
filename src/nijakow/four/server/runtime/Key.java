@@ -692,26 +692,7 @@ public class Key {
 
 			@Override
 			public void run(Fiber fiber, Instance self, Instance[] args) throws CastException {
-				final String imgpath = args[0].asFString().asString();
-				Directory mountpoint = null;
-				if (args.length == 2) {
-					mountpoint = fiber.getVM().getFilesystem().resolveDirectory(args[1].asFString().asString());
-					if (mountpoint == null) {
-						// TODO: Error
-						fiber.setAccu(FInteger.getBoolean(false));
-						return;
-					}
-				}
-				try {
-					FileInputStream fileInputStream = new FileInputStream(imgpath);
-					BasicFSDeserializer deserializer = new BasicFSDeserializer(fileInputStream);
-					deserializer.restore(fiber.getVM().getFilesystem(), fiber.getVM().getIdentityDB(), mountpoint);
-					fileInputStream.close();
-					fiber.setAccu(FInteger.getBoolean(true));
-				} catch (IOException e) {
-					fiber.setAccu(FInteger.getBoolean(false));
-					fiber.getVM().getLogger().printException(e);
-				}
+				fiber.setAccu(FInteger.getBoolean(fiber.getVM().getFour().loadLatestSnapshot()));
 			}
 		};
 		get("$getmsgs").code = new BuiltinCode() {

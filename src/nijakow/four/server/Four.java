@@ -10,10 +10,13 @@ import nijakow.four.server.nvfs.NVFileSystem;
 import nijakow.four.server.runtime.objects.standard.FInteger;
 import nijakow.four.server.storage.StorageManager;
 import nijakow.four.server.storage.serialization.fs.BasicFSSerializer;
+import nijakow.four.server.storage.serialization.fs.deserializer.BasicFSDeserializer;
 import nijakow.four.server.users.IdentityDatabase;
 import nijakow.four.server.runtime.vm.VM;
 
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 
 public class Four implements Runnable {
@@ -72,6 +75,23 @@ public class Four implements Runnable {
 			getLogger().printException(e);
 			return false;
 		}
+	}
+
+	private boolean loadSnapshot(InputStream stream) {
+		if (stream == null) return false;
+		try {
+			BasicFSDeserializer deserializer = new BasicFSDeserializer(stream);
+			deserializer.restore(getFilesystem(), getIdentityDB());
+			stream.close();
+			return true;
+		} catch (IOException e) {
+			getLogger().printException(e);
+			return false;
+		}
+	}
+
+	public boolean loadLatestSnapshot() {
+		return loadSnapshot(getStorageManager().getLatestSnapshot());
 	}
 	
 	public void run() {

@@ -115,20 +115,19 @@ public class IdentityDatabase {
         if (serialized.isEmpty()) return;
         for (String line : serialized.split("\n")) {
             String[] toks = line.split(",");
-            String id = toks[0];
-            String name = toks[1];
-            String type = toks[2];
+            String name = toks[0];
+            String type = toks[1];
             if ("user".equals(type)) {
                 User user = getUserByName(name);
                 if (user == null)
                     user = newUser(name);
-                if (toks.length >= 4 && !toks[3].isEmpty())
-                    user.setPasswordHashIfNotSet(Base64.getDecoder().decode(toks[3]));
+                if (toks.length >= 3 && !toks[2].isEmpty())
+                    user.setPasswordHashIfNotSet(Base64.getDecoder().decode(toks[2]));
             } else if ("group".equals(type)) {
                 Group group = getGroupByName(name);
                 if (group == null) group = newGroup(name);
                 final Group theGroup = group;
-                final String[] members = toks[3].split(":");
+                final String[] members = toks[2].split(":");
                 runLater.add(() -> {
                     for (String member : members) {
                         theGroup.add(getIdentityByName(member));

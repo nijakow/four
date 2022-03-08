@@ -74,6 +74,7 @@ public class BasicFSDeserializer {
         boolean result = true;
         String text = entry.getPayloadAsString();
         for (final String line : text.split("\n")) {
+            if (line.isEmpty()) continue;
             final String[] toks = line.split(":");
             if (!extractFileByID(nvfs, parent, toks[1], toks[0], db))
                 result = false;
