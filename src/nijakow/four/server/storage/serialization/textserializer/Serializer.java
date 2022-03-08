@@ -1,7 +1,7 @@
-package nijakow.four.server.serialization.textserializer;
+package nijakow.four.server.storage.serialization.textserializer;
 
-import nijakow.four.server.serialization.base.ISerializable;
-import nijakow.four.server.serialization.base.ISerializer;
+import nijakow.four.server.storage.serialization.base.ISerializable;
+import nijakow.four.server.storage.serialization.base.ISerializer;
 
 public class Serializer implements ISerializer {
     private final Serializer parent;

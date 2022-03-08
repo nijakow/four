@@ -1,4 +1,4 @@
-package nijakow.four.server.serialization.textserializer;
+package nijakow.four.server.storage.serialization.textserializer;
 
 public abstract class AbstractStringBuilder {
 

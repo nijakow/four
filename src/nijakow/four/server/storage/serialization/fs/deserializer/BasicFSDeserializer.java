@@ -1,4 +1,4 @@
-package nijakow.four.server.serialization.fs.deserializer;
+package nijakow.four.server.storage.serialization.fs.deserializer;
 
 import nijakow.four.server.nvfs.NVFileSystem;
 import nijakow.four.server.nvfs.files.Directory;

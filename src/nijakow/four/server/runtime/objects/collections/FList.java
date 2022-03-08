@@ -8,7 +8,7 @@ import nijakow.four.server.runtime.objects.standard.FInteger;
 import nijakow.four.server.runtime.types.ListType;
 import nijakow.four.server.runtime.types.Type;
 import nijakow.four.server.runtime.exceptions.CastException;
-import nijakow.four.server.serialization.base.ISerializer;
+import nijakow.four.server.storage.serialization.base.ISerializer;
 
 import java.util.ArrayList;
 import java.util.List;

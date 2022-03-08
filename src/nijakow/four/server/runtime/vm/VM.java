@@ -11,6 +11,7 @@ import nijakow.four.server.runtime.objects.blue.Blue;
 import nijakow.four.server.runtime.objects.misc.FConnection;
 import nijakow.four.server.runtime.objects.standard.FClosure;
 import nijakow.four.server.runtime.objects.standard.FString;
+import nijakow.four.server.storage.StorageManager;
 import nijakow.four.server.users.IdentityDatabase;
 import nijakow.four.server.users.User;
 import nijakow.four.server.runtime.vm.fiber.Fiber;
@@ -18,23 +19,25 @@ import nijakow.four.server.process.Process;
 import nijakow.four.share.lang.c.parser.StreamPosition;
 import nijakow.four.share.util.ComparablePair;
 
+import java.io.FileOutputStream;
 import java.util.*;
 
 public class VM {
 	private final Logger logger;
 	private final IdentityDatabase identityDB;
 	private final NVFileSystem fs;
+	private final StorageManager storageManager;
 	private final Server server;
 	private final Queue<Fiber> fibers = new LinkedList<>();
 	private final PriorityQueue<ComparablePair<Long, Callback>> pendingCallbacks = new PriorityQueue<>();
 	private Callback errorCallback = null;
 	
-	public VM(Logger logger, IdentityDatabase identityDB, NVFileSystem fs, Server server) {
+	public VM(Logger logger, IdentityDatabase identityDB, NVFileSystem fs, StorageManager storageManager, Server server) {
 		this.logger = logger;
 		this.identityDB = identityDB;
 		this.fs = fs;
+		this.storageManager = storageManager;
 		this.server = server;
-
 		getLogger().println(LogLevel.INFO,"Initialized VM");
 	}
 
@@ -43,6 +46,7 @@ public class VM {
 	public NVFileSystem getFilesystem() {
 		return fs;
 	}
+	public StorageManager getStorageManager() { return storageManager; }
 	
 	public Callback createCallback(Process state, FClosure closure) {
 		return new Callback(this, state, closure);

@@ -1,4 +1,4 @@
-package nijakow.four.server.serialization.base;
+package nijakow.four.server.storage.serialization.base;
 
 public interface IBasicSerializer {
     ISerializer close();

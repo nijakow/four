@@ -1,11 +1,10 @@
-package nijakow.four.server.serialization.fs;
+package nijakow.four.server.storage.serialization.fs;
 
 import nijakow.four.server.nvfs.NVFileSystem;
 import nijakow.four.server.nvfs.files.File;
 
 import java.io.OutputStream;
 import java.io.PrintStream;
-import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.Base64;
 import java.util.LinkedList;

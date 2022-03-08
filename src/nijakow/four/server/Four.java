@@ -7,6 +7,7 @@ import nijakow.four.server.runtime.objects.blue.Blue;
 import nijakow.four.server.runtime.exceptions.FourRuntimeException;
 import nijakow.four.server.runtime.Key;
 import nijakow.four.server.nvfs.NVFileSystem;
+import nijakow.four.server.storage.StorageManager;
 import nijakow.four.server.users.IdentityDatabase;
 import nijakow.four.server.runtime.vm.VM;
 
@@ -16,17 +17,20 @@ public class Four implements Runnable {
 	private final Logger logger;
 	private final IdentityDatabase db;
 	private final NVFileSystem fs;
+	private final StorageManager storageManager;
 	private final Server server;
 	private final VM vm;
 	private boolean wasStarted = false;
 
-	public Four(IdentityDatabase db, NVFileSystem fs, String hostname, int[] ports) throws IOException {
+	public Four(IdentityDatabase db, NVFileSystem fs, String storagePath, String hostname, int[] ports) throws IOException {
 		this.logger = new Logger();
 		this.db = db;
 		this.fs = fs;
+		this.storageManager = new StorageManager(storagePath);
 		this.server = new Server(this.logger);
-		this.vm = new VM(this.logger, this.db, this.fs, this.server);
-		
+		this.vm = new VM(this.logger, this.db, this.fs, this.storageManager, this.server);
+
+		logger.println(LogLevel.INFO, "Storage path is '" + storagePath + "'.");
 		for (int port : ports)
 			server.serveOn(hostname, port);
 	}

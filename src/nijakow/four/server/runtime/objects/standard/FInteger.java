@@ -1,7 +1,7 @@
 package nijakow.four.server.runtime.objects.standard;
 
 import nijakow.four.server.runtime.objects.Instance;
-import nijakow.four.server.serialization.base.ISerializer;
+import nijakow.four.server.storage.serialization.base.ISerializer;
 
 public class FInteger extends Instance {
 	private final int value;

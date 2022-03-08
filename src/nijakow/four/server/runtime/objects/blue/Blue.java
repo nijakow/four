@@ -11,7 +11,7 @@ import nijakow.four.server.runtime.Key;
 import nijakow.four.server.runtime.exceptions.FourRuntimeException;
 import nijakow.four.server.runtime.vm.fiber.Fiber;
 import nijakow.four.server.runtime.vm.VM;
-import nijakow.four.server.serialization.base.ISerializer;
+import nijakow.four.server.storage.serialization.base.ISerializer;
 
 public class Blue extends FloatingInstance {
 	private static long ID_COUNTER = 0;

@@ -1,4 +1,4 @@
-package nijakow.four.server.serialization.fs.deserializer;
+package nijakow.four.server.storage.serialization.fs.deserializer;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;

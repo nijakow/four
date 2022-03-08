@@ -1,4 +1,4 @@
-package nijakow.four.server.serialization.textserializer;
+package nijakow.four.server.storage.serialization.textserializer;
 
 import java.util.ArrayList;
 import java.util.List;

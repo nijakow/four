@@ -22,8 +22,8 @@ import nijakow.four.server.users.User;
 import nijakow.four.server.runtime.vm.fiber.Fiber;
 import nijakow.four.server.runtime.vm.code.BuiltinCode;
 import nijakow.four.server.runtime.vm.code.Code;
-import nijakow.four.server.serialization.fs.BasicFSSerializer;
-import nijakow.four.server.serialization.fs.deserializer.BasicFSDeserializer;
+import nijakow.four.server.storage.serialization.fs.BasicFSSerializer;
+import nijakow.four.server.storage.serialization.fs.deserializer.BasicFSDeserializer;
 import nijakow.four.share.lang.FourCompilerException;
 import nijakow.four.share.lang.base.CompilationException;
 import nijakow.four.share.lang.c.parser.ParseException;
@@ -686,11 +686,11 @@ public class Key {
 			@Override
 			public void run(Fiber fiber, Instance self, Instance[] args) throws CastException {
 				try {
-					FileOutputStream fileOutputStream = new FileOutputStream(args[0].asFString().asString());
-					BasicFSSerializer serializer = new BasicFSSerializer(fileOutputStream);
+					final OutputStream outputStream = fiber.getVM().getStorageManager().startNewSnapshot();
+					final BasicFSSerializer serializer = new BasicFSSerializer(outputStream);
 					serializer.newMetaEntry("users", fiber.getVM().getIdentityDB().serializeAsBytes());
 					serializer.serialize(fiber.getVM().getFilesystem());
-					fileOutputStream.close();
+					outputStream.close();
 					fiber.setAccu(FInteger.getBoolean(true));
 				} catch (IOException e) {
 					fiber.getVM().getLogger().printException(e);
