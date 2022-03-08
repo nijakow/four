@@ -204,7 +204,8 @@ public class Parser {
 				expr = new ASTIndex(p(), expr, parseExpression());
 				expect(TokenType.RBRACK);
 			} else if (check(TokenType.SCOPE)) {
-				expr = new ASTScope(p(), expr, expectKey());
+				ASTExpression[] args = parseOptionalExpressions();
+				expr = new ASTScope(p(), expr, args, expectKey());
 			} else if (check(TokenType.ASSIGNMENT)) {
 				expr = new ASTAssignment(p(), expr, parseExpression());
 			} else if (check(TokenType.INC1)) {
@@ -226,6 +227,20 @@ public class Parser {
 	
 	private ASTExpression parseExpression() throws ParseException {
 		return parseExpression(Integer.MAX_VALUE);
+	}
+
+	private ASTExpression[] parseOptionalExpressions() throws ParseException {
+		List<ASTExpression> exprs = new ArrayList<>();
+		if (check(TokenType.LPAREN)) {
+			if (!check(TokenType.RPAREN)) {
+				while (true) {
+					exprs.add(parseExpression());
+					if (check(TokenType.RPAREN)) break;
+					expect(TokenType.COMMA);
+				}
+			}
+		}
+		return exprs.toArray(new ASTExpression[0]);
 	}
 	
 	private ASTBlock parseBlock() throws ParseException {

@@ -180,8 +180,9 @@ public class InstructionWriter {
 		u8(args);
 	}
 
-	public void writeScope(Key key) {
+	public void writeScope(Key key, int args) {
 		u8(Bytecodes.BYTECODE_SCOPE);
+		u8(args);
 		key(key);
 	}
 
