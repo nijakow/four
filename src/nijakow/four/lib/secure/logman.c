@@ -1,7 +1,8 @@
 inherits "/secure/object.c";
 
 use $login;
-mapping players;
+
+private mapping players;
 
 bool login(string name, string password)
 {

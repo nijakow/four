@@ -1,9 +1,9 @@
 inherits "/std/thing.c";
 inherits "/std/container.c";
 
-func line_cb;
-object frozen_loc;
-bool is_activated;
+private func line_cb;
+private object frozen_loc;
+private bool is_activated;
 
 void write(...)
 {

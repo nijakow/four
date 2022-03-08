@@ -1,6 +1,6 @@
 inherits "/std/app.c";
 
-mapping mapped_pathnames;
+private mapping mapped_pathnames;
 
 
 void arg_error()
