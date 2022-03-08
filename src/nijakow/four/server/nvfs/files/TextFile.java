@@ -1,6 +1,7 @@
 package nijakow.four.server.nvfs.files;
 
 import nijakow.four.server.logging.CompilationLogger;
+import nijakow.four.server.process.filedescriptor.IByteFile;
 import nijakow.four.server.runtime.FourClassLoader;
 import nijakow.four.server.runtime.Key;
 import nijakow.four.server.nvfs.FileParent;
@@ -20,7 +21,7 @@ import nijakow.four.share.lang.c.parser.Tokenizer;
 
 import java.nio.charset.StandardCharsets;
 
-public class TextFile extends File {
+public class TextFile extends File implements IByteFile {
     private byte[] contents;
     private Blueprint blueprint;
     private boolean isDirty = true;
@@ -122,5 +123,20 @@ public class TextFile extends File {
     public void writeOutPayload(IFSSerializer serializer) {
         serializer.writeType("data-file");
         serializer.writeBase64Encoded(this.contents);
+    }
+
+    @Override
+    public byte getByte(int index) {
+        return contents[index];
+    }
+
+    @Override
+    public void putByte(int index, byte b) {
+        contents[index] = b;
+    }
+
+    @Override
+    public int getSize() {
+        return contents.length;
     }
 }

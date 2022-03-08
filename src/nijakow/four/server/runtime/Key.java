@@ -6,6 +6,7 @@ import nijakow.four.server.logging.Logger;
 import nijakow.four.server.nvfs.files.Directory;
 import nijakow.four.server.nvfs.files.File;
 import nijakow.four.server.nvfs.files.TextFile;
+import nijakow.four.server.process.filedescriptor.IFileDescriptor;
 import nijakow.four.server.runtime.exceptions.CastException;
 import nijakow.four.server.runtime.exceptions.FourRuntimeException;
 import nijakow.four.server.runtime.objects.Instance;
@@ -833,6 +834,38 @@ public class Key {
 				if (blueprint != null)
 					result = blueprint.getSymInfo(sym);
 				fiber.setAccu(result == null ? Instance.getNil() : new FString(result));
+			}
+		};
+		get("$syscall_open").code = new BuiltinCode() {
+
+			@Override
+			public void run(Fiber fiber, Instance self, Instance[] args) throws CastException {
+				final String path = args[0].asFString().asString();
+				final int flags = args[1].asInt();
+				int fd = fiber.getSharedState().open(path, (flags & 0x01) != 0, (flags & 0x02) != 0);
+				fiber.setAccu(FInteger.get(fd));
+			}
+		};
+		get("$syscall_read").code = new BuiltinCode() {
+
+			@Override
+			public void run(Fiber fiber, Instance self, Instance[] args) throws CastException {
+				final int fd = args[0].asInt();
+				final FList buffer = args[1].asFList();
+				IFileDescriptor descriptor = fiber.getSharedState().get(fd);
+				if (descriptor != null) {
+					fiber.setAccu(FInteger.get(descriptor.read(buffer)));
+				} else {
+					fiber.setAccu(FInteger.get(-1));
+				}
+			}
+		};
+		get("$syscall_close").code = new BuiltinCode() {
+
+			@Override
+			public void run(Fiber fiber, Instance self, Instance[] args) throws CastException {
+				final int fd = args[0].asInt();
+				fiber.setAccu(FInteger.getBoolean(fiber.getSharedState().close(fd)));
 			}
 		};
 	}

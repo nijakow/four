@@ -2,6 +2,7 @@ package nijakow.four.server.runtime.vm.fiber;
 
 import java.util.Stack;
 
+import nijakow.four.server.process.Process;
 import nijakow.four.server.runtime.objects.blue.Blue;
 import nijakow.four.server.runtime.vm.VM;
 import nijakow.four.server.runtime.vm.code.ByteCode;
@@ -11,21 +12,21 @@ import nijakow.four.share.lang.c.parser.StreamPosition;
 
 public class Fiber {
 	private final VM vm;
-	private final SharedFiberState state;
+	private final Process state;
 	private Instance accumulator;
 	private final Stack<Instance> stack = new Stack<>();
 	private Frame top = null;
 	private StreamPosition lastTell = null;
 
-	Fiber(VM vm) { this(vm, new SharedFiberState(vm)); }
-	Fiber(VM vm, SharedFiberState state) {
+	public Fiber(VM vm) { this(vm, new Process(vm)); }
+	public Fiber(VM vm, Process state) {
 		this.vm = vm;
 		this.state = state;
 	}
 	
 	public VM getVM() { return vm; }
 
-	public SharedFiberState getSharedState() { return state; }
+	public Process getSharedState() { return state; }
 	
 	public Instance getAccu() {
 		return accumulator;

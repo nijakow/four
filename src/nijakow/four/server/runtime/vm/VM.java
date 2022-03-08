@@ -14,7 +14,7 @@ import nijakow.four.server.runtime.objects.standard.FString;
 import nijakow.four.server.users.IdentityDatabase;
 import nijakow.four.server.users.User;
 import nijakow.four.server.runtime.vm.fiber.Fiber;
-import nijakow.four.server.runtime.vm.fiber.SharedFiberState;
+import nijakow.four.server.process.Process;
 import nijakow.four.share.lang.c.parser.StreamPosition;
 import nijakow.four.share.util.ComparablePair;
 
@@ -44,11 +44,11 @@ public class VM {
 		return fs;
 	}
 	
-	public Callback createCallback(SharedFiberState state, FClosure closure) {
+	public Callback createCallback(Process state, FClosure closure) {
 		return new Callback(this, state, closure);
 	}
 	
-	public Callback createCallback(SharedFiberState state, Blue subject, Key message) {
+	public Callback createCallback(Process state, Blue subject, Key message) {
 		return new Callback(this, state, subject, message);
 	}
 
@@ -133,7 +133,7 @@ public class VM {
 		return new Fiber(this);
 	}
 
-	public Fiber spawnFiber(SharedFiberState state) {
+	public Fiber spawnFiber(Process state) {
 		if (state == null) return spawnFiber();
 		else return new Fiber(this, state);
 	}
@@ -150,7 +150,7 @@ public class VM {
 		startFiber(self, key, new Instance[0]);
 	}
 	
-	public Fiber startFiber(SharedFiberState state, FClosure closure, Instance[] args) throws FourRuntimeException {
+	public Fiber startFiber(Process state, FClosure closure, Instance[] args) throws FourRuntimeException {
 		Fiber fiber = spawnFiber(state);
 		for (Instance arg : args)
 			fiber.push(arg);
@@ -159,7 +159,7 @@ public class VM {
 		return fiber;
 	}
 	
-	public void invokeIn(SharedFiberState state, Blue subject, Key message, long millis) {
+	public void invokeIn(Process state, Blue subject, Key message, long millis) {
 		long time = System.currentTimeMillis();
 		pendingCallbacks.add(new ComparablePair<>(time + millis, createCallback(state, subject, message)));
 	}
