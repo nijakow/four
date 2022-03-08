@@ -1,4 +1,4 @@
-package nijakow.four.server.runtime.security.fs;
+package nijakow.four.server.nvfs.security;
 
 public class Permissions {
     private boolean readable;

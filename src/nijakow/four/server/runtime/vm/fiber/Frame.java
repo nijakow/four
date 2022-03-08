@@ -1,4 +1,4 @@
-package nijakow.four.server.runtime.vm;
+package nijakow.four.server.runtime.vm.fiber;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,6 +8,7 @@ import nijakow.four.server.runtime.objects.collections.FList;
 import nijakow.four.server.runtime.objects.collections.FMapping;
 import nijakow.four.server.runtime.objects.standard.FClosure;
 import nijakow.four.server.runtime.objects.standard.FInteger;
+import nijakow.four.server.runtime.vm.Bytecodes;
 import nijakow.four.share.lang.c.ast.OperatorType;
 import nijakow.four.server.runtime.*;
 import nijakow.four.server.runtime.exceptions.FourRuntimeException;

@@ -1,7 +1,8 @@
-package nijakow.four.server.runtime.vm;
+package nijakow.four.server.runtime.vm.fiber;
 
 import nijakow.four.server.runtime.objects.collections.FMapping;
-import nijakow.four.server.runtime.security.users.User;
+import nijakow.four.server.users.User;
+import nijakow.four.server.runtime.vm.VM;
 
 public class SharedFiberState {
     private User user;

@@ -4,7 +4,7 @@ import nijakow.four.server.runtime.Key;
 import nijakow.four.server.runtime.exceptions.FourRuntimeException;
 import nijakow.four.server.runtime.objects.Instance;
 import nijakow.four.server.runtime.objects.blue.Blue;
-import nijakow.four.server.runtime.vm.Fiber;
+import nijakow.four.server.runtime.vm.fiber.Fiber;
 import nijakow.four.server.serialization.base.ISerializer;
 
 public class FClosure extends Instance {

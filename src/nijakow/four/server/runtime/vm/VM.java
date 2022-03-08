@@ -11,8 +11,10 @@ import nijakow.four.server.runtime.objects.blue.Blue;
 import nijakow.four.server.runtime.objects.misc.FConnection;
 import nijakow.four.server.runtime.objects.standard.FClosure;
 import nijakow.four.server.runtime.objects.standard.FString;
-import nijakow.four.server.runtime.security.users.IdentityDatabase;
-import nijakow.four.server.runtime.security.users.User;
+import nijakow.four.server.users.IdentityDatabase;
+import nijakow.four.server.users.User;
+import nijakow.four.server.runtime.vm.fiber.Fiber;
+import nijakow.four.server.runtime.vm.fiber.SharedFiberState;
 import nijakow.four.share.lang.c.parser.StreamPosition;
 import nijakow.four.share.util.ComparablePair;
 

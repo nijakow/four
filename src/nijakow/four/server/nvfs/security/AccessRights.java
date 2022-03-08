@@ -1,6 +1,6 @@
-package nijakow.four.server.runtime.security.fs;
+package nijakow.four.server.nvfs.security;
 
-import nijakow.four.server.runtime.security.users.Identity;
+import nijakow.four.server.users.Identity;
 
 public class AccessRights<T extends Identity> extends Permissions {
     private T identity;

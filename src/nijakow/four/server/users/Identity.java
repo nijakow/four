@@ -1,4 +1,4 @@
-package nijakow.four.server.runtime.security.users;
+package nijakow.four.server.users;
 
 import java.util.HashSet;
 import java.util.Set;

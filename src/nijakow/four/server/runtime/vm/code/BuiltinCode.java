@@ -2,7 +2,7 @@ package nijakow.four.server.runtime.vm.code;
 
 import nijakow.four.server.runtime.exceptions.FourRuntimeException;
 import nijakow.four.server.runtime.objects.Instance;
-import nijakow.four.server.runtime.vm.Fiber;
+import nijakow.four.server.runtime.vm.fiber.Fiber;
 
 public abstract class BuiltinCode implements Code {
 	public abstract void run(Fiber fiber, Instance self, Instance[] args) throws FourRuntimeException;

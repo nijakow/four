@@ -7,12 +7,10 @@ import nijakow.four.server.runtime.objects.blue.Blue;
 import nijakow.four.server.runtime.exceptions.FourRuntimeException;
 import nijakow.four.server.runtime.Key;
 import nijakow.four.server.nvfs.NVFileSystem;
-import nijakow.four.server.runtime.security.users.IdentityDatabase;
+import nijakow.four.server.users.IdentityDatabase;
 import nijakow.four.server.runtime.vm.VM;
 
 import java.io.IOException;
-import java.util.LinkedList;
-import java.util.Queue;
 
 public class Four implements Runnable {
 	private final Logger logger;

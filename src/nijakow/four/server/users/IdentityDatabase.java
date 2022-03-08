@@ -1,4 +1,4 @@
-package nijakow.four.server.runtime.security.users;
+package nijakow.four.server.users;
 
 import java.nio.charset.StandardCharsets;
 import java.util.*;

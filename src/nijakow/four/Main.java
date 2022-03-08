@@ -1,6 +1,6 @@
 package nijakow.four;
 
-import nijakow.four.server.runtime.security.users.IdentityDatabase;
+import nijakow.four.server.users.IdentityDatabase;
 import nijakow.four.share.lang.base.CompilationException;
 import nijakow.four.share.lang.c.parser.ParseException;
 import nijakow.four.client.ClientWindow;

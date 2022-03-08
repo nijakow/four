@@ -1,8 +1,8 @@
-package nijakow.four.server.runtime.security.fs;
+package nijakow.four.server.nvfs.security;
 
-import nijakow.four.server.runtime.security.users.Group;
-import nijakow.four.server.runtime.security.users.Identity;
-import nijakow.four.server.runtime.security.users.User;
+import nijakow.four.server.users.Group;
+import nijakow.four.server.users.Identity;
+import nijakow.four.server.users.User;
 
 public class FileAccessRights {
     private final AccessRights<User> userAccessRights;
