@@ -175,15 +175,26 @@ public class Blueprint {
 	}
 
     public String getSymInfo(Key sym) {
+		StringBuilder sb = new StringBuilder();
 		Method m = methods.get(sym);
 		if (m != null) {
 			ByteCode bc = m.getCode().asByteCode();
 			if (bc != null) {
 				StreamPosition pos = bc.getMeta().getStreamPosition();
-				if (pos != null)
-					return pos.makeErrorText("Definition of " + getMethodString(sym, m));
+				if (pos != null) {
+					sb.append(pos.makeErrorText("Definition of " + getMethodString(sym, m)));
+					sb.append('\n');
+				}
+				String cDoc = bc.getMeta().getCDoc();
+				if (cDoc != null) {
+					sb.append("Documentation:\n");
+					sb.append(cDoc);
+				}
 			}
+		} else {
+			sb.append(getMethodString(sym, m));
+			sb.append('\n');
 		}
-		return getMethodString(sym, m);
+		return sb.toString();
     }
 }
