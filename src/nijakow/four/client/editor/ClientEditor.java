@@ -27,7 +27,6 @@ public class ClientEditor extends JFrame implements ActionListener {
 	private final String path;
 	private final ScheduledExecutorService queue;
 	private JDialog settingsWindow;
-	//private ScheduledFuture<?> future;
 	private boolean dark;
 
 	public ClientEditor(ClientConnection c, String id, String path, String content) {
@@ -112,16 +111,6 @@ public class ClientEditor extends JFrame implements ActionListener {
 				}
 			}
 		});
-		/*m.addActionForKeyStroke(KeyStroke.getKeyStroke(KeyEvent.VK_TAB, 0), new AbstractAction() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				try {
-					doc.insertString(pane.getCaretPosition(), "    ", doc.getLogicalStyle(pane.getCaretPosition()));
-				} catch (BadLocationException ex) {
-					ex.printStackTrace();
-				}
-			}
-		});*/
 	}
 
 	private void startSyntaxHighlighting() {
