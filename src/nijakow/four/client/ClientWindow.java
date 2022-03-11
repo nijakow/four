@@ -297,6 +297,9 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 				 */
 				SwingUtilities.updateComponentTreeUI(settingsWindow);
 				SwingUtilities.updateComponentTreeUI(this);
+				for (ClientEditor editor : editors) {
+					SwingUtilities.updateComponentTreeUI(editor);
+				}
 				prefs.setUIManagerName(selected);
 				settingsWindow.pack();
 			}
