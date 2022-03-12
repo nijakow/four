@@ -14,6 +14,7 @@ public class FDocument extends DefaultStyledDocument {
     private final Style def;
     private String text;
     private boolean highlighting;
+    private List<Token> tokens;
     private final ExecutorService threads;
 
     public FDocument() {
@@ -79,7 +80,7 @@ public class FDocument extends DefaultStyledDocument {
 
     public void updateSyntaxHighlighting() {
         try {
-            List<Token> tokens = parse();
+            tokens = parse();
             int lastEnd = 0;
             for (Token token : tokens) {
                  setCharacterAttributes(lastEnd, token.getPosition().getIndex() - lastEnd, def, true);
