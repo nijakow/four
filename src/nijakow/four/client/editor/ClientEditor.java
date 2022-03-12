@@ -4,12 +4,8 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.IOException;
 import java.util.concurrent.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.swing.*;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 import javax.swing.text.*;
 
 import nijakow.four.client.Commands;

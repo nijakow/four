@@ -1,13 +1,14 @@
 package nijakow.four.client.editor;
 
 import nijakow.four.client.Commands;
+import nijakow.four.share.lang.c.parser.*;
 
 import javax.swing.text.*;
 import java.awt.*;
+import java.util.List;
+import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class FDocument extends DefaultStyledDocument {
     private final Style def;
@@ -29,6 +30,15 @@ public class FDocument extends DefaultStyledDocument {
     public FDocument(boolean highlighting) {
         this();
         this.highlighting = highlighting;
+    }
+
+    public List<Token> parse() throws ParseException {
+        ArrayList<Token> tokens = new ArrayList<>();
+        Tokenizer tokenizer = new Tokenizer(new StringCharStream("", text));
+        for (Token token = tokenizer.nextToken(); token.getType() != TokenType.EOF; token = tokenizer.nextToken()) {
+            tokens.add(token);
+        }
+        return tokens;
     }
 
     public void setHighlightingEnabled(boolean highlighting) {
@@ -68,27 +78,50 @@ public class FDocument extends DefaultStyledDocument {
     }
 
     public void updateSyntaxHighlighting() {
-        resetHighlight();
-        String keywords = "\\b(new|struct|class|inherits|use|this|if|else|while|for|break|continue|switch|case|return|private|protected|public)\\b";
-        Matcher matcher = Pattern.compile(keywords).matcher(text);
-        while (matcher.find())
-            setCharacterAttributes(matcher.start(), matcher.end() - matcher.start(),
-                    getStyle(Commands.Styles.STYLE_KEYWORD), true);
-        keywords = "\\b(any|void|int|char|bool|string|object|list|mapping)\\b";
-        matcher = Pattern.compile(keywords).matcher(text);
-        while (matcher.find())
-            setCharacterAttributes(matcher.start(), matcher.end() - matcher.start(),
-                    getStyle(Commands.Styles.STYLE_TYPE), true);
-        keywords = "\\b(true|false|nil|va_next|va_count)\\b";
-        matcher = Pattern.compile(keywords).matcher(text);
-        while (matcher.find())
-            setCharacterAttributes(matcher.start(), matcher.end() - matcher.start(),
-                    getStyle(Commands.Styles.STYLE_SPECIAL_WORD), true);
-        keywords = "\\b(create|the|call|log|length|insert|append|remove|strlen|chr|write|prompt|password|edit)\\b";
-        matcher = Pattern.compile(keywords).matcher(text);
-        while (matcher.find())
-            setCharacterAttributes(matcher.start(), matcher.end() - matcher.start(),
-                    getStyle(Commands.Styles.STYLE_STDLIB), true);
+        try {
+            List<Token> tokens = parse();
+             for (int i = 0; i < tokens.size(); i++) {
+                StreamPosition pos = tokens.get(i).getPosition();
+                int nextPos = i + 1 == tokens.size() ? getLength() : tokens.get(i + 1).getPosition().getIndex() - 1;
+                switch (tokens.get(i).getType()) {
+                    case NIL:
+                    case TRUE:
+                    case FALSE: setCharacterAttributes(pos.getIndex(), nextPos, getStyle(Commands.Styles.STYLE_SPECIAL_WORD), true); break;
+
+                    case IF:
+                    case USE:
+                    case FOR:
+                    case NEW:
+                    case THIS:
+                    case ELSE:
+                    case BREAK:
+                    case WHILE:
+                    case CLASS:
+                    case RETURN:
+                    case PUBLIC:
+                    case STRUCT:
+                    case PRIVATE:
+                    case CONTINUE:
+                    case INHERITS: setCharacterAttributes(pos.getIndex(), nextPos, getStyle(Commands.Styles.STYLE_KEYWORD), true); break;
+
+                    case ANY:
+                    case INT:
+                    case VOID:
+                    case CHAR:
+                    case BOOL:
+                    case LIST:
+                    case STRING:
+                    case OBJECT:
+                    case MAPPING: setCharacterAttributes(pos.getIndex(), nextPos, getStyle(Commands.Styles.STYLE_TYPE), true); break;
+
+                    case IDENT: setCharacterAttributes(pos.getIndex(), pos.getIndex() + tokens.get(i).getPayload().toString().length(), getStyle(Commands.Styles.STYLE_STDLIB), true); break;
+
+                    default: setCharacterAttributes(pos.getIndex(), nextPos, def, true); break;
+                }
+            }
+        } catch (ParseException e) {
+            // TODO
+        }
     }
 
     private void addStyles() {
