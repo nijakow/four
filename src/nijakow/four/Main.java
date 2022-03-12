@@ -1,6 +1,6 @@
 package nijakow.four;
 
-import nijakow.four.server.runtime.security.users.IdentityDatabase;
+import nijakow.four.server.users.IdentityDatabase;
 import nijakow.four.share.lang.base.CompilationException;
 import nijakow.four.share.lang.c.parser.ParseException;
 import nijakow.four.client.ClientWindow;
@@ -15,6 +15,7 @@ public class Main {
 	public static void main(String[] args) throws IOException, CompilationException, ParseException {
 		IdentityDatabase db = new IdentityDatabase();
 		NVFileSystem fileSystem = new NVFileSystem(db);
+		String storage = "/tmp/four";
 
 		String hostname = null;
 		ArrayList<Integer> ports = new ArrayList<>();
@@ -26,7 +27,13 @@ public class Main {
 			switch (args[i]) {
 			case "-d":
 			case "--directory":
+			case "--lib":
+			case "--library":
 				fileSystem.load(new java.io.File(args[++i]), db);
+				break;
+
+			case "--storage":
+				storage = args[++i];
 				break;
 
 			case "--client":
@@ -45,6 +52,7 @@ public class Main {
 			case "--hostname":
 				hostname = args[++i];
 				break;
+
 			case "--port":
 			case "-p":
 				int j = 0;
@@ -122,7 +130,7 @@ public class Main {
 		while (clients --> 0)
 			ClientWindow.openWindow(hostname, ps);
 		if (server) {
-			Four four = new Four(db, fileSystem, hostname == null ? "localhost" : hostname, ps);
+			Four four = new Four(db, fileSystem, storage, hostname == null ? "localhost" : hostname, ps);
 			if (guest) {
 				db.newUser("guest").setPassword("42");
 			}

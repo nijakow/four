@@ -11,14 +11,10 @@ import nijakow.four.server.runtime.Key;
 import nijakow.four.server.runtime.types.Type;
 import nijakow.four.server.runtime.exceptions.CastException;
 import nijakow.four.server.runtime.exceptions.FourRuntimeException;
-import nijakow.four.server.runtime.vm.Fiber;
+import nijakow.four.server.runtime.vm.fiber.Fiber;
 import nijakow.four.server.runtime.vm.VM;
-import nijakow.four.server.serialization.base.ISerializable;
-import nijakow.four.server.serialization.base.ISerializer;
-
-import java.util.Collections;
-import java.util.Set;
-import java.util.WeakHashMap;
+import nijakow.four.server.storage.serialization.base.ISerializable;
+import nijakow.four.server.storage.serialization.base.ISerializer;
 
 public abstract class Instance implements ISerializable {
 	private static final Instance NIL = new Instance() {

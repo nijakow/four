@@ -6,6 +6,7 @@ import nijakow.four.server.logging.Logger;
 import nijakow.four.server.nvfs.files.Directory;
 import nijakow.four.server.nvfs.files.File;
 import nijakow.four.server.nvfs.files.TextFile;
+import nijakow.four.server.process.filedescriptor.IFileDescriptor;
 import nijakow.four.server.runtime.exceptions.CastException;
 import nijakow.four.server.runtime.exceptions.FourRuntimeException;
 import nijakow.four.server.runtime.objects.Instance;
@@ -15,14 +16,14 @@ import nijakow.four.server.runtime.objects.collections.FList;
 import nijakow.four.server.runtime.objects.standard.FClosure;
 import nijakow.four.server.runtime.objects.standard.FInteger;
 import nijakow.four.server.runtime.objects.standard.FString;
-import nijakow.four.server.runtime.security.users.Group;
-import nijakow.four.server.runtime.security.users.Identity;
-import nijakow.four.server.runtime.security.users.User;
-import nijakow.four.server.runtime.vm.Fiber;
+import nijakow.four.server.users.Group;
+import nijakow.four.server.users.Identity;
+import nijakow.four.server.users.User;
+import nijakow.four.server.runtime.vm.fiber.Fiber;
 import nijakow.four.server.runtime.vm.code.BuiltinCode;
 import nijakow.four.server.runtime.vm.code.Code;
-import nijakow.four.server.serialization.fs.BasicFSSerializer;
-import nijakow.four.server.serialization.fs.deserializer.BasicFSDeserializer;
+import nijakow.four.server.storage.serialization.fs.BasicFSSerializer;
+import nijakow.four.server.storage.serialization.fs.deserializer.BasicFSDeserializer;
 import nijakow.four.share.lang.FourCompilerException;
 import nijakow.four.share.lang.base.CompilationException;
 import nijakow.four.share.lang.c.parser.ParseException;
@@ -32,7 +33,6 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
@@ -166,6 +166,13 @@ public class Key {
 				for (int x = 1; x < args.length; x++)
 					fiber.push(args[x]);
 				args[0].asFClosure().invoke(fiber, args.length - 1);
+			}
+		};
+		get("$sleep").code = new BuiltinCode() {
+
+			@Override
+			public void run(Fiber fiber, Instance self, Instance[] args) throws FourRuntimeException {
+				args[0].asFClosure().invokeIn(fiber, args[1].asInt(), args.length - 1);
 			}
 		};
 		get("$log").code = new BuiltinCode() {
@@ -312,7 +319,8 @@ public class Key {
 				String path = args[0].asFString().asString();
 				Directory dir = fiber.getVM().getFilesystem().resolveDirectory(path);
 				Pair<String, File>[] contents = null;
-				if (dir != null) contents = dir.ls();
+				if (dir != null && dir.getRights().checkReadAccess(fiber.getSharedState().getUser()))
+					contents = dir.ls();
 				if (contents == null) {
 					fiber.setAccu(Instance.getNil());
 				} else {
@@ -383,7 +391,7 @@ public class Key {
 				CompilationLogger logger = fiber.getVM().getLogger().newCompilationLogger();
 				try {
 					TextFile file = fiber.getVM().getFilesystem().resolveTextFile(path);
-					if (file == null)
+					if (file == null || !file.getRights().checkReadAccess(fiber.getSharedState().getUser()))
 						fiber.setAccu(FInteger.getBoolean(false));
 					else {
 						file.compile(logger);
@@ -677,43 +685,14 @@ public class Key {
 
 			@Override
 			public void run(Fiber fiber, Instance self, Instance[] args) throws CastException {
-				try {
-					FileOutputStream fileOutputStream = new FileOutputStream(args[0].asFString().asString());
-					BasicFSSerializer serializer = new BasicFSSerializer(fileOutputStream);
-					serializer.newMetaEntry("users", fiber.getVM().getIdentityDB().serializeAsBytes());
-					serializer.serialize(fiber.getVM().getFilesystem());
-					fileOutputStream.close();
-					fiber.setAccu(FInteger.getBoolean(true));
-				} catch (IOException e) {
-					fiber.getVM().getLogger().printException(e);
-					fiber.setAccu(FInteger.getBoolean(false));
-				}
+				fiber.setAccu(FInteger.getBoolean(fiber.getVM().getFour().takeSnapshot()));
 			}
 		};
 		get("$loadfs").code = new BuiltinCode() {
 
 			@Override
 			public void run(Fiber fiber, Instance self, Instance[] args) throws CastException {
-				final String imgpath = args[0].asFString().asString();
-				Directory mountpoint = null;
-				if (args.length == 2) {
-					mountpoint = fiber.getVM().getFilesystem().resolveDirectory(args[1].asFString().asString());
-					if (mountpoint == null) {
-						// TODO: Error
-						fiber.setAccu(FInteger.getBoolean(false));
-						return;
-					}
-				}
-				try {
-					FileInputStream fileInputStream = new FileInputStream(imgpath);
-					BasicFSDeserializer deserializer = new BasicFSDeserializer(fileInputStream);
-					deserializer.restore(fiber.getVM().getFilesystem(), fiber.getVM().getIdentityDB(), mountpoint);
-					fileInputStream.close();
-					fiber.setAccu(FInteger.getBoolean(true));
-				} catch (IOException e) {
-					fiber.setAccu(FInteger.getBoolean(false));
-					fiber.getVM().getLogger().printException(e);
-				}
+				fiber.setAccu(FInteger.getBoolean(fiber.getVM().getFour().loadLatestSnapshot()));
 			}
 		};
 		get("$getmsgs").code = new BuiltinCode() {
@@ -833,6 +812,38 @@ public class Key {
 				if (blueprint != null)
 					result = blueprint.getSymInfo(sym);
 				fiber.setAccu(result == null ? Instance.getNil() : new FString(result));
+			}
+		};
+		get("$syscall_open").code = new BuiltinCode() {
+
+			@Override
+			public void run(Fiber fiber, Instance self, Instance[] args) throws CastException {
+				final String path = args[0].asFString().asString();
+				final int flags = args[1].asInt();
+				int fd = fiber.getSharedState().open(path, (flags & 0x01) != 0, (flags & 0x02) != 0);
+				fiber.setAccu(FInteger.get(fd));
+			}
+		};
+		get("$syscall_read").code = new BuiltinCode() {
+
+			@Override
+			public void run(Fiber fiber, Instance self, Instance[] args) throws CastException {
+				final int fd = args[0].asInt();
+				final FList buffer = args[1].asFList();
+				IFileDescriptor descriptor = fiber.getSharedState().get(fd);
+				if (descriptor != null) {
+					fiber.setAccu(FInteger.get(descriptor.read(buffer)));
+				} else {
+					fiber.setAccu(FInteger.get(-1));
+				}
+			}
+		};
+		get("$syscall_close").code = new BuiltinCode() {
+
+			@Override
+			public void run(Fiber fiber, Instance self, Instance[] args) throws CastException {
+				final int fd = args[0].asInt();
+				fiber.setAccu(FInteger.getBoolean(fiber.getSharedState().close(fd)));
 			}
 		};
 	}

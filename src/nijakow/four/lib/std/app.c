@@ -1,12 +1,12 @@
 inherits "/std/cli.c";
 
-list argv;
-string working_dir;
+public string* argv;
+private string working_dir;
 
 string pwd() { return working_dir; }
 bool chdir(string path) { working_dir = path; return true; }
 
-list args() { return argv; }
+string* args() { return argv; }
 
 bool execapp(func our_cb, string name, list args)
 {

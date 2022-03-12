@@ -1,10 +1,10 @@
 package nijakow.four.server.runtime.vm.code;
 
 import nijakow.four.server.runtime.Key;
-import nijakow.four.server.runtime.exceptions.CastException;
+import nijakow.four.server.runtime.exceptions.FourRuntimeException;
 import nijakow.four.server.runtime.objects.Instance;
 import nijakow.four.server.runtime.types.Type;
-import nijakow.four.server.runtime.vm.Fiber;
+import nijakow.four.server.runtime.vm.fiber.Fiber;
 import nijakow.four.share.lang.c.parser.StreamPosition;
 
 public class ByteCode implements Code {
@@ -74,7 +74,7 @@ public class ByteCode implements Code {
 	}
 
 	@Override
-	public void invoke(Fiber fiber, int args, Instance self) throws CastException {
+	public void invoke(Fiber fiber, int args, Instance self) throws FourRuntimeException {
 		fiber.enter(self.asBlue(), this, args);
 	}
 

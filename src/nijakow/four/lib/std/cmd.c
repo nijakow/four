@@ -7,40 +7,35 @@ string arg() { return the_arg; }
 object get_location() { return me()->get_location(); }
 
 
-list select_object_list;
-func select_cb;
-
-void _select_choose(string line)
+void _select_choose(string line, object* objects, func cb)
 {
     int choice = atoi(line);
 
-    if ((choice == nil) || (choice < 1) || (choice > length(select_object_list)))
-        _select_resume();
+    if ((choice == nil) || (choice < 1) || (choice > length(objects)))
+        _select_resume(objects, cb);
     else
-        call(select_cb, select_object_list[choice - 1]);
+        call(cb, objects[choice - 1]);
 }
 
-void _select_resume()
+void _select_resume(object* objects, func cb)
 {
     printf("\nYour selection is ambiguous:\n");
-    for (int i = 0; i < length(select_object_list); i++)
+    for (int i = 0; i < length(objects); i++)
     {
-        printf("  %d: %s\n", (i + 1), select_object_list[i].get_long());
+        printf("  %d: %s\n", (i + 1), objects[i].get_long());
     }
-    prompt(this::_select_choose, "Please choose: ");
+    prompt(this::(objects, cb)_select_choose, "Please choose: ");
 }
 
 void select_and_call(string text, func cb)
 {
-    list objects = me()->find_thing_here(text);
+    object* objects = me()->find_thing_here(text);
     if (length(objects) == 0) {
         call(cb, nil);
     } else if (length(objects) == 1) {
         call(cb, objects[0]);
     } else {
-        select_object_list = objects;
-        select_cb          = cb;
-        _select_resume();
+        _select_resume(objects, cb);
     }
 }
 

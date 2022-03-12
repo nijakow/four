@@ -103,55 +103,55 @@ public class Tokenizer {
 			skipLineComment();
 			return nextToken();
 		} else if (peeks("/**")) {
-			return new Token(this, pos, TokenType.C_DOC, parseCDoc());
+			return new Token(this, pos, getPosition(), TokenType.C_DOC, parseCDoc());
 		} else if (peeks("/*")) {
 			parseBlockComment();
 			return nextToken();
-		} else if (peeks("(")) return new Token(this, pos, TokenType.LPAREN);
-		else if (peeks(")")) return new Token(this, pos, TokenType.RPAREN);
-		else if (peeks("[")) return new Token(this, pos, TokenType.LBRACK);
-		else if (peeks("]")) return new Token(this, pos, TokenType.RBRACK);
-		else if (peeks("{")) return new Token(this, pos, TokenType.LCURLY);
-		else if (peeks("}")) return new Token(this, pos, TokenType.RCURLY);
-		else if (peeks("...")) return new Token(this, pos, TokenType.ELLIPSIS);
-		else if (peeks("=>")) return new Token(this, pos, TokenType.RDOUBLEARROW);
-		else if (peeks("::")) return new Token(this, pos, TokenType.SCOPE);
-		else if (peeks(".")) return new Token(this, pos, TokenType.DOT);
-		else if (peeks(",")) return new Token(this, pos, TokenType.COMMA);
-		else if (peeks(":")) return new Token(this, pos, TokenType.COLON);
-		else if (peeks(";")) return new Token(this, pos, TokenType.SEMICOLON);
-		else if (peeks("?")) return new Token(this, pos, TokenType.QUESTION);
-		else if (peeks("->")) return new Token(this, pos, TokenType.RARROW);
-		else if (peeks("++")) return new Token(this, pos, TokenType.INC1);
-		else if (peeks("--")) return new Token(this, pos, TokenType.DEC1);
-		else if (peeks("*")) return new Token(this, pos, TokenType.OPERATOR, new OperatorInfo(OperatorType.MULT, -1, 3, true));
-		else if (peeks("/")) return new Token(this, pos, TokenType.OPERATOR, new OperatorInfo(OperatorType.DIV, -1, 3, true));
-		else if (peeks("%")) return new Token(this, pos, TokenType.OPERATOR, new OperatorInfo(OperatorType.MOD, -1, 3, true));
-		else if (peeks("+")) return new Token(this, pos, TokenType.OPERATOR, new OperatorInfo(OperatorType.PLUS, -1, 4, true));
-		else if (peeks("-")) return new Token(this, pos, TokenType.OPERATOR, new OperatorInfo(OperatorType.MINUS, -1, 4, true));
-		else if (peeks("<<")) return new Token(this, pos, TokenType.OPERATOR, new OperatorInfo(OperatorType.SHL, -1, 5, true));
-		else if (peeks(">>")) return new Token(this, pos, TokenType.OPERATOR, new OperatorInfo(OperatorType.SHR, -1, 5, true));
-		else if (peeks("<=")) return new Token(this, pos, TokenType.OPERATOR, new OperatorInfo(OperatorType.LEQ, -1, 6, true));
-		else if (peeks(">=")) return new Token(this, pos, TokenType.OPERATOR, new OperatorInfo(OperatorType.GEQ, -1, 6, true));
-		else if (peeks("<")) return new Token(this, pos, TokenType.OPERATOR, new OperatorInfo(OperatorType.LESS, -1, 6, true));
-		else if (peeks(">")) return new Token(this, pos, TokenType.OPERATOR, new OperatorInfo(OperatorType.GREATER, -1, 6, true));
-		else if (peeks("==")) return new Token(this, pos, TokenType.OPERATOR, new OperatorInfo(OperatorType.EQ, -1, 7, true));
-		else if (peeks("!=")) return new Token(this, pos, TokenType.OPERATOR, new OperatorInfo(OperatorType.INEQ, -1, 7, true));
-		else if (peeks("==")) return new Token(this, pos, TokenType.OPERATOR, new OperatorInfo(OperatorType.EQ, -1, 7, true));
-		else if (peeks("&&")) return new Token(this, pos, TokenType.OPERATOR, new OperatorInfo(OperatorType.LOGAND, -1, 11, true));
-		else if (peeks("||")) return new Token(this, pos, TokenType.OPERATOR, new OperatorInfo(OperatorType.LOGOR, -1, 12, true));
-		else if (peeks("~")) return new Token(this, pos, TokenType.OPERATOR, new OperatorInfo(OperatorType.BITNOT, 1, -1, true));
-		else if (peeks("&")) return new Token(this, pos, TokenType.OPERATOR, new OperatorInfo(OperatorType.BITAND, -1, 8, true));
-		else if (peeks("^")) return new Token(this, pos, TokenType.OPERATOR, new OperatorInfo(OperatorType.BITXOR, -1, 9, true));
-		else if (peeks("|")) return new Token(this, pos, TokenType.OPERATOR, new OperatorInfo(OperatorType.BITOR, -1, 10, true));
-		else if (peeks("!")) return new Token(this, pos, TokenType.OPERATOR, new OperatorInfo(OperatorType.LOGNOT, 2, -1, true));
-		else if (peeks("=")) return new Token(this, pos, TokenType.ASSIGNMENT);
-		else if (peeks("\"")) return new Token(this, pos, TokenType.CONSTANT, new FString(parseString('\"')));
+		} else if (peeks("(")) return new Token(this, pos, getPosition(), TokenType.LPAREN);
+		else if (peeks(")")) return new Token(this, pos, getPosition(), TokenType.RPAREN);
+		else if (peeks("[")) return new Token(this, pos, getPosition(), TokenType.LBRACK);
+		else if (peeks("]")) return new Token(this, pos, getPosition(), TokenType.RBRACK);
+		else if (peeks("{")) return new Token(this, pos, getPosition(), TokenType.LCURLY);
+		else if (peeks("}")) return new Token(this, pos, getPosition(), TokenType.RCURLY);
+		else if (peeks("...")) return new Token(this, pos, getPosition(), TokenType.ELLIPSIS);
+		else if (peeks("=>")) return new Token(this, pos, getPosition(), TokenType.RDOUBLEARROW);
+		else if (peeks("::")) return new Token(this, pos, getPosition(), TokenType.SCOPE);
+		else if (peeks(".")) return new Token(this, pos, getPosition(), TokenType.DOT);
+		else if (peeks(",")) return new Token(this, pos, getPosition(), TokenType.COMMA);
+		else if (peeks(":")) return new Token(this, pos, getPosition(), TokenType.COLON);
+		else if (peeks(";")) return new Token(this, pos, getPosition(), TokenType.SEMICOLON);
+		else if (peeks("?")) return new Token(this, pos, getPosition(), TokenType.QUESTION);
+		else if (peeks("->")) return new Token(this, pos, getPosition(), TokenType.RARROW);
+		else if (peeks("++")) return new Token(this, pos, getPosition(), TokenType.INC1);
+		else if (peeks("--")) return new Token(this, pos, getPosition(), TokenType.DEC1);
+		else if (peeks("*")) return new Token(this, pos, getPosition(), TokenType.OPERATOR, new OperatorInfo(OperatorType.MULT, -1, 3, true));
+		else if (peeks("/")) return new Token(this, pos, getPosition(), TokenType.OPERATOR, new OperatorInfo(OperatorType.DIV, -1, 3, true));
+		else if (peeks("%")) return new Token(this, pos, getPosition(), TokenType.OPERATOR, new OperatorInfo(OperatorType.MOD, -1, 3, true));
+		else if (peeks("+")) return new Token(this, pos, getPosition(), TokenType.OPERATOR, new OperatorInfo(OperatorType.PLUS, -1, 4, true));
+		else if (peeks("-")) return new Token(this, pos, getPosition(), TokenType.OPERATOR, new OperatorInfo(OperatorType.MINUS, -1, 4, true));
+		else if (peeks("<<")) return new Token(this, pos, getPosition(), TokenType.OPERATOR, new OperatorInfo(OperatorType.SHL, -1, 5, true));
+		else if (peeks(">>")) return new Token(this, pos, getPosition(), TokenType.OPERATOR, new OperatorInfo(OperatorType.SHR, -1, 5, true));
+		else if (peeks("<=")) return new Token(this, pos, getPosition(), TokenType.OPERATOR, new OperatorInfo(OperatorType.LEQ, -1, 6, true));
+		else if (peeks(">=")) return new Token(this, pos, getPosition(), TokenType.OPERATOR, new OperatorInfo(OperatorType.GEQ, -1, 6, true));
+		else if (peeks("<")) return new Token(this, pos, getPosition(), TokenType.OPERATOR, new OperatorInfo(OperatorType.LESS, -1, 6, true));
+		else if (peeks(">")) return new Token(this, pos, getPosition(), TokenType.OPERATOR, new OperatorInfo(OperatorType.GREATER, -1, 6, true));
+		else if (peeks("==")) return new Token(this, pos, getPosition(), TokenType.OPERATOR, new OperatorInfo(OperatorType.EQ, -1, 7, true));
+		else if (peeks("!=")) return new Token(this, pos, getPosition(), TokenType.OPERATOR, new OperatorInfo(OperatorType.INEQ, -1, 7, true));
+		else if (peeks("==")) return new Token(this, pos, getPosition(), TokenType.OPERATOR, new OperatorInfo(OperatorType.EQ, -1, 7, true));
+		else if (peeks("&&")) return new Token(this, pos, getPosition(), TokenType.OPERATOR, new OperatorInfo(OperatorType.LOGAND, -1, 11, true));
+		else if (peeks("||")) return new Token(this, pos, getPosition(), TokenType.OPERATOR, new OperatorInfo(OperatorType.LOGOR, -1, 12, true));
+		else if (peeks("~")) return new Token(this, pos, getPosition(), TokenType.OPERATOR, new OperatorInfo(OperatorType.BITNOT, 1, -1, true));
+		else if (peeks("&")) return new Token(this, pos, getPosition(), TokenType.OPERATOR, new OperatorInfo(OperatorType.BITAND, -1, 8, true));
+		else if (peeks("^")) return new Token(this, pos, getPosition(), TokenType.OPERATOR, new OperatorInfo(OperatorType.BITXOR, -1, 9, true));
+		else if (peeks("|")) return new Token(this, pos, getPosition(), TokenType.OPERATOR, new OperatorInfo(OperatorType.BITOR, -1, 10, true));
+		else if (peeks("!")) return new Token(this, pos, getPosition(), TokenType.OPERATOR, new OperatorInfo(OperatorType.LOGNOT, 2, -1, true));
+		else if (peeks("=")) return new Token(this, pos, getPosition(), TokenType.ASSIGNMENT);
+		else if (peeks("\"")) return new Token(this, pos, getPosition(), TokenType.CONSTANT, new FString(parseString('\"')));
 		else if (peeks("\'")) {
 			char c = (char) parseChar('\'');
 			if (stream.next() != '\'')
 				throw new ParseException(pos, "Expected \"\'\"!");
-			return new Token(this, pos, TokenType.CONSTANT, FInteger.get(c));
+			return new Token(this, pos, getPosition(), TokenType.CONSTANT, FInteger.get(c));
 		}
 		
 		
@@ -163,44 +163,44 @@ public class Tokenizer {
 		final String text = builder.toString();
 		
 		try {
-			return new Token(this, pos, TokenType.CONSTANT, FInteger.get(Integer.decode(text)));
+			return new Token(this, pos, getPosition(), TokenType.CONSTANT, FInteger.get(Integer.decode(text)));
 		} catch (NumberFormatException e) {
 		}
 		
 		switch (text) {
-		case "": return new Token(this, pos, TokenType.EOF);
-		case "public": return new Token(this, pos, TokenType.PUBLIC);
-		case "private": return new Token(this, pos, TokenType.PRIVATE);
-		case "this": return new Token(this, pos, TokenType.THIS);
-		case "nil": return new Token(this, pos, TokenType.NIL);
-		case "true": return new Token(this, pos, TokenType.TRUE);
-		case "false": return new Token(this, pos, TokenType.FALSE);
-		case "use": return new Token(this, pos, TokenType.USE);
-		case "inherits": return new Token(this, pos, TokenType.INHERITS);
-		case "any": return new Token(this, pos, TokenType.ANY);
-		case "void": return new Token(this, pos, TokenType.VOID);
-		case "int": return new Token(this, pos, TokenType.INT);
-		case "char": return new Token(this, pos, TokenType.CHAR);
-		case "bool": return new Token(this, pos, TokenType.BOOL);
-		case "string": return new Token(this, pos, TokenType.STRING);
-		case "object": return new Token(this, pos, TokenType.OBJECT);
-		case "func": return new Token(this, pos, TokenType.FUNC);
-		case "list": return new Token(this, pos, TokenType.LIST);
-		case "mapping": return new Token(this, pos, TokenType.MAPPING);
-		case "struct": return new Token(this, pos, TokenType.STRUCT);
-		case "class": return new Token(this, pos, TokenType.CLASS);
-		case "new": return new Token(this, pos, TokenType.NEW);
-		case "if": return new Token(this, pos, TokenType.IF);
-		case "else": return new Token(this, pos, TokenType.ELSE);
-		case "while": return new Token(this, pos, TokenType.WHILE);
-		case "for": return new Token(this, pos, TokenType.FOR);
-		case "foreach": return new Token(this, pos, TokenType.FOREACH);
-		case "break": return new Token(this, pos, TokenType.BREAK);
-		case "continue": return new Token(this, pos, TokenType.CONTINUE);
-		case "return": return new Token(this, pos, TokenType.RETURN);
-		case "va_next": return new Token(this, pos, TokenType.VA_NEXT);
-		case "va_count": return new Token(this, pos, TokenType.VA_COUNT);
-		default: return new Token(this, pos, TokenType.IDENT, text);
+		case "": return new Token(this, pos, getPosition(), TokenType.EOF);
+		case "public": return new Token(this, pos, getPosition(), TokenType.PUBLIC);
+		case "private": return new Token(this, pos, getPosition(), TokenType.PRIVATE);
+		case "this": return new Token(this, pos, getPosition(), TokenType.THIS);
+		case "nil": return new Token(this, pos, getPosition(), TokenType.NIL);
+		case "true": return new Token(this, pos, getPosition(), TokenType.TRUE);
+		case "false": return new Token(this, pos, getPosition(), TokenType.FALSE);
+		case "use": return new Token(this, pos, getPosition(), TokenType.USE);
+		case "inherits": return new Token(this, pos, getPosition(), TokenType.INHERITS);
+		case "any": return new Token(this, pos, getPosition(), TokenType.ANY);
+		case "void": return new Token(this, pos, getPosition(), TokenType.VOID);
+		case "int": return new Token(this, pos, getPosition(), TokenType.INT);
+		case "char": return new Token(this, pos, getPosition(), TokenType.CHAR);
+		case "bool": return new Token(this, pos, getPosition(), TokenType.BOOL);
+		case "string": return new Token(this, pos, getPosition(), TokenType.STRING);
+		case "object": return new Token(this, pos, getPosition(), TokenType.OBJECT);
+		case "func": return new Token(this, pos, getPosition(), TokenType.FUNC);
+		case "list": return new Token(this, pos, getPosition(), TokenType.LIST);
+		case "mapping": return new Token(this, pos, getPosition(), TokenType.MAPPING);
+		case "struct": return new Token(this, pos, getPosition(), TokenType.STRUCT);
+		case "class": return new Token(this, pos, getPosition(), TokenType.CLASS);
+		case "new": return new Token(this, pos, getPosition(), TokenType.NEW);
+		case "if": return new Token(this, pos, getPosition(), TokenType.IF);
+		case "else": return new Token(this, pos, getPosition(), TokenType.ELSE);
+		case "while": return new Token(this, pos, getPosition(), TokenType.WHILE);
+		case "for": return new Token(this, pos, getPosition(), TokenType.FOR);
+		case "foreach": return new Token(this, pos, getPosition(), TokenType.FOREACH);
+		case "break": return new Token(this, pos, getPosition(), TokenType.BREAK);
+		case "continue": return new Token(this, pos, getPosition(), TokenType.CONTINUE);
+		case "return": return new Token(this, pos, getPosition(), TokenType.RETURN);
+		case "va_next": return new Token(this, pos, getPosition(), TokenType.VA_NEXT);
+		case "va_count": return new Token(this, pos, getPosition(), TokenType.VA_COUNT);
+		default: return new Token(this, pos, getPosition(), TokenType.IDENT, text);
 		}
 	}
 	

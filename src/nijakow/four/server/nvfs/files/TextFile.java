@@ -1,16 +1,17 @@
 package nijakow.four.server.nvfs.files;
 
 import nijakow.four.server.logging.CompilationLogger;
+import nijakow.four.server.process.filedescriptor.IByteFile;
 import nijakow.four.server.runtime.FourClassLoader;
 import nijakow.four.server.runtime.Key;
 import nijakow.four.server.nvfs.FileParent;
-import nijakow.four.server.serialization.fs.IFSSerializer;
+import nijakow.four.server.storage.serialization.fs.IFSSerializer;
 import nijakow.four.server.runtime.objects.blue.Blue;
 import nijakow.four.server.runtime.objects.blue.Blueprint;
-import nijakow.four.server.runtime.security.users.Group;
-import nijakow.four.server.runtime.security.users.Identity;
-import nijakow.four.server.runtime.security.users.User;
-import nijakow.four.server.serialization.base.ISerializer;
+import nijakow.four.server.users.Group;
+import nijakow.four.server.users.Identity;
+import nijakow.four.server.users.User;
+import nijakow.four.server.storage.serialization.base.ISerializer;
 import nijakow.four.share.lang.base.CompilationException;
 import nijakow.four.share.lang.c.ast.ASTClass;
 import nijakow.four.share.lang.c.parser.ParseException;
@@ -20,7 +21,7 @@ import nijakow.four.share.lang.c.parser.Tokenizer;
 
 import java.nio.charset.StandardCharsets;
 
-public class TextFile extends File {
+public class TextFile extends File implements IByteFile {
     private byte[] contents;
     private Blueprint blueprint;
     private boolean isDirty = true;
@@ -122,5 +123,20 @@ public class TextFile extends File {
     public void writeOutPayload(IFSSerializer serializer) {
         serializer.writeType("data-file");
         serializer.writeBase64Encoded(this.contents);
+    }
+
+    @Override
+    public byte getByte(int index) {
+        return contents[index];
+    }
+
+    @Override
+    public void putByte(int index, byte b) {
+        contents[index] = b;
+    }
+
+    @Override
+    public int getSize() {
+        return contents.length;
     }
 }

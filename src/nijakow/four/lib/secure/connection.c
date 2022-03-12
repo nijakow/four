@@ -5,14 +5,14 @@ use $close;
 use $on_receive;
 use $on_disconnect;
 
-any port;
-func callback;
-func fallback;
-mapping mapped_callbacks;
-string line;
-string escline;
-int id_counter;
-list close_cbs;
+private any port;
+private func callback;
+private func fallback;
+private mapping mapped_callbacks;
+private string line;
+private string escline;
+private int id_counter;
+private list close_cbs;
 
 void prompt(func cb, ...)
 {

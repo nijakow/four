@@ -1,11 +1,11 @@
 package nijakow.four.server.nvfs.files;
 
 import nijakow.four.server.nvfs.FileParent;
-import nijakow.four.server.serialization.fs.IFSSerializer;
-import nijakow.four.server.runtime.security.users.Group;
-import nijakow.four.server.runtime.security.users.Identity;
-import nijakow.four.server.runtime.security.users.User;
-import nijakow.four.server.serialization.base.ISerializer;
+import nijakow.four.server.storage.serialization.fs.IFSSerializer;
+import nijakow.four.server.users.Group;
+import nijakow.four.server.users.Identity;
+import nijakow.four.server.users.User;
+import nijakow.four.server.storage.serialization.base.ISerializer;
 import nijakow.four.share.util.Pair;
 
 import java.nio.charset.StandardCharsets;

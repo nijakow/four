@@ -1,12 +1,14 @@
 
 bool is_dir(string path)
 {
-    return ls(path) != nil;
+    int st = stat(path);
+    return (st >= 0) && ((st & 01000) != 0);
 }
 
 bool is_file(string path)
 {
-    return cat(path) != nil;
+    int st = stat(path);
+        return (st >= 0) && ((st & 01000) == 0);
 }
 
 bool exists(string path)

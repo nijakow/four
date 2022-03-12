@@ -4,11 +4,11 @@ use $dumpfs;
 
 void start()
 {
-    if (length(argv) != 2)
+    if (length(argv) != 1)
         printf("Error: No path was given!\n");
     else {
         printf("Dumping the FS...");
-        if ($dumpfs(argv[1]))
+        if ($dumpfs())
             printf("done!\n");
         else
             printf("failed!\n");

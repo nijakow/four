@@ -30,7 +30,7 @@ public class Server {
 	}
 	
 	public void serveOn(String hostname, int port) throws IOException {
-		logger.println(LogLevel.INFO, "Serving on " + hostname + " " + port);
+		logger.println(LogLevel.INFO, "Serving on " + hostname + " " + port + ".");
 		ServerSocketChannel serverSocket = ServerSocketChannel.open();
 		serverSocket.setOption(StandardSocketOptions.SO_REUSEADDR, true);
 		serverSocket.bind(new InetSocketAddress(hostname, port));

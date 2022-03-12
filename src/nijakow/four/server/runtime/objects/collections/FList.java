@@ -1,17 +1,19 @@
 package nijakow.four.server.runtime.objects.collections;
 
+import nijakow.four.server.process.filedescriptor.IByteArray;
 import nijakow.four.server.runtime.exceptions.FourRuntimeException;
 import nijakow.four.server.runtime.objects.FloatingInstance;
 import nijakow.four.server.runtime.objects.Instance;
+import nijakow.four.server.runtime.objects.standard.FInteger;
 import nijakow.four.server.runtime.types.ListType;
 import nijakow.four.server.runtime.types.Type;
 import nijakow.four.server.runtime.exceptions.CastException;
-import nijakow.four.server.serialization.base.ISerializer;
+import nijakow.four.server.storage.serialization.base.ISerializer;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class FList extends FloatingInstance {
+public class FList extends FloatingInstance implements IByteArray {
 	private final ListType type;
 	private final List<Instance> list = new ArrayList<>();
 	
@@ -92,4 +94,20 @@ public class FList extends FloatingInstance {
 			arraySerializer.openEntry().writeObject(i).close();
 		arraySerializer.close();
 	}
+
+    @Override
+    public byte get(int index) {
+        return (byte) at(index).asInt();
+    }
+
+    @Override
+    public void put(int index, byte value) {
+		FInteger fInteger = FInteger.get(value);
+		list.set(index, fInteger);
+    }
+
+    @Override
+    public int getLength() {
+        return getSize();
+    }
 }

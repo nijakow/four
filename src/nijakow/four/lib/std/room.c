@@ -1,8 +1,7 @@
 inherits "/std/thing.c";
 inherits "/std/container.c";
 
-mapping exits;
-
+private mapping exits;
 
 object get_exit(object player, string dir)
 {
