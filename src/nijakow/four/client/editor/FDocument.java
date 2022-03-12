@@ -80,44 +80,45 @@ public class FDocument extends DefaultStyledDocument {
     public void updateSyntaxHighlighting() {
         try {
             List<Token> tokens = parse();
-             for (int i = 0; i < tokens.size(); i++) {
-                StreamPosition pos = tokens.get(i).getPosition();
-                int nextPos = i + 1 == tokens.size() ? getLength() : tokens.get(i + 1).getPosition().getIndex() - 1;
-                switch (tokens.get(i).getType()) {
-                    case NIL:
-                    case TRUE:
-                    case FALSE: setCharacterAttributes(pos.getIndex(), nextPos, getStyle(Commands.Styles.STYLE_SPECIAL_WORD), true); break;
+            int lastEnd = 0;
+            for (Token token : tokens) {
+                 setCharacterAttributes(lastEnd, token.getPosition().getIndex() - lastEnd, def, true);
+                 switch (token.getType()) {
+                     case NIL:
+                     case TRUE:
+                     case FALSE: setCharacterAttributes(token.getPosition().getIndex(), token.getEndPosition().getIndex() - token.getPosition().getIndex(), getStyle(Commands.Styles.STYLE_SPECIAL_WORD), true); break;
 
-                    case IF:
-                    case USE:
-                    case FOR:
-                    case NEW:
-                    case THIS:
-                    case ELSE:
-                    case BREAK:
-                    case WHILE:
-                    case CLASS:
-                    case RETURN:
-                    case PUBLIC:
-                    case STRUCT:
-                    case PRIVATE:
-                    case CONTINUE:
-                    case INHERITS: setCharacterAttributes(pos.getIndex(), nextPos, getStyle(Commands.Styles.STYLE_KEYWORD), true); break;
+                     case IF:
+                     case USE:
+                     case FOR:
+                     case NEW:
+                     case THIS:
+                     case ELSE:
+                     case BREAK:
+                     case WHILE:
+                     case CLASS:
+                     case RETURN:
+                     case PUBLIC:
+                     case STRUCT:
+                     case PRIVATE:
+                     case CONTINUE:
+                     case INHERITS: setCharacterAttributes(token.getPosition().getIndex(), token.getEndPosition().getIndex() - token.getPosition().getIndex(), getStyle(Commands.Styles.STYLE_KEYWORD), true); break;
 
-                    case ANY:
-                    case INT:
-                    case VOID:
-                    case CHAR:
-                    case BOOL:
-                    case LIST:
-                    case STRING:
-                    case OBJECT:
-                    case MAPPING: setCharacterAttributes(pos.getIndex(), nextPos, getStyle(Commands.Styles.STYLE_TYPE), true); break;
+                     case ANY:
+                     case INT:
+                     case VOID:
+                     case CHAR:
+                     case BOOL:
+                     case LIST:
+                     case STRING:
+                     case OBJECT:
+                     case MAPPING: setCharacterAttributes(token.getPosition().getIndex(), token.getEndPosition().getIndex() - token.getPosition().getIndex(), getStyle(Commands.Styles.STYLE_TYPE), true); break;
 
-                    case IDENT: setCharacterAttributes(pos.getIndex(), pos.getIndex() + tokens.get(i).getPayload().toString().length(), getStyle(Commands.Styles.STYLE_STDLIB), true); break;
+                     case IDENT: setCharacterAttributes(token.getPosition().getIndex(), token.getPosition().getIndex() + token.getPayload().toString().length(), getStyle(Commands.Styles.STYLE_STDLIB), true); break;
 
-                    default: setCharacterAttributes(pos.getIndex(), nextPos, def, true); break;
+                     default: setCharacterAttributes(token.getPosition().getIndex(), token.getEndPosition().getIndex() - token.getPosition().getIndex(), def, true); break;
                 }
+                lastEnd = token.getEndPosition().getIndex();
             }
         } catch (ParseException e) {
             // TODO
