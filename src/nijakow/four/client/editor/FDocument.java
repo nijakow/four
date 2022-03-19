@@ -15,11 +15,13 @@ public class FDocument extends DefaultStyledDocument {
     private String text;
     private boolean highlighting;
     private List<Token> tokens;
+    private FTheme theme;
     private final ExecutorService threads;
 
     public FDocument() {
         threads = Executors.newSingleThreadScheduledExecutor();
         def = getLogicalStyle(0);
+        theme = FTheme.getDefaultTheme(def);
         try {
             text = getText(0, getLength());
         } catch (BadLocationException e) {
@@ -32,6 +34,16 @@ public class FDocument extends DefaultStyledDocument {
         this();
         this.highlighting = highlighting;
     }
+
+    public void setTheme(FTheme theme) {
+        if (theme == null) {
+            this.theme = FTheme.getDefaultTheme(def);
+        } else {
+            this.theme = theme;
+        }
+    }
+
+    public FTheme getTheme() { return theme; }
 
     public List<Token> parse() throws ParseException {
         ArrayList<Token> tokens = new ArrayList<>();
@@ -84,41 +96,13 @@ public class FDocument extends DefaultStyledDocument {
             int lastEnd = 0;
             for (Token token : tokens) {
                  setCharacterAttributes(lastEnd, token.getPosition().getIndex() - lastEnd, def, true);
-                 switch (token.getType()) {
-                     case NIL:
-                     case TRUE:
-                     case FALSE: setCharacterAttributes(token.getPosition().getIndex(), token.getEndPosition().getIndex() - token.getPosition().getIndex(), getStyle(Commands.Styles.STYLE_SPECIAL_WORD), true); break;
-
-                     case IF:
-                     case USE:
-                     case FOR:
-                     case NEW:
-                     case THIS:
-                     case ELSE:
-                     case BREAK:
-                     case WHILE:
-                     case CLASS:
-                     case RETURN:
-                     case PUBLIC:
-                     case STRUCT:
-                     case PRIVATE:
-                     case CONTINUE:
-                     case INHERITS: setCharacterAttributes(token.getPosition().getIndex(), token.getEndPosition().getIndex() - token.getPosition().getIndex(), getStyle(Commands.Styles.STYLE_KEYWORD), true); break;
-
-                     case ANY:
-                     case INT:
-                     case VOID:
-                     case CHAR:
-                     case BOOL:
-                     case LIST:
-                     case STRING:
-                     case OBJECT:
-                     case MAPPING: setCharacterAttributes(token.getPosition().getIndex(), token.getEndPosition().getIndex() - token.getPosition().getIndex(), getStyle(Commands.Styles.STYLE_TYPE), true); break;
-
-                     case IDENT: setCharacterAttributes(token.getPosition().getIndex(), token.getPosition().getIndex() + token.getPayload().toString().length(), getStyle(Commands.Styles.STYLE_STDLIB), true); break;
-
-                     default: setCharacterAttributes(token.getPosition().getIndex(), token.getEndPosition().getIndex() - token.getPosition().getIndex(), def, true); break;
-                }
+                 Style style = theme.getStyle(token.getType());
+                 if (style == null) style = def;
+                 if (token.getPayload() != null && token.getPayload() instanceof String) {
+                     setCharacterAttributes(token.getPosition().getIndex(), token.getPosition().getIndex() + token.getPayload().toString().length(), style, true);
+                 } else {
+                     setCharacterAttributes(token.getPosition().getIndex(), token.getEndPosition().getIndex() - token.getPosition().getIndex(), style, true);
+                 }
                 lastEnd = token.getEndPosition().getIndex();
             }
         } catch (ParseException e) {
