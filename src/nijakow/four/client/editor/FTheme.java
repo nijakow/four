@@ -68,6 +68,21 @@ public class FTheme {
         def.styles.put(TokenType.CONTINUE, s);
         def.styles.put(TokenType.INHERITS, s);
 
+        s = context.addStyle(null, defaultStyle);
+        StyleConstants.setForeground(s, Color.blue);
+        StyleConstants.setItalic(s, true);
+        def.styles.put(TokenType.CONSTANT, s);
+
+        s = context.addStyle(null, defaultStyle);
+        StyleConstants.setForeground(s, Color.blue);
+        StyleConstants.setItalic(s, true);
+        StyleConstants.setBold(s, true);
+        def.styles.put(TokenType.C_DOC, s);
+
+        s = context.addStyle(null, defaultStyle);
+        StyleConstants.setForeground(s, Color.gray);
+        StyleConstants.setItalic(s, true);
+        def.styles.put(null, s);
         return def;
     }
 }

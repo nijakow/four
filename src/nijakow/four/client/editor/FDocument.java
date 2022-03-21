@@ -1,10 +1,9 @@
 package nijakow.four.client.editor;
 
-import nijakow.four.client.Commands;
+import nijakow.four.server.runtime.objects.standard.FString;
 import nijakow.four.share.lang.c.parser.*;
 
 import javax.swing.text.*;
-import java.awt.*;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
@@ -27,7 +26,6 @@ public class FDocument extends DefaultStyledDocument {
         } catch (BadLocationException e) {
             e.printStackTrace();
         }
-        addStyles();
     }
 
     public FDocument(boolean highlighting) {
@@ -93,33 +91,29 @@ public class FDocument extends DefaultStyledDocument {
     public void updateSyntaxHighlighting() {
         try {
             tokens = parse();
-            int lastEnd = 0;
+            int length, lastEnd = 0;
+            boolean wasCDOC = false;
             for (Token token : tokens) {
-                 setCharacterAttributes(lastEnd, token.getPosition().getIndex() - lastEnd, def, true);
-                 Style style = theme.getStyle(token.getType());
-                 if (style == null) style = def;
-                 if (token.getPayload() != null && token.getPayload() instanceof String) {
-                     setCharacterAttributes(token.getPosition().getIndex(), token.getPosition().getIndex() + token.getPayload().toString().length(), style, true);
-                 } else {
-                     setCharacterAttributes(token.getPosition().getIndex(), token.getEndPosition().getIndex() - token.getPosition().getIndex(), style, true);
-                 }
+                boolean fStr = false;
+                Style style = theme.getStyle(token.getType());
+                int pos = token.getPosition().getIndex();
+                if (style == null) style = def;
+                if (token.getType() == TokenType.C_DOC && token.getPayload() != null && token.getPayload() instanceof String) {
+                    length = token.getPosition().getIndex() + token.getPayload().toString().length();
+                } else if (token.getPayload() != null && token.getPayload() instanceof FString) {
+                    fStr = true;
+                    length = ((FString) token.getPayload()).asString().length() + 2;
+                } else {
+                    length = token.getEndPosition().getIndex() - pos;
+                }
+                setCharacterAttributes(pos, length, style, true);
+                setCharacterAttributes(lastEnd, pos - lastEnd, wasCDOC ? theme.getStyle(TokenType.C_DOC) : theme.getStyle(null), true);
+                wasCDOC = token.getType() == TokenType.C_DOC;
                 lastEnd = token.getEndPosition().getIndex();
+                if (fStr) lastEnd += length - 1;
             }
         } catch (ParseException e) {
             // TODO
         }
-    }
-
-    private void addStyles() {
-        Style s = addStyle(Commands.Styles.STYLE_KEYWORD, def);
-        StyleConstants.setForeground(s, Color.red);
-        StyleConstants.setBold(s, true);
-        s = addStyle(Commands.Styles.STYLE_TYPE, def);
-        StyleConstants.setForeground(s, Color.green);
-        s = addStyle(Commands.Styles.STYLE_SPECIAL_WORD, def);
-        StyleConstants.setItalic(s, true);
-        StyleConstants.setForeground(s, Color.blue);
-        s = addStyle(Commands.Styles.STYLE_STDLIB, def);
-        StyleConstants.setForeground(s, Color.orange);
     }
 }
