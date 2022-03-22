@@ -28,14 +28,16 @@ public class Tokenizer {
 	}
 	
 	private void skipLineComment() {
-		while (stream.peek() != '\n')
+		while (stream.peek() != '\n' && stream.peek() >= 0)
 			stream.advance();
 	}
 	
 	private String parseBlockComment() {
 		StringBuilder builder = new StringBuilder();
 		while (!stream.peeks("*/")) {
-			builder.append((char) stream.next());
+			int c = stream.next();
+			if (c < 0) break;
+			builder.append((char) c);
 		}
 		return builder.toString();
 	}
