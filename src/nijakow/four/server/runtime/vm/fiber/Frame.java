@@ -196,6 +196,8 @@ public class Frame {
 			fiber.setTop(previous);
 			break;
 		case Bytecodes.BYTECODE_LOAD_VANEXT:
+			if (varargs == null || varargs.isEmpty())
+				throw new FourRuntimeException("No varargs available!");
 			fiber.setAccu(varargs.remove(0));
 			break;
 		case Bytecodes.BYTECODE_LOAD_VACOUNT:

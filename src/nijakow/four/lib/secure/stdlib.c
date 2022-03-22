@@ -13,6 +13,7 @@ inherits "/std/lib/fs/checks.c";
 inherits "/std/lib/fs/permissions.c";
 inherits "/std/lib/fs/op.c";
 inherits "/std/lib/math/random.c";
+inherits "/std/lib/memory/malloc.c";
 inherits "/std/lib/char/char.c";
 inherits "/std/lib/io/fprintf.c";
 inherits "/std/lib/io/logging.c";
