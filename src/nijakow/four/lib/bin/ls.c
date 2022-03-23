@@ -58,10 +58,7 @@ void do_ls(string dir, string name, bool long_mode, bool dir_mode, bool recursiv
     if (recursive) {
         string full;
         foreach (string f : files) {
-            if (dir == "/")
-                full = dir + f;
-            else
-                full = dir + "/" + f;
+            full = (dir == "/") ? dir + f : dir + "/" + f;
             if (is_dir(full)) {
                 printf("\n%s:\n", full);
                 do_ls(full, name, long_mode, dir_mode, recursive);
