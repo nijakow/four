@@ -14,9 +14,10 @@ import nijakow.four.client.net.ClientConnection;
 
 public class ClientEditor extends JFrame implements ActionListener {
 	private static final long serialVersionUID = 1L;
-	private final JScrollPane scrollPane;
 	private final JCheckBox highlight;
+	private final JScrollPane scrollPane;
 	private final JTextPane pane;
+	private final JPopupMenu popup;
 	private final FDocument doc;
 	private final ClientConnection connection;
 	private final String id;
@@ -36,6 +37,7 @@ public class ClientEditor extends JFrame implements ActionListener {
 		pane.setDocument(doc);
 		pane.setText(content);
 		pane.setFont(new Font("Monospaced", Font.PLAIN, 14));
+		popup = new JPopupMenu();
 		setKeyStrokes();
 		getContentPane().setLayout(new BorderLayout());
 		scrollPane = new JScrollPane();
@@ -105,6 +107,27 @@ public class ClientEditor extends JFrame implements ActionListener {
 				} catch (BadLocationException ex) {
 					ex.printStackTrace();
 				}
+			}
+		});
+		m.addActionForKeyStroke(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), new AbstractAction() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				popup.setVisible(false);
+			}
+		});
+		m.addActionForKeyStroke(KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, KeyEvent.CTRL_DOWN_MASK), new AbstractAction() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (!popup.isVisible()) {
+					popup.removeAll();
+					for (Object o : doc.computeSuggestions(pane.getCaretPosition())) {
+						popup.add(new JMenuItem(o.toString()));
+					}
+					Point panePos = pane.getLocationOnScreen();
+					Point caretPos = pane.getCaret().getMagicCaretPosition();
+					popup.setLocation(caretPos.x + panePos.x, caretPos.y + panePos.y + pane.getFont().getSize());
+				}
+				popup.setVisible(!popup.isVisible());
 			}
 		});
 	}

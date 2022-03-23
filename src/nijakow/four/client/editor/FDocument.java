@@ -4,6 +4,8 @@ import nijakow.four.server.runtime.objects.standard.FString;
 import nijakow.four.share.lang.c.parser.*;
 
 import javax.swing.text.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -74,6 +76,15 @@ public class FDocument extends DefaultStyledDocument {
 
     public void resetHighlight() {
         setCharacterAttributes(0, getLength(), def, true);
+    }
+
+    public List<?> computeSuggestions(int cursorPosition) {
+        List<Object> ret = new ArrayList<>();
+        ret.add("TODO:");
+        ret.add("Implement");
+        ret.add("suggestion");
+        ret.add("computation!");
+        return ret;
     }
 
     public void updateSyntaxHighlighting() {
