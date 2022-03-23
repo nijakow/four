@@ -131,9 +131,13 @@ public class PreferencesHelper {
 		prefs.putBoolean(Key.DARK_MODE, enabled);
 	}
 
+	public void flushOrThrow() throws BackingStoreException {
+		prefs.flush();
+	}
+
 	public boolean flush() {
 		try {
-			prefs.flush();
+			flushOrThrow();
 		} catch (BackingStoreException e) {
 			System.err.println("Could not save settings: " + e.getLocalizedMessage());
 			e.printStackTrace();
@@ -150,20 +154,20 @@ public class PreferencesHelper {
 	}
 
 	public abstract static class Key {
-		public static final String WINDOW_POS_X      = "windowPosX";
-		public static final String WINDOW_POS_Y      = "windowPosY";
-		public static final String WINDOW_WIDTH      = "windowWidth";
-		public static final String WINDOW_HEIGHT     = "windowHeight";
-		public static final String HOSTNAME          = "hostname";
-		public static final String PORT_NUMBER       = "portNumber";
-		public static final String LINE_BREAKING     = "lineBreaking";
 		public static final String DARK_MODE         = "darkMode";
-		public static final String UI_MANAGER_NAME   = "uiName";
 		public static final String EDITOR_WIDTH      = "editorWidth";
 		public static final String EDITOR_HEIGHT     = "editorHeight";
 		public static final String EDITOR_POS_X      = "editorPosX";
 		public static final String EDITOR_POS_Y      = "editorPosY";
 		public static final String EDITOR_HIGHLIGHT  = "editorHighlighting";
 		public static final String EDITOR_LINE_BREAK = "editorLineBreaking";
+		public static final String HOSTNAME          = "hostname";
+		public static final String LINE_BREAKING     = "lineBreaking";
+		public static final String PORT_NUMBER       = "portNumber";
+		public static final String WINDOW_POS_X      = "windowPosX";
+		public static final String WINDOW_POS_Y      = "windowPosY";
+		public static final String WINDOW_WIDTH      = "windowWidth";
+		public static final String WINDOW_HEIGHT     = "windowHeight";
+		public static final String UI_MANAGER_NAME   = "uiName";
 	}
 }
