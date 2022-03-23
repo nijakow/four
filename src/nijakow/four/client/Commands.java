@@ -1,5 +1,8 @@
 package nijakow.four.client;
 
+import javax.swing.KeyStroke;
+import java.awt.event.KeyEvent;
+
 public abstract class Commands {
 	public abstract static class Actions {
 		public static final String ACTION_SEND               = "send";
@@ -10,6 +13,24 @@ public abstract class Commands {
 		public static final String ACTION_EDIT_SAVE_AS       = "editor/saveAs";
 		public static final String ACTION_EDIT_CLOSE         = "editor/reject";
 		public static final String ACTION_STATUS_LABEL_TIMER = "invisible";
+	}
+
+	public abstract static class Codes {
+		public static final String SPECIAL_RAW    = ":";
+		public static final String SPECIAL_PWD    = "?";
+		public static final String SPECIAL_IMG    = "^";
+		public static final String SPECIAL_EDIT   = "$";
+		public static final String SPECIAL_PROMPT = ".";
+		public static final char SPECIAL_START    = 0x02;
+		public static final char SPECIAL_END      = 0x03;
+	}
+
+	public abstract static class Keys {
+		public static final KeyStroke LEFT  = KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0);
+		public static final KeyStroke RIGHT = KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0);
+		public static final KeyStroke DOWN  = KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, 0);
+		public static final KeyStroke UP    = KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0);
+		public static final KeyStroke ENTER = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0);
 	}
 
 	public abstract static class Styles {
@@ -31,15 +52,5 @@ public abstract class Commands {
 		@Deprecated public static final String STYLE_BLACK     = "BLACK";
 		@Deprecated	public static final String STYLE_GREEN     = "GREEN";
 		@Deprecated	public static final String STYLE_YELLOW    = "YELLOW";
-	}
-
-	public abstract static class Codes {
-		public static final String SPECIAL_RAW    = ":";
-		public static final String SPECIAL_PWD    = "?";
-		public static final String SPECIAL_IMG    = "^";
-		public static final String SPECIAL_EDIT   = "$";
-		public static final String SPECIAL_PROMPT = ".";
-		public static final char SPECIAL_START    = 0x02;
-		public static final char SPECIAL_END      = 0x03;
 	}
 }

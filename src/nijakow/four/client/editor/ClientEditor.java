@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.util.concurrent.*;
 
 import javax.swing.*;
+import javax.swing.event.PopupMenuEvent;
+import javax.swing.event.PopupMenuListener;
 import javax.swing.text.*;
 
 import nijakow.four.client.Commands;
@@ -17,7 +19,7 @@ public class ClientEditor extends JFrame implements ActionListener {
 	private final JCheckBox highlight;
 	private final JScrollPane scrollPane;
 	private final JTextPane pane;
-	private final JPopupMenu popup;
+	private final JPopupMenu popup; // TODO Write subclass! - mhahnFr
 	private final FDocument doc;
 	private final ClientConnection connection;
 	private final String id;
@@ -38,6 +40,21 @@ public class ClientEditor extends JFrame implements ActionListener {
 		pane.setText(content);
 		pane.setFont(new Font("Monospaced", Font.PLAIN, 14));
 		popup = new JPopupMenu();
+		popup.addPopupMenuListener(new PopupMenuListener() {
+			@Override
+			public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
+				addPopupKeyStrokes();
+			}
+
+			@Override
+			public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {
+				removePopupKeyStrokes();
+			}
+
+			@Override
+			public void popupMenuCanceled(PopupMenuEvent e) {
+			}
+		});
 		setKeyStrokes();
 		getContentPane().setLayout(new BorderLayout());
 		scrollPane = new JScrollPane();
@@ -92,6 +109,7 @@ public class ClientEditor extends JFrame implements ActionListener {
 					int i;
 					for (i = pane.getCaretPosition() - 1; i >= 0 && !pane.getText(i, 1).equals("\n"); i--);
 					pane.setCaretPosition(i + 1);
+					if (popup.isVisible()) popup.setVisible(false);
 				} catch (BadLocationException ex) {
 					ex.printStackTrace();
 				}
@@ -104,6 +122,7 @@ public class ClientEditor extends JFrame implements ActionListener {
 					int i;
 					for (i = pane.getCaretPosition(); !pane.getText(i, 1).equals("\n"); i++);
 					pane.setCaretPosition(i);
+					if (popup.isVisible()) popup.setVisible(false);
 				} catch (BadLocationException ex) {
 					ex.printStackTrace();
 				}
@@ -130,6 +149,53 @@ public class ClientEditor extends JFrame implements ActionListener {
 				popup.setVisible(!popup.isVisible());
 			}
 		});
+	}
+
+	private void addPopupKeyStrokes() {
+		final Keymap m = pane.getKeymap();
+		m.addActionForKeyStroke(Commands.Keys.LEFT, new AbstractAction() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				int currentPosition = pane.getCaretPosition();
+				pane.setCaretPosition(currentPosition == 0 ? 0 : currentPosition - 1);
+				if (popup.isVisible()) popup.setVisible(false);
+			}
+		});
+		m.addActionForKeyStroke(Commands.Keys.RIGHT, new AbstractAction() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				int currentPosition = pane.getCaretPosition();
+				pane.setCaretPosition(currentPosition == doc.getLength() ? currentPosition : currentPosition + 1);
+				if (popup.isVisible()) popup.setVisible(false);
+			}
+		});
+		m.addActionForKeyStroke(Commands.Keys.UP, new AbstractAction() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO
+			}
+		});
+		m.addActionForKeyStroke(Commands.Keys.DOWN, new AbstractAction() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO
+			}
+		});
+		m.addActionForKeyStroke(Commands.Keys.ENTER, new AbstractAction() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO
+			}
+		});
+	}
+
+	private void removePopupKeyStrokes() {
+		final Keymap m = pane.getKeymap();
+		m.removeKeyStrokeBinding(Commands.Keys.DOWN);
+		m.removeKeyStrokeBinding(Commands.Keys.LEFT);
+		m.removeKeyStrokeBinding(Commands.Keys.UP);
+		m.removeKeyStrokeBinding(Commands.Keys.RIGHT);
+		m.removeKeyStrokeBinding(Commands.Keys.ENTER);
 	}
 
 	private void startSyntaxHighlighting() {
