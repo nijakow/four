@@ -31,7 +31,7 @@ void do_ls1(string path, bool long_mode)
     printf("%s\n", basename(path));
 }
 
-void do_ls(string dir, string name, bool long_mode, bool dir_mode)
+void do_ls(string dir, string name, bool long_mode, bool dir_mode, bool recursive)
 {
     if (!exists(dir)) {
         printf("%s: file not found!\n", name);
@@ -55,6 +55,19 @@ void do_ls(string dir, string name, bool long_mode, bool dir_mode)
     {
         do_ls1(dir + "/" + f, long_mode);
     }
+    if (recursive) {
+        string full;
+        foreach (string f : files) {
+            if (dir == "/")
+                full = dir + f;
+            else
+                full = dir + "/" + f;
+            if (is_dir(full)) {
+                printf("\n%s:\n", full);
+                do_ls(full, name, long_mode, dir_mode, recursive);
+            }
+        }
+    }
 }
 
 void start()
@@ -62,6 +75,7 @@ void start()
     int off        = 1;
     bool long_mode = true;
     bool dir_mode  = false;
+    bool recursive = false;
 
     while (off < length(argv))
     {
@@ -81,18 +95,30 @@ void start()
             long_mode = false;
             dir_mode  = true;
         }
+        else if (argv[off] == "-R")
+            recursive = true;
+        else if (argv[off] == "-lR")
+        {
+            recursive = true;
+            long_mode = true;
+        }
+        else if (argv[off] == "-sR")
+        {
+            recursive = true;
+            long_mode = false;
+        }
         else
             break;
         off = off + 1;
     }
 
     if (length(argv) - off <= 0)
-        do_ls(pwd(), ".", long_mode, dir_mode);
+        do_ls(pwd(), ".", long_mode, dir_mode, recursive);
     else if (length(argv) >= 2) {
         for (int i = off; i < length(argv); i++)
         {
             string path = resolve(pwd(), argv[i]);
-            do_ls(path, argv[i], long_mode, dir_mode);
+            do_ls(path, argv[i], long_mode, dir_mode, recursive);
             if (i < length(argv) - 1)
                 printf("\n");
         }
