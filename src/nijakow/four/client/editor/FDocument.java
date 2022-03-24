@@ -93,29 +93,17 @@ public class FDocument extends DefaultStyledDocument {
         try {
             idents.clear();
             Tokenizer tokenizer = new Tokenizer(new StringCharStream("", text));
-            int length, lastEnd = 0;
-            boolean wasCDOC = false;
+            int lastEnd = 0;
             Token token;
             do {
                 token = tokenizer.nextToken();
-                boolean fStr = false;
                 Style style = theme.getStyle(token.getType());
-                int pos = token.getPosition().getIndex();
                 if (style == null) style = def;
-                if (token.getType() != TokenType.C_DOC && token.getPayload() != null && token.getPayload() instanceof String) {
-                    length = token.getPosition().getIndex() + token.getPayload().toString().length();
-                } else if (token.getPayload() != null && token.getPayload() instanceof FString) {
-                    fStr = true;
-                    length = ((FString) token.getPayload()).asString().length() + 2;
-                } else {
-                    length = token.getEndPosition().getIndex() - pos;
-                }
-                setCharacterAttributes(pos, length, style, true);
-                setCharacterAttributes(lastEnd, pos - lastEnd, wasCDOC ? theme.getStyle(TokenType.C_DOC) : theme.getStyle(null), true);
+                int pos = token.getPosition().getIndex();
+                setCharacterAttributes(pos, token.getEndPosition().getIndex() - pos, style, true);
+                setCharacterAttributes(lastEnd, pos - lastEnd, theme.getStyle(null), true);
                 // TODO Replace by the highlighter interface! - mhahnFr
-                wasCDOC = token.getType() == TokenType.C_DOC;
                 lastEnd = token.getEndPosition().getIndex();
-                if (fStr) lastEnd += length - 1;
                 if (token.getType() == TokenType.IDENT) idents.add(token);
             } while (token.getType() != TokenType.EOF);
         } catch (ParseException e) {
