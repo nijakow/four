@@ -119,8 +119,11 @@ public class Blueprint {
 	}
 
 	private String getMethodString(Key key, Method m) {
-		Code code = m.getCode();
-		ByteCode bc = code.asByteCode();
+		if (m == null) return "Not present!";
+		Code code = null;
+		ByteCode bc = null;
+		if (m != null) code = m.getCode();
+		if (code != null) bc = code.asByteCode();
 		if (bc != null) {
 			Type[] args = bc.getMeta().getArgTypes();
 			StringBuilder sb = new StringBuilder("(");
