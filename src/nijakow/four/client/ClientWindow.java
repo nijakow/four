@@ -192,7 +192,6 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 			prompt.setCaretColor(Color.white);
 			promptText.setForeground(Color.white);
 			promptText.setBackground(Color.darkGray);
-			connectionStatus.setForeground(Color.white);
 			connectionStatus.setBackground(Color.darkGray);
 			getContentPane().setBackground(Color.darkGray);
 		} else {
@@ -206,7 +205,6 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 			prompt.setCaretColor(null);
 			promptText.setForeground(null);
 			promptText.setBackground(null);
-			connectionStatus.setForeground(null);
 			connectionStatus.setBackground(null);
 			getContentPane().setBackground(null);
 		}
