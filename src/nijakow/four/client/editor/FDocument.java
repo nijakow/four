@@ -14,12 +14,14 @@ public class FDocument extends DefaultStyledDocument {
     private String text;
     private boolean highlighting;
     private FTheme theme;
+    private final List<Token> idents;
     private final ExecutorService threads;
 
     public FDocument() {
         threads = Executors.newSingleThreadScheduledExecutor();
         def = getLogicalStyle(0);
         theme = FTheme.getDefaultTheme(def);
+        idents = new ArrayList<>();
         try {
             text = getText(0, getLength());
         } catch (BadLocationException e) {
@@ -79,16 +81,17 @@ public class FDocument extends DefaultStyledDocument {
     }
 
     public List<?> computeSuggestions(int cursorPosition) {
-        List<Object> ret = new ArrayList<>();
-        ret.add("TODO:");
-        ret.add("Implement");
-        ret.add("suggestion");
-        ret.add("computation!");
+        List<String> ret = new ArrayList<>();
+        for (Token t : idents) {
+            if (!ret.contains(t.getPayload().toString()))
+                ret.add(t.getPayload().toString());
+        }
         return ret;
     }
 
     public void updateSyntaxHighlighting() {
         try {
+            idents.clear();
             Tokenizer tokenizer = new Tokenizer(new StringCharStream("", text));
             int length, lastEnd = 0;
             boolean wasCDOC = false;
@@ -112,6 +115,7 @@ public class FDocument extends DefaultStyledDocument {
                 wasCDOC = token.getType() == TokenType.C_DOC;
                 lastEnd = token.getEndPosition().getIndex();
                 if (fStr) lastEnd += length - 1;
+                if (token.getType() == TokenType.IDENT) idents.add(token);
             } while (token.getType() != TokenType.EOF);
         } catch (ParseException e) {
             // TODO
