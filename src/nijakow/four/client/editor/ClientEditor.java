@@ -19,7 +19,7 @@ public class ClientEditor extends JFrame implements ActionListener {
 	private final JCheckBox highlight;
 	private final JScrollPane scrollPane;
 	private final JTextPane pane;
-	private final JPopupMenu popup; // TODO Write subclass! - mhahnFr
+	private final FSuggestionMenu popup; // TODO Write subclass! - mhahnFr
 	private final FDocument doc;
 	private final ClientConnection connection;
 	private final String id;
@@ -39,7 +39,7 @@ public class ClientEditor extends JFrame implements ActionListener {
 		pane.setDocument(doc);
 		pane.setText(content);
 		pane.setFont(new Font("Monospaced", Font.PLAIN, 14));
-		popup = new JPopupMenu();
+		popup = new FSuggestionMenu();
 		popup.addPopupMenuListener(new PopupMenuListener() {
 			@Override
 			public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
@@ -139,9 +139,8 @@ public class ClientEditor extends JFrame implements ActionListener {
 			public void actionPerformed(ActionEvent e) {
 				if (!popup.isVisible()) {
 					popup.removeAll();
-					for (Object o : doc.computeSuggestions(pane.getCaretPosition())) {
-						popup.add(new JMenuItem(o.toString()));
-					}
+					popup.addAll(doc.computeSuggestions(pane.getCaretPosition()));
+					popup.selectNext();
 					Point panePos = pane.getLocationOnScreen();
 					Point caretPos = pane.getCaret().getMagicCaretPosition();
 					popup.setLocation(caretPos.x + panePos.x, caretPos.y + panePos.y + pane.getFont().getSize());
@@ -172,19 +171,24 @@ public class ClientEditor extends JFrame implements ActionListener {
 		m.addActionForKeyStroke(Commands.Keys.UP, new AbstractAction() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// TODO
+				popup.selectPrevious();
 			}
 		});
 		m.addActionForKeyStroke(Commands.Keys.DOWN, new AbstractAction() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// TODO
+				popup.selectNext();
 			}
 		});
 		m.addActionForKeyStroke(Commands.Keys.ENTER, new AbstractAction() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// TODO
+				try {
+					doc.insertString(pane.getCaretPosition(), popup.getSelection(), null);
+				} catch (BadLocationException ex) {
+					ex.printStackTrace();
+				}
+				popup.setVisible(false);
 			}
 		});
 	}

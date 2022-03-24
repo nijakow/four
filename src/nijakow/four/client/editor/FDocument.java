@@ -80,11 +80,11 @@ public class FDocument extends DefaultStyledDocument {
         setCharacterAttributes(0, getLength(), def, true);
     }
 
-    public List<?> computeSuggestions(int cursorPosition) {
-        List<String> ret = new ArrayList<>();
+    public List<FSuggestion> computeSuggestions(int cursorPosition) {
+        List<FSuggestion> ret = new ArrayList<>();
         for (Token t : idents) {
-            if (!ret.contains(t.getPayload().toString()))
-                ret.add(t.getPayload().toString());
+            //if (!ret.contains(t.getPayload().toString()))
+            ret.add(new FSuggestion(t.getPayload().toString()));
         }
         return ret;
     }
