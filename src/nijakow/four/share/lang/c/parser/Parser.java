@@ -189,7 +189,7 @@ public class Parser {
 		ASTExpression next = null;
 		while (expr != next) {
 			next = expr;
-			if (check(TokenType.QUESTION)) {
+			if (prec >= 13 && check(TokenType.QUESTION)) {
 				ASTExpression consequent = parseExpression();
 				expect(TokenType.COLON);
 				ASTExpression alternative = parseExpression();

@@ -105,7 +105,8 @@ public class Tokenizer {
 			skipLineComment();
 			return nextToken();
 		} else if (peeks("/**")) {
-			return new Token(this, pos, getPosition(), TokenType.C_DOC, parseCDoc());
+			final String cdoc = parseCDoc();
+			return new Token(this, pos, getPosition(), TokenType.C_DOC, cdoc);
 		} else if (peeks("/*")) {
 			parseBlockComment();
 			return nextToken();
@@ -148,7 +149,10 @@ public class Tokenizer {
 		else if (peeks("|")) return new Token(this, pos, getPosition(), TokenType.OPERATOR, new OperatorInfo(OperatorType.BITOR, -1, 10, true));
 		else if (peeks("!")) return new Token(this, pos, getPosition(), TokenType.OPERATOR, new OperatorInfo(OperatorType.LOGNOT, 2, -1, true));
 		else if (peeks("=")) return new Token(this, pos, getPosition(), TokenType.ASSIGNMENT);
-		else if (peeks("\"")) return new Token(this, pos, getPosition(), TokenType.CONSTANT, new FString(parseString('\"')));
+		else if (peeks("\"")) {
+			final String text = parseString('\"');
+			return new Token(this, pos, getPosition(), TokenType.CONSTANT, new FString(text));
+		}
 		else if (peeks("\'")) {
 			char c = (char) parseChar('\'');
 			if (stream.next() != '\'')
