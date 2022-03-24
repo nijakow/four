@@ -219,7 +219,7 @@ public class ClientEditor extends JFrame implements ActionListener {
 			getContentPane().setBackground(null);
 			highlight.setForeground(null);
 			highlight.setBackground(null);
-			pane.setBackground(null);
+			pane.setBackground(Color.white);
 			pane.setForeground(null);
 			pane.setCaretColor(null);
 		}

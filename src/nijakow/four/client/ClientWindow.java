@@ -203,7 +203,7 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 			pwf.setBackground(Color.white);
 			pwf.setCaretColor(null);
 			area.setForeground(null);
-			area.setBackground(null);
+			area.setBackground(Color.white);
 			prompt.setForeground(null);
 			prompt.setBackground(Color.white);
 			prompt.setCaretColor(null);
