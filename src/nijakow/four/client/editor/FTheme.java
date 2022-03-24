@@ -64,6 +64,7 @@ public class FTheme {
         def.styles.put(TokenType.RETURN, s);
         def.styles.put(TokenType.PUBLIC, s);
         def.styles.put(TokenType.STRUCT, s);
+        def.styles.put(TokenType.FOREACH, s);
         def.styles.put(TokenType.PRIVATE, s);
         def.styles.put(TokenType.CONTINUE, s);
         def.styles.put(TokenType.INHERITS, s);
