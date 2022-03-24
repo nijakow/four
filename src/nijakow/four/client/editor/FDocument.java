@@ -112,6 +112,7 @@ public class FDocument extends DefaultStyledDocument {
                 }
                 setCharacterAttributes(pos, length, style, true);
                 setCharacterAttributes(lastEnd, pos - lastEnd, wasCDOC ? theme.getStyle(TokenType.C_DOC) : theme.getStyle(null), true);
+                // TODO Replace by the highlighter interface! - mhahnFr
                 wasCDOC = token.getType() == TokenType.C_DOC;
                 lastEnd = token.getEndPosition().getIndex();
                 if (fStr) lastEnd += length - 1;

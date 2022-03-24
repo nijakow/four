@@ -54,17 +54,21 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 	private final Runnable reconnector = () -> {
 		connection = ClientConnection.getClientConnection(prefs.getHostname(), prefs.getPort());
 		connection.setClientConnectionListener(this);
+		boolean wasConnected = false;
 		try {
 			connection.establishConnection();
+			wasConnected = true;
 			EventQueue.invokeLater(() -> {
-				connectionStatus.setText(" Connected!");
+				labelTimer.stop();
+				connectionStatus.setVisible(true);
+				connectionStatus.setText("Connected!");
 				connectionStatus.setForeground(Color.green);
 				labelTimer.start();
 			});
 			reconnectorHandler.cancel(false);
 			connection.openStreams();
 		} catch (IOException ex) {
-			if (!reconnectorHandler.isCancelled()) {
+			if (!wasConnected) {
 				EventQueue.invokeLater(() -> {
 					if (bother) {
 						bother = false;
@@ -74,7 +78,7 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 					}
 					labelTimer.stop();
 					connectionStatus.setVisible(true);
-					connectionStatus.setText(" Not connected!");
+					connectionStatus.setText("Not connected!");
 					connectionStatus.setForeground(Color.red);
 				});
 			}
