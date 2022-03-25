@@ -10,9 +10,15 @@ import java.util.HashMap;
 
 public class FTheme {
     private final HashMap<TokenType, Style> styles;
+    private final Style errorStyle;
 
     public FTheme() {
         styles = new HashMap<>();
+        StyleContext context = new StyleContext();
+        errorStyle = context.addStyle(null, null);
+        StyleConstants.setUnderline(errorStyle, true);
+        StyleConstants.setForeground(errorStyle, Color.red);
+        StyleConstants.setBold(errorStyle, true);
     }
 
     public void addStyle(TokenType type, Style style) {
@@ -44,6 +50,7 @@ public class FTheme {
         def.styles.put(TokenType.VOID, s);
         def.styles.put(TokenType.BOOL, s);
         def.styles.put(TokenType.CHAR, s);
+        def.styles.put(TokenType.FUNC, s);
         def.styles.put(TokenType.LIST, s);
         def.styles.put(TokenType.STRING, s);
         def.styles.put(TokenType.OBJECT, s);
@@ -85,5 +92,9 @@ public class FTheme {
         StyleConstants.setItalic(s, true);
         def.styles.put(null, s);
         return def;
+    }
+
+    public Style getErrorStyle() {
+        return errorStyle;
     }
 }
