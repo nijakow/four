@@ -160,7 +160,7 @@ public class Parser {
 		} else if (checkKeep(TokenType.IDENT)) {
 			return new ASTIdent(p(), Key.get((String) nextToken().getPayload()));
 		} else {
-			return new ASTThis(p());
+			return null;
 		}
 	}
 	
@@ -231,6 +231,8 @@ public class Parser {
 				}
 			}
 		}
+		if (expr == null)
+			error("Expected an expression!");
 		return expr;
 	}
 	
@@ -393,6 +395,8 @@ public class Parser {
 				}
 
 				Type type = parseType();
+				if (type == null)
+					error("Expected a type!");
 				Key name = expectKey();
 				StreamPosition pos = p();
 				if (check(TokenType.LPAREN)) {
