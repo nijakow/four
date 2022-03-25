@@ -13,6 +13,7 @@ import javax.swing.text.*;
 import nijakow.four.client.Commands;
 import nijakow.four.client.PreferencesHelper;
 import nijakow.four.client.net.ClientConnection;
+import nijakow.four.client.utils.StringHelper;
 
 public class ClientEditor extends JFrame implements ActionListener {
 	private static final long serialVersionUID = 1L;
@@ -126,6 +127,35 @@ public class ClientEditor extends JFrame implements ActionListener {
 				} catch (BadLocationException ex) {
 					ex.printStackTrace();
 				}
+			}
+		});
+		m.addActionForKeyStroke(Commands.Keys.ENTER, new AbstractAction() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				String tabs;
+				synchronized (doc) {
+					tabs = StringHelper.generateFilledString(' ', doc.getIndentationLevel(pane.getCaretPosition()) * 4);
+				}
+				try {
+					doc.insertString(pane.getCaretPosition(), "\n" + tabs, null);
+				} catch (BadLocationException ex) {
+					ex.printStackTrace();
+				}
+			}
+		});
+		m.addActionForKeyStroke(KeyStroke.getKeyStroke(KeyEvent.VK_BRACERIGHT, KeyEvent.SHIFT_DOWN_MASK), new AbstractAction() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+					try {
+						int oldPos = pane.getCaretPosition();
+						if (doc.isOnlyWhitespacesOnLine(oldPos)) {
+							synchronized (doc) {
+								pane.setCaretPosition(doc.fixIndentation(oldPos, true));
+							}
+						}
+					} catch (BadLocationException ex) {
+						ex.printStackTrace();
+					}
 			}
 		});
 		m.addActionForKeyStroke(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), new AbstractAction() {

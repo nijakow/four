@@ -1,7 +1,9 @@
 package nijakow.four.client.editor;
 
-import nijakow.four.server.runtime.objects.standard.FString;
+import nijakow.four.client.utils.StringHelper;
+import nijakow.four.share.lang.c.ast.ASTClass;
 import nijakow.four.share.lang.c.parser.*;
+import nijakow.four.share.util.Pair;
 
 import javax.swing.text.*;
 import java.util.ArrayList;
@@ -15,6 +17,7 @@ public class FDocument extends DefaultStyledDocument {
     private boolean highlighting;
     private FTheme theme;
     private final List<Token> idents;
+    private final List<Pair<Integer, Integer>> ide;
     private final ExecutorService threads;
 
     public FDocument() {
@@ -22,6 +25,7 @@ public class FDocument extends DefaultStyledDocument {
         def = getLogicalStyle(0);
         theme = FTheme.getDefaultTheme(def);
         idents = new ArrayList<>();
+        ide = new ArrayList<>();
         try {
             text = getText(0, getLength());
         } catch (BadLocationException e) {
@@ -83,20 +87,62 @@ public class FDocument extends DefaultStyledDocument {
     public List<FSuggestion> computeSuggestions(int cursorPosition) {
         List<FSuggestion> ret = new ArrayList<>();
         for (Token t : idents) {
-            //if (!ret.contains(t.getPayload().toString()))
             ret.add(new FSuggestion(t.getPayload().toString()));
         }
         return ret;
     }
 
+    public boolean isOnlyWhitespacesOnLine(int endPosition) {
+        char c;
+        for (int i = endPosition - 1; i >= 0 && (c = text.charAt(i)) != '\n'; i--) {
+            if (!Character.isWhitespace(c)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public int fixIndentation(int position, boolean isClosingBrace) throws BadLocationException {
+        int i;
+        int j;
+        for (i = position - 1; i >= 0 && text.charAt(i) != '\n'; i--);
+        i++;
+        for (j = i; j < text.length() && Character.isWhitespace(text.charAt(j)) && text.charAt(j) != '\n'; j++);
+        getContent().remove(i, j - i);
+        int newIndentation = getIndentationLevel(i);
+        if (isClosingBrace) newIndentation--;
+        if (newIndentation < 0) newIndentation = 0;
+        insertString(i, StringHelper.generateFilledString(' ', newIndentation * 4), null);
+        return i + newIndentation * 4;
+    }
+
+    public int getIndentationLevel(int indentationPosition) {
+        int indent = 0;
+        for (Pair<Integer, Integer> p : ide) {
+            if (indentationPosition <= p.getFirst())
+                return indent;
+            indent = p.getSecond();
+        }
+        return indent;
+    }
+
     public void updateSyntaxHighlighting() {
         try {
             idents.clear();
+            List<Pair<Integer, Integer>> ideLocal = new ArrayList<>();
             Tokenizer tokenizer = new Tokenizer(new StringCharStream("", text));
             int lastEnd = 0;
             Token token;
+            int depth = 0;
             do {
                 token = tokenizer.nextToken();
+                if (token.is(TokenType.LCURLY)) {
+                    depth++;
+                    ideLocal.add(new Pair<>(token.getPosition().getIndex() - 1, depth));
+                } else if (token.is(TokenType.RCURLY)) {
+                    depth--;
+                    ideLocal.add(new Pair<>(token.getPosition().getIndex(), depth));
+                }
                 Style style = theme.getStyle(token.getType());
                 if (style == null) style = def;
                 int pos = token.getPosition().getIndex();
@@ -106,8 +152,16 @@ public class FDocument extends DefaultStyledDocument {
                 lastEnd = token.getEndPosition().getIndex();
                 if (token.getType() == TokenType.IDENT) idents.add(token);
             } while (token.getType() != TokenType.EOF);
+            synchronized (this) {
+                ide.clear();
+                ide.addAll(ideLocal);
+            }
+            ASTClass c = new Parser(new Tokenizer(new StringCharStream("", text))).parseFile();
         } catch (ParseException e) {
-            // TODO
+            Style s = theme.getErrorStyle();
+            Token t = e.getToken();
+            if (t != null)
+               setCharacterAttributes(t.getPosition().getIndex(), t.getEndPosition().getIndex() - t.getPosition().getIndex(), s, false);
         }
     }
 }
