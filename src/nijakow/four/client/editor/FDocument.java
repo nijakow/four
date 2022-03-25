@@ -15,6 +15,7 @@ public class FDocument extends DefaultStyledDocument {
     private final Style def;
     private String text;
     private boolean highlighting;
+    private boolean autoIndenting;
     private FTheme theme;
     private final List<Token> idents;
     private final List<Pair<Integer, Integer>> ide;
@@ -26,6 +27,7 @@ public class FDocument extends DefaultStyledDocument {
         theme = FTheme.getDefaultTheme(def);
         idents = new ArrayList<>();
         ide = new ArrayList<>();
+        highlighting = false;
         try {
             text = getText(0, getLength());
         } catch (BadLocationException e) {
@@ -47,6 +49,14 @@ public class FDocument extends DefaultStyledDocument {
     }
 
     public FTheme getTheme() { return theme; }
+
+    public void setAutoIndentingEnabled(boolean enabled) {
+        autoIndenting = enabled;
+    }
+
+    public boolean getAutoIndentingEnabled() {
+        return autoIndenting;
+    }
 
     public void setHighlightingEnabled(boolean highlighting) {
         this.highlighting = highlighting;
@@ -70,7 +80,7 @@ public class FDocument extends DefaultStyledDocument {
 
     @Override
     public void insertString(int offs, String str, AttributeSet a) throws BadLocationException {
-        if (str.equals("}")) {
+        if (autoIndenting && str.equals("}")) {
             if (isOnlyWhitespacesOnLine(offs)) {
                 synchronized (this) {
                     offs = fixIndentation(offs, true);

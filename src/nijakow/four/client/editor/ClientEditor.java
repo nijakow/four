@@ -132,9 +132,11 @@ public class ClientEditor extends JFrame implements ActionListener {
 		m.addActionForKeyStroke(Commands.Keys.ENTER, new AbstractAction() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				String tabs;
-				synchronized (doc) {
-					tabs = StringHelper.generateFilledString(' ', doc.getIndentationLevel(pane.getCaretPosition()) * 4);
+				String tabs = "";
+				if (PreferencesHelper.getInstance().getAutoIndenting()) {
+					synchronized (doc) {
+						tabs = StringHelper.generateFilledString(' ', doc.getIndentationLevel(pane.getCaretPosition()) * 4);
+					}
 				}
 				try {
 					doc.insertString(pane.getCaretPosition(), "\n" + tabs, null);
@@ -258,26 +260,36 @@ public class ClientEditor extends JFrame implements ActionListener {
 
 	private JDialog createSettingsWindow() {
 		JDialog settingsWindow = new JDialog(this, "Editor: Settings", true);
-		settingsWindow.getContentPane().setLayout(new GridLayout(2, 1));
+		settingsWindow.getContentPane().setLayout(new GridLayout(3, 1));
 		JCheckBox alwaysHighlight = new JCheckBox("Always enable syntax highlighting");
 		alwaysHighlight.addItemListener(event -> PreferencesHelper.getInstance().setEditorAlwaysHighlight(alwaysHighlight.isSelected()));
 		settingsWindow.getContentPane().add(alwaysHighlight);
 		JCheckBox lineBreaking = new JCheckBox("Automatic line breaking");
 		lineBreaking.addItemListener(event -> {
-			boolean  breaking = lineBreaking.isSelected();
+			boolean breaking = lineBreaking.isSelected();
 			toggleLineBreaking(breaking);
 			PreferencesHelper.getInstance().setEditorLineBreaking(breaking);
 		});
 		settingsWindow.getContentPane().add(lineBreaking);
+		JCheckBox autoIndent = new JCheckBox("Enable auto-indenting");
+		autoIndent.addItemListener(event -> {
+			boolean indent = autoIndent.isSelected();
+			doc.setAutoIndentingEnabled(indent);
+			PreferencesHelper.getInstance().setAutoIndenting(indent);
+		});
+		settingsWindow.getContentPane().add(autoIndent);
 		settingsWindow.addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowActivated(WindowEvent e) {
 				alwaysHighlight.setSelected(PreferencesHelper.getInstance().getEditorAlwaysHighlight());
+				autoIndent.setSelected(PreferencesHelper.getInstance().getAutoIndenting());
 				lineBreaking.setSelected(PreferencesHelper.getInstance().getEditorLineBreaking());
 				if (dark) {
 					settingsWindow.getContentPane().setBackground(Color.darkGray);
 					alwaysHighlight.setBackground(Color.darkGray);
 					alwaysHighlight.setForeground(Color.white);
+					autoIndent.setBackground(Color.darkGray);
+					autoIndent.setForeground(Color.white);
 					lineBreaking.setBackground(Color.darkGray);
 					lineBreaking.setForeground(Color.white);
 				}

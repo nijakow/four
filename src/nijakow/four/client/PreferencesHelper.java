@@ -73,6 +73,14 @@ public class PreferencesHelper {
 		return prefs.get(Key.UI_MANAGER_NAME, null);
 	}
 
+	public boolean getAutoIndenting() {
+		return prefs.getBoolean(Key.AUTO_INDENTING, true);
+	}
+
+	public void setAutoIndenting(boolean autoIndenting) {
+		prefs.putBoolean(Key.AUTO_INDENTING, autoIndenting);
+	}
+
 	public void setUIManagerName(String name) {
 		prefs.put(Key.UI_MANAGER_NAME, name);
 	}
@@ -154,6 +162,7 @@ public class PreferencesHelper {
 	}
 
 	public abstract static class Key {
+		public static final String AUTO_INDENTING    = "autoIndent";
 		public static final String DARK_MODE         = "darkMode";
 		public static final String EDITOR_WIDTH      = "editorWidth";
 		public static final String EDITOR_HEIGHT     = "editorHeight";
