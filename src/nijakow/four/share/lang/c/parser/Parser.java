@@ -15,6 +15,15 @@ import nijakow.four.share.util.Pair;
 public class Parser {
 	private final Tokenizer tokenizer;
 	private StreamPosition lastPos;
+	private boolean skipErrors = false;
+
+	public void enableErrorSkipping() {
+		this.skipErrors = true;
+	}
+
+	public boolean skipsErrors() {
+		return this.skipErrors;
+	}
 
 	private StreamPosition p() { return lastPos == null ? tokenizer.getPosition() : lastPos; }
 
@@ -360,7 +369,11 @@ public class Parser {
 				expect(TokenType.SEMICOLON);
 			} else if (check(TokenType.INHERITS)) {
 				StreamPosition pos = p();
-				defs.add(new ASTInheritanceDef(pos, ((Instance) expect(TokenType.CONSTANT).getPayload()).asString()));
+				Token constant = expect(TokenType.CONSTANT);
+				if (constant != null)
+					defs.add(new ASTInheritanceDef(pos, ((Instance) constant.getPayload()).asString()));
+				else
+					defs.add(new ASTInheritanceDef(pos, "undefined"));
 				expect(TokenType.SEMICOLON);
 			} /*else if (check(TokenType.STRUCT) || check(TokenType.CLASS)) {
 				StreamPosition pos = p();
@@ -441,11 +454,16 @@ public class Parser {
 	private Token expect(TokenType type) throws ParseException {
 		Token t = nextToken();
 		if (t.is(type)) return t;
+		else if (skipsErrors()) t.fail();
 		else throw new ParseException(t, "Expected " + type + ", got " + t.getType() + "!");
+		return null;
 	}
 	
 	private Key expectKey() throws ParseException {
-		return Key.get((String) expect(TokenType.IDENT).getPayload());
+		Token t = expect(TokenType.IDENT);
+		if (t == null)
+			return Key.get("undefined");
+		return Key.get((String) t.getPayload());
 	}
 	
 	public Parser(Tokenizer tokenizer) {
