@@ -69,6 +69,18 @@ public class FDocument extends DefaultStyledDocument {
     }
 
     @Override
+    public void insertString(int offs, String str, AttributeSet a) throws BadLocationException {
+        if (str.equals("}")) {
+            if (isOnlyWhitespacesOnLine(offs)) {
+                synchronized (this) {
+                    offs = fixIndentation(offs, true);
+                }
+            }
+        }
+        super.insertString(offs, str, a);
+    }
+
+    @Override
     protected void insertUpdate(DefaultDocumentEvent chng, AttributeSet attr) {
         super.insertUpdate(chng, attr);
         try {

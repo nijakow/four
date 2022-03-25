@@ -143,21 +143,6 @@ public class ClientEditor extends JFrame implements ActionListener {
 				}
 			}
 		});
-		m.addActionForKeyStroke(KeyStroke.getKeyStroke(KeyEvent.VK_BRACERIGHT, KeyEvent.SHIFT_DOWN_MASK), new AbstractAction() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-					try {
-						int oldPos = pane.getCaretPosition();
-						if (doc.isOnlyWhitespacesOnLine(oldPos)) {
-							synchronized (doc) {
-								pane.setCaretPosition(doc.fixIndentation(oldPos, true));
-							}
-						}
-					} catch (BadLocationException ex) {
-						ex.printStackTrace();
-					}
-			}
-		});
 		m.addActionForKeyStroke(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), new AbstractAction() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
