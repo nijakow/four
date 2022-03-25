@@ -51,17 +51,13 @@ void cmd_edit_file__write(any id, string text)
 
 void cmd_edit_file(list argv)
 {
-    /*
-     * TODO: Check if the requested file can be edited by the current user.
-     *       Maybe also disable editing of special security files.
-     * - mhahnFr
-     */
     if (length(argv) <= 1)
         arg_error();
     else {
         for (int i = 1; i < length(argv); i++)
         {
             string path = resolve(pwd(), argv[i]);
+            touch(path);
             string content = cat(path);
             if (content == nil) {
                 file_not_found_error();
