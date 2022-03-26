@@ -80,11 +80,11 @@ public class FDocument extends DefaultStyledDocument {
 
     @Override
     public void insertString(int offs, String str, AttributeSet a) throws BadLocationException {
-        if (autoIndenting && str.equals("}")) {
-            if (isOnlyWhitespacesOnLine(offs)) {
-                synchronized (this) {
-                    offs = fixIndentation(offs, true);
-                }
+        if (autoIndenting) {
+            if (str.equals("}") && isOnlyWhitespacesOnLine(offs)) {
+                offs = fixIndentation(offs, true);
+            } else if (str.equals("\n")) {
+                str += StringHelper.generateFilledString(' ', getIndentationLevel(offs) * 4);
             }
         }
         super.insertString(offs, str, a);
@@ -138,7 +138,7 @@ public class FDocument extends DefaultStyledDocument {
         return i + newIndentation * 4;
     }
 
-    public int getIndentationLevel(int indentationPosition) {
+    public synchronized int getIndentationLevel(int indentationPosition) {
         int indent = 0;
         for (Pair<Integer, Integer> p : ide) {
             if (indentationPosition <= p.getFirst())
@@ -174,11 +174,11 @@ public class FDocument extends DefaultStyledDocument {
                 lastEnd = token.getEndPosition().getIndex();
                 if (token.getType() == TokenType.IDENT) idents.add(token);
             } while (token.getType() != TokenType.EOF);
+            ASTClass c = new Parser(new Tokenizer(new StringCharStream("", text))).parseFile();
             synchronized (this) {
                 ide.clear();
                 ide.addAll(ideLocal);
             }
-            ASTClass c = new Parser(new Tokenizer(new StringCharStream("", text))).parseFile();
         } catch (ParseException e) {
             Style s = theme.getErrorStyle();
             Token t = e.getToken();

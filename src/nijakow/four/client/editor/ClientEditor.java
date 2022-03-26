@@ -20,7 +20,7 @@ public class ClientEditor extends JFrame implements ActionListener {
 	private final JCheckBox highlight;
 	private final JScrollPane scrollPane;
 	private final JTextPane pane;
-	private final FSuggestionMenu popup; // TODO Write subclass! - mhahnFr
+	private final FSuggestionMenu popup;
 	private final FDocument doc;
 	private final ClientConnection connection;
 	private final String id;
@@ -37,6 +37,7 @@ public class ClientEditor extends JFrame implements ActionListener {
 		connection = c;
 		pane = new JTextPane();
 		doc = new FDocument();
+		doc.setAutoIndentingEnabled(PreferencesHelper.getInstance().getAutoIndenting());
 		pane.setDocument(doc);
 		pane.setText(content);
 		pane.setFont(new Font("Monospaced", Font.PLAIN, 14));
@@ -124,22 +125,6 @@ public class ClientEditor extends JFrame implements ActionListener {
 					for (i = pane.getCaretPosition(); !pane.getText(i, 1).equals("\n"); i++);
 					pane.setCaretPosition(i);
 					if (popup.isVisible()) popup.setVisible(false);
-				} catch (BadLocationException ex) {
-					ex.printStackTrace();
-				}
-			}
-		});
-		m.addActionForKeyStroke(Commands.Keys.ENTER, new AbstractAction() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				String tabs = "";
-				if (PreferencesHelper.getInstance().getAutoIndenting()) {
-					synchronized (doc) {
-						tabs = StringHelper.generateFilledString(' ', doc.getIndentationLevel(pane.getCaretPosition()) * 4);
-					}
-				}
-				try {
-					doc.insertString(pane.getCaretPosition(), "\n" + tabs, null);
 				} catch (BadLocationException ex) {
 					ex.printStackTrace();
 				}
