@@ -177,7 +177,6 @@ public class FDocument extends DefaultStyledDocument {
             idents.clear();
             List<Pair<Integer, Integer>> ideLocal = new ArrayList<>();
             Tokenizer tokenizer = new Tokenizer(new StringCharStream("", text));
-            int lastEnd = 0;
             Token token;
             int depth = 0;
             do {
@@ -193,9 +192,7 @@ public class FDocument extends DefaultStyledDocument {
                 if (style == null) style = def;
                 int pos = token.getPosition().getIndex();
                 setCharacterAttributes(pos, token.getEndPosition().getIndex() - pos, style, true);
-                setCharacterAttributes(lastEnd, pos - lastEnd, theme.getStyle(null), true);
                 // TODO Replace by the highlighter interface! - mhahnFr
-                lastEnd = token.getEndPosition().getIndex();
                 if (token.getType() == TokenType.IDENT) idents.add(token);
             } while (token.getType() != TokenType.EOF);
             ASTClass c = new Parser(new Tokenizer(new StringCharStream("", text))).parseFile();

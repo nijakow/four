@@ -90,7 +90,7 @@ public class FTheme {
         s = context.addStyle(null, defaultStyle);
         StyleConstants.setForeground(s, Color.gray);
         StyleConstants.setItalic(s, true);
-        def.styles.put(null, s);
+        def.styles.put(TokenType.COMMENT, s);
         return def;
     }
 
