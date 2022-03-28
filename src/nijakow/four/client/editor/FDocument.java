@@ -85,7 +85,13 @@ public class FDocument extends DefaultStyledDocument {
                 offs = fixIndentation(offs, true);
             } else if (str.equals("\n")) {
                 str += StringHelper.generateFilledString(' ', getIndentationLevel(offs) * 4);
+            } else if (str.equals("\t") && isOnlyWhitespacesOnLine(offs)) {
+                fixIndentation(offs, false);
+                return;
             }
+        }
+        if (str.equals("\t")) {
+            str = "    ";
         }
         super.insertString(offs, str, a);
     }
@@ -114,23 +120,29 @@ public class FDocument extends DefaultStyledDocument {
         return ret;
     }
 
+    public int getLineEnd(int position) {
+        int i;
+        for (i = position; i < text.length() && text.charAt(i) != '\n'; i++);
+        return i;
+    }
+
+    public int getLineStart(int position) {
+        int i;
+        for (i = position - 1; i >= 0 && text.charAt(i) != '\n'; i--);
+        return i + 1;
+    }
+
     public boolean isOnlyWhitespacesOnLine(int endPosition) {
-        char c;
-        for (int i = endPosition - 1; i >= 0 && (c = text.charAt(i)) != '\n'; i--) {
-            if (!Character.isWhitespace(c)) {
-                return false;
-            }
+        for (int start = getLineStart(endPosition), i = endPosition - 1; i >= start; i--) {
+            if (!Character.isWhitespace(text.charAt(i))) return false;
         }
         return true;
     }
 
     public int fixIndentation(int position, boolean isClosingBrace) throws BadLocationException {
-        int i;
-        int j;
-        for (i = position - 1; i >= 0 && text.charAt(i) != '\n'; i--);
-        i++;
+        int j, i = getLineStart(position);
         for (j = i; j < text.length() && Character.isWhitespace(text.charAt(j)) && text.charAt(j) != '\n'; j++);
-        getContent().remove(i, j - i);
+        remove(i, j - i);
         int newIndentation = getIndentationLevel(i);
         if (isClosingBrace) newIndentation--;
         if (newIndentation < 0) newIndentation = 0;
