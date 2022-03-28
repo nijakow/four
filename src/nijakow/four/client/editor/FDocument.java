@@ -97,6 +97,18 @@ public class FDocument extends DefaultStyledDocument {
     }
 
     @Override
+    public void remove(int offs, int len) throws BadLocationException {
+        int lineStart = getLineStart(offs);
+        int lineEnd = getLineEnd(offs);
+        if (isOnlyWhitespacesOnLine(lineEnd)) {
+            lineStart = lineStart == 0 ? 0 : lineStart - 1;
+            len = lineEnd - lineStart;
+            offs = lineStart;
+        }
+        super.remove(offs, len);
+    }
+
+    @Override
     protected void insertUpdate(DefaultDocumentEvent chng, AttributeSet attr) {
         super.insertUpdate(chng, attr);
         try {

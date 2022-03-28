@@ -118,27 +118,14 @@ public class ClientEditor extends JFrame implements ActionListener {
 		m.addActionForKeyStroke(KeyStroke.getKeyStroke(KeyEvent.VK_HOME, 0), new AbstractAction() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				try {
-					int i;
-					for (i = pane.getCaretPosition() - 1; i >= 0 && !pane.getText(i, 1).equals("\n"); i--);
-					pane.setCaretPosition(i + 1);
-					if (popup.isVisible()) popup.setVisible(false);
-				} catch (BadLocationException ex) {
-					ex.printStackTrace();
-				}
+				pane.setCaretPosition(doc.getLineStart(pane.getCaretPosition()));
 			}
 		});
 		m.addActionForKeyStroke(KeyStroke.getKeyStroke(KeyEvent.VK_END, 0), new AbstractAction() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				try {
-					int i;
-					for (i = pane.getCaretPosition(); !pane.getText(i, 1).equals("\n"); i++);
-					pane.setCaretPosition(i);
-					if (popup.isVisible()) popup.setVisible(false);
-				} catch (BadLocationException ex) {
-					ex.printStackTrace();
-				}
+				pane.setCaretPosition(doc.getLineEnd(pane.getCaretPosition()));
+				if (popup.isVisible()) popup.setVisible(false);
 			}
 		});
 		m.addActionForKeyStroke(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), new AbstractAction() {
