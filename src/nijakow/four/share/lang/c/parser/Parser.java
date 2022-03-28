@@ -28,7 +28,7 @@ public class Parser {
 	private StreamPosition p() { return lastPos == null ? tokenizer.getPosition() : lastPos; }
 
 	private void error(String message) throws ParseException {
-		throw new ParseException(tokenizer.getPosition(), message);
+		throw new ParseException(nextToken(), message);
 	}
 	
 	private Type parseCoreType() throws ParseException {
@@ -160,6 +160,7 @@ public class Parser {
 		} else if (checkKeep(TokenType.IDENT)) {
 			return new ASTIdent(p(), Key.get((String) nextToken().getPayload()));
 		} else {
+			error("Expected an expression!");
 			return null;
 		}
 	}
