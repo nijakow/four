@@ -52,6 +52,7 @@ public class FDocument extends DefaultStyledDocument {
 
     public void setAutoIndentingEnabled(boolean enabled) {
         autoIndenting = enabled;
+        autoIndenting = false;
     }
 
     public boolean getAutoIndentingEnabled() {
