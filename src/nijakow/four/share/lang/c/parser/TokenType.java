@@ -1,7 +1,7 @@
 package nijakow.four.share.lang.c.parser;
 
 public enum TokenType {
-	EOF, C_DOC,
+	EOF, C_DOC, COMMENT,
 	IDENT, CONSTANT, OPERATOR,
 	LPAREN, RPAREN,
 	LBRACK, RBRACK,

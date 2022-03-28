@@ -9,11 +9,14 @@ import nijakow.four.server.runtime.objects.standard.FString;
 public class Tokenizer {	
 	private final CharStream stream;
 	private final Stack<Token> pushbacks;
+	private boolean commentTokensEnabled = false;
 
 	public StreamPosition getPosition() {
 		return stream.getPosition();
 	}
-	
+
+	public void enableCommentTokens() { this.commentTokensEnabled = true; }
+
 	private boolean isSpecial(int c) {
 		return !(Character.isAlphabetic(c) || Character.isDigit(c) || c == '_' || c == '$');
 	}
@@ -108,8 +111,11 @@ public class Tokenizer {
 			final String cdoc = parseCDoc();
 			return new Token(this, pos, getPosition(), TokenType.C_DOC, cdoc);
 		} else if (peeks("/*")) {
-			parseBlockComment();
-			return nextToken();
+			final String text = parseBlockComment();
+			if (this.commentTokensEnabled)
+				return new Token(this, pos, getPosition(), TokenType.COMMENT, text);
+			else
+				return nextToken();
 		} else if (peeks("(")) return new Token(this, pos, getPosition(), TokenType.LPAREN);
 		else if (peeks(")")) return new Token(this, pos, getPosition(), TokenType.RPAREN);
 		else if (peeks("[")) return new Token(this, pos, getPosition(), TokenType.LBRACK);
