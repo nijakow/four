@@ -100,6 +100,17 @@ public class ClientEditor extends JFrame implements ActionListener {
 		allButtons.add(highlight);
 		getContentPane().add(allButtons, BorderLayout.SOUTH);
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+		addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowActivated(WindowEvent e) {
+				setKeyStrokes();
+			}
+
+			@Override
+			public void windowDeactivated(WindowEvent e) {
+				popup.setVisible(false);
+			}
+		});
 	}
 
 	private void setKeyStrokes() {
