@@ -206,7 +206,7 @@ public class ClientEditor extends JFrame implements ActionListener {
 		doc.setHighlightingEnabled(true);
 	}
 
-	private  void stopSyntaxHighlighting() {
+	private void stopSyntaxHighlighting() {
 		doc.setHighlightingEnabled(false);
 	}
 
