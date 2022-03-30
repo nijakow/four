@@ -5,7 +5,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.lang.reflect.Array;
+import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.Base64;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.Executors;
@@ -533,6 +540,60 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 			current = getStyleByName(arg);
 	}
 
+	private void showError(String text) {
+		EventQueue.invokeLater(() -> {
+			try {
+				term.insertString(term.getLength(), text, term.getStyle(Commands.Styles.STYLE_ERROR));
+			} catch (BadLocationException e1) {
+				e1.printStackTrace();
+			}
+		});
+	}
+
+	private boolean interpretsCommand(String command) {
+		String[] args = command.trim().split(" ");
+		if (args[0].equals(Commands.UPLOAD)) {
+			if (args.length == 1 || (args.length == 2 && args[1].isEmpty())) {
+				showError("Argument error!\n");
+				return true;
+			}
+			final JFileChooser chooser = new JFileChooser();
+			chooser.setDialogType(JFileChooser.OPEN_DIALOG);
+			chooser.setMultiSelectionEnabled(false);
+			chooser.setDragEnabled(true);
+			chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+			if (chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+				queue.schedule(() -> {
+					ArrayList<Byte> bs = new ArrayList<>();
+					try (BufferedInputStream is = new BufferedInputStream(new FileInputStream(chooser.getSelectedFile()))) {
+						int b;
+						while ((b = is.read()) != -1) {
+							bs.add((byte) b);
+						}
+					} catch (IOException e) {
+						showError("Could not read file!\n");
+						return;
+					}
+					byte[] bts = new byte[bs.size()];
+					for (int i = 0; i < bs.size(); i++) {
+						bts[i] = bs.get(i);
+					}
+					try {
+						connection.send(Commands.Codes.SPECIAL_START + Commands.Codes.SPECIAL_UPLOAD);
+						connection.send(args[1].isEmpty() ? args[2] : args[1]);
+						connection.send(Commands.Codes.SPECIAL_RAW);
+						connection.send(Base64.getEncoder().encodeToString(bts));
+						connection.send("" + Commands.Codes.SPECIAL_END);
+					} catch (IOException e) {
+						showError("*** Could not send message --- see console for more details! ***\n");
+					}
+				}, 0, TimeUnit.NANOSECONDS);
+			}
+			return true;
+		}
+		return false;
+	}
+
 	private void openEditor(String id, String path, String content) {
 		ClientEditor editor = new ClientEditor(connection, id, path, content);
 		editor.addWindowListener(new WindowAdapter() {
@@ -650,19 +711,15 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 					e1.printStackTrace();
 				}
 				tmp.setText("");
-				queue.schedule(() -> {
-					try {
-						connection.send(text);
-					} catch (Exception ex) {
-						EventQueue.invokeLater(() -> {
-							try {
-								term.insertString(term.getLength(), "*** Could not send message --- see console for more details! ***\n", term.getStyle(Commands.Styles.STYLE_ERROR));
-							} catch (BadLocationException e1) {
-								e1.printStackTrace();
-							}
-						});
-					}
-				}, 0, TimeUnit.NANOSECONDS);
+				if (!interpretsCommand(text)) {
+					queue.schedule(() -> {
+						try {
+							connection.send(text);
+						} catch (Exception ex) {
+							showError("*** Could not send message --- see console for more details! ***\n");
+						}
+					}, 0, TimeUnit.NANOSECONDS);
+				}
 				break;
 		}
 	}
