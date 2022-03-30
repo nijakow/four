@@ -178,6 +178,7 @@ public class FDocument extends DefaultStyledDocument {
             idents.clear();
             List<Pair<Integer, Integer>> ideLocal = new ArrayList<>();
             Tokenizer tokenizer = new Tokenizer(new StringCharStream("", text));
+            tokenizer.enableCommentTokens();
             Token token;
             int depth = 0;
             do {
