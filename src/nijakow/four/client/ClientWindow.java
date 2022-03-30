@@ -620,7 +620,7 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 				prompt.setVisible(true);
 				reconnectButton.setVisible(false);
 				prompt.requestFocusInWindow();
-				reconnectorHandler = queue.scheduleWithFixedDelay(reconnector, 0, 5, TimeUnit.SECONDS);
+				reconnectorHandler = queue.scheduleWithFixedDelay(reconnector, 0, 2500, TimeUnit.MILLISECONDS);
 				labelTimer.restart();
 				break;
 
