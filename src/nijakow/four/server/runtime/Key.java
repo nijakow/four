@@ -860,7 +860,11 @@ public class Key {
 			@Override
 			public void run(Fiber fiber, Instance self, Instance[] args) throws CastException {
 				final String text = args[0].asFString().asString();
-				fiber.setAccu(new FString(new String(Base64.getDecoder().decode(text), StandardCharsets.UTF_8)));
+				try {
+					fiber.setAccu(new FString(new String(Base64.getDecoder().decode(text), StandardCharsets.UTF_8)));
+				} catch (IllegalArgumentException e) {
+					fiber.setAccu(Instance.getNil());
+				}
 			}
 		};
 	}
