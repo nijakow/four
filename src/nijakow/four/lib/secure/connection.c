@@ -1,4 +1,6 @@
 inherits "/secure/object.c";
+inherits "/std/lib/base64/encode.c";
+inherits "/std/lib/base64/decode.c";
 
 use $write;
 use $close;
@@ -71,25 +73,36 @@ void mode_underscore() { write("\{UNDERSCORED\}"); }
 
 void process_escaped(string ln)
 {
-    int index = 0;
-    if (ln[index] == '$') {
-        index++;
-        int sepIndex = indexof(ln, ':');
-        string id;
-        string content = nil;
-        if (sepIndex < 0)
-            id = substr(ln, index, strlen(ln));
-        else {
-            id = substr(ln, index, sepIndex);
-            content = substr(ln, sepIndex + 1, strlen(ln));
-        }
-        any cb = mapped_callbacks[id];
+    string* tokens = string_split_on_char(ln, ':');
+    if (length(tokens) == 0)
+        return;
+    for (int i = 1; i < length(tokens); i++)
+        tokens[i] = base64_decode_string(tokens[i]);
+    if (tokens[0] == "editor/saved" && length(tokens) == 3) {
+        string key = tokens[1];
+        string content = tokens[2];
+        func cb = mapped_callbacks[key];
         if (type(cb) == "function") {
-            call(mapped_callbacks[id], id, content);
+            call(mapped_callbacks[key], key, content);
         } else {
             log("The system can't run an escaped event handler!\n");
             write("\n\{RED\}WARNING: The system can't run an escaped event handler!\{RESET\}\n");
         }
+    } else if (tokens[0] == "editor/cancelled" && length(tokens) == 2) {
+        string key = tokens[1];
+        func cb = mapped_callbacks[key];
+        if (type(cb) == "function") {
+            call(mapped_callbacks[key], key, nil);
+        } else {
+            log("The system can't run an escaped event handler!\n");
+            write("\n\{RED\}WARNING: The system can't run an escaped event handler!\{RESET\}\n");
+        }
+    } else if (tokens[0] == "file/upload" && length(tokens) == 2) {
+        string text = tokens[1];
+        log("Received upload command!\n");
+        // TODO
+    } else {
+        log("Undefined escape format:", tokens[0], "!\n");
     }
 }
 
