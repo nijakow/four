@@ -16,27 +16,23 @@ private string escline;
 private int id_counter;
 private list close_cbs;
 
-void prompt(func cb, ...)
+void prompt(func cb, string text)
 {
     callback = cb;
-    write("\{.");
-    write(...);
-    write("\}");
+    write("\{prompt/plain:", base64_encode_string(text), "\}");
 }
 
-void password(func cb, ...)
+void password(func cb, string text)
 {
     callback = cb;
-    write("\{?");
-    write(...);
-    write("\}");
+    write("\{prompt/password:", base64_encode_string(text), "\}");
 }
 
 any edit(func cb, string title, string text)
 {
     string key = itoa(id_counter++);
     mapped_callbacks[key] = cb;
-    write("\{$", key, ":", title, ":", text, "\}");
+    write("\{editor/edit:", base64_encode_string(key), ":", base64_encode_string(title), ":", base64_encode_string(text), "\}");
     return key;
 }
 
@@ -49,7 +45,9 @@ void write(...)
 {
     while (va_count)
     {
-        $write(port, va_next);
+        any txt = va_next;
+        $log(txt);
+        $write(port, txt);
     }
 }
 

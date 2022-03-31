@@ -8,7 +8,7 @@ void examine(object the_object)
     if (img == nil) {
         printf("There is no image available!\n");
     } else {
-        printf("\{^%s\}\n", img);
+        printf("\{media/image:%s\}\n", img);
     }
     exit();
 }
