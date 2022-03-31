@@ -50,9 +50,7 @@ void write(...)
 {
     while (va_count)
     {
-        any txt = va_next;
-        $log(txt);
-        $write(port, txt);
+        $write(port, va_next);
     }
 }
 
