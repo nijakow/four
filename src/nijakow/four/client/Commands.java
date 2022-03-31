@@ -18,12 +18,14 @@ public abstract class Commands {
 	}
 
 	public abstract static class Codes {
-		public static final String SPECIAL_EDIT   = "$";
-		public static final String SPECIAL_IMG    = "^";
+		public static final String SPECIAL_CLOSED = "editor/cancelled";
+		public static final String SPECIAL_EDIT   = "editor/edit";
+		public static final String SPECIAL_IMG    = "media/image";
 		public static final String SPECIAL_RAW    = ":";
-		public static final String SPECIAL_PROMPT = ".";
-		public static final String SPECIAL_PWD    = "?";
-		public static final String SPECIAL_UPLOAD = "To be set...";
+		public static final String SPECIAL_SAVED  = "editor/saved";
+		public static final String SPECIAL_PROMPT = "prompt/plain";
+		public static final String SPECIAL_PWD    = "prompt/password";
+		public static final String SPECIAL_UPLOAD = "file/upload";
 		public static final char SPECIAL_START    = 0x02;
 		public static final char SPECIAL_END      = 0x03;
 	}

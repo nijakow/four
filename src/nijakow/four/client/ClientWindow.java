@@ -11,6 +11,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.lang.reflect.Array;
 import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.LinkedList;
@@ -24,8 +25,6 @@ import javax.swing.*;
 import javax.swing.border.EtchedBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import javax.swing.event.PopupMenuEvent;
-import javax.swing.event.PopupMenuListener;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
@@ -505,26 +504,26 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 			pwf.setVisible(true);
 			prompt.setVisible(false);
 			pwf.requestFocusInWindow();
-			if (arg.length() > Commands.Codes.SPECIAL_PROMPT.length() + 1)
-				promptText.setText(arg.substring(Commands.Codes.SPECIAL_PWD.length()));
+			if (arg.length() > Commands.Codes.SPECIAL_PWD.length() + 1)
+				promptText.setText(new String(Base64.getDecoder().decode(arg.substring(arg.indexOf(Commands.Codes.SPECIAL_RAW) + 1)), StandardCharsets.UTF_8));
 			else
 				promptText.setText("");
 			validate();
 		} else if (arg.startsWith(Commands.Codes.SPECIAL_PROMPT)) {
 			if (arg.length() > Commands.Codes.SPECIAL_PROMPT.length() + 1)
-				promptText.setText(arg.substring(Commands.Codes.SPECIAL_PWD.length()));
+				promptText.setText(new String(Base64.getDecoder().decode(arg.substring(arg.indexOf(Commands.Codes.SPECIAL_RAW) + 1)), StandardCharsets.UTF_8));
 			else
 				promptText.setText("");
 		} else if (arg.startsWith(Commands.Codes.SPECIAL_EDIT)) {
-			String splitter = arg.substring(Commands.Codes.SPECIAL_EDIT.length());
+			String splitter = arg.substring(arg.indexOf(Commands.Codes.SPECIAL_RAW) + 1);
 			int i0 = splitter.indexOf(Commands.Codes.SPECIAL_RAW);
 			if (i0 < 0) return;
-			String id = splitter.substring(0, i0);
+			String id = new String(Base64.getDecoder().decode(splitter.substring(0, i0)), StandardCharsets.UTF_8);
 			splitter = splitter.substring(i0 + 1);
 			int i1 = splitter.indexOf(Commands.Codes.SPECIAL_RAW);
 			if (i1 < 0) return;
-			String title = splitter.substring(0, i1);
-			splitter = splitter.substring(i1 + 1);
+			String title = new String(Base64.getDecoder().decode(splitter.substring(0, i1)), StandardCharsets.UTF_8);
+			splitter = new String(Base64.getDecoder().decode(splitter.substring(i1 + 1)), StandardCharsets.UTF_8);
 			openEditor(id, title, splitter);
 		} else if (arg.startsWith(Commands.Codes.SPECIAL_IMG)) {
 			try {
@@ -579,8 +578,9 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 						bts[i] = bs.get(i);
 					}
 					try {
-						connection.send(Commands.Codes.SPECIAL_START + Commands.Codes.SPECIAL_UPLOAD);
-						connection.send(args[1].isEmpty() ? args[2] : args[1]);
+						connection.send(Commands.Codes.SPECIAL_START + Commands.Codes.SPECIAL_UPLOAD + Commands.Codes.SPECIAL_RAW);
+						// TODO Send random ID
+						connection.send(Base64.getEncoder().encodeToString((args[1].isEmpty() ? args[2] : args[1]).getBytes(StandardCharsets.UTF_8)));
 						connection.send(Commands.Codes.SPECIAL_RAW);
 						connection.send(Base64.getEncoder().encodeToString(bts));
 						connection.send("" + Commands.Codes.SPECIAL_END);

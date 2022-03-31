@@ -6,6 +6,8 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.concurrent.ExecutionException;
 
 public class ImageLoader extends SwingWorker<ImageIcon, Object> {
@@ -27,7 +29,7 @@ public class ImageLoader extends SwingWorker<ImageIcon, Object> {
     protected ImageIcon doInBackground() {
         String splitter = argument;
         if (argument.startsWith(Commands.Codes.SPECIAL_IMG))
-            splitter = argument.substring(Commands.Codes.SPECIAL_IMG.length());
+            splitter = new String(Base64.getDecoder().decode(argument.substring(argument.indexOf(Commands.Codes.SPECIAL_RAW) + 1)), StandardCharsets.UTF_8);
         int cross = splitter.indexOf('x');
         int firstComma = splitter.indexOf(',');
         int width = -1, height = -1;

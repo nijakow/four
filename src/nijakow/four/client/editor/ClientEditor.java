@@ -3,6 +3,8 @@ package nijakow.four.client.editor;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.concurrent.*;
 
 import javax.swing.*;
@@ -310,11 +312,9 @@ public class ClientEditor extends JFrame implements ActionListener {
 		// TODO filter escape characters
 		queue.execute(() -> {
 			try {
-				connection.send(Commands.Codes.SPECIAL_START + Commands.Codes.SPECIAL_EDIT + id);
-				if (newPath != null)
-					connection.send(Commands.Codes.SPECIAL_RAW + newPath);
-				if (save)
-					connection.send(Commands.Codes.SPECIAL_RAW + pane.getText());
+				connection.send(Commands.Codes.SPECIAL_START + "");
+				connection.send((save ? Commands.Codes.SPECIAL_SAVED : Commands.Codes.SPECIAL_CLOSED) + Commands.Codes.SPECIAL_RAW + Base64.getEncoder().encodeToString(id.getBytes(StandardCharsets.UTF_8)));
+				if (save) connection.send(Commands.Codes.SPECIAL_RAW + Base64.getEncoder().encodeToString((Commands.Codes.SPECIAL_RAW + pane.getText()).getBytes(StandardCharsets.UTF_8)));
 				connection.send("" + Commands.Codes.SPECIAL_END);
 			} catch (IOException e) {
 				System.err.println("Could not send message!");
