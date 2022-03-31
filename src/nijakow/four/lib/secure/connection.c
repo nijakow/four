@@ -15,6 +15,7 @@ private string line;
 private string escline;
 private int id_counter;
 private list close_cbs;
+private string last_uploaded_file;
 
 void prompt(func cb, string text)
 {
@@ -71,6 +72,7 @@ void mode_italic()     { write("\{ITALIC\}"); }
 void mode_bold()       { write("\{BOLD\}"); }
 void mode_underscore() { write("\{UNDERSCORED\}"); }
 
+string query_last_uploaded_file() { return this.last_uploaded_file; }
 
 void process_escaped(string ln)
 {
@@ -98,10 +100,10 @@ void process_escaped(string ln)
             log("The system can't run an escaped event handler!\n");
             write("\n\{RED\}WARNING: The system can't run an escaped event handler!\{RESET\}\n");
         }
-    } else if (tokens[0] == "file/upload" && length(tokens) == 2) {
-        string text = tokens[1];
-        log("Received upload command!\n");
-        // TODO
+    } else if (tokens[0] == "file/upload" && length(tokens) == 3) {
+        string key = tokens[1];
+        string text = tokens[2];
+        this.last_uploaded_file = text;
     } else {
         log("Undefined escape format:", tokens[0], "!\n");
     }
@@ -183,6 +185,7 @@ void create(any the_port)
 	mapped_callbacks = [];
 	id_counter = 0;
 	close_cbs = {};
+	last_uploaded_file = nil;
 	$on_receive(port, this::receive);
 	$on_disconnect(port, this::handle_disconnect);
 }
