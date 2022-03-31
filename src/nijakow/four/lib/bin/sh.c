@@ -57,7 +57,10 @@ void cmd_edit_file(list argv)
         for (int i = 1; i < length(argv); i++)
         {
             string path = resolve(pwd(), argv[i]);
-            touch(path);
+            if (!touch(path)) {
+                file_not_found_error();
+                continue;
+            }
             string content = cat(path);
             if (content == nil) {
                 file_not_found_error();
