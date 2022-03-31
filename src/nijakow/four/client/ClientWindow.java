@@ -12,9 +12,7 @@ import java.io.IOException;
 import java.lang.reflect.Array;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.LinkedList;
+import java.util.*;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -22,6 +20,7 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 import javax.swing.*;
+import javax.swing.Timer;
 import javax.swing.border.EtchedBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -550,12 +549,8 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 	}
 
 	private boolean interpretsCommand(String command) {
-		String[] args = command.trim().split(" ");
-		if (args[0].equals(Commands.UPLOAD)) {
-			if (args.length == 1 || (args.length == 2 && args[1].isEmpty())) {
-				showError("Argument error!\n");
-				return true;
-			}
+		command = command.trim();
+		if (command.equals(Commands.UPLOAD)) {
 			final JFileChooser chooser = new JFileChooser();
 			chooser.setDialogType(JFileChooser.OPEN_DIALOG);
 			chooser.setMultiSelectionEnabled(false);
@@ -579,8 +574,15 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 					}
 					try {
 						connection.send(Commands.Codes.SPECIAL_START + Commands.Codes.SPECIAL_UPLOAD + Commands.Codes.SPECIAL_RAW);
-						// TODO Send random ID
-						connection.send(Base64.getEncoder().encodeToString((args[1].isEmpty() ? args[2] : args[1]).getBytes(StandardCharsets.UTF_8)));
+						char[] array = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
+										'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
+										'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '-'};
+						Random r = new Random();
+						StringBuilder id = new StringBuilder();
+						for (int i = 0; i < 16; i++) {
+							id.append(array[r.nextInt(array.length)]);
+						}
+						connection.send(Base64.getEncoder().encodeToString(id.toString().getBytes(StandardCharsets.UTF_8)));
 						connection.send(Commands.Codes.SPECIAL_RAW);
 						connection.send(Base64.getEncoder().encodeToString(bts));
 						connection.send("" + Commands.Codes.SPECIAL_END);
