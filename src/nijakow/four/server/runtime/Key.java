@@ -16,24 +16,25 @@ import nijakow.four.server.runtime.objects.collections.FList;
 import nijakow.four.server.runtime.objects.standard.FClosure;
 import nijakow.four.server.runtime.objects.standard.FInteger;
 import nijakow.four.server.runtime.objects.standard.FString;
+import nijakow.four.server.runtime.vm.code.BuiltinCode;
+import nijakow.four.server.runtime.vm.code.Code;
+import nijakow.four.server.runtime.vm.fiber.Fiber;
 import nijakow.four.server.users.Group;
 import nijakow.four.server.users.Identity;
 import nijakow.four.server.users.User;
-import nijakow.four.server.runtime.vm.fiber.Fiber;
-import nijakow.four.server.runtime.vm.code.BuiltinCode;
-import nijakow.four.server.runtime.vm.code.Code;
-import nijakow.four.server.storage.serialization.fs.BasicFSSerializer;
-import nijakow.four.server.storage.serialization.fs.deserializer.BasicFSDeserializer;
 import nijakow.four.share.lang.FourCompilerException;
 import nijakow.four.share.lang.base.CompilationException;
 import nijakow.four.share.lang.c.parser.ParseException;
 import nijakow.four.share.util.Pair;
 
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -844,6 +845,22 @@ public class Key {
 			public void run(Fiber fiber, Instance self, Instance[] args) throws CastException {
 				final int fd = args[0].asInt();
 				fiber.setAccu(FInteger.getBoolean(fiber.getSharedState().close(fd)));
+			}
+		};
+		get("$base64_encode").code = new BuiltinCode() {
+
+			@Override
+			public void run(Fiber fiber, Instance self, Instance[] args) throws CastException {
+				final String text = args[0].asFString().asString();
+				fiber.setAccu(new FString(Base64.getEncoder().encodeToString(text.getBytes(StandardCharsets.UTF_8))));
+			}
+		};
+		get("$base64_decode").code = new BuiltinCode() {
+
+			@Override
+			public void run(Fiber fiber, Instance self, Instance[] args) throws CastException {
+				final String text = args[0].asFString().asString();
+				fiber.setAccu(new FString(new String(Base64.getDecoder().decode(text), StandardCharsets.UTF_8)));
 			}
 		};
 	}
