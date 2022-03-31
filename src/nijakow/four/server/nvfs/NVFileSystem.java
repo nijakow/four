@@ -78,7 +78,10 @@ public class NVFileSystem implements FileParent, ISerializable {
 
     public TextFile touch(String file, Identity identity, User owner, Group gowner) {
         Pair<String, String> path = splitPath(file);
-        return resolve(path.getFirst()).asDirectory().touch(path.getSecond(), identity, owner, gowner);
+        File xfile = resolve(path.getFirst());
+        if (xfile == null || xfile.asDirectory() == null)
+            return null;
+        return xfile.asDirectory().touch(path.getSecond(), identity, owner, gowner);
     }
 
     public Directory mkdir(String file, Identity identity, User owner, Group gowner) {
