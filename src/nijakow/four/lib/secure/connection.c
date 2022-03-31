@@ -36,6 +36,11 @@ any edit(func cb, string title, string text)
     return key;
 }
 
+void image(string path, string format, string text)
+{
+    write("\{media/image:", base64_encode_string(format + "," + text + "," + path), "\}");
+}
+
 void set_fallback(func fb)
 {
     fallback = fb;

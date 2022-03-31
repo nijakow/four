@@ -9,7 +9,8 @@ use $adduser;
 
 void banner()
 {
-    printf("\{^64x64,nijakow,https://avatars.githubusercontent.com/u/79372954?v=4\}\{^64x64,mhahnFr,https://avatars.githubusercontent.com/u/83553794?v=4\}\n");
+    connection()->image("https://avatars.githubusercontent.com/u/79372954?v=4", "64x64", "nijakow");
+    connection()->image("https://avatars.githubusercontent.com/u/83553794?v=4", "64x64", "mhahnFr");
     printf("nijakow and mhahnFr present...\n");
     printf("\n");
     printf("\n");
