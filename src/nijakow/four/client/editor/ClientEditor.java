@@ -314,7 +314,7 @@ public class ClientEditor extends JFrame implements ActionListener {
 			try {
 				connection.send(Commands.Codes.SPECIAL_START + "");
 				connection.send((save ? Commands.Codes.SPECIAL_SAVED : Commands.Codes.SPECIAL_CLOSED) + Commands.Codes.SPECIAL_RAW + Base64.getEncoder().encodeToString(id.getBytes(StandardCharsets.UTF_8)));
-				if (save) connection.send(Commands.Codes.SPECIAL_RAW + Base64.getEncoder().encodeToString((Commands.Codes.SPECIAL_RAW + pane.getText()).getBytes(StandardCharsets.UTF_8)));
+				if (save) connection.send(Commands.Codes.SPECIAL_RAW + Base64.getEncoder().encodeToString(pane.getText().getBytes(StandardCharsets.UTF_8)));
 				connection.send("" + Commands.Codes.SPECIAL_END);
 			} catch (IOException e) {
 				System.err.println("Could not send message!");
