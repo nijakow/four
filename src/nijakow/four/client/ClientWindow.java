@@ -497,45 +497,64 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 		}
 		return ret;
 	}
-	
+
+	private void parsePromptPwd(String arg) {
+		pwf.setVisible(true);
+		prompt.setVisible(false);
+		pwf.requestFocusInWindow();
+		if (arg.length() > 0)
+			promptText.setText(new String(Base64.getDecoder().decode(arg), StandardCharsets.UTF_8));
+		else
+			promptText.setText("");
+	}
+
+	private void parsePrompt(String arg) {
+		if (arg.length() > 0)
+			promptText.setText(new String(Base64.getDecoder().decode(arg), StandardCharsets.UTF_8));
+		else
+			promptText.setText("");
+	}
+
+	private void parseEdit(String arg) {
+		int i0 = arg.indexOf(Commands.Codes.SPECIAL_RAW);
+		if (i0 < 0) return;
+		String id = new String(Base64.getDecoder().decode(arg.substring(0, i0)), StandardCharsets.UTF_8);
+		arg = arg.substring(i0 + 1);
+		int i1 = arg.indexOf(Commands.Codes.SPECIAL_RAW);
+		if (i1 < 0) return;
+		String title = new String(Base64.getDecoder().decode(arg.substring(0, i1)), StandardCharsets.UTF_8);
+		arg = new String(Base64.getDecoder().decode(arg.substring(i1 + 1)), StandardCharsets.UTF_8);
+		openEditor(id, title, arg);
+	}
+
+	private void parseImg(String arg) {
+		try {
+			term.insertString(term.getLength(), " ", current);
+		} catch (BadLocationException e) {
+			e.printStackTrace();
+		}
+		new ImageLoader(arg, term.getLength(), area,
+				pane.getHeight() - pane.getHorizontalScrollBar().getHeight() - 5,
+				pane.getWidth() - pane.getVerticalScrollBar().getWidth() - 5)
+				.execute();
+	}
+
+	private void parseUpload(String arg) {
+		// TODO
+	}
+
 	private void parseArgument(String arg) {
-		if (arg.startsWith(Commands.Codes.SPECIAL_PWD)) {
-			pwf.setVisible(true);
-			prompt.setVisible(false);
-			pwf.requestFocusInWindow();
-			if (arg.length() > Commands.Codes.SPECIAL_PWD.length() + 1)
-				promptText.setText(new String(Base64.getDecoder().decode(arg.substring(arg.indexOf(Commands.Codes.SPECIAL_RAW) + 1)), StandardCharsets.UTF_8));
-			else
-				promptText.setText("");
-			validate();
-		} else if (arg.startsWith(Commands.Codes.SPECIAL_PROMPT)) {
-			if (arg.length() > Commands.Codes.SPECIAL_PROMPT.length() + 1)
-				promptText.setText(new String(Base64.getDecoder().decode(arg.substring(arg.indexOf(Commands.Codes.SPECIAL_RAW) + 1)), StandardCharsets.UTF_8));
-			else
-				promptText.setText("");
-		} else if (arg.startsWith(Commands.Codes.SPECIAL_EDIT)) {
-			String splitter = arg.substring(arg.indexOf(Commands.Codes.SPECIAL_RAW) + 1);
-			int i0 = splitter.indexOf(Commands.Codes.SPECIAL_RAW);
-			if (i0 < 0) return;
-			String id = new String(Base64.getDecoder().decode(splitter.substring(0, i0)), StandardCharsets.UTF_8);
-			splitter = splitter.substring(i0 + 1);
-			int i1 = splitter.indexOf(Commands.Codes.SPECIAL_RAW);
-			if (i1 < 0) return;
-			String title = new String(Base64.getDecoder().decode(splitter.substring(0, i1)), StandardCharsets.UTF_8);
-			splitter = new String(Base64.getDecoder().decode(splitter.substring(i1 + 1)), StandardCharsets.UTF_8);
-			openEditor(id, title, splitter);
-		} else if (arg.startsWith(Commands.Codes.SPECIAL_IMG)) {
-			try {
-				term.insertString(term.getLength(), " ", current);
-			} catch (BadLocationException e) {
-				e.printStackTrace();
+		int first = arg.indexOf(Commands.Codes.SPECIAL_RAW);
+		if (first >= 0) {
+			switch (arg.substring(0, first)) {
+				case Commands.Codes.SPECIAL_PWD: parsePromptPwd(arg.substring(first + 1)); break;
+				case Commands.Codes.SPECIAL_PROMPT: parsePrompt(arg.substring(first + 1)); break;
+				case Commands.Codes.SPECIAL_EDIT: parseEdit(arg.substring(first + 1)); break;
+				case Commands.Codes.SPECIAL_IMG: parseImg(arg); break;
+				case Commands.Codes.SPECIAL_UPLOAD: parseUpload(arg.substring(first + 1)); break;
+				default: current = getStyleByName(arg); break;
 			}
-			new ImageLoader(arg, term.getLength(), area,
-					pane.getHeight() - pane.getHorizontalScrollBar().getHeight() - 5,
-					pane.getWidth() - pane.getVerticalScrollBar().getWidth() - 5)
-					.execute();
-		} else
-			current = getStyleByName(arg);
+		} else current = getStyleByName(arg);
 	}
 
 	private void showError(String text) {
