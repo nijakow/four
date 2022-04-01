@@ -42,6 +42,8 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 	private final JTextPane area;
 	private final StyledDocument term;
 	private final List<ClientEditor> editors;
+	private int[] ports;
+	private int portCounter;
 	private String buffer;
 	private JLabel connectionStatus;
 	private PreferencesHelper prefs;
@@ -54,7 +56,7 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 	private ScheduledFuture<?> reconnectorHandler;
 	private final ScheduledExecutorService queue;
 	private final Runnable reconnector = () -> {
-		connection = ClientConnection.getClientConnection(prefs.getHostname(), prefs.getPort());
+		connection = ClientConnection.getClientConnection(prefs.getHostname(), ports[portCounter]);
 		connection.setClientConnectionListener(this);
 		boolean wasConnected = false;
 		try {
@@ -71,11 +73,12 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 			connection.openStreams();
 		} catch (IOException ex) {
 			if (!wasConnected) {
+				int wasPort = ports[portCounter];
 				EventQueue.invokeLater(() -> {
 					if (bother) {
 						bother = false;
 						JOptionPane.showMessageDialog(this,
-								"Could not connect to \"" + prefs.getHostname() + "\" on port " + prefs.getPort(),
+								"Could not connect to \"" + prefs.getHostname() + "\" on port " + wasPort,
 								"Connection failed", JOptionPane.ERROR_MESSAGE);
 					}
 					labelTimer.stop();
@@ -83,6 +86,10 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 					connectionStatus.setText("Not connected!");
 					connectionStatus.setForeground(Color.red);
 				});
+				portCounter = portCounter == ports.length - 1 ? 0 : portCounter + 1;
+				if (wasPort != ports[portCounter]) {
+					bother = true;
+				}
 			}
 		}
 	};
@@ -93,7 +100,6 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 		final Font font = new Font("Monospaced", Font.PLAIN, 14);
 
 		// TODO macOS customization
-		// TODO iterate through ports
 		buffer = "";
 		bother = true;
 		prefs = PreferencesHelper.getInstance();
@@ -107,8 +113,10 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 			System.err.println("Could not set UI - will use default UI.");
 		}
 		queue = Executors.newScheduledThreadPool(2);
-		if (ports.length > 0)
+		this.ports = ports;
+		if (ports.length == 0)
 			prefs.setPort(ports[0]);
+		portCounter = 0;
 		getContentPane().setLayout(new BorderLayout());
 		JPanel south = new JPanel();
 		south.setOpaque(false);
