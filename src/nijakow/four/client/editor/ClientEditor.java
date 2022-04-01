@@ -68,9 +68,6 @@ public class ClientEditor extends JFrame implements ActionListener {
 		JButton save = new JButton("Save");
 		save.addActionListener(this);
 		save.setActionCommand(Commands.Actions.ACTION_EDIT_SAVE);
-		JButton saveAs = new JButton("Save as...");
-		saveAs.addActionListener(this);
-		saveAs.setActionCommand(Commands.Actions.ACTION_EDIT_SAVE_AS);
 		JButton close = new JButton("Close");
 		close.addActionListener(this);
 		close.setActionCommand(Commands.Actions.ACTION_EDIT_CLOSE);
@@ -90,9 +87,8 @@ public class ClientEditor extends JFrame implements ActionListener {
 		}
 		JPanel buttons = new JPanel();
 		buttons.setOpaque(false);
-		buttons.setLayout(new GridLayout(1, 4));
+		buttons.setLayout(new GridLayout(1, 3));
 		buttons.add(close);
-		buttons.add(saveAs);
 		buttons.add(save);
 		buttons.add(settings);
 		JPanel allButtons = new JPanel();
@@ -322,23 +318,10 @@ public class ClientEditor extends JFrame implements ActionListener {
 		});
 	}
 
-	private void saveAs() {
-		String input = JOptionPane.showInputDialog(this,
-				"Enter the new file name:",
-				"Save as...", JOptionPane.PLAIN_MESSAGE);
-		if (input != null) {
-			JOptionPane.showMessageDialog(this, "This feature might not be implemented yet!",
-					"Hic sunt dracones!", JOptionPane.WARNING_MESSAGE);
-			send(true, input);
-		}
-	}
-
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		switch (e.getActionCommand()) {
 			case Commands.Actions.ACTION_EDIT_SAVE: send(true, null); break;
-
-			case Commands.Actions.ACTION_EDIT_SAVE_AS: saveAs(); break;
 
 			case Commands.Actions.ACTION_SETTINGS: showSettingsWindow(); break;
 
