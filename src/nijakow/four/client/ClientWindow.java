@@ -5,10 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
+import java.io.*;
 import java.lang.reflect.Array;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
@@ -540,7 +537,27 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 	}
 
 	private void parseUpload(String arg) {
-		// TODO
+		final JFileChooser chooser = new JFileChooser();
+		chooser.setDialogType(JFileChooser.SAVE_DIALOG);
+		chooser.setMultiSelectionEnabled(false);
+		chooser.setDragEnabled(true);
+		chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+		if (chooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
+			final File selected = chooser.getSelectedFile();
+			if (selected.exists() && JOptionPane.showConfirmDialog(this, "File exists!\nOverwrite?",
+					"File exists", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) != JOptionPane.YES_OPTION) {
+				return;
+			}
+			queue.schedule(() -> {
+				try (BufferedOutputStream os = new BufferedOutputStream(new FileOutputStream(selected))) {
+					os.write(Base64.getDecoder().decode(arg));
+				} catch (IOException e) {
+					e.printStackTrace();
+					EventQueue.invokeLater(() -> JOptionPane.showMessageDialog(this,
+							"Could not save to file!", "Save to file", JOptionPane.ERROR_MESSAGE));
+				}
+			}, 0, TimeUnit.NANOSECONDS);
+		}
 	}
 
 	private void parseArgument(String arg) {
