@@ -1,4 +1,5 @@
 inherits "/std/app.c";
+inherits "/std/lib/fs/checks.c";
 
 private mapping mapped_pathnames;
 
@@ -57,7 +58,7 @@ void cmd_edit_file(list argv)
         for (int i = 1; i < length(argv); i++)
         {
             string path = resolve(pwd(), argv[i]);
-            if (!touch(path)) {
+            if (!exists(path) && !touch(path)) {
                 file_not_found_error();
                 continue;
             }
