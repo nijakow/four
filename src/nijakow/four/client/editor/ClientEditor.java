@@ -15,7 +15,6 @@ import javax.swing.text.*;
 import nijakow.four.client.Commands;
 import nijakow.four.client.PreferencesHelper;
 import nijakow.four.client.net.ClientConnection;
-import nijakow.four.client.utils.StringHelper;
 
 public class ClientEditor extends JFrame implements ActionListener {
 	private static final long serialVersionUID = 1L;
@@ -26,14 +25,12 @@ public class ClientEditor extends JFrame implements ActionListener {
 	private final FDocument doc;
 	private final ClientConnection connection;
 	private final String id;
-	private final String path;
 	private final ScheduledExecutorService queue;
 	private JDialog settingsWindow;
 	private boolean dark;
 
 	public ClientEditor(ClientConnection c, String id, String path, String content) {
 		super(path);
-		this.path = path;
 		this.id = id;
 		queue = Executors.newSingleThreadScheduledExecutor();
 		connection = c;
