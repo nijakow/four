@@ -294,14 +294,14 @@ public class ClientEditor extends JFrame implements ActionListener {
 
 	@Override
 	public void dispose() {
-		send(false, null);
+		send(false);
 		if (settingsWindow != null) {
 			settingsWindow.dispose();
 		}
 		super.dispose();
 	}
 
-	public void send(final boolean save, final String newPath) {
+	public void send(final boolean save) {
 		// TODO filter escape characters
 		queue.execute(() -> {
 			try {
@@ -318,7 +318,7 @@ public class ClientEditor extends JFrame implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		switch (e.getActionCommand()) {
-			case Commands.Actions.ACTION_EDIT_SAVE: send(true, null); break;
+			case Commands.Actions.ACTION_EDIT_SAVE: send(true); break;
 
 			case Commands.Actions.ACTION_SETTINGS: showSettingsWindow(); break;
 
