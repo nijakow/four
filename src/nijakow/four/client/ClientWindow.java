@@ -96,10 +96,7 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 	
 	public ClientWindow(String hostname, int[] ports) {
 		super("Nijakow's \"Four\"");
-
 		final Font font = new Font("Monospaced", Font.PLAIN, 14);
-
-		// TODO macOS customization
 		buffer = "";
 		bother = true;
 		prefs = PreferencesHelper.getInstance();
@@ -114,7 +111,7 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 		}
 		queue = Executors.newScheduledThreadPool(2);
 		this.ports = ports;
-		if (ports.length == 0)
+		if (ports.length == 1)
 			prefs.setPort(ports[0]);
 		portCounter = 0;
 		getContentPane().setLayout(new BorderLayout());
