@@ -1,11 +1,10 @@
-inherits "/secure/stdlib.c";
+inherits "/lib/core.c";
 
 /*
  * This is the basic object
  */
 
 use $clone_instance;
-
 
 any clone(...)
 {

@@ -1,17 +1,18 @@
 inherits "/secure/object.c";
 
+inherits "/lib/io/log.c";
+
 use $on_connect;
 use $on_error;
 
 void receive(any port)
 {
-	object connection = new("/secure/connection.c", port);
-	new("/secure/login.c", connection, nil, nil)->start();
+	System_Log("New connection!\n");
 }
 
 void handle_error(string key, string type, string msg)
 {
-    log("Received an error: ", key, " ", type, " ", msg, "\n");
+    System_Log("Received an error!\n");
 }
 
 void create()
