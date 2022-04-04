@@ -30,9 +30,12 @@ public class Tokenizer {
 			stream.advance();
 	}
 	
-	private void skipLineComment() {
-		while (stream.peek() != '\n' && stream.peek() >= 0)
-			stream.advance();
+	private String parseLineComment() {
+		StringBuilder builder = new StringBuilder();
+		while (stream.peek() != '\n' && stream.peek() >= 0) {
+			builder.append((char) stream.next());
+		}
+		return builder.toString();
 	}
 	
 	private String parseBlockComment() {
@@ -105,8 +108,11 @@ public class Tokenizer {
 		StreamPosition pos = stream.getPosition();
 		
 		if (peeks("//")) {
-			skipLineComment();
-			return nextToken();
+			final String text = parseLineComment();
+			if (this.commentTokensEnabled)
+				return new Token(this, pos, getPosition(), TokenType.COMMENT, text);
+			else
+				return nextToken();
 		} else if (peeks("/**")) {
 			final String cdoc = parseCDoc();
 			return new Token(this, pos, getPosition(), TokenType.C_DOC, cdoc);
