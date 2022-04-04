@@ -1,4 +1,4 @@
-inherits "/secure/object.c";
+inherits "/lib/object.c";
 
 inherits "/lib/io/log.c";
 
@@ -17,7 +17,7 @@ void handle_error(string key, string type, string msg)
 
 void create()
 {
-    "/secure/object.c"::create();
+    "/lib/object.c"::create();
     $on_error(this::handle_error);
     $on_connect(this::receive);
 }
