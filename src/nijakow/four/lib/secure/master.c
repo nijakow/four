@@ -3,12 +3,15 @@ inherits "/lib/io/log.c";
 
 use $on_connect;
 use $on_error;
+use $statics;
 
 void receive(any port)
 {
 	System_Log("New connection!\n");
 	object terminal = new("/secure/terminal.c", port);
+	$statics()["terminal"] = terminal;
 	terminal.printf("Hello, world!\n");
+	terminal.prompt(nil, "> ");
 }
 
 void handle_error(string key, string type, string msg)
