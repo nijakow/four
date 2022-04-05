@@ -2,6 +2,8 @@ inherits "/lib/conversion/char_to_string.c";
 inherits "/lib/conversion/int_to_string.c";
 inherits "/lib/string/string.c";
 
+use $log;
+
 string sprintf(string format, ...)
 {
     string result = "";
@@ -16,9 +18,9 @@ string sprintf(string format, ...)
         else {
             index  = index + 1;
             c      = format[index];
-            if (format == 'd')
+            if (c == 'd')
                 result = result + Int_To_String(va_next);
-            else if (format == 's')
+            else if (c == 's')
                 result = result + va_next;
             else
                 result = result + "%" + Char_To_String(format[index]);

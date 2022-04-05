@@ -11,11 +11,11 @@ any clone(...)
 	any instance;
 
 	instance = $clone_instance(this);
-	instance->create(...);
+	instance->_init(...);
 	return instance;
 }
 
-void create()
+void _pre_init()
 {
 }
 

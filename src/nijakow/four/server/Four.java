@@ -58,7 +58,7 @@ public class Four implements Runnable {
 					throw new FourRuntimeException("/secure/master.c is not defined!");
 				}
 				
-				vm.startFiber(master, Key.get("create"));
+				vm.startFiber(master, Key.get("_init"));
 			}
 		}
 	}
