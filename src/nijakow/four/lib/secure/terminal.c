@@ -1,6 +1,7 @@
 inherits "/lib/object.c";
 inherits "/lib/io/sprintf.c";
 inherits "/lib/base64/encode.c";
+inherits "/lib/string/substring.c";
 
 use $write;
 use $on_receive;
@@ -33,7 +34,7 @@ private void receive(string line)
     if (this.line_callback != nil) {
         cb = this.line_callback;
         this.line_callback = nil;
-        call(this.line_callback, line); // TODO: Trim line
+        call(cb, String_TrimNewline(line));
     }
 }
 

@@ -24,3 +24,13 @@ string String_Trim(string s)
         end = end - 1;
     return String_IndexBasedSubstring(s, start, end + 1);
 }
+
+string String_TrimNewline(string s)
+{
+    int len = String_Length(s);
+
+    if (len > 0 && s[len - 1] == '\n')
+        return String_IndexBasedSubstring(s, 0, len - 1);
+    else
+        return s;
+}

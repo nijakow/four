@@ -2,7 +2,7 @@ inherits "/lib/app.c";
 
 void receive(string line)
 {
-    printf("%s\n", line);
+    printf("'%s'\n", line);
     restart();
 }
 

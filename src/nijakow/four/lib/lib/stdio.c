@@ -10,12 +10,12 @@ void printf(string format, ...)
     terminal()->printf(format, ...);
 }
 
-void prompt(func callback, string prompt, ...)
+void prompt(func callback, string format, ...)
 {
-    terminal()->prompt(format, ...);
+    terminal()->prompt(callback, format, ...);
 }
 
-void password(func callback, string prompt, ...)
+void password(func callback, string format, ...)
 {
-    terminal()->password(format, ...);
+    terminal()->password(callback, format, ...);
 }
