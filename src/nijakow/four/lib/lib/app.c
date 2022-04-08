@@ -15,7 +15,7 @@ any main(...)
 
 void _start(...)
 {
-    exit(main(...));
+    main(...);
 }
 
 bool exec(func cb, string path, ...)
@@ -31,6 +31,6 @@ bool exec(func cb, string path, ...)
 
 void _init(func return_callback)
 {
-    "/lib/object.c"::create();
+    "/lib/object.c"::_init();
     this._return_cb = return_callback;
 }
