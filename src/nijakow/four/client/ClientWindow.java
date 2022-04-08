@@ -1,10 +1,10 @@
 package nijakow.four.client;
 
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.UnsupportedFlavorException;
+import java.awt.dnd.DropTarget;
+import java.awt.event.*;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
@@ -587,49 +587,88 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 		});
 	}
 
+	private void loadAndSend(File file) {
+		ArrayList<Byte> bs = new ArrayList<>();
+		try (BufferedInputStream is = new BufferedInputStream(new FileInputStream(file))) {
+			int b;
+			while ((b = is.read()) != -1) {
+				bs.add((byte) b);
+			}
+		} catch (IOException e) {
+			showError("Could not read file!\n");
+			return;
+		}
+		byte[] bts = new byte[bs.size()];
+		for (int i = 0; i < bs.size(); i++) {
+			bts[i] = bs.get(i);
+		}
+		try {
+			connection.send(Commands.Codes.SPECIAL_START + Commands.Codes.SPECIAL_UPLOAD + Commands.Codes.SPECIAL_RAW);
+			char[] array = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
+					'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
+					'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '-'};
+			Random r = new Random();
+			StringBuilder id = new StringBuilder();
+			for (int i = 0; i < 16; i++) {
+				id.append(array[r.nextInt(array.length)]);
+			}
+			connection.send(Base64.getEncoder().encodeToString(id.toString().getBytes(StandardCharsets.UTF_8)));
+			connection.send(Commands.Codes.SPECIAL_RAW);
+			connection.send(Base64.getEncoder().encodeToString(bts));
+			connection.send("" + Commands.Codes.SPECIAL_END);
+		} catch (IOException e) {
+			showError("*** Could not send message --- see console for more details! ***\n");
+		}
+	}
+
 	private boolean interpretsCommand(String command) {
 		command = command.trim();
 		if (command.equals(Commands.UPLOAD)) {
-			final JFileChooser chooser = new JFileChooser();
-			chooser.setDialogType(JFileChooser.OPEN_DIALOG);
-			chooser.setMultiSelectionEnabled(false);
-			chooser.setDragEnabled(true);
-			chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-			if (chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
-				queue.schedule(() -> {
-					ArrayList<Byte> bs = new ArrayList<>();
-					try (BufferedInputStream is = new BufferedInputStream(new FileInputStream(chooser.getSelectedFile()))) {
-						int b;
-						while ((b = is.read()) != -1) {
-							bs.add((byte) b);
-						}
-					} catch (IOException e) {
-						showError("Could not read file!\n");
-						return;
-					}
-					byte[] bts = new byte[bs.size()];
-					for (int i = 0; i < bs.size(); i++) {
-						bts[i] = bs.get(i);
-					}
+			final JDialog dialog = new JDialog(this, "Upload files", false);
+			JPanel panel = new JPanel();
+			panel.setLayout(new BorderLayout());
+			JLabel label = new JLabel("Drop files here or click to select", SwingConstants.CENTER);
+			panel.add(label, BorderLayout.SOUTH);
+			panel.setTransferHandler(new TransferHandler() {
+				@Override
+				public boolean importData(TransferSupport support) {
 					try {
-						connection.send(Commands.Codes.SPECIAL_START + Commands.Codes.SPECIAL_UPLOAD + Commands.Codes.SPECIAL_RAW);
-						char[] array = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
-										'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
-										'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '-'};
-						Random r = new Random();
-						StringBuilder id = new StringBuilder();
-						for (int i = 0; i < 16; i++) {
-							id.append(array[r.nextInt(array.length)]);
+						List<File> list = (List<File>) support.getTransferable().getTransferData(DataFlavor.javaFileListFlavor);
+						for (File f : list) {
+							queue.schedule(() -> loadAndSend(f), 0, TimeUnit.NANOSECONDS);
 						}
-						connection.send(Base64.getEncoder().encodeToString(id.toString().getBytes(StandardCharsets.UTF_8)));
-						connection.send(Commands.Codes.SPECIAL_RAW);
-						connection.send(Base64.getEncoder().encodeToString(bts));
-						connection.send("" + Commands.Codes.SPECIAL_END);
-					} catch (IOException e) {
-						showError("*** Could not send message --- see console for more details! ***\n");
+					} catch (UnsupportedFlavorException | IOException e) {
+						return false;
 					}
-				}, 0, TimeUnit.NANOSECONDS);
-			}
+					dialog.dispose();
+					return true;
+				}
+
+				@Override
+				public boolean canImport(TransferSupport support) {
+					support.setDropAction(COPY);
+					return true;
+				}
+			});
+			panel.addMouseListener(new MouseAdapter() {
+				@Override
+				public void mouseClicked(MouseEvent e) {
+					final JFileChooser chooser = new JFileChooser();
+					chooser.setDialogType(JFileChooser.OPEN_DIALOG);
+					chooser.setMultiSelectionEnabled(false);
+					chooser.setDragEnabled(true);
+					chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+					if (chooser.showOpenDialog(dialog) == JFileChooser.APPROVE_OPTION) {
+						queue.schedule(() -> loadAndSend(chooser.getSelectedFile()), 0, TimeUnit.NANOSECONDS);
+						dialog.dispose();
+					}
+				}
+			});
+			dialog.getContentPane().add(panel);
+			dialog.setSize(250, 250);
+			dialog.setLocationRelativeTo(this);
+			dialog.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+			dialog.setVisible(true);
 			return true;
 		}
 		return false;
