@@ -1,5 +1,5 @@
-// TODO: Import String_Length(...)
-// TODO: Import Char_IsSpace(...)
+inherits "/lib/char/char.c";
+inherits "/lib/string/string.c";
 
 use $substr;
 

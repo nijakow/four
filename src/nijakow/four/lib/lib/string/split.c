@@ -1,6 +1,6 @@
-// TODO: Import String_Length(...)
-// TODO: Import String_IndexBasedSubstring(...)
-// TODO: Import List_Append(...)
+inherits "/lib/string/string.c";
+inherits "/lib/string/substring.c";
+inherits "/lib/list/list.c";
 
 string* String_SplitOnChar(string s, char c)
 {
@@ -17,6 +17,6 @@ string* String_SplitOnChar(string s, char c)
         }
         pos = pos + 1;
     }
-    List_Append(lst, List_IndexBasedSubstring(s, start, pos));
+    List_Append(lst, String_IndexBasedSubstring(s, start, pos));
     return lst;
 }
