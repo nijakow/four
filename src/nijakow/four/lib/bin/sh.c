@@ -14,7 +14,7 @@ private void execute_command_in_path(string* argv, string path)
         return;
     foreach (string pth : paths)
     {
-        if (exec(restart_from_binary, pth + "/" + argv[0], argv))
+        if (exec(restart_from_binary, pth + "/" + argv[0] + ".c", argv))
             return;
     }
     printf("%s: not found!\n", argv[0]);
@@ -23,7 +23,7 @@ private void execute_command_in_path(string* argv, string path)
 
 private void execute_command(string* argv)
 {
-    execute_command_in_path(argv, "/bin:/sbin:/usr/bin/");
+    execute_command_in_path(argv, "/bin:/sbin:/usr/bin");
 }
 
 private void receive(string line)
