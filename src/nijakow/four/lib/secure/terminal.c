@@ -5,6 +5,7 @@ inherits "/lib/string/substring.c";
 
 use $write;
 use $on_receive;
+use $close;
 
 private any port;
 private func line_callback;
@@ -26,6 +27,10 @@ void password(func callback, string prompt, ...)
     this.line_callback = callback;
 }
 
+void close()
+{
+    $close(this.port);
+}
 
 private void receive(string line)
 {

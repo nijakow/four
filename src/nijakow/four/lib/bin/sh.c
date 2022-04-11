@@ -9,6 +9,11 @@ private void execute_command_in_path(string* argv, string path)
     string result;
     string* paths;
 
+    if (argv[0] == "exit") {
+        exit(0);
+        return;
+    }
+
     paths = String_SplitOnChar(path, ':');
     if (exec(restart_from_binary, FileSystem_Resolve(FileSystem_GetWorkingDirectory(), argv[0]), argv))
         return;

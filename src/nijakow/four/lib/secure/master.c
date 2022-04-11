@@ -7,6 +7,8 @@ use $statics;
 
 private void logout_func(...)
 {
+    $statics()["terminal"].printf("Goodbye!\n");
+    $statics()["terminal"].close();
 }
 
 void receive(any port)
@@ -14,7 +16,7 @@ void receive(any port)
 	System_Log("New connection!\n");
 	object terminal = new("/secure/terminal.c", port);
 	$statics()["terminal"] = terminal;
-	new("/secure/logon.c", nil)->_start();
+	new("/secure/logon.c", logout_func)->_start();
 }
 
 void handle_error(string key, string type, string msg)
