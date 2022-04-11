@@ -74,3 +74,19 @@ string FileSystem_ResolveHere(string path)
 {
     return FileSystem_Resolve(FileSystem_GetWorkingDirectory(), path);
 }
+
+string FileSystem_Basename(string path)
+{
+    if (path == "")
+        return "/";
+    if (path[-1] == '/')
+        path = String_IndexBasedSubstring(path, 0, String_Length(path) - 1);
+    if (path == "")
+        return "/";
+    for (int index = String_Length(path) - 1; index >= 0; index--)
+    {
+        if (path[index] == '/')
+            return String_IndexBasedSubstring(path, index + 1, String_Length(path));
+    }
+    return path;
+}
