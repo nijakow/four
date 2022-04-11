@@ -14,16 +14,16 @@ string sprintf(string format, ...)
     for (index = 0; index < length; index++)
     {
         if (format[index] != '%')
-            result = result + Char_To_String(format[index]);
+            result = result + Conversion_CharToString(format[index]);
         else {
             index  = index + 1;
             c      = format[index];
             if (c == 'd')
-                result = result + Int_To_String(va_next);
+                result = result + Conversion_IntToString(va_next);
             else if (c == 's')
                 result = result + va_next;
             else
-                result = result + "%" + Char_To_String(format[index]);
+                result = result + "%" + Conversion_CharToString(format[index]);
         }
     }
 

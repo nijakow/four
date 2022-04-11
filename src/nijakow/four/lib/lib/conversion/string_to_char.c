@@ -1,5 +1,5 @@
 
-char String_To_Char(string s)
+char Conversion_StringToChar(string s)
 {
     return s[0];
 }

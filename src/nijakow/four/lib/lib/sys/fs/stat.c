@@ -14,13 +14,13 @@ bool FileSystem_Exists(string path)
 bool FileSystem_IsTextFile(string path)
 {
     int st = FileSystem_Stat(path);
-    return ((st >= 0) && ((st & 01000) != 0));
+    return ((st >= 0) && ((st & 01000) == 0));
 }
 
 bool FileSystem_IsDirectory(string path)
 {
     int st = FileSystem_Stat(path);
-    return ((st >= 0) && ((st & 01000) == 0));
+    return ((st >= 0) && ((st & 01000) != 0));
 }
 
 bool FileSystem_IsExecutable(string path)

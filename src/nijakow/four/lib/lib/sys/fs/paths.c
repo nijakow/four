@@ -13,9 +13,15 @@ string FileSystem_GetWorkingDirectory()
     return $statics()["pwd"];
 }
 
-void FileSystem_Chdir(string dir)
+bool FileSystem_Chdir(string dir)
 {
     $statics()["pwd"] = dir;
+    return true;
+}
+
+bool FileSystem_SetCurrentDirectory(string dir)
+{
+    return FileSystem_Chdir(dir);
 }
 
 

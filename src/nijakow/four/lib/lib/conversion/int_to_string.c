@@ -16,7 +16,7 @@ string Conversion_IntToStringWithBaseString(int i, string base_string)
 
     while (i != 0)
     {
-        s = Char_ToString(base_string[i % base]) + s;
+        s = Conversion_CharToString(base_string[i % base]) + s;
         i = i / 10;
     }
 
