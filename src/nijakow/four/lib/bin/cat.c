@@ -3,7 +3,7 @@ inherits "/lib/list/list.c";
 inherits "/lib/sys/fs/io.c";
 inherits "/lib/sys/fs/paths.c";
 
-int main(string* argv)
+void main(string* argv)
 {
     string path;
     string contents;
@@ -18,5 +18,5 @@ int main(string* argv)
             printf("%s", contents);
         }
     }
-    return 0;
+    exit(0);
 }

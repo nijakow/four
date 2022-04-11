@@ -72,7 +72,7 @@ private void do_ls(string dir, string name, bool long_mode, bool dir_mode, bool 
     }
 }
 
-int main(string* argv)
+void main(string* argv)
 {
     int off        = 1;
     bool long_mode = true;
@@ -127,5 +127,5 @@ int main(string* argv)
     } else {
         printf("Argument error!\n");
     }
-    return 0;
+    exit(0);
 }
