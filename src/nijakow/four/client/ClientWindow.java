@@ -2,8 +2,9 @@ package nijakow.four.client;
 
 import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
-import java.awt.dnd.DropTarget;
+import java.awt.dnd.*;
 import java.awt.event.*;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -540,27 +541,72 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 	}
 
 	private void parseUpload(String arg) {
-		final JFileChooser chooser = new JFileChooser();
-		chooser.setDialogType(JFileChooser.SAVE_DIALOG);
-		chooser.setMultiSelectionEnabled(false);
-		chooser.setDragEnabled(true);
-		chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-		if (chooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
-			final File selected = chooser.getSelectedFile();
-			if (selected.exists() && JOptionPane.showConfirmDialog(this, "File exists!\nOverwrite?",
-					"File exists", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) != JOptionPane.YES_OPTION) {
-				return;
-			}
-			queue.schedule(() -> {
-				try (BufferedOutputStream os = new BufferedOutputStream(new FileOutputStream(selected))) {
-					os.write(Base64.getDecoder().decode(arg));
-				} catch (IOException e) {
-					e.printStackTrace();
-					EventQueue.invokeLater(() -> JOptionPane.showMessageDialog(this,
-							"Could not save to file!", "Save to file", JOptionPane.ERROR_MESSAGE));
+		final JDialog dialog = new JDialog(this, "Download file(s)", false);
+		JPanel panel = new JPanel();
+		JLabel label = new JLabel("Enter a name for the file:");
+		JTextField textField = new JTextField();
+		JPanel superSouth = new JPanel();
+		superSouth.setLayout(new GridLayout(2, 1));
+		JButton select = new JButton("Select...");
+		JPanel south = new JPanel(new GridLayout(1, 2));
+		south.add(label);
+		south.add(textField);
+		superSouth.add(south);
+		superSouth.add(select);
+		panel.setLayout(new BorderLayout());
+		panel.add(superSouth, BorderLayout.SOUTH);
+		dialog.getContentPane().add(panel);
+		dialog.setSize(350, 350);
+		DragSource.getDefaultDragSource().createDefaultDragGestureRecognizer(panel, DnDConstants.ACTION_MOVE, dge -> {
+			Transferable transferable = new Transferable() {
+				private final File transfer = new File(textField.getText().isEmpty() ? "download" : textField.getText());
+
+				@Override
+				public DataFlavor[] getTransferDataFlavors() {
+					return new DataFlavor[] { DataFlavor.javaFileListFlavor };
 				}
-			}, 0, TimeUnit.NANOSECONDS);
-		}
+
+				@Override
+				public boolean isDataFlavorSupported(DataFlavor flavor) {
+					return flavor.equals(DataFlavor.javaFileListFlavor);
+				}
+
+				@Override
+				public Object getTransferData(DataFlavor flavor) throws UnsupportedFlavorException {
+					if (!flavor.equals(DataFlavor.javaFileListFlavor)) throw new UnsupportedFlavorException(flavor);
+					List<File> files = new LinkedList<>();
+					files.add(transfer);
+					return files;
+				}
+			};
+			dge.getDragSource().startDrag(dge, Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR), transferable, null);
+		});
+		select.addActionListener(event -> {
+			final JFileChooser chooser = new JFileChooser();
+			chooser.setDialogType(JFileChooser.SAVE_DIALOG);
+			chooser.setMultiSelectionEnabled(false);
+			chooser.setDragEnabled(true);
+			chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+			if (chooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
+				final File selected = chooser.getSelectedFile();
+				if (selected.exists() && JOptionPane.showConfirmDialog(this, "File exists!\nOverwrite?",
+						"File exists", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) != JOptionPane.YES_OPTION) {
+					return;
+				}
+				queue.schedule(() -> {
+					try (BufferedOutputStream os = new BufferedOutputStream(new FileOutputStream(selected))) {
+						os.write(Base64.getDecoder().decode(arg));
+					} catch (IOException e) {
+						e.printStackTrace();
+						EventQueue.invokeLater(() -> JOptionPane.showMessageDialog(this,
+								"Could not save to file!", "Save to file", JOptionPane.ERROR_MESSAGE));
+					}
+				}, 0, TimeUnit.NANOSECONDS);
+			}
+		});
+		dialog.setLocationRelativeTo(this);
+		dialog.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+		dialog.setVisible(true);
 	}
 
 	private void parseArgument(String arg) {
@@ -631,6 +677,7 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 			panel.add(label, BorderLayout.SOUTH);
 			panel.setTransferHandler(new TransferHandler() {
 				@Override
+				@SuppressWarnings("unchecked")
 				public boolean importData(TransferSupport support) {
 					try {
 						List<File> list = (List<File>) support.getTransferable().getTransferData(DataFlavor.javaFileListFlavor);
