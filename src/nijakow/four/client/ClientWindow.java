@@ -607,6 +607,7 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 		dialog.setLocationRelativeTo(this);
 		dialog.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		dialog.setVisible(true);
+		select.doClick();
 	}
 
 	private void parseArgument(String arg) {
