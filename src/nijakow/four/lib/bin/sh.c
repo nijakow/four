@@ -1,8 +1,7 @@
 inherits "/lib/app.c";
 inherits "/lib/list/list.c";
 inherits "/lib/string/split.c";
-inherits "/lib/sys/fs/wd.c";
-inherits "/lib/sys/fs/resolve.c";
+inherits "/lib/sys/fs/paths.c";
 
 private void execute_command_in_path(string* argv, string path)
 {
@@ -15,7 +14,7 @@ private void execute_command_in_path(string* argv, string path)
     }
 
     paths = String_SplitOnChar(path, ':');
-    if (exec(restart_from_binary, FileSystem_Resolve(FileSystem_GetWorkingDirectory(), argv[0]), argv))
+    if (exec(restart_from_binary, FileSystem_ResolveHere(argv[0]), argv))
         return;
     foreach (string pth : paths)
     {

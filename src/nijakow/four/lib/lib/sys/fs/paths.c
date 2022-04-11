@@ -4,6 +4,21 @@ inherits "/lib/string/string.c";
 inherits "/lib/string/split.c";
 inherits "/lib/string/substring.c";
 
+use $statics;
+
+string FileSystem_GetWorkingDirectory()
+{
+    if ($statics()["pwd"] == nil)
+        FileSystem_Chdir("/");
+    return $statics()["pwd"];
+}
+
+void FileSystem_Chdir(string dir)
+{
+    $statics()["pwd"] = dir;
+}
+
+
 private string FileSystem_Updir(string base)
 {
     string  s = "";
@@ -47,4 +62,9 @@ string FileSystem_Resolve(string base, string path)
         base = FileSystem_Resolve1(base, dir);
     }
     return base;
+}
+
+string FileSystem_ResolveHere(string path)
+{
+    return FileSystem_Resolve(FileSystem_GetWorkingDirectory(), path);
 }
