@@ -11,8 +11,8 @@ import java.io.*;
 import static nijakow.four.client.editor.GenericTheme.Types.*;
 
 public class GenericTheme extends FTheme {
-    public GenericTheme(File file) {
-        if (!parseFile(file)) throw new IllegalArgumentException("Could not read file!");
+    public GenericTheme(File file) throws Exception {
+        if (!parseFile(file)) throw new Exception("Could not read file!");
     }
 
     private boolean parseFile(File file) {

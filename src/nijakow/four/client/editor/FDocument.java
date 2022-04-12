@@ -67,6 +67,10 @@ public class FDocument extends DefaultStyledDocument {
             threads.execute(this::updateSyntaxHighlighting);
     }
 
+    public boolean isSyntaxHighlighting() {
+        return highlighting;
+    }
+
     @Override
     protected void postRemoveUpdate(DefaultDocumentEvent chng) {
         super.postRemoveUpdate(chng);

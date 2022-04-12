@@ -2,12 +2,14 @@ package nijakow.four.client.editor;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.concurrent.*;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 import javax.swing.text.*;
@@ -222,6 +224,7 @@ public class ClientEditor extends JFrame implements ActionListener {
 			pane.setForeground(null);
 			pane.setCaretColor(Color.black);
 		}
+		if (doc.isSyntaxHighlighting()) doc.updateSyntaxHighlighting();
 	}
 
 	private void toggleLineBreaking(boolean breaking) {
@@ -236,26 +239,92 @@ public class ClientEditor extends JFrame implements ActionListener {
 		}
 	}
 
+	private String chooseTheme() {
+		JFileChooser chooser = new JFileChooser();
+		chooser.setDragEnabled(true);
+		chooser.setMultiSelectionEnabled(false);
+		chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+		if (chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+			File selected = chooser.getSelectedFile();
+			try {
+				doc.setTheme(new GenericTheme(selected));
+			} catch (Exception e) {
+				JOptionPane.showMessageDialog(this, "Could not open file: " + selected + "!",
+						"File error", JOptionPane.ERROR_MESSAGE);
+				return null;
+			}
+			return selected.getAbsolutePath();
+		}
+		return null;
+	}
+
 	private JDialog createSettingsWindow() {
 		JDialog settingsWindow = new JDialog(this, "Editor: Settings", true);
-		settingsWindow.getContentPane().setLayout(new GridLayout(3, 1));
+		settingsWindow.getContentPane().setLayout(new BorderLayout());
+		JPanel themePanel = new JPanel();
+		themePanel.setLayout(new GridLayout(3, 1));
+		JButton themeChoose = new JButton("Open from disc...");
+		JComboBox<String> comboBox = new JComboBox<>();
+		comboBox.setEditable(false);
+		comboBox.addItem("Default");
+		comboBox.addItem("Other...");
+		comboBox.addItemListener(event -> {
+			String selected = (String) comboBox.getSelectedItem();
+			if (selected != null) {
+				switch (selected) {
+					case "Other...": themeChoose.setVisible(true); break;
+					case "Default":
+						themeChoose.setVisible(false);
+						PreferencesHelper.getInstance().setEditorTheme(PreferencesHelper.Key.EDITOR_DFL_THEME);
+						doc.setTheme(null);
+						break;
+
+					default:
+						themeChoose.setVisible(false);
+						try {
+							doc.setTheme(new GenericTheme(new File(selected)));
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+						break;
+				}
+				if (doc.isSyntaxHighlighting()) doc.updateSyntaxHighlighting();
+			}
+		});
+		JLabel themeDesc = new JLabel("Choose the used theme:");
+		themeChoose.setVisible(false);
+		themeChoose.addActionListener(event -> {
+			String path = chooseTheme();
+			if (path != null) {
+				comboBox.addItem(path);
+				comboBox.setSelectedItem(path);
+				PreferencesHelper.getInstance().setEditorTheme(path);
+			}
+		});
+		themePanel.add(themeDesc);
+		themePanel.add(comboBox);
+		themePanel.add(themeChoose);
+		JPanel panel = new JPanel();
+		panel.setLayout(new GridLayout(3, 1));
 		JCheckBox alwaysHighlight = new JCheckBox("Always enable syntax highlighting");
 		alwaysHighlight.addItemListener(event -> PreferencesHelper.getInstance().setEditorAlwaysHighlight(alwaysHighlight.isSelected()));
-		settingsWindow.getContentPane().add(alwaysHighlight);
+		panel.add(alwaysHighlight);
 		JCheckBox lineBreaking = new JCheckBox("Automatic line breaking");
 		lineBreaking.addItemListener(event -> {
 			boolean breaking = lineBreaking.isSelected();
 			toggleLineBreaking(breaking);
 			PreferencesHelper.getInstance().setEditorLineBreaking(breaking);
 		});
-		settingsWindow.getContentPane().add(lineBreaking);
+		panel.add(lineBreaking);
 		JCheckBox autoIndent = new JCheckBox("Enable auto-indenting");
 		autoIndent.addItemListener(event -> {
 			boolean indent = autoIndent.isSelected();
 			doc.setAutoIndentingEnabled(indent);
 			PreferencesHelper.getInstance().setAutoIndenting(indent);
 		});
-		settingsWindow.getContentPane().add(autoIndent);
+		panel.add(autoIndent);
+		settingsWindow.getContentPane().add(themePanel, BorderLayout.CENTER);
+		settingsWindow.getContentPane().add(panel, BorderLayout.SOUTH);
 		settingsWindow.addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowActivated(WindowEvent e) {
@@ -270,6 +339,22 @@ public class ClientEditor extends JFrame implements ActionListener {
 					autoIndent.setForeground(Color.white);
 					lineBreaking.setBackground(Color.darkGray);
 					lineBreaking.setForeground(Color.white);
+					panel.setBackground(Color.darkGray);
+					themePanel.setBackground(Color.darkGray);
+					themeDesc.setForeground(Color.white);
+					themeDesc.setBackground(Color.darkGray);
+				} else {
+					settingsWindow.getContentPane().setBackground(null);
+					alwaysHighlight.setBackground(null);
+					alwaysHighlight.setForeground(null);
+					autoIndent.setBackground(null);
+					autoIndent.setForeground(null);
+					lineBreaking.setBackground(null);
+					lineBreaking.setForeground(null);
+					panel.setBackground(null);
+					themePanel.setBackground(null);
+					themeDesc.setForeground(null);
+					themeDesc.setBackground(null);
 				}
 			}
 
