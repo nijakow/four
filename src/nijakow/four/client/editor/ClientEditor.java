@@ -9,7 +9,6 @@ import java.util.Base64;
 import java.util.concurrent.*;
 
 import javax.swing.*;
-import javax.swing.border.Border;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 import javax.swing.text.*;
