@@ -39,6 +39,20 @@ public class ClientEditor extends JFrame implements ActionListener {
 		pane = new JTextPane();
 		doc = new FDocument();
 		doc.setAutoIndentingEnabled(PreferencesHelper.getInstance().getAutoIndenting());
+		String theme = PreferencesHelper.getInstance().getEditorTheme();
+		EventQueue.invokeLater(() -> {
+			if (!theme.equals(Commands.Themes.DEFAULT)) {
+				try {
+					doc.setTheme(new GenericTheme(new File(theme)));
+					if (doc.isSyntaxHighlighting()) doc.updateSyntaxHighlighting();
+				} catch (Exception e) {
+					JOptionPane.showMessageDialog(this, "Could not open theme file:" + theme + "!" +
+							"\nSwitching to default theme...",
+							"File error", JOptionPane.ERROR_MESSAGE);
+					PreferencesHelper.getInstance().setEditorTheme(Commands.Themes.DEFAULT);
+				}
+			}
+		});
 		pane.setDocument(doc);
 		pane.setText(content);
 		pane.setFont(new Font("Monospaced", Font.PLAIN, 14));
@@ -267,6 +281,13 @@ public class ClientEditor extends JFrame implements ActionListener {
 		JComboBox<String> comboBox = new JComboBox<>();
 		comboBox.setEditable(false);
 		comboBox.addItem("Default");
+		String setTheme = PreferencesHelper.getInstance().getEditorTheme();
+		if (!setTheme.equals(Commands.Themes.DEFAULT)) {
+			comboBox.addItem(setTheme);
+			comboBox.setSelectedItem(setTheme);
+		} else {
+			comboBox.setSelectedIndex(0);
+		}
 		comboBox.addItem("Other...");
 		comboBox.addItemListener(event -> {
 			String selected = (String) comboBox.getSelectedItem();
@@ -275,14 +296,16 @@ public class ClientEditor extends JFrame implements ActionListener {
 					case "Other...": themeChoose.setVisible(true); break;
 					case "Default":
 						themeChoose.setVisible(false);
-						PreferencesHelper.getInstance().setEditorTheme(PreferencesHelper.Key.EDITOR_DFL_THEME);
+						PreferencesHelper.getInstance().setEditorTheme(Commands.Themes.DEFAULT);
 						doc.setTheme(null);
 						break;
 
 					default:
 						themeChoose.setVisible(false);
 						try {
-							doc.setTheme(new GenericTheme(new File(selected)));
+							File selectedTheme = new File(selected);
+							doc.setTheme(new GenericTheme(selectedTheme));
+							PreferencesHelper.getInstance().setEditorTheme(selectedTheme.getAbsolutePath());
 						} catch (Exception e) {
 							e.printStackTrace();
 						}

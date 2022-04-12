@@ -78,7 +78,7 @@ public class PreferencesHelper {
 	}
 
 	public String getEditorTheme() {
-		return prefs.get(Key.EDITOR_THEME, Key.EDITOR_DFL_THEME);
+		return prefs.get(Key.EDITOR_THEME, Commands.Themes.DEFAULT);
 	}
 
 	public void setEditorTheme(String theme) {
@@ -172,7 +172,6 @@ public class PreferencesHelper {
 	public abstract static class Key {
 		public static final String AUTO_INDENTING    = "autoIndent";
 		public static final String DARK_MODE         = "darkMode";
-		public static final String EDITOR_DFL_THEME  = "-default-";
 		public static final String EDITOR_HEIGHT     = "editorHeight";
 		public static final String EDITOR_HIGHLIGHT  = "editorHighlighting";
 		public static final String EDITOR_LINE_BREAK = "editorLineBreaking";

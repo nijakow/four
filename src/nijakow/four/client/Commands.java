@@ -57,4 +57,8 @@ public abstract class Commands {
 		@Deprecated	public static final String STYLE_GREEN     = "GREEN";
 		@Deprecated	public static final String STYLE_YELLOW    = "YELLOW";
 	}
+
+	public abstract static class Themes {
+		public static final String DEFAULT = "-default-";
+	}
 }
