@@ -556,6 +556,32 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 		panel.setLayout(new BorderLayout());
 		panel.add(superSouth, BorderLayout.SOUTH);
 		dialog.getContentPane().add(panel);
+		dialog.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowActivated(WindowEvent e) {
+				if (prefs.getDarkMode()) {
+					dialog.getContentPane().setBackground(Color.darkGray);
+					panel.setBackground(Color.darkGray);
+					label.setBackground(Color.darkGray);
+					label.setForeground(Color.white);
+					textField.setCaretColor(Color.white);
+					textField.setBackground(Color.gray);
+					textField.setForeground(Color.white);
+					superSouth.setBackground(Color.darkGray);
+					south.setBackground(Color.darkGray);
+				} else {
+					dialog.getContentPane().setBackground(null);
+					panel.setBackground(null);
+					label.setBackground(null);
+					label.setForeground(null);
+					textField.setCaretColor(Color.black);
+					textField.setBackground(Color.white);
+					textField.setForeground(Color.black);
+					superSouth.setBackground(null);
+					south.setBackground(null);
+				}
+			}
+		});
 		dialog.setSize(350, 350);
 		DragSource.getDefaultDragSource().createDefaultDragGestureRecognizer(panel, DnDConstants.ACTION_MOVE, dge -> {
 			Transferable transferable = new Transferable() {
@@ -713,6 +739,22 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 				}
 			});
 			dialog.getContentPane().add(panel);
+			dialog.addWindowListener(new WindowAdapter() {
+				@Override
+				public void windowActivated(WindowEvent e) {
+					if (prefs.getDarkMode()) {
+						dialog.getContentPane().setBackground(Color.darkGray);
+						panel.setBackground(Color.darkGray);
+						label.setBackground(Color.darkGray);
+						label.setForeground(Color.white);
+					} else {
+						dialog.getContentPane().setBackground(null);
+						panel.setBackground(null);
+						label.setBackground(null);
+						label.setForeground(null);
+					}
+				}
+			});
 			dialog.setSize(250, 250);
 			dialog.setLocationRelativeTo(this);
 			dialog.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
