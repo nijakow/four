@@ -24,7 +24,7 @@ public class FDocument extends DefaultStyledDocument {
     public FDocument() {
         threads = Executors.newSingleThreadScheduledExecutor();
         def = getLogicalStyle(0);
-        theme = FTheme.getDefaultTheme(def);
+        theme = new DefaultTheme(def);
         idents = new ArrayList<>();
         ide = new ArrayList<>();
         highlighting = false;
@@ -42,7 +42,7 @@ public class FDocument extends DefaultStyledDocument {
 
     public void setTheme(FTheme theme) {
         if (theme == null) {
-            this.theme = FTheme.getDefaultTheme(def);
+            this.theme = new DefaultTheme(def);
         } else {
             this.theme = theme;
         }
