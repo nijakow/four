@@ -46,7 +46,7 @@ public class ClientEditor extends JFrame implements ActionListener {
 					doc.setTheme(new GenericTheme(new File(theme)));
 					if (doc.isSyntaxHighlighting()) doc.updateSyntaxHighlighting();
 				} catch (Exception e) {
-					JOptionPane.showMessageDialog(this, "Could not open theme file:" + theme + "!" +
+					JOptionPane.showMessageDialog(this, "Could not open theme file: " + theme + "!" +
 							"\nSwitching to default theme...",
 							"File error", JOptionPane.ERROR_MESSAGE);
 					PreferencesHelper.getInstance().setEditorTheme(Commands.Themes.DEFAULT);
