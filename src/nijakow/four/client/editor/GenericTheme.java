@@ -20,7 +20,7 @@ public class GenericTheme extends FTheme {
             String line;
             while ((line = reader.readLine()) != null) {
                 line = line.trim();
-                if (line.startsWith(Types.COMMENT)) {
+                if (line.startsWith(Types.COMMENT) || line.isEmpty()) {
                     // Ignore, comment.
                 } else if (line.contains(SEPARATOR)) {
                     parseStyle(line, reader);
@@ -39,7 +39,7 @@ public class GenericTheme extends FTheme {
         boolean first = true;
         while ((currentLine = reader.readLine()) != null) {
             currentLine = currentLine.trim();
-            if (currentLine.startsWith(COMMENT)) {
+            if (currentLine.startsWith(COMMENT) || currentLine.isEmpty()) {
                 // Ignore, comment.
             } else {
                 int equal = currentLine.indexOf(Types.EQUALS);
