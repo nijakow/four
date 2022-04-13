@@ -19,6 +19,8 @@ import nijakow.four.client.net.ClientConnection;
 
 public class ClientEditor extends JFrame implements ActionListener {
 	private static final long serialVersionUID = 1L;
+	private static final String DEFAULT_THEME = "Default";
+	private static final String OTHER_THEME = "Other...";
 	private final JCheckBox highlight;
 	private final JScrollPane scrollPane;
 	private final JTextPane pane;
@@ -274,33 +276,48 @@ public class ClientEditor extends JFrame implements ActionListener {
 	private JDialog createSettingsWindow() {
 		JDialog settingsWindow = new JDialog(this, "Editor: Settings", true);
 		settingsWindow.getContentPane().setLayout(new BorderLayout());
-		JPanel themePanel = new JPanel();
-		themePanel.setLayout(new GridLayout(3, 1));
+		JPanel themePanel = new JPanel(new GridLayout(3, 1));
 		JButton themeChoose = new JButton("Open from disc...");
+		JButton themeCreate = new JButton("Create...");
+		JPanel themeButtons = new JPanel(new GridLayout(1, 2));
+		themeButtons.add(themeChoose);
+		themeButtons.add(themeCreate);
 		JComboBox<String> comboBox = new JComboBox<>();
 		comboBox.setEditable(false);
-		comboBox.addItem("Default");
+		comboBox.addItem(DEFAULT_THEME);
 		String setTheme = PreferencesHelper.getInstance().getEditorTheme();
 		if (!setTheme.equals(Commands.Themes.DEFAULT)) {
 			comboBox.addItem(setTheme);
 			comboBox.setSelectedItem(setTheme);
+			themeCreate.setText("Edit...");
+			themeChoose.setVisible(false);
 		} else {
-			comboBox.setSelectedIndex(0);
+			comboBox.setSelectedItem(DEFAULT_THEME);
+			themeCreate.setVisible(false);
+			themeChoose.setVisible(false);
 		}
-		comboBox.addItem("Other...");
+		comboBox.addItem(OTHER_THEME);
 		comboBox.addItemListener(event -> {
 			String selected = (String) comboBox.getSelectedItem();
 			if (selected != null) {
 				switch (selected) {
-					case "Other...": themeChoose.setVisible(true); break;
-					case "Default":
+					case OTHER_THEME:
+						themeChoose.setVisible(true);
+						themeCreate.setVisible(true);
+						themeCreate.setText("Create...");
+						break;
+
+					case DEFAULT_THEME:
 						themeChoose.setVisible(false);
+						themeCreate.setVisible(false);
 						PreferencesHelper.getInstance().setEditorTheme(Commands.Themes.DEFAULT);
 						doc.setTheme(null);
 						break;
 
 					default:
 						themeChoose.setVisible(false);
+						themeCreate.setVisible(true);
+						themeCreate.setText("Edit...");
 						try {
 							File selectedTheme = new File(selected);
 							doc.setTheme(new GenericTheme(selectedTheme));
@@ -314,7 +331,6 @@ public class ClientEditor extends JFrame implements ActionListener {
 			}
 		});
 		JLabel themeDesc = new JLabel("Choose the used theme:");
-		themeChoose.setVisible(false);
 		themeChoose.addActionListener(event -> {
 			String path = chooseTheme();
 			if (path != null) {
@@ -323,9 +339,16 @@ public class ClientEditor extends JFrame implements ActionListener {
 				PreferencesHelper.getInstance().setEditorTheme(path);
 			}
 		});
+		themeCreate.addActionListener(event -> {
+			if (comboBox.getSelectedItem().equals(OTHER_THEME)) {
+				showThemeEditor(null);
+			} else {
+				showThemeEditor(doc.getTheme());
+			}
+		});
 		themePanel.add(themeDesc);
 		themePanel.add(comboBox);
-		themePanel.add(themeChoose);
+		themePanel.add(themeButtons);
 		JPanel panel = new JPanel();
 		panel.setLayout(new GridLayout(3, 1));
 		JCheckBox alwaysHighlight = new JCheckBox("Always enable syntax highlighting");
@@ -365,6 +388,7 @@ public class ClientEditor extends JFrame implements ActionListener {
 					themePanel.setBackground(Color.darkGray);
 					themeDesc.setForeground(Color.white);
 					themeDesc.setBackground(Color.darkGray);
+					themeButtons.setBackground(Color.darkGray);
 				} else {
 					settingsWindow.getContentPane().setBackground(null);
 					alwaysHighlight.setBackground(null);
@@ -377,6 +401,7 @@ public class ClientEditor extends JFrame implements ActionListener {
 					themePanel.setBackground(null);
 					themeDesc.setForeground(null);
 					themeDesc.setBackground(null);
+					themeButtons.setBackground(null);
 				}
 			}
 
@@ -390,6 +415,10 @@ public class ClientEditor extends JFrame implements ActionListener {
 		settingsWindow.setDefaultCloseOperation(HIDE_ON_CLOSE);
 		settingsWindow.setLocationRelativeTo(this);
 		return settingsWindow;
+	}
+
+	private void showThemeEditor(FTheme current) {
+		// TODO Open editor
 	}
 
 	private void showSettingsWindow() {
