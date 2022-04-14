@@ -30,8 +30,6 @@ public class ClientEditor extends JFrame implements ActionListener {
 	private final String id;
 	private final ScheduledExecutorService queue;
 	private JDialog settingsWindow;
-	private JDialog themeEditor;
-	private FTheme displayTheme;
 	private boolean dark;
 
 	public ClientEditor(ClientConnection c, String id, String path, String content) {
@@ -420,37 +418,10 @@ public class ClientEditor extends JFrame implements ActionListener {
 	}
 
 	private void showThemeEditor(FTheme current) {
-		if (themeEditor == null) themeEditor = createThemeDialog();
-		displayTheme = current;
-		themeEditor.setVisible(true);
-	}
-
-	private JDialog createThemeDialog() {
-		JDialog dialog = new JDialog(this, "Edit theme", true); // TODO Subclass!
-		JPanel checkPanel = new JPanel(new GridLayout(2, 1));
-		JCheckBox bold = new JCheckBox("Bold");
-		JCheckBox italic = new JCheckBox("Italic");
-		JCheckBox strike = new JCheckBox("Strike-through");
-		JCheckBox underline = new JCheckBox("Underline");
-		checkPanel.add(bold);
-		checkPanel.add(italic);
-		checkPanel.add(strike);
-		checkPanel.add(underline);
-		dialog.addWindowListener(new WindowAdapter() {
-			@Override
-			public void windowActivated(WindowEvent e) {
-				// TODO Update contents
-				if (dark) {
-					checkPanel.setBackground(Color.darkGray);
-				} else {
-					checkPanel.setBackground(null);
-				}
-			}
-		});
-		dialog.setDefaultCloseOperation(HIDE_ON_CLOSE);
-		dialog.pack();
-		dialog.setLocationRelativeTo(this);
-		return dialog;
+		FThemeEditor editor = new FThemeEditor(this, current);
+		editor.toggleMode(dark);
+		editor.setLocationRelativeTo(this);
+		editor.setVisible(true);
 	}
 
 	private void showSettingsWindow() {
