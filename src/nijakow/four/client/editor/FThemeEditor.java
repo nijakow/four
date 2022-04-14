@@ -39,7 +39,8 @@ public class FThemeEditor extends JDialog {
     private boolean dark;
 
     public FThemeEditor(Frame parent, FTheme current) {
-        super(parent, "Theme editor", true);
+        // TODO Add functionality
+        super(parent, "Theme editor", true); // TODO Change to name of the current theme!
         this.current = current;
         editAll = new JPanel(new BorderLayout());
         cBox = new JPanel(new GridLayout(2, 1));
