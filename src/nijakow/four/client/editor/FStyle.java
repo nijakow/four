@@ -1,5 +1,7 @@
 package nijakow.four.client.editor;
 
+import nijakow.four.share.lang.c.parser.TokenType;
+
 import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
@@ -18,12 +20,14 @@ public class FStyle {
     private Color background;
     private Color foreground;
     private FStyle parent;
+    private TokenType tokenType;
 
-    public FStyle() {
-        this(null);
+    public FStyle(TokenType tokenType) {
+        this(tokenType, null);
     }
 
-    public FStyle(FStyle parent) {
+    public FStyle(TokenType tokenType, FStyle parent) {
+        this.tokenType = tokenType;
         setParent(parent);
         bold = null;
         italic = null;
@@ -148,5 +152,13 @@ public class FStyle {
         if (getForeground() != null) StyleConstants.setForeground(ret, getForeground());
         if (getFamily() != null) StyleConstants.setFontFamily(ret, getFamily());
         return ret;
+    }
+
+    public TokenType getTokenType() {
+        return tokenType;
+    }
+
+    public void setTokenType(TokenType tokenType) {
+        this.tokenType = tokenType;
     }
 }

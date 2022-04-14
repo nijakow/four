@@ -10,21 +10,25 @@ import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
 import java.awt.*;
 import java.io.*;
-import java.util.Stack;
+import java.util.LinkedList;
+import java.util.List;
 
 import static nijakow.four.client.editor.GenericTheme.Types.*;
 
 public class GenericTheme extends FTheme {
     private final StringCharStream stream;
+    private final List<FStyle> styles;
 
     public GenericTheme(File file) throws Exception {
         // TODO
         stream = null;
+        styles = null;
         if (!parseFile(file)) throw new Exception("Could not read file!");
     }
 
     public GenericTheme(String content) throws ParseException {
         stream = new StringCharStream("", content);
+        styles = new LinkedList<>();
         parseFile();
     }
 
@@ -32,12 +36,128 @@ public class GenericTheme extends FTheme {
         while (Character.isWhitespace(stream.peek())) stream.advance();
     }
 
+    private FStyle findStyle(TokenType type) {
+        for (FStyle style : styles) {
+            if (style.getTokenType() == type) {
+                return style;
+            }
+        }
+        return null;
+    }
+
+    private void expect(FToken token, FTokenType type) throws ParseException {
+        if ((type == FTokenType.TRUE || type == FTokenType.FALSE)) {
+            if (!(token.getType() == FTokenType.FALSE || token.getType() == FTokenType.TRUE)) {
+                throw new ParseException(token.getStartPos(), "Expected a bool!");
+            } else return;
+        }
+        if (token.getType() != type) {
+            String message = "Expected different token!";
+            switch (type) {
+                case TYPE: message = "Expected 'type'!"; break;
+                case COLON: message = "Expected a colon!"; break;
+                case L_CURLY: message = "Expected a '{'!"; break;
+                case R_CURLY: message = "Expected a '}'"; break;
+                case EQUALS: message = "Expected an assignment!"; break;
+                case SEMICOLON: message = "Expected a semicolon!"; break;
+                case IDENTIFIER: message = "Expected a value!"; break;
+                case INT: message = "Expected an integer!"; break;
+                case FLOAT: message = "Expected a float!"; break;
+            }
+            throw new ParseException(token.getStartPos(), message);
+        }
+    }
+
+    private FStyle parseFStyle() throws ParseException {
+        FToken token = nextToken();
+        expect(token, FTokenType.IDENTIFIER);
+        FStyle fStyle = new FStyle(TokenType.valueOf((String) token.getPayload()));
+        if ((token = nextToken()).getType() == FTokenType.COLON) {
+            FStyle parent = findStyle(TokenType.valueOf((String) (token = nextToken()).getPayload()));
+            if (parent == null) throw new ParseException(token.getStartPos(), "Parent not found!");
+            fStyle.setParent(parent);
+            token = nextToken();
+        }
+        if (token.getType() == FTokenType.L_CURLY) {
+            while ((token = nextToken()).getType() != FTokenType.R_CURLY) {
+                if (token.getType() == FTokenType.COMMENT || token.getType() == FTokenType.SEMICOLON) continue;
+                expect(token, FTokenType.IDENTIFIER);
+                FToken tmp = nextToken();
+                expect(tmp, FTokenType.EQUALS);
+                tmp = nextToken();
+                switch ((String) token.getPayload()) {
+                    case ALIGNMENT:
+                        expect(tmp, FTokenType.INT);
+                        fStyle.setAlignment((Integer) tmp.getPayload());
+                        break;
+
+                    case BIDI:
+                        expect(tmp, FTokenType.INT);
+                        fStyle.setBidiLevel((Integer) tmp.getPayload());
+                        break;
+
+                    case SIZE:
+                        expect(tmp, FTokenType.INT);
+                        fStyle.setSize((Integer) tmp.getPayload());
+                        break;
+
+                    case FL_INDENT:
+                        expect(tmp, FTokenType.FLOAT);
+                        fStyle.setFirstLineIndent((Float) tmp.getPayload());
+                        break;
+
+                    case FONT:
+                        expect(tmp, FTokenType.IDENTIFIER);
+                        fStyle.setFamily((String) tmp.getPayload());
+                        break;
+
+                    case BOLD:
+                        expect(tmp, FTokenType.TRUE);
+                        fStyle.setBold(tmp.getType() == FTokenType.TRUE);
+                        break;
+
+                    case ITALIC:
+                        expect(tmp, FTokenType.TRUE);
+                        fStyle.setItalic(tmp.getType() == FTokenType.TRUE);
+                        break;
+
+                    case STRIKE_THROUGH:
+                        expect(tmp, FTokenType.TRUE);
+                        fStyle.setStrikeThrough(tmp.getType() == FTokenType.TRUE);
+                        break;
+
+                    case UNDERLINE:
+                        expect(tmp, FTokenType.TRUE);
+                        fStyle.setUnderlined(tmp.getType() == FTokenType.TRUE);
+                        break;
+
+                    case BACKGROUND_NEW:
+                        expect(tmp, FTokenType.INT);
+                        fStyle.setBackground(new Color((Integer) tmp.getPayload()));
+                        break;
+
+                    case FOREGORUND_NEW:
+                        expect(tmp, FTokenType.INT);
+                        fStyle.setForeground(new Color((Integer) tmp.getPayload()));
+                        break;
+
+                    default: throw new ParseException(tmp.getStartPos(), "Expected a value!");
+                }
+            }
+        } else throw new ParseException(token.getStartPos(), "Expected style definition!");
+        return fStyle;
+    }
+
     private void parseFile() throws ParseException {
-        // TODO
         FToken t;
         while ((t = nextToken()).getType() != FTokenType.EOF) {
-            System.out.println(t.getType() + ": " + t.getPayload());
+            switch (t.getType()) {
+                case COMMENT: continue;
+                case TYPE: styles.add(parseFStyle()); break;
+                default: throw new ParseException(t.getStartPos(), "Expected a style declaration!");
+            }
         }
+        for (FStyle style : styles) addStyle(style.getTokenType(), style.asStyle(null));
     }
 
     private String parseComment() {
@@ -152,6 +272,7 @@ public class GenericTheme extends FTheme {
     public abstract static class Types {
         public static final String ALIGNMENT      = "alignment";
         public static final String BACKGROUND     = "bg_0x";
+        public static final String BACKGROUND_NEW = "background";
         public static final String BIDI           = "bidilevel";
         public static final String BOLD           = "bold";
         public static final String COMMENT        = "#";
@@ -159,10 +280,11 @@ public class GenericTheme extends FTheme {
         public static final String FL_INDENT      = "firstline-indent";
         public static final String FONT           = "font";
         public static final String FOREGROUND     = "fg_0x";
+        public static final String FOREGORUND_NEW = "foreground";
         public static final String ITALIC         = "italic";
         public static final String SEPARATOR      = ":";
         public static final String SIZE           = "size";
-        public static final String STRIKE_THROUGH = "stroke-through";
-        public static final String UNDERLINE      = "underline";
+        public static final String STRIKE_THROUGH = "strike-through";
+        public static final String UNDERLINE      = "underlined";
     }
 }
