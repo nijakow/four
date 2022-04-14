@@ -92,7 +92,8 @@ public class VM {
 	}
 	
 	private void runAllActiveFibers() throws FourRuntimeException {
-		while (!fibers.isEmpty()) {			
+		while (!fibers.isEmpty()) {
+			long startTime = System.currentTimeMillis();
 			int x = 0;
 			Fiber fiber = fibers.poll();
 			try {
@@ -100,8 +101,11 @@ public class VM {
 				if (user != null)
 					user.notifyActive();
 				while (!fiber.isTerminated()) {
-					if (x >= 10000000) {
-						throw new FourRuntimeException("Process timed out!");
+					if (x >= 1000000) {
+						if (System.currentTimeMillis() - startTime >= 2500)
+							throw new FourRuntimeException("Process timed out!");
+						else
+							x = 0;
 					}
 					fiber.tick();
 					x++;
