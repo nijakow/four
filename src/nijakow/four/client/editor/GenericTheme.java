@@ -1,5 +1,8 @@
 package nijakow.four.client.editor;
 
+import nijakow.four.share.lang.c.parser.ParseException;
+import nijakow.four.share.lang.c.parser.StreamPosition;
+import nijakow.four.share.lang.c.parser.StringCharStream;
 import nijakow.four.share.lang.c.parser.TokenType;
 
 import javax.swing.text.Style;
@@ -7,12 +10,78 @@ import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
 import java.awt.*;
 import java.io.*;
+import java.util.Stack;
 
 import static nijakow.four.client.editor.GenericTheme.Types.*;
 
 public class GenericTheme extends FTheme {
+    private final StringCharStream stream;
+
     public GenericTheme(File file) throws Exception {
+        // TODO
+        stream = null;
         if (!parseFile(file)) throw new Exception("Could not read file!");
+    }
+
+    public GenericTheme(String content) throws ParseException {
+        stream = new StringCharStream("", content);
+        parseFile();
+    }
+
+    private void skipWhitespaces() {
+        while (Character.isWhitespace(stream.peek())) stream.advance();
+    }
+
+    private void parseFile() throws ParseException {
+        // TODO
+        FToken t;
+        while ((t = nextToken()).getType() != FTokenType.EOF) {
+            System.out.println(t.getType() + ": " + t.getPayload());
+        }
+    }
+
+    private String parseComment() {
+        StringBuilder builder = new StringBuilder();
+        int c;
+        while ((c = stream.peek()) != '\n' && c >= 0) {
+            builder.append((char) c);
+            stream.advance();
+        }
+        return builder.toString();
+    }
+
+    private boolean isSpecial(int c) {
+        return !(Character.isAlphabetic(c) || Character.isDigit(c));
+    }
+
+    private FToken nextToken() {
+        skipWhitespaces();
+
+        final StreamPosition pos = stream.getPosition();
+
+        if (stream.peeks("#")) return new FToken(FTokenType.COMMENT, pos, parseComment(), stream.getPosition());
+        else if (stream.peeks(":")) return new FToken(FTokenType.COLON, pos, null, stream.getPosition());
+        else if (stream.peeks("{")) return new FToken(FTokenType.L_CURLY, pos, null, stream.getPosition());
+        else if (stream.peeks("}")) return new FToken(FTokenType.R_CURLY, pos, null, stream.getPosition());
+        else if (stream.peeks("=")) return new FToken(FTokenType.EQUALS, pos, null, stream.getPosition());
+        else if (stream.peeks(";")) return new FToken(FTokenType.SEMICOLON, pos, null, stream.getPosition());
+
+        final StringBuilder builder = new StringBuilder();
+        while (!isSpecial(stream.peek())) builder.append((char) stream.next());
+
+        final String raw = builder.toString();
+
+        try {
+            return new FToken(FTokenType.INT, pos, Integer.decode(raw), stream.getPosition());
+        } catch (NumberFormatException e) {}
+
+        switch (raw) {
+            case "": return new FToken(FTokenType.EOF, pos, null, stream.getPosition());
+            case "type": return new FToken(FTokenType.TYPE, pos, null, stream.getPosition());
+            case "true": return new FToken(FTokenType.TRUE, pos, null, stream.getPosition());
+            case "false": return new FToken(FTokenType.FALSE, pos, null, stream.getPosition());
+            default: return new FToken(FTokenType.IDENTIFIER, pos, raw, stream.getPosition());
+        }
     }
 
     private boolean parseFile(File file) {
