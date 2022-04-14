@@ -5,9 +5,6 @@ import nijakow.four.share.lang.c.parser.StreamPosition;
 import nijakow.four.share.lang.c.parser.StringCharStream;
 import nijakow.four.share.lang.c.parser.TokenType;
 
-import javax.swing.text.Style;
-import javax.swing.text.StyleConstants;
-import javax.swing.text.StyleContext;
 import java.awt.*;
 import java.io.*;
 import java.util.LinkedList;
@@ -19,17 +16,24 @@ public class GenericTheme extends FTheme {
     private final StringCharStream stream;
     private final List<FStyle> styles;
 
-    public GenericTheme(File file) throws Exception {
-        // TODO
-        stream = null;
-        styles = null;
-        if (!parseFile(file)) throw new Exception("Could not read file!");
+    public GenericTheme(File file) throws IOException, ParseException {
+        stream = new StringCharStream(file.getName(), readFile(file));
+        styles = new LinkedList<>();
+        parseFile();
     }
 
     public GenericTheme(String content) throws ParseException {
         stream = new StringCharStream("", content);
         styles = new LinkedList<>();
         parseFile();
+    }
+
+    private String readFile(File file) throws IOException {
+        BufferedReader reader = new BufferedReader(new FileReader(file));
+        StringBuilder builder = new StringBuilder();
+        int i;
+        while ((i = reader.read()) != -1) builder.append((char) i);
+        return builder.toString();
     }
 
     private void skipWhitespaces() {
@@ -131,12 +135,12 @@ public class GenericTheme extends FTheme {
                         fStyle.setUnderlined(tmp.getType() == FTokenType.TRUE);
                         break;
 
-                    case BACKGROUND_NEW:
+                    case BACKGROUND:
                         expect(tmp, FTokenType.INT);
                         fStyle.setBackground(new Color((Integer) tmp.getPayload()));
                         break;
 
-                    case FOREGORUND_NEW:
+                    case FOREGROUND:
                         expect(tmp, FTokenType.INT);
                         fStyle.setForeground(new Color((Integer) tmp.getPayload()));
                         break;
@@ -204,85 +208,15 @@ public class GenericTheme extends FTheme {
         }
     }
 
-    private boolean parseFile(File file) {
-        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                line = line.trim();
-                if (line.startsWith(Types.COMMENT) || line.isEmpty()) {
-                    // Ignore, comment.
-                } else if (line.contains(SEPARATOR)) {
-                    parseStyle(line, reader);
-                } else
-                    throw new RuntimeException("Error while parsing styles file! Line: " + line);
-            }
-        } catch (IOException e) {
-            return false;
-        }
-        return true;
-    }
-
-    private Style parseStyle(String currentLine, final BufferedReader reader) throws IOException {
-        TokenType type = TokenType.valueOf(currentLine.substring(0, currentLine.indexOf(SEPARATOR)));
-        Style style = new StyleContext().addStyle(null, null);
-        boolean first = true;
-        while ((currentLine = reader.readLine()) != null) {
-            currentLine = currentLine.trim();
-            if (currentLine.startsWith(COMMENT) || currentLine.isEmpty()) {
-                // Ignore, comment.
-            } else {
-                int equal = currentLine.indexOf(Types.EQUALS);
-                int separator = currentLine.indexOf(SEPARATOR);
-                String element, argument;
-                if (equal == -1 && separator != -1) {
-                    if (first) {
-                        style = parseStyle(currentLine, reader);
-                    } else {
-                        parseStyle(currentLine, reader);
-                    }
-                } else if (equal == -1 && currentLine.toLowerCase().startsWith(FOREGROUND)) {
-                    StyleConstants.setForeground(style, new Color(Integer.parseInt(currentLine.substring(FOREGROUND.length()), 16)));
-                } else if (equal == -1 && currentLine.toLowerCase().startsWith(BACKGROUND)) {
-                    StyleConstants.setBackground(style, new Color(Integer.parseInt(currentLine.substring(BACKGROUND.length()), 16)));
-                } else {
-                    element = currentLine.substring(0, equal);
-                    argument = currentLine.substring(equal + 1);
-                    switch (element.toLowerCase()) {
-                        case ALIGNMENT: StyleConstants.setAlignment(style, Integer.parseInt(argument)); break;
-                        case BIDI: StyleConstants.setBidiLevel(style, Integer.parseInt(argument)); break;
-                        case BOLD: StyleConstants.setBold(style, Boolean.parseBoolean(argument)); break;
-                        case FL_INDENT: StyleConstants.setFirstLineIndent(style, Float.parseFloat(argument)); break;
-                        case FONT: StyleConstants.setFontFamily(style, argument); break;
-                        case ITALIC: StyleConstants.setItalic(style, Boolean.parseBoolean(argument)); break;
-                        case SIZE: StyleConstants.setFontSize(style, Integer.parseInt(argument)); break;
-                        case STRIKE_THROUGH: StyleConstants.setStrikeThrough(style, Boolean.parseBoolean(argument)); break;
-                        case UNDERLINE: StyleConstants.setUnderline(style, Boolean.parseBoolean(argument)); break;
-
-                        default:
-                            throw new IllegalStateException("Unexpected value: " + element);
-                    }
-                }
-                first = false;
-            }
-        }
-        addStyle(type, style);
-        return style;
-    }
-
     public abstract static class Types {
         public static final String ALIGNMENT      = "alignment";
-        public static final String BACKGROUND     = "bg_0x";
-        public static final String BACKGROUND_NEW = "background";
+        public static final String BACKGROUND = "background";
         public static final String BIDI           = "bidilevel";
         public static final String BOLD           = "bold";
-        public static final String COMMENT        = "#";
-        public static final String EQUALS         = "=";
         public static final String FL_INDENT      = "firstline-indent";
         public static final String FONT           = "font";
-        public static final String FOREGROUND     = "fg_0x";
-        public static final String FOREGORUND_NEW = "foreground";
+        public static final String FOREGROUND = "foreground";
         public static final String ITALIC         = "italic";
-        public static final String SEPARATOR      = ":";
         public static final String SIZE           = "size";
         public static final String STRIKE_THROUGH = "strike-through";
         public static final String UNDERLINE      = "underlined";
