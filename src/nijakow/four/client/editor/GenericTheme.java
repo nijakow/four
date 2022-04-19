@@ -210,7 +210,7 @@ public class GenericTheme extends FTheme {
         }
     }
 
-    public String styleToText(FStyle style) {
+    private String styleToText(FStyle style) {
         final StringBuilder builder = new StringBuilder();
         if (style.getParent() != null && !styles.contains(style.getParent())) {
             builder.append(styleToText(style.getParent()))
@@ -306,7 +306,7 @@ public class GenericTheme extends FTheme {
         return builder.toString();
     }
 
-    public String generateText() {
+    private String generateText() {
         StringBuilder builder = new StringBuilder();
         styles.clear();
         for (FStyle style : getAllStyles()) {
