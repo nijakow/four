@@ -16,6 +16,7 @@ import javax.swing.text.*;
 import nijakow.four.client.Commands;
 import nijakow.four.client.PreferencesHelper;
 import nijakow.four.client.net.ClientConnection;
+import nijakow.four.share.lang.c.parser.ParseException;
 
 public class ClientEditor extends JFrame implements ActionListener {
 	private static final long serialVersionUID = 1L;
@@ -47,7 +48,8 @@ public class ClientEditor extends JFrame implements ActionListener {
 					doc.setTheme(new GenericTheme(new File(theme)));
 					if (doc.isSyntaxHighlighting()) doc.updateSyntaxHighlighting();
 				} catch (Exception e) {
-					JOptionPane.showMessageDialog(this, "Could not open theme file: " + theme + "!" +
+					JOptionPane.showMessageDialog(this, "Could not open theme file: " + theme + "!\n" +
+									(e instanceof ParseException ? ((ParseException) e).getErrorText() : "") +
 							"\nSwitching to default theme...",
 							"File error", JOptionPane.ERROR_MESSAGE);
 					PreferencesHelper.getInstance().setEditorTheme(Commands.Themes.DEFAULT);
@@ -263,6 +265,9 @@ public class ClientEditor extends JFrame implements ActionListener {
 			File selected = chooser.getSelectedFile();
 			try {
 				doc.setTheme(new GenericTheme(selected));
+			} catch (ParseException e) {
+				JOptionPane.showMessageDialog(this, e.getErrorText(), "Could not parse file!", JOptionPane.ERROR_MESSAGE);
+				return null;
 			} catch (Exception e) {
 				JOptionPane.showMessageDialog(this, "Could not open file: " + selected + "!",
 						"File error", JOptionPane.ERROR_MESSAGE);
