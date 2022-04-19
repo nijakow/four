@@ -10,6 +10,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.File;
+import java.io.IOException;
 
 public class FThemeEditor extends JDialog {
     private final FTheme current;
@@ -139,12 +141,14 @@ public class FThemeEditor extends JDialog {
         editAll.add(both, BorderLayout.CENTER);
         saveButtons = new JPanel(new GridLayout(1, 2));
         JButton save = new JButton("Save");
+        save.addActionListener(event -> saveToFile(false, name));
         JButton saveAs = new JButton("Save as...");
+        saveAs.addActionListener(event -> saveToFile(true, null));
         tokens.addItemListener(event -> {
             // TODO Save changes that have been made!!!
             currentStyle = current.getStyle((TokenType) tokens.getSelectedItem());
+            // TODO Add default style here!
             if (currentStyle != null) {
-                // TODO Add default style here!
                 Style s = currentStyle.asStyle(null);
                 bold.setSelected(StyleConstants.isBold(s));
                 italic.setSelected(StyleConstants.isItalic(s));
@@ -167,12 +171,45 @@ public class FThemeEditor extends JDialog {
         getContentPane().add(editAll);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         pack();
-        addWindowListener(new WindowAdapter() {
+    }
+
+    private void saveToFile(boolean newFile, String fileName) {
+        File file = fileName == null ? null : new File(fileName);
+        if (file != null && !file.exists() && !newFile) {
+            JOptionPane.showMessageDialog(this, "File does not exist (anymore)!\n" +
+                    "\nChoose a new one to save.", "File error", JOptionPane.ERROR_MESSAGE);
+            newFile = true;
+        } else if (file == null && !newFile) newFile = true;
+        if (newFile) {
+            JFileChooser chooser = new JFileChooser();
+            chooser.setDragEnabled(true);
+            chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+            if (chooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) file = chooser.getSelectedFile();
+            else return;
+        }
+        final File toWrite = file;
+        SwingWorker<?, ?> sw = new SwingWorker<Object, Boolean>() {
             @Override
-            public void windowDeactivated(WindowEvent e) {
-                // TODO Save values in the theme
+            protected void done() {
+                try {
+                    get();
+                } catch (Exception e) {
+                    JOptionPane.showMessageDialog(FThemeEditor.this, "Could not save theme to file!\n\n" +
+                            e.getLocalizedMessage(), "Could not write file!", JOptionPane.ERROR_MESSAGE);
+                    e.printStackTrace();
+                }
             }
-        });
+
+            @Override
+            protected Boolean doInBackground() throws IOException {
+                if (current instanceof GenericTheme) ((GenericTheme) current).saveToFile(toWrite);
+                else {
+                    // TODO Copy and write
+                }
+                return true;
+            }
+        };
+        sw.execute();
     }
 
     public void toggleMode(boolean dark) {

@@ -58,12 +58,20 @@ public class FStyle {
         this.bold = bold;
     }
 
+    public boolean isBoldOverwritten() {
+        return bold != null;
+    }
+
     public Boolean isItalic() {
         return parent != null && italic == null ? parent.isItalic() : italic;
     }
 
     public void setItalic(boolean italic) {
         this.italic = italic;
+    }
+
+    public boolean isItalicOverwritten() {
+        return italic != null;
     }
 
     public Boolean isStrikeThrough() {
@@ -74,12 +82,20 @@ public class FStyle {
         this.strike = strike;
     }
 
+    public boolean isStrikeThroughOverwritten() {
+        return strike != null;
+    }
+
     public Boolean isUnderlined() {
         return parent != null && underlined == null ? parent.isUnderlined() : underlined;
     }
 
     public void setUnderlined(boolean underlined) {
         this.underlined = underlined;
+    }
+
+    public boolean isUnderlinedOverwritten() {
+        return underlined != null;
     }
 
     public Integer getAlignment() {
@@ -90,12 +106,20 @@ public class FStyle {
         this.alignment = alignment;
     }
 
+    public boolean isAlignmentOverwritten() {
+        return alignment != null;
+    }
+
     public Integer getBidiLevel() {
         return parent != null && bidiLevel == null ? parent.getBidiLevel() : bidiLevel;
     }
 
     public void setBidiLevel(int bidiLevel) {
         this.bidiLevel = bidiLevel;
+    }
+
+    public boolean isBidiLevelOverwritten() {
+        return bidiLevel != null;
     }
 
     public Integer getSize() {
@@ -106,12 +130,20 @@ public class FStyle {
         this.size = size;
     }
 
+    public boolean isSizeOverwritten() {
+        return size != null;
+    }
+
     public Float getFirstLineIndent() {
         return parent != null && firstLineIndent == null ? parent.getFirstLineIndent() : firstLineIndent;
     }
 
     public void setFirstLineIndent(float firstLineIndent) {
         this.firstLineIndent = firstLineIndent;
+    }
+
+    public boolean isFirstLineIndentOverwritten() {
+        return firstLineIndent != null;
     }
 
     public String getFamily() {
@@ -122,6 +154,10 @@ public class FStyle {
         this.family = family;
     }
 
+    public boolean isFamilyOverwritten() {
+        return family != null;
+    }
+
     public Color getBackground() {
         return parent != null && background == null ? parent.getBackground() : background;
     }
@@ -130,12 +166,20 @@ public class FStyle {
         this.background = background;
     }
 
+    public boolean isBackgroundOverwritten() {
+        return background != null;
+    }
+
     public Color getForeground() {
         return parent != null && foreground == null ? parent.getForeground() : foreground;
     }
 
     public void setForeground(Color foreground) {
         this.foreground = foreground;
+    }
+
+    public boolean isForegroundOverwritten() {
+        return foreground != null;
     }
 
     public Style asStyle(Style parent) {
