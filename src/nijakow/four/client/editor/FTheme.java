@@ -2,39 +2,35 @@ package nijakow.four.client.editor;
 
 import nijakow.four.share.lang.c.parser.TokenType;
 
-import javax.swing.text.Style;
-import javax.swing.text.StyleConstants;
-import javax.swing.text.StyleContext;
 import java.awt.*;
 import java.util.HashMap;
 
 public abstract class FTheme {
-    private final HashMap<TokenType, Style> styles;
-    private final Style errorStyle;
+    private final HashMap<TokenType, FStyle> styles;
+    private final FStyle errorStyle;
 
     public FTheme() {
         styles = new HashMap<>();
         errorStyle = setErrorStyle();
     }
 
-    protected Style setErrorStyle() {
-        StyleContext context = new StyleContext();
-        Style ret = context.addStyle(null, null);
-        StyleConstants.setUnderline(ret, true);
-        StyleConstants.setForeground(ret, Color.red);
-        StyleConstants.setBold(ret, true);
+    protected FStyle setErrorStyle() {
+        FStyle ret = new FStyle(null);
+        ret.setUnderlined(true);
+        ret.setForeground(Color.red);
+        ret.setBold(true);
         return ret;
     }
 
-    public void addStyle(TokenType type, Style style) {
+    public void addStyle(TokenType type, FStyle style) {
         styles.put(type, style);
     }
 
-    public Style getStyle(TokenType type) {
+    public FStyle getStyle(TokenType type) {
         return styles.get(type);
     }
 
-    public Style getErrorStyle() {
+    public FStyle getErrorStyle() {
         return errorStyle;
     }
 }

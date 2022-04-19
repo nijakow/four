@@ -161,7 +161,7 @@ public class GenericTheme extends FTheme {
                 default: throw new ParseException(t.getStartPos(), "Expected a style declaration!");
             }
         }
-        for (FStyle style : styles) addStyle(style.getTokenType(), style.asStyle(null));
+        for (FStyle style : styles) addStyle(style.getTokenType(), style);
     }
 
     private String parseComment() {

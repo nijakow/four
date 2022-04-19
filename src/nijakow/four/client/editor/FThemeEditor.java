@@ -5,7 +5,6 @@ import nijakow.four.share.lang.c.parser.TokenType;
 import javax.swing.*;
 import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
-import javax.swing.text.StyleContext;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -120,19 +119,21 @@ public class FThemeEditor extends JDialog {
         JButton save = new JButton("Save");
         JButton saveAs = new JButton("Save as...");
         tokens.addItemListener(event -> {
-            Style style = current.getStyle((TokenType) tokens.getSelectedItem());
+            FStyle style = current.getStyle((TokenType) tokens.getSelectedItem());
             if (style != null) {
-                bold.setSelected(StyleConstants.isBold(style));
-                italic.setSelected(StyleConstants.isItalic(style));
-                strike.setSelected(StyleConstants.isStrikeThrough(style));
-                underline.setSelected(StyleConstants.isUnderline(style));
-                fam.setText(StyleConstants.getFontFamily(style));
-                size.setText(Integer.toString(StyleConstants.getFontSize(style)));
-                fl.setText(Float.toString(StyleConstants.getFirstLineIndent(style)));
-                bidi.setText(Integer.toString(StyleConstants.getBidiLevel(style)));
-                back.setBackground(StyleConstants.getBackground(style));
-                fore.setBackground(StyleConstants.getForeground(style));
-                // TODO Inheritance
+                Style s = style.asStyle(null);
+                bold.setSelected(StyleConstants.isBold(s));
+                italic.setSelected(StyleConstants.isItalic(s));
+                underline.setSelected(StyleConstants.isUnderline(s));
+                strike.setSelected(StyleConstants.isStrikeThrough(s));
+                fam.setText(StyleConstants.getFontFamily(s));
+                size.setText(Integer.toString(StyleConstants.getFontSize(s)));
+                bidi.setText(Integer.toString(StyleConstants.getBidiLevel(s)));
+                fl.setText(Float.toString(StyleConstants.getFirstLineIndent(s)));
+                back.setBackground(StyleConstants.getBackground(s));
+                fore.setBackground(StyleConstants.getForeground(s));
+                inherit.setSelected(style.getParent() != null);
+                if (style.getParent() != null) inTokens.setSelectedItem(style.getParent().getTokenType());
             }
         });
         saveButtons.add(save);

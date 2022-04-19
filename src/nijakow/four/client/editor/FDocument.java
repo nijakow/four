@@ -24,7 +24,7 @@ public class FDocument extends DefaultStyledDocument {
     public FDocument() {
         threads = Executors.newSingleThreadScheduledExecutor();
         def = getLogicalStyle(0);
-        theme = new DefaultTheme(def);
+        theme = new DefaultTheme();
         idents = new ArrayList<>();
         ide = new ArrayList<>();
         highlighting = false;
@@ -42,7 +42,7 @@ public class FDocument extends DefaultStyledDocument {
 
     public void setTheme(FTheme theme) {
         if (theme == null) {
-            this.theme = new DefaultTheme(def);
+            this.theme = new DefaultTheme();
         } else {
             this.theme = theme;
         }
@@ -194,7 +194,7 @@ public class FDocument extends DefaultStyledDocument {
                     depth--;
                     ideLocal.add(new Pair<>(token.getPosition().getIndex(), depth));
                 }
-                Style style = theme.getStyle(token.getType());
+                Style style = theme.getStyle(token.getType()) == null ? def : theme.getStyle(token.getType()).asStyle(def);
                 if (style == null) style = def;
                 int pos = token.getPosition().getIndex();
                 setCharacterAttributes(pos, token.getEndPosition().getIndex() - pos, style, true);
@@ -207,7 +207,7 @@ public class FDocument extends DefaultStyledDocument {
                 ide.addAll(ideLocal);
             }
         } catch (ParseException e) {
-            Style s = theme.getErrorStyle();
+            Style s = theme.getErrorStyle() == null ? def : theme.getErrorStyle().asStyle(def);
             Token t = e.getToken();
             if (t != null)
                setCharacterAttributes(t.getPosition().getIndex(), t.getEndPosition().getIndex() - t.getPosition().getIndex(), s, false);
