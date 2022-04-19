@@ -47,7 +47,6 @@ public class FThemeEditor extends JDialog {
     }
 
     public FThemeEditor(Frame parent, FTheme current, String name) {
-        // TODO Add functionality
         super(parent, name, true);
         this.current = current;
         editAll = new JPanel(new BorderLayout());
@@ -119,8 +118,10 @@ public class FThemeEditor extends JDialog {
         JButton save = new JButton("Save");
         JButton saveAs = new JButton("Save as...");
         tokens.addItemListener(event -> {
+            // TODO Save changes that have been made!!!
             FStyle style = current.getStyle((TokenType) tokens.getSelectedItem());
             if (style != null) {
+                // TODO Add default style here!
                 Style s = style.asStyle(null);
                 bold.setSelected(StyleConstants.isBold(s));
                 italic.setSelected(StyleConstants.isItalic(s));

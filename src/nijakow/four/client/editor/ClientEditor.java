@@ -343,7 +343,7 @@ public class ClientEditor extends JFrame implements ActionListener {
 			if (comboBox.getSelectedItem().equals(OTHER_THEME)) {
 				showThemeEditor(null);
 			} else {
-				showThemeEditor(doc.getTheme());
+				showThemeEditor(doc.getTheme(), (String) comboBox.getSelectedItem());
 			}
 		});
 		themePanel.add(themeDesc);
@@ -419,6 +419,13 @@ public class ClientEditor extends JFrame implements ActionListener {
 
 	private void showThemeEditor(FTheme current) {
 		FThemeEditor editor = new FThemeEditor(this, current);
+		editor.toggleMode(dark);
+		editor.setLocationRelativeTo(this);
+		editor.setVisible(true);
+	}
+
+	private void showThemeEditor(FTheme current, String name) {
+		FThemeEditor editor = new FThemeEditor(this, current, name);
 		editor.toggleMode(dark);
 		editor.setLocationRelativeTo(this);
 		editor.setVisible(true);
