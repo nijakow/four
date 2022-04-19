@@ -6,6 +6,8 @@ import javax.swing.*;
 import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
@@ -41,6 +43,7 @@ public class FThemeEditor extends JDialog {
     private final JTextField fam;
     private final JTextField fl;
     private boolean dark;
+    private FStyle currentStyle;
 
     public FThemeEditor(Frame parent, FTheme current) {
         this(parent, current, "New...");
@@ -108,6 +111,26 @@ public class FThemeEditor extends JDialog {
         forePanel = new JPanel(new GridLayout(2, 1));
         foreDesc = new JLabel("The text colour:");
         JPanel fore = new JPanel();
+        fore.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                Color tmp = JColorChooser.showDialog(FThemeEditor.this, "Text colour", currentStyle == null ? null : currentStyle.getForeground());
+                if (tmp != null) {
+                    if (currentStyle != null) currentStyle.setForeground(tmp);
+                    fore.setBackground(tmp);
+                }
+            }
+        });
+        back.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                Color tmp = JColorChooser.showDialog(FThemeEditor.this, "Text colour", currentStyle == null ? null : currentStyle.getBackground());
+                if (tmp != null) {
+                    if (currentStyle != null) currentStyle.setBackground(tmp);
+                    back.setBackground(tmp);
+                }
+            }
+        });
         forePanel.add(foreDesc);
         forePanel.add(fore);
         otherPanel.add(forePanel);
@@ -119,10 +142,10 @@ public class FThemeEditor extends JDialog {
         JButton saveAs = new JButton("Save as...");
         tokens.addItemListener(event -> {
             // TODO Save changes that have been made!!!
-            FStyle style = current.getStyle((TokenType) tokens.getSelectedItem());
-            if (style != null) {
+            currentStyle = current.getStyle((TokenType) tokens.getSelectedItem());
+            if (currentStyle != null) {
                 // TODO Add default style here!
-                Style s = style.asStyle(null);
+                Style s = currentStyle.asStyle(null);
                 bold.setSelected(StyleConstants.isBold(s));
                 italic.setSelected(StyleConstants.isItalic(s));
                 underline.setSelected(StyleConstants.isUnderline(s));
@@ -133,8 +156,8 @@ public class FThemeEditor extends JDialog {
                 fl.setText(Float.toString(StyleConstants.getFirstLineIndent(s)));
                 back.setBackground(StyleConstants.getBackground(s));
                 fore.setBackground(StyleConstants.getForeground(s));
-                inherit.setSelected(style.getParent() != null);
-                if (style.getParent() != null) inTokens.setSelectedItem(style.getParent().getTokenType());
+                inherit.setSelected(currentStyle.getParent() != null);
+                if (currentStyle.getParent() != null) inTokens.setSelectedItem(currentStyle.getParent().getTokenType());
             }
         });
         saveButtons.add(save);
