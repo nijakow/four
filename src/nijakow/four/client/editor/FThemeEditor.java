@@ -14,7 +14,7 @@ import java.io.File;
 import java.io.IOException;
 
 public class FThemeEditor extends JDialog {
-    private final FTheme current;
+    private final WritableTheme current;
     private final JCheckBox bold;
     private final JCheckBox italic;
     private final JCheckBox strike;
@@ -53,7 +53,14 @@ public class FThemeEditor extends JDialog {
 
     public FThemeEditor(Frame parent, FTheme current, String name) {
         super(parent, name, true);
-        this.current = current;
+        if (current == null) {
+            this.current = new WritableTheme();
+        } else if (!(current instanceof WritableTheme)) {
+            // TODO Copy!!!
+            this.current = null;
+        } else {
+            this.current = (WritableTheme) current;
+        }
         editAll = new JPanel(new BorderLayout());
         cBox = new JPanel(new GridLayout(2, 1));
         desc = new JLabel("The token type to modify the values for:");
@@ -146,7 +153,7 @@ public class FThemeEditor extends JDialog {
         saveAs.addActionListener(event -> saveToFile(true, null));
         tokens.addItemListener(event -> {
             // TODO Save changes that have been made!!!
-            currentStyle = current.getStyle((TokenType) tokens.getSelectedItem());
+            currentStyle = this.current.getStyle((TokenType) tokens.getSelectedItem());
             // TODO Add default style here!
             if (currentStyle != null) {
                 Style s = currentStyle.asStyle(null);
@@ -202,10 +209,7 @@ public class FThemeEditor extends JDialog {
 
             @Override
             protected Boolean doInBackground() throws IOException {
-                if (current instanceof GenericTheme) ((GenericTheme) current).saveToFile(toWrite);
-                else {
-                    // TODO Copy and write
-                }
+                current.saveToFile(toWrite);
                 return true;
             }
         };
