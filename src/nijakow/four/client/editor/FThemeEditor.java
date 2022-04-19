@@ -3,7 +3,12 @@ package nijakow.four.client.editor;
 import nijakow.four.share.lang.c.parser.TokenType;
 
 import javax.swing.*;
+import javax.swing.text.Style;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyleContext;
 import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 public class FThemeEditor extends JDialog {
     private final FTheme current;
@@ -39,8 +44,12 @@ public class FThemeEditor extends JDialog {
     private boolean dark;
 
     public FThemeEditor(Frame parent, FTheme current) {
+        this(parent, current, "New...");
+    }
+
+    public FThemeEditor(Frame parent, FTheme current, String name) {
         // TODO Add functionality
-        super(parent, "Theme editor", true); // TODO Change to name of the current theme!
+        super(parent, name, true);
         this.current = current;
         editAll = new JPanel(new BorderLayout());
         cBox = new JPanel(new GridLayout(2, 1));
@@ -110,6 +119,22 @@ public class FThemeEditor extends JDialog {
         saveButtons = new JPanel(new GridLayout(1, 2));
         JButton save = new JButton("Save");
         JButton saveAs = new JButton("Save as...");
+        tokens.addItemListener(event -> {
+            Style style = current.getStyle((TokenType) tokens.getSelectedItem());
+            if (style != null) {
+                bold.setSelected(StyleConstants.isBold(style));
+                italic.setSelected(StyleConstants.isItalic(style));
+                strike.setSelected(StyleConstants.isStrikeThrough(style));
+                underline.setSelected(StyleConstants.isUnderline(style));
+                fam.setText(StyleConstants.getFontFamily(style));
+                size.setText(Integer.toString(StyleConstants.getFontSize(style)));
+                fl.setText(Float.toString(StyleConstants.getFirstLineIndent(style)));
+                bidi.setText(Integer.toString(StyleConstants.getBidiLevel(style)));
+                back.setBackground(StyleConstants.getBackground(style));
+                fore.setBackground(StyleConstants.getForeground(style));
+                // TODO Inheritance
+            }
+        });
         saveButtons.add(save);
         saveButtons.add(saveAs);
         editAll.add(saveButtons, BorderLayout.SOUTH);
@@ -117,6 +142,12 @@ public class FThemeEditor extends JDialog {
         getContentPane().add(editAll);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         pack();
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowDeactivated(WindowEvent e) {
+                // TODO Save values in the theme
+            }
+        });
     }
 
     public void toggleMode(boolean dark) {
