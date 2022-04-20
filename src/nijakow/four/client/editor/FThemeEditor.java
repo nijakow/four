@@ -288,7 +288,6 @@ public class FThemeEditor extends JDialog {
                 currentStyle.setTokenType((TokenType) tokens.getSelectedItem());
                 this.current.addStyle((TokenType) tokens.getSelectedItem(), currentStyle);
             }
-            Style s = currentStyle.asStyle(null);
             if (currentStyle.isBoldOverwritten()) (currentStyle.isBold() ? boldEnable : boldDisable).setSelected(true);
             else boldDefault.setSelected(true);
             if (currentStyle.isItalicOverwritten()) (currentStyle.isItalic() ? italicEnable : italicDisable).setSelected(true);
@@ -297,12 +296,12 @@ public class FThemeEditor extends JDialog {
             else underlineDefault.setSelected(true);
             if (currentStyle.isStrikeThroughOverwritten()) (currentStyle.isStrikeThrough() ? strikeEnable : strikeDisable).setSelected(true);
             else strikeDefault.setSelected(true);
-            fam.setText(StyleConstants.getFontFamily(s));
-            size.setText(Integer.toString(StyleConstants.getFontSize(s)));
-            bidi.setText(Integer.toString(StyleConstants.getBidiLevel(s)));
-            fl.setText(Float.toString(StyleConstants.getFirstLineIndent(s)));
-            back.setBackground(StyleConstants.getBackground(s));
-            fore.setBackground(StyleConstants.getForeground(s));
+            fam.setText((currentStyle.isFamilyOverwritten() ? currentStyle : defaultStyle).getFamily());
+            size.setText(Integer.toString((currentStyle.isSizeOverwritten() ? currentStyle : defaultStyle).getSize()));
+            bidi.setText(Integer.toString((currentStyle.isBidiLevelOverwritten() ? currentStyle : defaultStyle).getBidiLevel()));
+            fl.setText(Float.toString((currentStyle.isFirstLineIndentOverwritten() ? currentStyle : defaultStyle).getFirstLineIndent()));
+            back.setBackground((currentStyle.isBackgroundOverwritten() ? currentStyle : defaultStyle).getBackground());
+            fore.setBackground((currentStyle.isForegroundOverwritten() ? currentStyle : defaultStyle).getForeground());
             inherit.setSelected(currentStyle.getParent() != null);
             if (currentStyle.getParent() != null) inTokens.setSelectedItem(currentStyle.getParent().getTokenType());
         });
