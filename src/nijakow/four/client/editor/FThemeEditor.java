@@ -231,7 +231,7 @@ public class FThemeEditor extends JDialog {
         back.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                Color tmp = JColorChooser.showDialog(FThemeEditor.this, "Text colour", currentStyle == null ? null : currentStyle.getBackground());
+                Color tmp = JColorChooser.showDialog(FThemeEditor.this, "Background colour", currentStyle == null ? null : currentStyle.getBackground());
                 if (tmp != null) {
                     if (currentStyle != null) currentStyle.setBackground(tmp);
                     back.setBackground(tmp);
