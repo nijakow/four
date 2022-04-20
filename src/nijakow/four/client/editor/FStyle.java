@@ -104,7 +104,7 @@ public class FStyle {
         return parent != null && bold == null ? parent.isBold() : bold;
     }
 
-    public void setBold(boolean bold) {
+    public void setBold(Boolean bold) {
         this.bold = bold;
     }
 
@@ -116,7 +116,7 @@ public class FStyle {
         return parent != null && italic == null ? parent.isItalic() : italic;
     }
 
-    public void setItalic(boolean italic) {
+    public void setItalic(Boolean italic) {
         this.italic = italic;
     }
 
@@ -128,7 +128,7 @@ public class FStyle {
         return parent != null && strike == null ? parent.isStrikeThrough() : strike;
     }
 
-    public void setStrikeThrough(boolean strike) {
+    public void setStrikeThrough(Boolean strike) {
         this.strike = strike;
     }
 
@@ -140,7 +140,7 @@ public class FStyle {
         return parent != null && underlined == null ? parent.isUnderlined() : underlined;
     }
 
-    public void setUnderlined(boolean underlined) {
+    public void setUnderlined(Boolean underlined) {
         this.underlined = underlined;
     }
 
@@ -152,7 +152,7 @@ public class FStyle {
         return parent != null && alignment == null ? parent.getAlignment() : alignment;
     }
 
-    public void setAlignment(int alignment) {
+    public void setAlignment(Integer alignment) {
         this.alignment = alignment;
     }
 
@@ -164,7 +164,7 @@ public class FStyle {
         return parent != null && bidiLevel == null ? parent.getBidiLevel() : bidiLevel;
     }
 
-    public void setBidiLevel(int bidiLevel) {
+    public void setBidiLevel(Integer bidiLevel) {
         this.bidiLevel = bidiLevel;
     }
 
@@ -176,7 +176,7 @@ public class FStyle {
         return parent != null && size == null ? parent.getSize() : size;
     }
 
-    public void setSize(int size) {
+    public void setSize(Integer size) {
         this.size = size;
     }
 
@@ -188,7 +188,7 @@ public class FStyle {
         return parent != null && firstLineIndent == null ? parent.getFirstLineIndent() : firstLineIndent;
     }
 
-    public void setFirstLineIndent(float firstLineIndent) {
+    public void setFirstLineIndent(Float firstLineIndent) {
         this.firstLineIndent = firstLineIndent;
     }
 

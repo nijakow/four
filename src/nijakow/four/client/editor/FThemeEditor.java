@@ -250,6 +250,38 @@ public class FThemeEditor extends JDialog {
         JButton saveAs = new JButton("Save as...");
         saveAs.addActionListener(event -> saveToFile(true, null));
         tokens.addItemListener(event -> {
+            // FIXME currentStyle should never be null!
+            if (currentStyle != null) {
+                String text = fam.getText();
+                if (text.isEmpty()) currentStyle.setFamily(null);
+                else currentStyle.setFamily(text);
+                text = size.getText();
+                try {
+                    int s = Integer.decode(text);
+                    currentStyle.setSize(s);
+                } catch (NumberFormatException e) {
+                    currentStyle.setSize(null);
+                }
+                text = fl.getText();
+                try {
+                    float fli = Float.parseFloat(text);
+                    currentStyle.setFirstLineIndent(fli);
+                } catch (NumberFormatException e) {
+                    currentStyle.setFirstLineIndent(null);
+                }
+                text = bidi.getText();
+                try {
+                    int bidi = Integer.decode(text);
+                    currentStyle.setBidiLevel(bidi);
+                } catch (NumberFormatException e) {
+                    currentStyle.setBidiLevel(null);
+                }
+                currentStyle.setBold(boldDefault.isSelected() ? null : boldEnable.isSelected());
+                currentStyle.setItalic(italicDefault.isSelected() ? null : italicEnable.isSelected());
+                currentStyle.setUnderlined(underlineDefault.isSelected() ? null : underlineEnable.isSelected());
+                currentStyle.setStrikeThrough(strikeDefault.isSelected() ? null : strikeEnable.isSelected());
+                currentStyle.setParent(inherit.isSelected() ? this.current.getStyle((TokenType) inTokens.getSelectedItem()) : null);
+            }
             currentStyle = this.current.getStyle((TokenType) tokens.getSelectedItem());
             if (currentStyle == null) {
                 currentStyle = new FStyle(defaultStyle, false);
