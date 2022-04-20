@@ -14,6 +14,7 @@ import java.io.IOException;
 
 public class FThemeEditor extends JDialog {
     private final WritableTheme current;
+    private final FStyle defaultStyle;
     private final JCheckBox inherit;
     private final JPanel checkPanel;
     private final JPanel otherPanel;
@@ -63,15 +64,14 @@ public class FThemeEditor extends JDialog {
     private final JRadioButton strikeDefault;
     private final JRadioButton strikeEnable;
     private final JRadioButton strikeDisable;
-
     private boolean dark;
     private FStyle currentStyle;
 
-    public FThemeEditor(Frame parent, FTheme current) {
-        this(parent, current, "New...");
+    public FThemeEditor(Frame parent, FTheme current, FStyle defaultStyle) {
+        this(parent, current, "New...", defaultStyle);
     }
 
-    public FThemeEditor(Frame parent, FTheme current, String name) {
+    public FThemeEditor(Frame parent, FTheme current, String name, FStyle defaultStyle) {
         super(parent, name, true);
         if (current == null) {
             this.current = new WritableTheme();
@@ -83,6 +83,7 @@ public class FThemeEditor extends JDialog {
         } else {
             this.current = (WritableTheme) current;
         }
+        this.defaultStyle = defaultStyle;
         editAll = new JPanel(new BorderLayout());
         cBox = new JPanel(new GridLayout(2, 1));
         desc = new JLabel("The token type to modify the values for:");
@@ -249,28 +250,29 @@ public class FThemeEditor extends JDialog {
         JButton saveAs = new JButton("Save as...");
         saveAs.addActionListener(event -> saveToFile(true, null));
         tokens.addItemListener(event -> {
-            // TODO Save changes that have been made!!!
             currentStyle = this.current.getStyle((TokenType) tokens.getSelectedItem());
-            // TODO Add default style here!
-            if (currentStyle != null) {
-                Style s = currentStyle.asStyle(null);
-                if (currentStyle.isBoldOverwritten()) (currentStyle.isBold() ? boldEnable : boldDisable).setSelected(true);
-                else boldDefault.setSelected(true);
-                if (currentStyle.isItalicOverwritten()) (currentStyle.isItalic() ? italicEnable : italicDisable).setSelected(true);
-                else italicDefault.setSelected(true);
-                if (currentStyle.isUnderlinedOverwritten()) (currentStyle.isUnderlined() ? underlineEnable : underlineDisable).setSelected(true);
-                else underlineDefault.setSelected(true);
-                if (currentStyle.isStrikeThroughOverwritten()) (currentStyle.isStrikeThrough() ? strikeEnable : strikeDisable).setSelected(true);
-                else strikeDefault.setSelected(true);
-                fam.setText(StyleConstants.getFontFamily(s));
-                size.setText(Integer.toString(StyleConstants.getFontSize(s)));
-                bidi.setText(Integer.toString(StyleConstants.getBidiLevel(s)));
-                fl.setText(Float.toString(StyleConstants.getFirstLineIndent(s)));
-                back.setBackground(StyleConstants.getBackground(s));
-                fore.setBackground(StyleConstants.getForeground(s));
-                inherit.setSelected(currentStyle.getParent() != null);
-                if (currentStyle.getParent() != null) inTokens.setSelectedItem(currentStyle.getParent().getTokenType());
+            if (currentStyle == null) {
+                currentStyle = new FStyle(defaultStyle, false);
+                currentStyle.setTokenType((TokenType) tokens.getSelectedItem());
+                this.current.addStyle((TokenType) tokens.getSelectedItem(), currentStyle);
             }
+            Style s = currentStyle.asStyle(null);
+            if (currentStyle.isBoldOverwritten()) (currentStyle.isBold() ? boldEnable : boldDisable).setSelected(true);
+            else boldDefault.setSelected(true);
+            if (currentStyle.isItalicOverwritten()) (currentStyle.isItalic() ? italicEnable : italicDisable).setSelected(true);
+            else italicDefault.setSelected(true);
+            if (currentStyle.isUnderlinedOverwritten()) (currentStyle.isUnderlined() ? underlineEnable : underlineDisable).setSelected(true);
+            else underlineDefault.setSelected(true);
+            if (currentStyle.isStrikeThroughOverwritten()) (currentStyle.isStrikeThrough() ? strikeEnable : strikeDisable).setSelected(true);
+            else strikeDefault.setSelected(true);
+            fam.setText(StyleConstants.getFontFamily(s));
+            size.setText(Integer.toString(StyleConstants.getFontSize(s)));
+            bidi.setText(Integer.toString(StyleConstants.getBidiLevel(s)));
+            fl.setText(Float.toString(StyleConstants.getFirstLineIndent(s)));
+            back.setBackground(StyleConstants.getBackground(s));
+            fore.setBackground(StyleConstants.getForeground(s));
+            inherit.setSelected(currentStyle.getParent() != null);
+            if (currentStyle.getParent() != null) inTokens.setSelectedItem(currentStyle.getParent().getTokenType());
         });
         saveButtons.add(save);
         saveButtons.add(saveAs);

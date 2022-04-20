@@ -22,6 +22,56 @@ public class FStyle {
     private FStyle parent;
     private TokenType tokenType;
 
+    public FStyle() {
+        this((TokenType) null);
+    }
+
+    public FStyle(Style style) {
+        this();
+        setForeground(StyleConstants.getForeground(style));
+        setBackground(StyleConstants.getBackground(style));
+        setBold(StyleConstants.isBold(style));
+        setItalic(StyleConstants.isItalic(style));
+        setStrikeThrough(StyleConstants.isStrikeThrough(style));
+        setUnderlined(StyleConstants.isUnderline(style));
+        setAlignment(StyleConstants.getAlignment(style));
+        setBidiLevel(StyleConstants.getBidiLevel(style));
+        setSize(StyleConstants.getFontSize(style));
+        setFirstLineIndent(StyleConstants.getFirstLineIndent(style));
+        setFamily(StyleConstants.getFontFamily(style));
+    }
+
+    public FStyle(FStyle original, boolean resolveInheritance) {
+        if (resolveInheritance) {
+            setParent(null);
+            bold = original.isBold();
+            italic = original.isItalic();
+            strike = original.isStrikeThrough();
+            underlined = original.isUnderlined();
+            alignment = original.getAlignment();
+            bidiLevel = original.getBidiLevel();
+            size = original.getSize();
+            firstLineIndent = original.getFirstLineIndent();
+            family = original.getFamily();
+            background = original.getBackground();
+            foreground = original.getForeground();
+        } else {
+            setParent(original.getParent());
+            bold = original.bold;
+            italic = original.italic;
+            strike = original.strike;
+            underlined = original.underlined;
+            alignment = original.alignment;
+            bidiLevel = original.bidiLevel;
+            size = original.size;
+            firstLineIndent = original.firstLineIndent;
+            family = original.family;
+            background = original.background;
+            foreground = original.foreground;
+        }
+        setTokenType(original.getTokenType());
+    }
+
     public FStyle(TokenType tokenType) {
         this(tokenType, null);
     }

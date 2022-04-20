@@ -16,7 +16,7 @@ public abstract class FTheme {
     }
 
     protected FStyle setErrorStyle() {
-        FStyle ret = new FStyle(null);
+        FStyle ret = new FStyle();
         ret.setUnderlined(true);
         ret.setForeground(Color.red);
         ret.setBold(true);

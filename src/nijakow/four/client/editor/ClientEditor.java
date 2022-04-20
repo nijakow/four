@@ -30,6 +30,7 @@ public class ClientEditor extends JFrame implements ActionListener {
 	private final ClientConnection connection;
 	private final String id;
 	private final ScheduledExecutorService queue;
+	private final FStyle def;
 	private JDialog settingsWindow;
 	private boolean dark;
 
@@ -59,6 +60,7 @@ public class ClientEditor extends JFrame implements ActionListener {
 		pane.setDocument(doc);
 		pane.setText(content);
 		pane.setFont(new Font("Monospaced", Font.PLAIN, 14));
+		def = new FStyle(pane.getLogicalStyle());
 		popup = new FSuggestionMenu();
 		popup.addPopupMenuListener(new PopupMenuListener() {
 			@Override
@@ -423,14 +425,14 @@ public class ClientEditor extends JFrame implements ActionListener {
 	}
 
 	private void showThemeEditor(FTheme current) {
-		FThemeEditor editor = new FThemeEditor(this, current);
+		FThemeEditor editor = new FThemeEditor(this, current, def);
 		editor.toggleMode(dark);
 		editor.setLocationRelativeTo(this);
 		editor.setVisible(true);
 	}
 
 	private void showThemeEditor(FTheme current, String name) {
-		FThemeEditor editor = new FThemeEditor(this, current, name);
+		FThemeEditor editor = new FThemeEditor(this, current, name, def);
 		editor.toggleMode(dark);
 		editor.setLocationRelativeTo(this);
 		editor.setVisible(true);
