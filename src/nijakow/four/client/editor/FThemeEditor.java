@@ -56,8 +56,10 @@ public class FThemeEditor extends JDialog {
         if (current == null) {
             this.current = new WritableTheme();
         } else if (!(current instanceof WritableTheme)) {
-            // TODO Copy!!!
-            this.current = null;
+            this.current = new WritableTheme();
+            for (FStyle style : current.getAllStyles()) {
+                this.current.addStyle(style.getTokenType(), style);
+            }
         } else {
             this.current = (WritableTheme) current;
         }
@@ -102,6 +104,8 @@ public class FThemeEditor extends JDialog {
         inherit = new JCheckBox("Inherit from:");
         JComboBox<TokenType> inTokens = new JComboBox<>(TokenType.values());
         inTokens.setEditable(false);
+        inherit.addItemListener(event -> inTokens.setEnabled(inherit.isSelected()));
+        inTokens.setEnabled(false);
         inheritBox.add(inherit);
         inheritBox.add(inTokens);
         otherPanel.add(inheritBox);
