@@ -93,7 +93,7 @@ public class FStyle {
     }
 
     public FStyle getParent() {
-        return parent;
+        return parent != null && parent.getTokenType() == null && parent.getParent() == null ? null : parent;
     }
 
     public void setParent(FStyle parent) {

@@ -284,8 +284,9 @@ public class FThemeEditor extends JDialog {
             }
             currentStyle = this.current.getStyle((TokenType) tokens.getSelectedItem());
             if (currentStyle == null) {
-                currentStyle = new FStyle(defaultStyle, false);
-                currentStyle.setTokenType((TokenType) tokens.getSelectedItem());
+                //currentStyle = new FStyle(defaultStyle, false);
+                //currentStyle.setTokenType((TokenType) tokens.getSelectedItem());
+                currentStyle = new FStyle((TokenType) tokens.getSelectedItem(), defaultStyle);
                 this.current.addStyle((TokenType) tokens.getSelectedItem(), currentStyle);
             }
             if (currentStyle.isBoldOverwritten()) (currentStyle.isBold() ? boldEnable : boldDisable).setSelected(true);
