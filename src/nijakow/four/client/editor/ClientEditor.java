@@ -455,7 +455,6 @@ public class ClientEditor extends JFrame implements ActionListener {
 	}
 
 	public void send(final boolean save) {
-		// TODO filter escape characters
 		queue.execute(() -> {
 			try {
 				connection.send(Commands.Codes.SPECIAL_START + "");
