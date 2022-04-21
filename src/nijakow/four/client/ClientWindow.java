@@ -541,99 +541,27 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 	}
 
 	private void parseUpload(String arg) {
-		final JDialog dialog = new JDialog(this, "Download file(s)", false);
-		JPanel panel = new JPanel();
-		JLabel label = new JLabel("Enter a name for the file:");
-		JTextField textField = new JTextField();
-		JPanel superSouth = new JPanel();
-		superSouth.setLayout(new GridLayout(2, 1));
-		JButton select = new JButton("Select...");
-		JPanel south = new JPanel(new GridLayout(1, 2));
-		south.add(label);
-		south.add(textField);
-		superSouth.add(south);
-		superSouth.add(select);
-		panel.setLayout(new BorderLayout());
-		panel.add(superSouth, BorderLayout.SOUTH);
-		dialog.getContentPane().add(panel);
-		dialog.addWindowListener(new WindowAdapter() {
-			@Override
-			public void windowActivated(WindowEvent e) {
-				if (prefs.getDarkMode()) {
-					dialog.getContentPane().setBackground(Color.darkGray);
-					panel.setBackground(Color.darkGray);
-					label.setBackground(Color.darkGray);
-					label.setForeground(Color.white);
-					textField.setCaretColor(Color.white);
-					textField.setBackground(Color.gray);
-					textField.setForeground(Color.white);
-					superSouth.setBackground(Color.darkGray);
-					south.setBackground(Color.darkGray);
-				} else {
-					dialog.getContentPane().setBackground(null);
-					panel.setBackground(null);
-					label.setBackground(null);
-					label.setForeground(null);
-					textField.setCaretColor(Color.black);
-					textField.setBackground(Color.white);
-					textField.setForeground(Color.black);
-					superSouth.setBackground(null);
-					south.setBackground(null);
-				}
+		final JFileChooser chooser = new JFileChooser();
+		chooser.setDialogType(JFileChooser.SAVE_DIALOG);
+		chooser.setMultiSelectionEnabled(false);
+		chooser.setDragEnabled(true);
+		chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+		if (chooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
+			final File selected = chooser.getSelectedFile();
+			if (selected.exists() && JOptionPane.showConfirmDialog(this, "File exists!\nOverwrite?",
+					"File exists", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) != JOptionPane.YES_OPTION) {
+				return;
 			}
-		});
-		dialog.setSize(350, 350);
-		DragSource.getDefaultDragSource().createDefaultDragGestureRecognizer(panel, DnDConstants.ACTION_MOVE, dge -> {
-			Transferable transferable = new Transferable() {
-				private final File transfer = new File(textField.getText().isEmpty() ? "download" : textField.getText());
-
-				@Override
-				public DataFlavor[] getTransferDataFlavors() {
-					return new DataFlavor[] { DataFlavor.javaFileListFlavor };
+			queue.schedule(() -> {
+				try (BufferedOutputStream os = new BufferedOutputStream(new FileOutputStream(selected))) {
+					os.write(Base64.getDecoder().decode(arg));
+				} catch (IOException e) {
+					e.printStackTrace();
+					EventQueue.invokeLater(() -> JOptionPane.showMessageDialog(this,
+							"Could not save to file!", "Save to file", JOptionPane.ERROR_MESSAGE));
 				}
-
-				@Override
-				public boolean isDataFlavorSupported(DataFlavor flavor) {
-					return flavor.equals(DataFlavor.javaFileListFlavor);
-				}
-
-				@Override
-				public Object getTransferData(DataFlavor flavor) throws UnsupportedFlavorException {
-					if (!flavor.equals(DataFlavor.javaFileListFlavor)) throw new UnsupportedFlavorException(flavor);
-					List<File> files = new LinkedList<>();
-					files.add(transfer);
-					return files;
-				}
-			};
-			dge.getDragSource().startDrag(dge, Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR), transferable, null);
-		});
-		select.addActionListener(event -> {
-			final JFileChooser chooser = new JFileChooser();
-			chooser.setDialogType(JFileChooser.SAVE_DIALOG);
-			chooser.setMultiSelectionEnabled(false);
-			chooser.setDragEnabled(true);
-			chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-			if (chooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
-				final File selected = chooser.getSelectedFile();
-				if (selected.exists() && JOptionPane.showConfirmDialog(this, "File exists!\nOverwrite?",
-						"File exists", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) != JOptionPane.YES_OPTION) {
-					return;
-				}
-				queue.schedule(() -> {
-					try (BufferedOutputStream os = new BufferedOutputStream(new FileOutputStream(selected))) {
-						os.write(Base64.getDecoder().decode(arg));
-					} catch (IOException e) {
-						e.printStackTrace();
-						EventQueue.invokeLater(() -> JOptionPane.showMessageDialog(this,
-								"Could not save to file!", "Save to file", JOptionPane.ERROR_MESSAGE));
-					}
-				}, 0, TimeUnit.NANOSECONDS);
-			}
-		});
-		dialog.setLocationRelativeTo(this);
-		dialog.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-		dialog.setVisible(true);
-		select.doClick();
+			}, 0, TimeUnit.NANOSECONDS);
+		}
 	}
 
 	private void parseArgument(String arg) {
