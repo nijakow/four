@@ -250,7 +250,6 @@ public class FThemeEditor extends JDialog {
         JButton saveAs = new JButton("Save as...");
         saveAs.addActionListener(event -> saveToFile(true, null));
         tokens.addItemListener(event -> {
-            // FIXME currentStyle should never be null!
             if (currentStyle != null) {
                 String text = fam.getText();
                 if (text.isEmpty()) currentStyle.setFamily(null);
@@ -284,8 +283,6 @@ public class FThemeEditor extends JDialog {
             }
             currentStyle = this.current.getStyle((TokenType) tokens.getSelectedItem());
             if (currentStyle == null) {
-                //currentStyle = new FStyle(defaultStyle, false);
-                //currentStyle.setTokenType((TokenType) tokens.getSelectedItem());
                 currentStyle = new FStyle((TokenType) tokens.getSelectedItem(), defaultStyle);
                 this.current.addStyle((TokenType) tokens.getSelectedItem(), currentStyle);
             }
@@ -306,6 +303,7 @@ public class FThemeEditor extends JDialog {
             inherit.setSelected(currentStyle.getParent() != null);
             if (currentStyle.getParent() != null) inTokens.setSelectedItem(currentStyle.getParent().getTokenType());
         });
+        tokens.setSelectedIndex(1);
         saveButtons.add(save);
         saveButtons.add(saveAs);
         editAll.add(saveButtons, BorderLayout.SOUTH);
