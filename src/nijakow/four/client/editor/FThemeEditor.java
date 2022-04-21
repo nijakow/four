@@ -67,6 +67,7 @@ public class FThemeEditor extends JDialog {
     private final JRadioButton strikeDisable;
     private boolean dark;
     private FStyle currentStyle;
+    private String name;
 
     public FThemeEditor(Frame parent, FTheme current, FStyle defaultStyle) {
         this(parent, current, "New...", defaultStyle);
@@ -85,6 +86,7 @@ public class FThemeEditor extends JDialog {
             this.current = (WritableTheme) current;
         }
         this.defaultStyle = defaultStyle;
+        this.name = name;
         editAll = new JPanel(new BorderLayout());
         cBox = new JPanel(new GridLayout(2, 1));
         desc = new JLabel("The token type to modify the values for:");
@@ -249,12 +251,15 @@ public class FThemeEditor extends JDialog {
         JButton save = new JButton("Save");
         save.addActionListener(event -> {
             saveStyle();
-            saveToFile(false, name);
+            saveToFile(false);
         });
         JButton saveAs = new JButton("Save as...");
         saveAs.addActionListener(event -> {
             saveStyle();
-            saveToFile(true, null);
+            saveToFile(true);
+        });
+        inTokens.addItemListener(event -> {
+            // TODO Update the default values!!!
         });
         tokens.addItemListener(event -> {
             if (currentStyle != null) saveStyle();
@@ -322,8 +327,8 @@ public class FThemeEditor extends JDialog {
         currentStyle.setParent(inherit.isSelected() ? this.current.getStyle((TokenType) inTokens.getSelectedItem()) : null);
     }
 
-    private void saveToFile(boolean newFile, String fileName) {
-        File file = fileName == null ? null : new File(fileName);
+    private void saveToFile(boolean newFile) {
+        File file = name == null ? null : new File(name);
         if (file != null && !file.exists() && !newFile) {
             JOptionPane.showMessageDialog(this, "File does not exist (anymore)!\n" +
                     "\nChoose a new one to save.", "File error", JOptionPane.ERROR_MESSAGE);
@@ -336,6 +341,8 @@ public class FThemeEditor extends JDialog {
             if (chooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) file = chooser.getSelectedFile();
             else return;
         }
+        name = file.getAbsolutePath();
+        setTitle(name);
         final File toWrite = file;
         SwingWorker<?, ?> sw = new SwingWorker<Object, Boolean>() {
             @Override
