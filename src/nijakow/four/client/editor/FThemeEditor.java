@@ -4,8 +4,6 @@ import nijakow.four.share.lang.c.parser.TokenType;
 
 import javax.swing.*;
 import javax.swing.border.EtchedBorder;
-import javax.swing.text.Style;
-import javax.swing.text.StyleConstants;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -38,6 +36,7 @@ public class FThemeEditor extends JDialog {
     private final JPanel strikes;
     private final JPanel underlineWD;
     private final JPanel underlines;
+    private final JPanel alignmentPanel;
     private final JLabel desc;
     private final JLabel famDesc;
     private final JLabel bidiDesc;
@@ -49,10 +48,12 @@ public class FThemeEditor extends JDialog {
     private final JLabel italicDesc;
     private final JLabel strikeDesc;
     private final JLabel underlineDesc;
+    private final JLabel alignmentDesc;
     private final JTextField bidi;
     private final JTextField size;
     private final JTextField fam;
     private final JTextField fl;
+    private final JTextField alignment;
     private final JRadioButton boldDefault;
     private final JRadioButton boldEnable;
     private final JRadioButton boldDisable;
@@ -96,7 +97,7 @@ public class FThemeEditor extends JDialog {
         cBox.add(tokens);
         editAll.add(cBox, BorderLayout.NORTH);
         both = new JPanel(new GridLayout(1, 2));
-        checkPanel = new JPanel(new GridLayout(7, 1));
+        checkPanel = new JPanel(new GridLayout(6, 1));
         boldWD = new JPanel(new GridLayout(2, 1));
         boldWD.setBorder(new EtchedBorder());
         bolds = new JPanel();
@@ -165,13 +166,6 @@ public class FThemeEditor extends JDialog {
         strikeWD.add(strikeDesc);
         strikeWD.add(strikes);
         strikeDefault.setSelected(true);
-        bidiPanel = new JPanel(new GridLayout(2, 1));
-        bidiPanel.setBorder(new EtchedBorder());
-        bidiDesc = new JLabel("The bidilevel:");
-        bidi = new JTextField();
-        bidiPanel.add(bidiDesc);
-        bidiPanel.add(bidi);
-        checkPanel.add(bidiPanel);
         sizePanel = new JPanel(new GridLayout(2, 1));
         sizePanel.setBorder(new EtchedBorder());
         sizeDesc = new JLabel("The font size:");
@@ -179,18 +173,19 @@ public class FThemeEditor extends JDialog {
         sizePanel.add(sizeDesc);
         sizePanel.add(size);
         checkPanel.add(sizePanel);
-        flPanel = new JPanel(new GridLayout(2, 1));
-        flPanel.setBorder(new EtchedBorder());
-        flDesc = new JLabel("The first-line indent:");
-        fl = new JTextField();
-        flPanel.add(flDesc);
-        flPanel.add(fl);
-        checkPanel.add(flPanel);
+        forePanel = new JPanel(new GridLayout(2, 1));
+        forePanel.setBorder(new EtchedBorder());
+        foreDesc = new JLabel("The text colour:");
+        JPanel fore = new JPanel();
+        forePanel.add(foreDesc);
+        forePanel.add(fore);
+        checkPanel.add(forePanel);
+        fore.setBorder(new EtchedBorder());
         checkPanel.add(boldWD);
         checkPanel.add(italicWD);
         checkPanel.add(strikeWD);
         checkPanel.add(underlineWD);
-        otherPanel = new JPanel(new GridLayout(4, 1));
+        otherPanel = new JPanel(new GridLayout(6, 1));
         inheritBox = new JPanel(new GridLayout(2, 1));
         inheritBox.setBorder(new EtchedBorder());
         inherit = new JCheckBox("Inherit from:");
@@ -201,13 +196,6 @@ public class FThemeEditor extends JDialog {
         inheritBox.add(inherit);
         inheritBox.add(inTokens);
         otherPanel.add(inheritBox);
-        famPanel = new JPanel(new GridLayout(2, 1));
-        famPanel.setBorder(new EtchedBorder());
-        famDesc = new JLabel("Enter the font family:");
-        fam = new JTextField("");
-        famPanel.add(famDesc);
-        famPanel.add(fam);
-        otherPanel.add(famPanel);
         backPanel = new JPanel(new GridLayout(2, 1));
         backPanel.setBorder(new EtchedBorder());
         backDesc = new JLabel("The background colour:");
@@ -216,11 +204,34 @@ public class FThemeEditor extends JDialog {
         backPanel.add(backDesc);
         backPanel.add(back);
         otherPanel.add(backPanel);
-        forePanel = new JPanel(new GridLayout(2, 1));
-        forePanel.setBorder(new EtchedBorder());
-        foreDesc = new JLabel("The text colour:");
-        JPanel fore = new JPanel();
-        fore.setBorder(new EtchedBorder());
+        famPanel = new JPanel(new GridLayout(2, 1));
+        famPanel.setBorder(new EtchedBorder());
+        famDesc = new JLabel("Enter the font family:");
+        fam = new JTextField("");
+        famPanel.add(famDesc);
+        famPanel.add(fam);
+        otherPanel.add(famPanel);
+        flPanel = new JPanel(new GridLayout(2, 1));
+        flPanel.setBorder(new EtchedBorder());
+        flDesc = new JLabel("The first-line indent:");
+        fl = new JTextField();
+        flPanel.add(flDesc);
+        flPanel.add(fl);
+        otherPanel.add(flPanel);
+        alignmentPanel = new JPanel(new GridLayout(2, 1));
+        alignmentDesc = new JLabel("Alignment:");
+        alignment = new JTextField();
+        alignmentPanel.add(alignmentDesc);
+        alignmentPanel.add(alignment);
+        alignmentPanel.setBorder(new EtchedBorder());
+        otherPanel.add(alignmentPanel);
+        bidiPanel = new JPanel(new GridLayout(2, 1));
+        bidiPanel.setBorder(new EtchedBorder());
+        bidiDesc = new JLabel("The bidilevel:");
+        bidi = new JTextField();
+        bidiPanel.add(bidiDesc);
+        bidiPanel.add(bidi);
+        otherPanel.add(bidiPanel);
         fore.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -241,9 +252,6 @@ public class FThemeEditor extends JDialog {
                 }
             }
         });
-        forePanel.add(foreDesc);
-        forePanel.add(fore);
-        otherPanel.add(forePanel);
         both.add(otherPanel);
         both.add(checkPanel);
         editAll.add(both, BorderLayout.CENTER);
@@ -277,6 +285,7 @@ public class FThemeEditor extends JDialog {
             if (currentStyle.isStrikeThroughOverwritten()) (currentStyle.isStrikeThrough() ? strikeEnable : strikeDisable).setSelected(true);
             else strikeDefault.setSelected(true);
             fam.setText((currentStyle.isFamilyOverwritten() ? currentStyle : defaultStyle).getFamily());
+            alignment.setText(Integer.toString((currentStyle.isAlignmentOverwritten() ? currentStyle : defaultStyle).getAlignment()));
             size.setText(Integer.toString((currentStyle.isSizeOverwritten() ? currentStyle : defaultStyle).getSize()));
             bidi.setText(Integer.toString((currentStyle.isBidiLevelOverwritten() ? currentStyle : defaultStyle).getBidiLevel()));
             fl.setText(Float.toString((currentStyle.isFirstLineIndentOverwritten() ? currentStyle : defaultStyle).getFirstLineIndent()));
@@ -299,26 +308,29 @@ public class FThemeEditor extends JDialog {
         String text = fam.getText();
         if (text.isEmpty()) currentStyle.setFamily(null);
         else currentStyle.setFamily(text);
-        text = size.getText();
         try {
-            int s = Integer.decode(text);
+            int s = Integer.decode(size.getText());
             currentStyle.setSize(s);
         } catch (NumberFormatException e) {
             currentStyle.setSize(null);
         }
-        text = fl.getText();
         try {
-            float fli = Float.parseFloat(text);
+            float fli = Float.parseFloat(fl.getText());
             currentStyle.setFirstLineIndent(fli);
         } catch (NumberFormatException e) {
             currentStyle.setFirstLineIndent(null);
         }
-        text = bidi.getText();
         try {
-            int bidi = Integer.decode(text);
-            currentStyle.setBidiLevel(bidi);
+            int bidii = Integer.decode(bidi.getText());
+            currentStyle.setBidiLevel(bidii);
         } catch (NumberFormatException e) {
             currentStyle.setBidiLevel(null);
+        }
+        try {
+            int align = Integer.decode(alignment.getText());
+            currentStyle.setAlignment(align);
+        } catch (NumberFormatException e) {
+            currentStyle.setAlignment(null);
         }
         currentStyle.setBold(boldDefault.isSelected() ? null : boldEnable.isSelected());
         currentStyle.setItalic(italicDefault.isSelected() ? null : italicEnable.isSelected());
@@ -450,6 +462,12 @@ public class FThemeEditor extends JDialog {
             boldEnable.setBackground(Color.darkGray);
             boldDisable.setForeground(Color.white);
             boldDisable.setBackground(Color.darkGray);
+            alignmentPanel.setBackground(Color.darkGray);
+            alignmentDesc.setForeground(Color.white);
+            alignmentDesc.setBackground(Color.darkGray);
+            alignment.setBackground(Color.gray);
+            alignment.setCaretColor(Color.white);
+            alignment.setForeground(Color.white);
         } else {
             getContentPane().setBackground(null);
             checkPanel.setBackground(null);
@@ -533,6 +551,12 @@ public class FThemeEditor extends JDialog {
             boldEnable.setBackground(null);
             boldDisable.setForeground(null);
             boldDisable.setBackground(null);
+            alignmentPanel.setBackground(null);
+            alignmentDesc.setForeground(null);
+            alignmentDesc.setBackground(null);
+            alignment.setBackground(Color.white);
+            alignment.setCaretColor(Color.black);
+            alignment.setForeground(Color.black);
         }
     }
 
