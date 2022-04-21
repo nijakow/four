@@ -1,6 +1,5 @@
 package nijakow.four.client.editor;
 
-import java.awt.*;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.IOException;
