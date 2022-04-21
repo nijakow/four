@@ -16,6 +16,7 @@ public class FThemeEditor extends JDialog {
     private final WritableTheme current;
     private final FStyle defaultStyle;
     private final JCheckBox inherit;
+    private final JComboBox<TokenType> inTokens;
     private final JPanel checkPanel;
     private final JPanel otherPanel;
     private final JPanel editAll;
@@ -191,7 +192,7 @@ public class FThemeEditor extends JDialog {
         inheritBox = new JPanel(new GridLayout(2, 1));
         inheritBox.setBorder(new EtchedBorder());
         inherit = new JCheckBox("Inherit from:");
-        JComboBox<TokenType> inTokens = new JComboBox<>(TokenType.values());
+        inTokens = new JComboBox<>(TokenType.values());
         inTokens.setEditable(false);
         inherit.addItemListener(event -> inTokens.setEnabled(inherit.isSelected()));
         inTokens.setEnabled(false);
@@ -246,41 +247,17 @@ public class FThemeEditor extends JDialog {
         editAll.add(both, BorderLayout.CENTER);
         saveButtons = new JPanel(new GridLayout(1, 2));
         JButton save = new JButton("Save");
-        save.addActionListener(event -> saveToFile(false, name));
+        save.addActionListener(event -> {
+            saveStyle();
+            saveToFile(false, name);
+        });
         JButton saveAs = new JButton("Save as...");
-        saveAs.addActionListener(event -> saveToFile(true, null));
+        saveAs.addActionListener(event -> {
+            saveStyle();
+            saveToFile(true, null);
+        });
         tokens.addItemListener(event -> {
-            if (currentStyle != null) {
-                String text = fam.getText();
-                if (text.isEmpty()) currentStyle.setFamily(null);
-                else currentStyle.setFamily(text);
-                text = size.getText();
-                try {
-                    int s = Integer.decode(text);
-                    currentStyle.setSize(s);
-                } catch (NumberFormatException e) {
-                    currentStyle.setSize(null);
-                }
-                text = fl.getText();
-                try {
-                    float fli = Float.parseFloat(text);
-                    currentStyle.setFirstLineIndent(fli);
-                } catch (NumberFormatException e) {
-                    currentStyle.setFirstLineIndent(null);
-                }
-                text = bidi.getText();
-                try {
-                    int bidi = Integer.decode(text);
-                    currentStyle.setBidiLevel(bidi);
-                } catch (NumberFormatException e) {
-                    currentStyle.setBidiLevel(null);
-                }
-                currentStyle.setBold(boldDefault.isSelected() ? null : boldEnable.isSelected());
-                currentStyle.setItalic(italicDefault.isSelected() ? null : italicEnable.isSelected());
-                currentStyle.setUnderlined(underlineDefault.isSelected() ? null : underlineEnable.isSelected());
-                currentStyle.setStrikeThrough(strikeDefault.isSelected() ? null : strikeEnable.isSelected());
-                currentStyle.setParent(inherit.isSelected() ? this.current.getStyle((TokenType) inTokens.getSelectedItem()) : null);
-            }
+            if (currentStyle != null) saveStyle();
             currentStyle = this.current.getStyle((TokenType) tokens.getSelectedItem());
             if (currentStyle == null) {
                 currentStyle = new FStyle((TokenType) tokens.getSelectedItem(), defaultStyle);
@@ -311,6 +288,38 @@ public class FThemeEditor extends JDialog {
         getContentPane().add(editAll);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         pack();
+    }
+
+    private void saveStyle() {
+        String text = fam.getText();
+        if (text.isEmpty()) currentStyle.setFamily(null);
+        else currentStyle.setFamily(text);
+        text = size.getText();
+        try {
+            int s = Integer.decode(text);
+            currentStyle.setSize(s);
+        } catch (NumberFormatException e) {
+            currentStyle.setSize(null);
+        }
+        text = fl.getText();
+        try {
+            float fli = Float.parseFloat(text);
+            currentStyle.setFirstLineIndent(fli);
+        } catch (NumberFormatException e) {
+            currentStyle.setFirstLineIndent(null);
+        }
+        text = bidi.getText();
+        try {
+            int bidi = Integer.decode(text);
+            currentStyle.setBidiLevel(bidi);
+        } catch (NumberFormatException e) {
+            currentStyle.setBidiLevel(null);
+        }
+        currentStyle.setBold(boldDefault.isSelected() ? null : boldEnable.isSelected());
+        currentStyle.setItalic(italicDefault.isSelected() ? null : italicEnable.isSelected());
+        currentStyle.setUnderlined(underlineDefault.isSelected() ? null : underlineEnable.isSelected());
+        currentStyle.setStrikeThrough(strikeDefault.isSelected() ? null : strikeEnable.isSelected());
+        currentStyle.setParent(inherit.isSelected() ? this.current.getStyle((TokenType) inTokens.getSelectedItem()) : null);
     }
 
     private void saveToFile(boolean newFile, String fileName) {
@@ -522,7 +531,7 @@ public class FThemeEditor extends JDialog {
 
     @Override
     public void dispose() {
-        // TODO Save changes!
+        saveStyle();
         super.dispose();
     }
 }
