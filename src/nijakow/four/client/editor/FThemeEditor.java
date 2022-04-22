@@ -507,21 +507,17 @@ public class FThemeEditor extends JDialog {
             }
             if (currentStyle.isBackgroundOverwritten()) {
                 back.setBackground(currentStyle.getBackground());
-            } else {
-                if (currentStyle.getParent() != null && currentStyle.getParent().getBackground() != null) {
+            } else if (currentStyle.getParent() != null && currentStyle.getParent().getBackground() != null) {
                     back.setBackground(currentStyle.getParent().getBackground());
-                } else {
-                    back.setBackground(defaultStyle.getBackground());
-                }
+            } else {
+                back.setBackground(defaultStyle.getBackground());
             }
             if (currentStyle.isForegroundOverwritten()) {
                 fore.setBackground(currentStyle.getForeground());
-            } else {
-                if (currentStyle.getParent() != null && currentStyle.getParent().getForeground() != null) {
+            } else if (currentStyle.getParent() != null && currentStyle.getParent().getForeground() != null) {
                     fore.setBackground(currentStyle.getParent().getForeground());
-                } else {
+            } else {
                     fore.setBackground(defaultStyle.getForeground());
-                }
             }
             final FStyle tmpParent = currentStyle.getParent();
             inherit.setSelected(tmpParent != null);
