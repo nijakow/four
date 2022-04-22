@@ -207,10 +207,14 @@ public class FThemeEditor extends JDialog {
         otherPanel = new JPanel(new GridLayout(6, 1));
         inheritBox = new JPanel(new GridLayout(2, 1));
         inheritBox.setBorder(new EtchedBorder());
-        inherit = new JCheckBox("Inherit from:");
         inTokens = new JComboBox<>(TokenType.values());
         inTokens.setEditable(false);
-        inherit.addItemListener(event -> inTokens.setEnabled(inherit.isSelected()));
+        inherit = new JCheckBox("Inherit from:");
+        inherit.addItemListener(event -> {
+            final boolean selected = inherit.isSelected();
+            inTokens.setEnabled(selected);
+            if (selected) inTokens.setSelectedIndex(-1);
+        });
         inTokens.setEnabled(false);
         inheritBox.add(inherit);
         inheritBox.add(inTokens);
@@ -357,7 +361,47 @@ public class FThemeEditor extends JDialog {
             saveToFile(true);
         });
         inTokens.addItemListener(event -> {
-            // TODO Update the default values!!!
+            FStyle newParent = this.current.getStyle((TokenType) inTokens.getSelectedItem());
+            if (newParent == null) {
+                newParent = new FStyle((TokenType) inTokens.getSelectedItem(), defaultStyle);
+                this.current.addStyle(newParent.getTokenType(), newParent);
+            }
+            currentStyle.setParent(newParent);
+            if (fam.getForeground().equals(dark ? Color.darkGray : Color.lightGray)) {
+                if (newParent.getFamily() != null) {
+                    fam.setText(newParent.getFamily());
+                } else {
+                    fam.setText(defaultStyle.getFamily());
+                }
+            }
+            if (fl.getForeground().equals(dark ? Color.darkGray : Color.lightGray)) {
+                if (newParent.getFirstLineIndent() != null) {
+                    fl.setText(Float.toString(newParent.getFirstLineIndent()));
+                } else {
+                    fl.setText(Float.toString(defaultStyle.getFirstLineIndent()));
+                }
+            }
+            if (size.getForeground().equals(dark ? Color.darkGray : Color.lightGray)) {
+                if (newParent.getSize() != null) {
+                    size.setText(Integer.toString(newParent.getSize()));
+                } else {
+                    size.setText(Integer.toString(defaultStyle.getSize()));
+                }
+            }
+            if (alignment.getForeground().equals(dark ? Color.darkGray : Color.lightGray)) {
+                if (newParent.getAlignment() != null) {
+                    alignment.setText(Integer.toString(newParent.getAlignment()));
+                } else {
+                    alignment.setText(Integer.toString(defaultStyle.getAlignment()));
+                }
+            }
+            if (bidi.getForeground().equals(dark ? Color.darkGray : Color.lightGray)) {
+                if (newParent.getBidiLevel() != null) {
+                    bidi.setText(Integer.toString(newParent.getBidiLevel()));
+                } else {
+                    bidi.setText(Integer.toString(defaultStyle.getBidiLevel()));
+                }
+            }
         });
         tokens.addItemListener(event -> {
             if (tokens.getSelectedItem() == null) return;
@@ -379,35 +423,55 @@ public class FThemeEditor extends JDialog {
                 fam.setText(currentStyle.getFamily());
                 fam.setForeground(dark ? Color.white : Color.black);
             } else {
-                fam.setText((currentStyle.getParent() == null ? defaultStyle : currentStyle.getParent()).getFamily());
+                if (currentStyle.getParent() != null && currentStyle.getParent().getFamily() != null) {
+                    fam.setText(currentStyle.getParent().getFamily());
+                } else {
+                    fam.setText(defaultStyle.getFamily());
+                }
                 fam.setForeground(dark ? Color.darkGray : Color.lightGray);
             }
             if (currentStyle.isAlignmentOverwritten()) {
                 alignment.setText(Integer.toString(currentStyle.getAlignment()));
                 alignment.setForeground(dark ? Color.white : Color.black);
             } else {
-                alignment.setText(Integer.toString((currentStyle.getParent() == null ? defaultStyle : currentStyle.getParent()).getAlignment()));
+                if (currentStyle.getParent() != null && currentStyle.getParent().getAlignment() != null) {
+                    alignment.setText(Integer.toString(currentStyle.getParent().getAlignment()));
+                } else {
+                    alignment.setText(Integer.toString(defaultStyle.getAlignment()));
+                }
                 alignment.setForeground(dark ? Color.darkGray : Color.lightGray);
             }
             if (currentStyle.isSizeOverwritten()) {
                 size.setText(Integer.toString(currentStyle.getSize()));
                 size.setForeground(dark ? Color.white : Color.black);
             } else {
-                size.setText(Integer.toString((currentStyle.getParent() == null ? defaultStyle : currentStyle.getParent()).getSize()));
+                if (currentStyle.getParent() != null && currentStyle.getParent().getSize() != null) {
+                    size.setText(Integer.toString(currentStyle.getParent().getSize()));
+                } else {
+                    size.setText(Integer.toString(defaultStyle.getSize()));
+                }
                 size.setForeground(dark ? Color.darkGray : Color.lightGray);
             }
             if (currentStyle.isBidiLevelOverwritten()) {
                 bidi.setText(Integer.toString(currentStyle.getBidiLevel()));
                 bidi.setForeground(dark ? Color.white : Color.black);
             } else {
-                bidi.setText(Integer.toString((currentStyle.getParent() == null ? defaultStyle : currentStyle.getParent()).getBidiLevel()));
+                if (currentStyle.getParent() != null && currentStyle.getParent().getBidiLevel() != null) {
+                    bidi.setText(Integer.toString(currentStyle.getParent().getBidiLevel()));
+                } else {
+                    bidi.setText(Integer.toString(defaultStyle.getBidiLevel()));
+                }
                 bidi.setForeground(dark ? Color.darkGray : Color.lightGray);
             }
             if (currentStyle.isFirstLineIndentOverwritten()) {
                 fl.setText(Float.toString(currentStyle.getFirstLineIndent()));
                 fl.setForeground(dark ? Color.white : Color.black);
             } else {
-                fl.setText(Float.toString((currentStyle.getParent() == null ? defaultStyle : currentStyle.getParent()).getFirstLineIndent()));
+                if (currentStyle.getParent() != null && currentStyle.getParent().getFirstLineIndent() != null) {
+                    fl.setText(Float.toString(currentStyle.getParent().getFirstLineIndent()));
+                } else {
+                    fl.setText(Float.toString(defaultStyle.getFirstLineIndent()));
+                }
                 fl.setForeground(dark ? Color.darkGray : Color.lightGray);
             }
             back.setBackground((currentStyle.isBackgroundOverwritten() ? currentStyle : defaultStyle).getBackground());
