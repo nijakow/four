@@ -504,8 +504,9 @@ public class FThemeEditor extends JDialog {
             }
             back.setBackground((currentStyle.isBackgroundOverwritten() ? currentStyle : defaultStyle).getBackground());
             fore.setBackground((currentStyle.isForegroundOverwritten() ? currentStyle : defaultStyle).getForeground());
-            inherit.setSelected(currentStyle.getParent() != null);
-            if (currentStyle.getParent() != null) inTokens.setSelectedItem(currentStyle.getParent().getTokenType());
+            final FStyle tmpParent = currentStyle.getParent();
+            inherit.setSelected(tmpParent != null);
+            if (tmpParent != null) inTokens.setSelectedItem(tmpParent.getTokenType());
         });
         tokens.setSelectedIndex(-1);
         saveButtons.add(save);
