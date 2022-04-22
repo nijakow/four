@@ -5,6 +5,8 @@ import nijakow.four.share.lang.c.parser.TokenType;
 import javax.swing.*;
 import javax.swing.border.EtchedBorder;
 import java.awt.*;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
@@ -169,7 +171,24 @@ public class FThemeEditor extends JDialog {
         sizePanel = new JPanel(new GridLayout(2, 1));
         sizePanel.setBorder(new EtchedBorder());
         sizeDesc = new JLabel("The font size:");
-        size = new JTextField();
+        size = new JTextField("");
+        size.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                if (size.getForeground().equals(dark ? Color.darkGray : Color.lightGray)) {
+                    size.setForeground(dark ? Color.white : Color.black);
+                    size.setText("");
+                }
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                if (size.getText().isEmpty()) {
+                    size.setForeground(dark ? Color.darkGray : Color.lightGray);
+                    size.setText(Integer.toString(currentStyle.getParent() == null ? defaultStyle.getSize() : currentStyle.getParent().getSize()));
+                }
+            }
+        });
         sizePanel.add(sizeDesc);
         sizePanel.add(size);
         checkPanel.add(sizePanel);
@@ -208,19 +227,72 @@ public class FThemeEditor extends JDialog {
         famPanel.setBorder(new EtchedBorder());
         famDesc = new JLabel("Enter the font family:");
         fam = new JTextField("");
+        fam.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                if (fam.getForeground().equals(dark ? Color.darkGray : Color.lightGray)) {
+                    fam.setForeground(dark ? Color.white : Color.black);
+                    fam.setText("");
+                }
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                if (fam.getText().isEmpty()) {
+                    fam.setText(currentStyle.getParent() == null ? defaultStyle.getFamily() : currentStyle.getParent().getFamily());
+                    fam.setForeground(dark ? Color.darkGray : Color.lightGray);
+                }
+            }
+        });
         famPanel.add(famDesc);
         famPanel.add(fam);
         otherPanel.add(famPanel);
         flPanel = new JPanel(new GridLayout(2, 1));
         flPanel.setBorder(new EtchedBorder());
         flDesc = new JLabel("The first-line indent:");
-        fl = new JTextField();
+        fl = new JTextField("");
+        fl.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                if (fl.getForeground().equals(dark ? Color.darkGray : Color.lightGray)) {
+                    fl.setForeground(dark ? Color.white : Color.black);
+                    fl.setText("");
+                }
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                if (fl.getText().isEmpty()) {
+                    fl.setText(Float.toString(currentStyle.getParent() == null ?
+                            defaultStyle.getFirstLineIndent() : currentStyle.getParent().getFirstLineIndent()));
+                    fl.setForeground(dark ? Color.darkGray : Color.lightGray);
+                }
+            }
+        });
         flPanel.add(flDesc);
         flPanel.add(fl);
         otherPanel.add(flPanel);
         alignmentPanel = new JPanel(new GridLayout(2, 1));
         alignmentDesc = new JLabel("Alignment:");
-        alignment = new JTextField();
+        alignment = new JTextField("");
+        alignment.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                if (alignment.getForeground().equals(dark ? Color.darkGray : Color.lightGray)) {
+                    alignment.setText("");
+                    alignment.setForeground(dark ? Color.white : Color.black);
+                }
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                if (alignment.getText().isEmpty()) {
+                    alignment.setForeground(dark ? Color.darkGray : Color.lightGray);
+                    alignment.setText(Integer.toString(currentStyle.getParent() == null ?
+                            defaultStyle.getAlignment() : currentStyle.getParent().getAlignment()));
+                }
+            }
+        });
         alignmentPanel.add(alignmentDesc);
         alignmentPanel.add(alignment);
         alignmentPanel.setBorder(new EtchedBorder());
@@ -228,7 +300,25 @@ public class FThemeEditor extends JDialog {
         bidiPanel = new JPanel(new GridLayout(2, 1));
         bidiPanel.setBorder(new EtchedBorder());
         bidiDesc = new JLabel("The bidilevel:");
-        bidi = new JTextField();
+        bidi = new JTextField("");
+        bidi.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                if (bidi.getForeground().equals(dark ? Color.darkGray : Color.lightGray)) {
+                    bidi.setForeground(dark ? Color.white : Color.black);
+                    bidi.setText("");
+                }
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                if (bidi.getText().isEmpty()) {
+                    bidi.setText(Integer.toString(currentStyle.getParent() == null ?
+                            defaultStyle.getBidiLevel() : currentStyle.getParent().getBidiLevel()));
+                    bidi.setForeground(dark ? Color.darkGray : Color.lightGray);
+                }
+            }
+        });
         bidiPanel.add(bidiDesc);
         bidiPanel.add(bidi);
         otherPanel.add(bidiPanel);
@@ -270,6 +360,7 @@ public class FThemeEditor extends JDialog {
             // TODO Update the default values!!!
         });
         tokens.addItemListener(event -> {
+            if (tokens.getSelectedItem() == null) return;
             if (currentStyle != null) saveStyle();
             currentStyle = this.current.getStyle((TokenType) tokens.getSelectedItem());
             if (currentStyle == null) {
@@ -284,17 +375,47 @@ public class FThemeEditor extends JDialog {
             else underlineDefault.setSelected(true);
             if (currentStyle.isStrikeThroughOverwritten()) (currentStyle.isStrikeThrough() ? strikeEnable : strikeDisable).setSelected(true);
             else strikeDefault.setSelected(true);
-            fam.setText((currentStyle.isFamilyOverwritten() ? currentStyle : defaultStyle).getFamily());
-            alignment.setText(Integer.toString((currentStyle.isAlignmentOverwritten() ? currentStyle : defaultStyle).getAlignment()));
-            size.setText(Integer.toString((currentStyle.isSizeOverwritten() ? currentStyle : defaultStyle).getSize()));
-            bidi.setText(Integer.toString((currentStyle.isBidiLevelOverwritten() ? currentStyle : defaultStyle).getBidiLevel()));
-            fl.setText(Float.toString((currentStyle.isFirstLineIndentOverwritten() ? currentStyle : defaultStyle).getFirstLineIndent()));
+            if (currentStyle.isFamilyOverwritten()) {
+                fam.setText(currentStyle.getFamily());
+                fam.setForeground(dark ? Color.white : Color.black);
+            } else {
+                fam.setText((currentStyle.getParent() == null ? defaultStyle : currentStyle.getParent()).getFamily());
+                fam.setForeground(dark ? Color.darkGray : Color.lightGray);
+            }
+            if (currentStyle.isAlignmentOverwritten()) {
+                alignment.setText(Integer.toString(currentStyle.getAlignment()));
+                alignment.setForeground(dark ? Color.white : Color.black);
+            } else {
+                alignment.setText(Integer.toString((currentStyle.getParent() == null ? defaultStyle : currentStyle.getParent()).getAlignment()));
+                alignment.setForeground(dark ? Color.darkGray : Color.lightGray);
+            }
+            if (currentStyle.isSizeOverwritten()) {
+                size.setText(Integer.toString(currentStyle.getSize()));
+                size.setForeground(dark ? Color.white : Color.black);
+            } else {
+                size.setText(Integer.toString((currentStyle.getParent() == null ? defaultStyle : currentStyle.getParent()).getSize()));
+                size.setForeground(dark ? Color.darkGray : Color.lightGray);
+            }
+            if (currentStyle.isBidiLevelOverwritten()) {
+                bidi.setText(Integer.toString(currentStyle.getBidiLevel()));
+                bidi.setForeground(dark ? Color.white : Color.black);
+            } else {
+                bidi.setText(Integer.toString((currentStyle.getParent() == null ? defaultStyle : currentStyle.getParent()).getBidiLevel()));
+                bidi.setForeground(dark ? Color.darkGray : Color.lightGray);
+            }
+            if (currentStyle.isFirstLineIndentOverwritten()) {
+                fl.setText(Float.toString(currentStyle.getFirstLineIndent()));
+                fl.setForeground(dark ? Color.white : Color.black);
+            } else {
+                fl.setText(Float.toString((currentStyle.getParent() == null ? defaultStyle : currentStyle.getParent()).getFirstLineIndent()));
+                fl.setForeground(dark ? Color.darkGray : Color.lightGray);
+            }
             back.setBackground((currentStyle.isBackgroundOverwritten() ? currentStyle : defaultStyle).getBackground());
             fore.setBackground((currentStyle.isForegroundOverwritten() ? currentStyle : defaultStyle).getForeground());
             inherit.setSelected(currentStyle.getParent() != null);
             if (currentStyle.getParent() != null) inTokens.setSelectedItem(currentStyle.getParent().getTokenType());
         });
-        tokens.setSelectedIndex(1);
+        tokens.setSelectedIndex(-1);
         saveButtons.add(save);
         saveButtons.add(saveAs);
         editAll.add(saveButtons, BorderLayout.SOUTH);
@@ -305,33 +426,40 @@ public class FThemeEditor extends JDialog {
     }
 
     private void saveStyle() {
-        String text = fam.getText();
-        if (text.isEmpty()) currentStyle.setFamily(null);
-        else currentStyle.setFamily(text);
-        try {
-            int s = Integer.decode(size.getText());
-            currentStyle.setSize(s);
-        } catch (NumberFormatException e) {
-            currentStyle.setSize(null);
-        }
-        try {
-            float fli = Float.parseFloat(fl.getText());
-            currentStyle.setFirstLineIndent(fli);
-        } catch (NumberFormatException e) {
-            currentStyle.setFirstLineIndent(null);
-        }
-        try {
-            int bidii = Integer.decode(bidi.getText());
-            currentStyle.setBidiLevel(bidii);
-        } catch (NumberFormatException e) {
-            currentStyle.setBidiLevel(null);
-        }
-        try {
-            int align = Integer.decode(alignment.getText());
-            currentStyle.setAlignment(align);
-        } catch (NumberFormatException e) {
-            currentStyle.setAlignment(null);
-        }
+        if (fam.getForeground().equals(dark ? Color.white : Color.black)) currentStyle.setFamily(fam.getText());
+        else currentStyle.setFamily(null);
+        if (size.getForeground().equals(dark ? Color.white : Color.black)) {
+            try {
+                int s = Integer.decode(size.getText());
+                currentStyle.setSize(s);
+            } catch (NumberFormatException e) {
+                currentStyle.setSize(null);
+            }
+        } else currentStyle.setSize(null);
+        if (fl.getForeground().equals(dark ? Color.white : Color.black)) {
+            try {
+                float fli = Float.parseFloat(fl.getText());
+                currentStyle.setFirstLineIndent(fli);
+            } catch (NumberFormatException e) {
+                currentStyle.setFirstLineIndent(null);
+            }
+        } else currentStyle.setFirstLineIndent(null);
+        if (bidi.getForeground().equals(dark ? Color.white : Color.black)) {
+            try {
+                int bidii = Integer.decode(bidi.getText());
+                currentStyle.setBidiLevel(bidii);
+            } catch (NumberFormatException e) {
+                currentStyle.setBidiLevel(null);
+            }
+        } else currentStyle.setBidiLevel(null);
+        if (alignment.getForeground().equals(dark ? Color.white : Color.black)) {
+            try {
+                int align = Integer.decode(alignment.getText());
+                currentStyle.setAlignment(align);
+            } catch (NumberFormatException e) {
+                currentStyle.setAlignment(null);
+            }
+        } else currentStyle.setAlignment(null);
         currentStyle.setBold(boldDefault.isSelected() ? null : boldEnable.isSelected());
         currentStyle.setItalic(italicDefault.isSelected() ? null : italicEnable.isSelected());
         currentStyle.setUnderlined(underlineDefault.isSelected() ? null : underlineEnable.isSelected());
