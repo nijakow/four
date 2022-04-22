@@ -185,7 +185,11 @@ public class FThemeEditor extends JDialog {
             public void focusLost(FocusEvent e) {
                 if (size.getText().isEmpty()) {
                     size.setForeground(dark ? Color.darkGray : Color.lightGray);
-                    size.setText(Integer.toString(currentStyle.getParent() == null ? defaultStyle.getSize() : currentStyle.getParent().getSize()));
+                    if (currentStyle.getParent() != null && currentStyle.getParent().getSize() != null) {
+                        size.setText(Integer.toString(currentStyle.getParent().getSize()));
+                    } else {
+                        size.setText(Integer.toString(defaultStyle.getSize()));
+                    }
                 }
             }
         });
@@ -243,7 +247,11 @@ public class FThemeEditor extends JDialog {
             @Override
             public void focusLost(FocusEvent e) {
                 if (fam.getText().isEmpty()) {
-                    fam.setText(currentStyle.getParent() == null ? defaultStyle.getFamily() : currentStyle.getParent().getFamily());
+                    if (currentStyle.getParent() != null && currentStyle.getParent().getFamily() != null) {
+                        fam.setText(currentStyle.getParent().getFamily());
+                    } else {
+                        fam.setText(defaultStyle.getFamily());
+                    }
                     fam.setForeground(dark ? Color.darkGray : Color.lightGray);
                 }
             }
@@ -267,8 +275,11 @@ public class FThemeEditor extends JDialog {
             @Override
             public void focusLost(FocusEvent e) {
                 if (fl.getText().isEmpty()) {
-                    fl.setText(Float.toString(currentStyle.getParent() == null ?
-                            defaultStyle.getFirstLineIndent() : currentStyle.getParent().getFirstLineIndent()));
+                    if (currentStyle.getParent() != null && currentStyle.getParent().getFirstLineIndent() != null) {
+                        fl.setText(Float.toString(currentStyle.getParent().getFirstLineIndent()));
+                    } else {
+                        fl.setText(Float.toString(defaultStyle.getFirstLineIndent()));
+                    }
                     fl.setForeground(dark ? Color.darkGray : Color.lightGray);
                 }
             }
@@ -292,8 +303,11 @@ public class FThemeEditor extends JDialog {
             public void focusLost(FocusEvent e) {
                 if (alignment.getText().isEmpty()) {
                     alignment.setForeground(dark ? Color.darkGray : Color.lightGray);
-                    alignment.setText(Integer.toString(currentStyle.getParent() == null ?
-                            defaultStyle.getAlignment() : currentStyle.getParent().getAlignment()));
+                    if (currentStyle.getParent() != null && currentStyle.getParent().getAlignment() != null) {
+                        alignment.setText(Integer.toString(currentStyle.getParent().getAlignment()));
+                    } else {
+                        alignment.setText(Integer.toString(defaultStyle.getAlignment()));
+                    }
                 }
             }
         });
@@ -317,8 +331,11 @@ public class FThemeEditor extends JDialog {
             @Override
             public void focusLost(FocusEvent e) {
                 if (bidi.getText().isEmpty()) {
-                    bidi.setText(Integer.toString(currentStyle.getParent() == null ?
-                            defaultStyle.getBidiLevel() : currentStyle.getParent().getBidiLevel()));
+                    if (currentStyle.getParent() != null && currentStyle.getParent().getBidiLevel() != null) {
+                        bidi.setText(Integer.toString(currentStyle.getParent().getBidiLevel()));
+                    } else {
+                        bidi.setText(Integer.toString(defaultStyle.getBidiLevel()));
+                    }
                     bidi.setForeground(dark ? Color.darkGray : Color.lightGray);
                 }
             }
@@ -401,6 +418,17 @@ public class FThemeEditor extends JDialog {
                 } else {
                     bidi.setText(Integer.toString(defaultStyle.getBidiLevel()));
                 }
+            }
+            // TODO If the colours have not been overwritten!!!
+            if (newParent.getBackground() != null) {
+                back.setBackground(newParent.getBackground());
+            } else {
+                back.setBackground(defaultStyle.getBackground());
+            }
+            if (newParent.getForeground() != null) {
+                fore.setBackground(newParent.getForeground());
+            } else {
+                fore.setBackground(defaultStyle.getForeground());
             }
         });
         tokens.addItemListener(event -> {
