@@ -419,16 +419,19 @@ public class FThemeEditor extends JDialog {
                     bidi.setText(Integer.toString(defaultStyle.getBidiLevel()));
                 }
             }
-            // TODO If the colours have not been overwritten!!!
-            if (newParent.getBackground() != null) {
-                back.setBackground(newParent.getBackground());
-            } else {
-                back.setBackground(defaultStyle.getBackground());
+            if (!currentStyle.isBackgroundOverwritten()) {
+                if (newParent.getBackground() != null) {
+                    back.setBackground(newParent.getBackground());
+                } else {
+                    back.setBackground(defaultStyle.getBackground());
+                }
             }
-            if (newParent.getForeground() != null) {
-                fore.setBackground(newParent.getForeground());
-            } else {
-                fore.setBackground(defaultStyle.getForeground());
+            if (!currentStyle.isForegroundOverwritten()) {
+                if (newParent.getForeground() != null) {
+                    fore.setBackground(newParent.getForeground());
+                } else {
+                    fore.setBackground(defaultStyle.getForeground());
+                }
             }
         });
         tokens.addItemListener(event -> {
@@ -502,8 +505,24 @@ public class FThemeEditor extends JDialog {
                 }
                 fl.setForeground(dark ? Color.darkGray : Color.lightGray);
             }
-            back.setBackground((currentStyle.isBackgroundOverwritten() ? currentStyle : defaultStyle).getBackground());
-            fore.setBackground((currentStyle.isForegroundOverwritten() ? currentStyle : defaultStyle).getForeground());
+            if (currentStyle.isBackgroundOverwritten()) {
+                back.setBackground(currentStyle.getBackground());
+            } else {
+                if (currentStyle.getParent() != null && currentStyle.getParent().getBackground() != null) {
+                    back.setBackground(currentStyle.getParent().getBackground());
+                } else {
+                    back.setBackground(defaultStyle.getBackground());
+                }
+            }
+            if (currentStyle.isForegroundOverwritten()) {
+                fore.setBackground(currentStyle.getForeground());
+            } else {
+                if (currentStyle.getParent() != null && currentStyle.getParent().getForeground() != null) {
+                    fore.setBackground(currentStyle.getParent().getForeground());
+                } else {
+                    fore.setBackground(defaultStyle.getForeground());
+                }
+            }
             final FStyle tmpParent = currentStyle.getParent();
             inherit.setSelected(tmpParent != null);
             if (tmpParent != null) inTokens.setSelectedItem(tmpParent.getTokenType());
