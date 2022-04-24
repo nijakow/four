@@ -1,4 +1,5 @@
 inherits "/lib/object.c";
+inherits "/lib/conversion/int_to_string.c";
 inherits "/lib/io/sprintf.c";
 inherits "/lib/base64/encode.c";
 inherits "/lib/string/substring.c";
@@ -12,6 +13,8 @@ private any port;
 private func line_callback;
 private string line_buffer;
 private string escaped_line_buffer;
+private mapping key_callbacks;
+private int key_counter;
 
 void printf(string format, ...)
 {
@@ -32,7 +35,8 @@ void password(func callback, string prompt, ...)
 
 void open_editor(func callback, string title, string text)
 {
-    string key = "0";   // TODO
+    string key = Conversion_IntToString(this.key_counter++);
+    this.key_callbacks[key] = callback;
     $write(port, "\{editor/edit:", Base64_Encode(key), ":", Base64_Encode(title), ":", Base64_Encode(text), "\}");
 }
 
@@ -91,5 +95,7 @@ void _init(any port)
     this.line_callback = nil;
     this.line_buffer = "";
     this.escaped_line_buffer = nil;
+    this.key_callbacks = [];
+    this.key_counter = 0;
     $on_receive(port, this::receive);
 }

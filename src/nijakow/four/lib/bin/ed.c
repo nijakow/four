@@ -5,7 +5,8 @@ inherits "/lib/sys/fs/paths.c";
 
 private void save_cb(string text, string path)
 {
-    // TODO
+    // TODO: Give the player some information
+    FileSystem_WriteFile(path, text);
 }
 
 void main(string* argv)
