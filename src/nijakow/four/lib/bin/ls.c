@@ -31,7 +31,9 @@ private string rwx3str(int flags)
 private void do_ls1(string path, bool long_mode)
 {
     if (long_mode) {
-        printf("%s %s %s    ", rwx3str(FileSystem_Stat(path)), FileSystem_GetFileOwner(path), FileSystem_GetFileGroup(path));
+        printf("%s %s %s    ", rwx3str(FileSystem_Stat(path)),
+                               String_Pad(FileSystem_GetFileOwner(path), 12),
+                               String_Pad(FileSystem_GetFileGroup(path), 12));
     }
     printf("%s\n", FileSystem_Basename(path));
 }
