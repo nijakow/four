@@ -93,6 +93,11 @@ public class FStyle {
     }
 
     public FStyle getParent() {
+        /*
+         * TODO   Find a better way to prevent the default style from being written to the file.
+         *        It is not the duty of the FStyle itself.
+         *                                                                       - mhahnFr
+         */
         return parent != null && parent.getTokenType() == null && parent.getParent() == null ? null : parent;
     }
 
