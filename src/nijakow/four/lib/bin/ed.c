@@ -5,8 +5,13 @@ inherits "/lib/sys/fs/paths.c";
 
 private void save_cb(string text, string path)
 {
-    // TODO: Give the player some information
-    FileSystem_WriteFile(path, text);
+    if (text != nil)
+    {
+        if (FileSystem_WriteFile(path, text))
+            printf("%s: written!\n", path);
+        else
+            printf("%s: error when writing file!\n", path);
+    }
 }
 
 void main(string* argv)
@@ -18,7 +23,10 @@ void main(string* argv)
     {
         path = FileSystem_ResolveHere(argv[i]);
         contents = FileSystem_ReadFile(path);
-        terminal()->open_editor(this::(path)save_cb, argv[i], contents);
+        if (contents == nil)
+            printf("%s: file does not exist!\n", argv[i]);
+        else
+            terminal()->open_editor(this::(path)save_cb, argv[i], contents);
     }
     exit(0);
 }
