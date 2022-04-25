@@ -16,6 +16,8 @@ public class FThemeEditor extends JDialog {
     private final WritableTheme current;
     private final FStyle defaultStyle;
     private final JCheckBox inherit;
+    private final JCheckBox backIn;
+    private final JCheckBox foreIn;
     private final JComboBox<TokenType> inTokens;
     private final JPanel checkPanel;
     private final JPanel otherPanel;
@@ -196,10 +198,22 @@ public class FThemeEditor extends JDialog {
         sizePanel.add(sizeDesc);
         sizePanel.add(size);
         checkPanel.add(sizePanel);
-        forePanel = new JPanel(new GridLayout(2, 1));
+        forePanel = new JPanel(new GridLayout(3, 1));
         forePanel.setBorder(new EtchedBorder());
-        foreDesc = new JLabel("The text colour:");
+        foreIn = new JCheckBox("Inherit");
         JPanel fore = new JPanel();
+        foreIn.addItemListener(event -> {
+            if (foreIn.isSelected()) {
+                if (currentStyle.getParent() != null && currentStyle.getParent().getForeground() != null) {
+                    fore.setBackground(currentStyle.getParent().getForeground());
+                } else {
+                    fore.setBackground(defaultStyle.getForeground());
+                }
+                currentStyle.setForeground(null);
+            }
+        });
+        foreDesc = new JLabel("The text colour:");
+        forePanel.add(foreIn);
         forePanel.add(foreDesc);
         forePanel.add(fore);
         checkPanel.add(forePanel);
@@ -223,11 +237,23 @@ public class FThemeEditor extends JDialog {
         inheritBox.add(inherit);
         inheritBox.add(inTokens);
         otherPanel.add(inheritBox);
-        backPanel = new JPanel(new GridLayout(2, 1));
+        backPanel = new JPanel(new GridLayout(3, 1));
         backPanel.setBorder(new EtchedBorder());
         backDesc = new JLabel("The background colour:");
         JPanel back = new JPanel();
         back.setBorder(new EtchedBorder());
+        backIn = new JCheckBox("Inherit");
+        backIn.addItemListener(event -> {
+            if (backIn.isSelected()) {
+                if (currentStyle.getParent() != null && currentStyle.getParent().getBackground() != null) {
+                    back.setBackground(currentStyle.getParent().getBackground());
+                } else {
+                    back.setBackground(defaultStyle.getBackground());
+                }
+                currentStyle.setBackground(null);
+            }
+        });
+        backPanel.add(backIn);
         backPanel.add(backDesc);
         backPanel.add(back);
         otherPanel.add(backPanel);
@@ -350,6 +376,7 @@ public class FThemeEditor extends JDialog {
                 if (tmp != null) {
                     if (currentStyle != null) currentStyle.setForeground(tmp);
                     fore.setBackground(tmp);
+                    if (foreIn.isSelected()) foreIn.setSelected(false);
                 }
             }
         });
@@ -360,6 +387,7 @@ public class FThemeEditor extends JDialog {
                 if (tmp != null) {
                     if (currentStyle != null) currentStyle.setBackground(tmp);
                     back.setBackground(tmp);
+                    if (backIn.isSelected()) backIn.setSelected(false);
                 }
             }
         });
@@ -508,17 +536,19 @@ public class FThemeEditor extends JDialog {
             if (currentStyle.isBackgroundOverwritten()) {
                 back.setBackground(currentStyle.getBackground());
             } else if (currentStyle.getParent() != null && currentStyle.getParent().getBackground() != null) {
-                    back.setBackground(currentStyle.getParent().getBackground());
+                back.setBackground(currentStyle.getParent().getBackground());
             } else {
                 back.setBackground(defaultStyle.getBackground());
             }
+            backIn.setSelected(!currentStyle.isBackgroundOverwritten());
             if (currentStyle.isForegroundOverwritten()) {
                 fore.setBackground(currentStyle.getForeground());
             } else if (currentStyle.getParent() != null && currentStyle.getParent().getForeground() != null) {
-                    fore.setBackground(currentStyle.getParent().getForeground());
+                fore.setBackground(currentStyle.getParent().getForeground());
             } else {
-                    fore.setBackground(defaultStyle.getForeground());
+                fore.setBackground(defaultStyle.getForeground());
             }
+            foreIn.setSelected(!currentStyle.isForegroundOverwritten());
             final FStyle tmpParent = currentStyle.getParent();
             inherit.setSelected(tmpParent != null);
             if (tmpParent != null) inTokens.setSelectedItem(tmpParent.getTokenType());
@@ -704,6 +734,10 @@ public class FThemeEditor extends JDialog {
             alignment.setBackground(Color.gray);
             alignment.setCaretColor(Color.white);
             alignment.setForeground(Color.white);
+            backIn.setForeground(Color.white);
+            backIn.setBackground(Color.darkGray);
+            foreIn.setBackground(Color.darkGray);
+            foreIn.setForeground(Color.white);
         } else {
             getContentPane().setBackground(null);
             checkPanel.setBackground(null);
@@ -793,6 +827,10 @@ public class FThemeEditor extends JDialog {
             alignment.setBackground(Color.white);
             alignment.setCaretColor(Color.black);
             alignment.setForeground(Color.black);
+            foreIn.setForeground(null);
+            foreIn.setBackground(null);
+            backIn.setForeground(null);
+            backIn.setBackground(null);
         }
     }
 
