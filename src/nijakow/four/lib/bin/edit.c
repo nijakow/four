@@ -24,9 +24,15 @@ void main(string* argv)
         path = FileSystem_ResolveHere(argv[i]);
         contents = FileSystem_ReadFile(path);
         if (contents == nil)
-            printf("%s: file does not exist!\n", argv[i]);
-        else
-            terminal()->open_editor(this::(path)save_cb, argv[i], contents);
+        {
+            if (FileSystem_CreateFile(path))
+                contents = "";
+            else {
+                printf("%s: file does not exist!\n", argv[i]);
+                continue;
+            }
+        }
+        terminal()->open_editor(this::(path)save_cb, argv[i], contents);
     }
     exit(0);
 }
