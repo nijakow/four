@@ -463,7 +463,7 @@ public class FThemeEditor extends JDialog {
             }
         });
         tokens.addItemListener(event -> {
-            if (tokens.getSelectedItem() == null) return;
+            if (tokens.getSelectedItem() == null) return; // TODO disable input methods!!!
             if (currentStyle != null) saveStyle();
             currentStyle = this.current.getStyle((TokenType) tokens.getSelectedItem());
             if (currentStyle == null) {
@@ -564,6 +564,7 @@ public class FThemeEditor extends JDialog {
     }
 
     private void saveStyle() {
+        if (currentStyle == null) return;
         if (fam.getForeground().equals(dark ? Color.white : Color.black)) currentStyle.setFamily(fam.getText());
         else currentStyle.setFamily(null);
         if (size.getForeground().equals(dark ? Color.white : Color.black)) {
