@@ -106,7 +106,7 @@ public class FThemeEditor extends JDialog {
         boldWD.setBorder(new EtchedBorder());
         bolds = new JPanel();
         boldDesc = new JLabel("Bold:");
-        boldDefault = new JRadioButton("Default");
+        boldDefault = new JRadioButton("Default (off)");
         boldDisable = new JRadioButton("Off");
         boldEnable = new JRadioButton("On");
         ButtonGroup boldGroup = new ButtonGroup();
@@ -123,7 +123,7 @@ public class FThemeEditor extends JDialog {
         italicWD.setBorder(new EtchedBorder());
         italics = new JPanel();
         italicDesc = new JLabel("Italic:");
-        italicDefault = new JRadioButton("Default");
+        italicDefault = new JRadioButton("Default (off)");
         italicDisable = new JRadioButton("Off");
         italicEnable = new JRadioButton("On");
         ButtonGroup italicGroup = new ButtonGroup();
@@ -140,7 +140,7 @@ public class FThemeEditor extends JDialog {
         underlineWD.setBorder(new EtchedBorder());
         underlines = new JPanel();
         underlineDesc = new JLabel("Underlined:");
-        underlineDefault = new JRadioButton("Default");
+        underlineDefault = new JRadioButton("Default (off)");
         underlineDisable = new JRadioButton("Off");
         underlineEnable = new JRadioButton("On");
         ButtonGroup underlineGroup = new ButtonGroup();
@@ -157,7 +157,7 @@ public class FThemeEditor extends JDialog {
         strikeWD.setBorder(new EtchedBorder());
         strikes = new JPanel();
         strikeDesc = new JLabel("Strike-through:");
-        strikeDefault = new JRadioButton("Default");
+        strikeDefault = new JRadioButton("Default (off)");
         strikeDisable = new JRadioButton("Off");
         strikeEnable = new JRadioButton("On");
         ButtonGroup strikeGroup = new ButtonGroup();
@@ -461,6 +461,26 @@ public class FThemeEditor extends JDialog {
                     fore.setBackground(defaultStyle.getForeground());
                 }
             }
+            if (newParent.isStrikeThrough() != null) {
+                strikeDefault.setText("Default (" + (newParent.isStrikeThrough() ? "On" : "Off") + ")");
+            } else {
+                strikeDefault.setText("Default (" + (defaultStyle.isStrikeThrough() ? "On" : "Off") + ")");
+            }
+            if (newParent.isItalic() != null) {
+                italicDefault.setText("Default (" + (newParent.isItalic() ? "On" : "Off") + ")");
+            } else {
+                italicDefault.setText("Default (" + (defaultStyle.isItalic() ? "On" : "Off") + ")");
+            }
+            if (newParent.isUnderlined() != null) {
+                underlineDefault.setText("Default (" + (newParent.isUnderlined() ? "On" : "Off") + ")");
+            } else {
+                underlineDefault.setText("Default (" + (defaultStyle.isUnderlined() ? "On" : "Off") + ")");
+            }
+            if (newParent.isBold() != null) {
+                boldDefault.setText("Default (" + (newParent.isBold() ? "On" : "Off") + ")");
+            } else {
+                boldDefault.setText("Default (" + (defaultStyle.isBold() ? "On" : "Off") + ")");
+            }
         });
         tokens.addItemListener(event -> {
             if (tokens.getSelectedItem() == null) return; // TODO disable input methods!!!
@@ -472,12 +492,32 @@ public class FThemeEditor extends JDialog {
             }
             if (currentStyle.isBoldOverwritten()) (currentStyle.isBold() ? boldEnable : boldDisable).setSelected(true);
             else boldDefault.setSelected(true);
+            if (currentStyle.getParent() != null && currentStyle.getParent().isBold() != null) {
+                boldDefault.setText("Default (" + (currentStyle.getParent().isBold() ? "On" : "Off") + ")");
+            } else {
+                boldDefault.setText("Default (" + (defaultStyle.isBold() ? "On" : "Off") + ")");
+            }
             if (currentStyle.isItalicOverwritten()) (currentStyle.isItalic() ? italicEnable : italicDisable).setSelected(true);
             else italicDefault.setSelected(true);
+            if (currentStyle.getParent() != null && currentStyle.getParent().isItalic() != null) {
+                italicDefault.setText("Default (" + (currentStyle.getParent().isItalic() ? "On" : "Off") + ")");
+            } else {
+                italicDefault.setText("Default (" + (defaultStyle.isItalic() ? "On" : "Off") + ")");
+            }
             if (currentStyle.isUnderlinedOverwritten()) (currentStyle.isUnderlined() ? underlineEnable : underlineDisable).setSelected(true);
             else underlineDefault.setSelected(true);
+            if (currentStyle.getParent() != null && currentStyle.getParent().isUnderlined() != null) {
+                underlineDefault.setText("Default (" + (currentStyle.getParent().isUnderlined() ? "On" : "Off") + ")");
+            } else {
+                underlineDefault.setText("Default (" + (defaultStyle.isUnderlined() ? "On" : "Off") + ")");
+            }
             if (currentStyle.isStrikeThroughOverwritten()) (currentStyle.isStrikeThrough() ? strikeEnable : strikeDisable).setSelected(true);
             else strikeDefault.setSelected(true);
+            if (currentStyle.getParent() != null && currentStyle.getParent().isStrikeThrough() != null) {
+                strikeDefault.setText("Default (" + (currentStyle.getParent().isStrikeThrough() ? "On" : "Off") + ")");
+            } else {
+                strikeDefault.setText("Default (" + (defaultStyle.isStrikeThrough() ? "On" : "Off") + ")");
+            }
             if (currentStyle.isFamilyOverwritten()) {
                 fam.setText(currentStyle.getFamily());
                 fam.setForeground(dark ? Color.white : Color.black);
