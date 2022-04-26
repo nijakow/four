@@ -71,6 +71,7 @@ public class FThemeEditor extends JDialog {
     private final JRadioButton strikeEnable;
     private final JRadioButton strikeDisable;
     private boolean dark;
+    private boolean inputEnabled;
     private FStyle currentStyle;
     private String name;
 
@@ -372,6 +373,7 @@ public class FThemeEditor extends JDialog {
         fore.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
+                if (!inputEnabled) return;
                 Color tmp = JColorChooser.showDialog(FThemeEditor.this, "Text colour", currentStyle == null ? null : currentStyle.getForeground());
                 if (tmp != null) {
                     if (currentStyle != null) currentStyle.setForeground(tmp);
@@ -383,6 +385,7 @@ public class FThemeEditor extends JDialog {
         back.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
+                if (!inputEnabled) return;
                 Color tmp = JColorChooser.showDialog(FThemeEditor.this, "Background colour", currentStyle == null ? null : currentStyle.getBackground());
                 if (tmp != null) {
                     if (currentStyle != null) currentStyle.setBackground(tmp);
@@ -483,7 +486,8 @@ public class FThemeEditor extends JDialog {
             }
         });
         tokens.addItemListener(event -> {
-            if (tokens.getSelectedItem() == null) return; // TODO disable input methods!!!
+            if (tokens.getSelectedItem() == null) return;
+            if (!inputEnabled) setInputEnabled(true);
             if (currentStyle != null) saveStyle();
             currentStyle = this.current.getStyle((TokenType) tokens.getSelectedItem());
             if (currentStyle == null) {
@@ -594,6 +598,7 @@ public class FThemeEditor extends JDialog {
             if (tmpParent != null) inTokens.setSelectedItem(tmpParent.getTokenType());
         });
         tokens.setSelectedIndex(-1);
+        setInputEnabled(false);
         saveButtons.add(save);
         saveButtons.add(saveAs);
         editAll.add(saveButtons, BorderLayout.SOUTH);
@@ -601,6 +606,31 @@ public class FThemeEditor extends JDialog {
         getContentPane().add(editAll);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         pack();
+    }
+
+    private void setInputEnabled(boolean enabled) {
+        this.inputEnabled = enabled;
+        boldDefault.setEnabled(enabled);
+        boldEnable.setEnabled(enabled);
+        boldDisable.setEnabled(enabled);
+        italicDefault.setEnabled(enabled);
+        italicEnable.setEnabled(enabled);
+        italicDisable.setEnabled(enabled);
+        underlineDefault.setEnabled(enabled);
+        underlineEnable.setEnabled(enabled);
+        underlineDisable.setEnabled(enabled);
+        strikeDefault.setEnabled(enabled);
+        strikeEnable.setEnabled(enabled);
+        strikeDisable.setEnabled(enabled);
+        bidi.setEnabled(enabled);
+        size.setEnabled(enabled);
+        fam.setEnabled(enabled);
+        fl.setEnabled(enabled);
+        alignment.setEnabled(enabled);
+        backIn.setEnabled(enabled);
+        foreIn.setEnabled(enabled);
+        inherit.setSelected(false);
+        inherit.setEnabled(enabled);
     }
 
     private void saveStyle() {
