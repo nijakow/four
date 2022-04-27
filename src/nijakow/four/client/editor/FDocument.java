@@ -2,7 +2,6 @@ package nijakow.four.client.editor;
 
 import nijakow.four.client.utils.StringHelper;
 import nijakow.four.share.lang.c.parser.*;
-import nijakow.four.share.util.Pair;
 
 import javax.swing.text.*;
 import java.util.ArrayList;
@@ -17,7 +16,6 @@ public class FDocument extends DefaultStyledDocument {
     private boolean autoIndenting;
     private FTheme theme;
     //private final List<Token> idents;
-    ///private final List<Pair<Integer, Integer>> ide;
     private final ExecutorService threads;
 
     public FDocument() {
@@ -51,7 +49,6 @@ public class FDocument extends DefaultStyledDocument {
 
     public void setAutoIndentingEnabled(boolean enabled) {
         autoIndenting = enabled;
-        //autoIndenting = false;
     }
 
     public boolean getAutoIndentingEnabled() {
@@ -96,18 +93,10 @@ public class FDocument extends DefaultStyledDocument {
                     str += "    ";
                 }
             } else if (str.equals("}") && isOnlyWhitespacesOnLine(offs)) {
-                remove(offs - 4, 4);
-                offs -= 4;
-                // TODO Only remove as many whitespaces as there are on the line, at most 4.
+                final int indent = Math.min(getLineIndent(offs).length(), 4);
+                super.remove(offs - indent, indent);
+                offs -= indent;
             }
-            /*if (str.equals("}") && isOnlyWhitespacesOnLine(offs)) {
-                offs = fixIndentation(offs, true);
-            } else if (str.equals("\n")) {
-                str += StringHelper.generateFilledString(' ', getIndentationLevel(offs) * 4);
-            } else if (str.equals("\t") && isOnlyWhitespacesOnLine(offs)) {
-                fixIndentation(offs, false);
-                return;
-            }*/
         }
         if (str.equals("\t")) {
             str = "    ";
@@ -178,27 +167,6 @@ public class FDocument extends DefaultStyledDocument {
         }
         return true;
     }
-
-    /*public int fixIndentation(int position, boolean isClosingBrace) throws BadLocationException {
-        int j, i = getLineStart(position);
-        for (j = i; j < text.length() && Character.isWhitespace(text.charAt(j)) && text.charAt(j) != '\n'; j++);
-        remove(i, j - i);
-        int newIndentation = getIndentationLevel(i);
-        if (isClosingBrace) newIndentation--;
-        if (newIndentation < 0) newIndentation = 0;
-        insertString(i, StringHelper.generateFilledString(' ', newIndentation * 4), null);
-        return i + newIndentation * 4;
-    }*/
-
-    /*public synchronized int getIndentationLevel(int indentationPosition) {
-        int indent = 0;
-        for (Pair<Integer, Integer> p : ide) {
-            if (indentationPosition <= p.getFirst())
-                return indent;
-            indent = p.getSecond();
-        }
-        return indent;
-    }*/
 
     public void updateSyntaxHighlighting() {
         updateSyntaxHighlighting2(0, getLength());
