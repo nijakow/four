@@ -51,7 +51,7 @@ public class FDocument extends DefaultStyledDocument {
 
     public void setAutoIndentingEnabled(boolean enabled) {
         autoIndenting = enabled;
-        autoIndenting = false;
+        //autoIndenting = false;
     }
 
     public boolean getAutoIndentingEnabled() {
@@ -80,9 +80,26 @@ public class FDocument extends DefaultStyledDocument {
         }
     }
 
+    public String getLineIndent(int offs) {
+        final String line = text.substring(getLineStart(offs), getLineEnd(offs));
+        int i;
+        for (i = 0; i < line.length() && Character.isWhitespace(line.charAt(i)); i++);
+        return StringHelper.generateFilledString(' ', i);
+    }
+
     @Override
     public void insertString(int offs, String str, AttributeSet a) throws BadLocationException {
         if (autoIndenting) {
+            if (str.equals("\n")) {
+                str += getLineIndent(offs);
+                if (offs > 0 && text.charAt(offs - 1) == '{') {
+                    str += "    ";
+                }
+            } else if (str.equals("}") && isOnlyWhitespacesOnLine(offs)) {
+                remove(offs - 4, 4);
+                offs -= 4;
+                // TODO Only remove as many whitespaces as there are on the line, at most 4.
+            }
             /*if (str.equals("}") && isOnlyWhitespacesOnLine(offs)) {
                 offs = fixIndentation(offs, true);
             } else if (str.equals("\n")) {
@@ -107,8 +124,9 @@ public class FDocument extends DefaultStyledDocument {
     public void remove(int offs, int len) throws BadLocationException {
         int lineStart = getLineStart(offs);
         int lineEnd = getLineEnd(offs);
-        if (isOnlyWhitespacesOnLine(lineEnd)) {
+        if (len == 1 && isOnlyWhitespacesOnLine(lineEnd)) {
             lineStart = lineStart == 0 ? 0 : lineStart - 1;
+            lineEnd = lineEnd == lineStart ? lineEnd + 1 : lineEnd;
             len = lineEnd - lineStart;
             offs = lineStart;
         }
@@ -223,6 +241,7 @@ public class FDocument extends DefaultStyledDocument {
     }
 
     private void updateSyntaxHighlighting2(int offset, int length) {
+        // TODO If block comment is removed, update the ex-comment
         try {
             int lineStart = getLineStart(offset);
             int lineEnd = getLineEnd(offset + length);
