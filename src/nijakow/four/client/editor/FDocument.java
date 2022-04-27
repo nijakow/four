@@ -16,7 +16,6 @@ public class FDocument extends DefaultStyledDocument {
     private boolean highlighting;
     private boolean autoIndenting;
     private FTheme theme;
-    private final List<Pair<Integer, Integer>> comments;
     //private final List<Token> idents;
     ///private final List<Pair<Integer, Integer>> ide;
     private final ExecutorService threads;
@@ -25,7 +24,6 @@ public class FDocument extends DefaultStyledDocument {
         threads = Executors.newSingleThreadScheduledExecutor();
         def = getLogicalStyle(0);
         theme = new DefaultTheme();
-        comments = new ArrayList<>();
 //        idents = new ArrayList<>();
 //        ide = new ArrayList<>();
         highlighting = false;
@@ -189,30 +187,60 @@ public class FDocument extends DefaultStyledDocument {
         updateSyntaxHighlighting2(0, getLength());
     }
 
-    public void updateSyntaxHighlighting2(int offset, int length) {
-        // TODO Generate comment list
-        for (Pair<Integer, Integer> c : comments) {
-            boolean start = false,
-                    end = false;
-            if (offset > c.getFirst() && offset < c.getSecond()) {
-                start = true;
-            }
-            if (offset + length > c.getFirst()) {
-                end = true;
-            }
-            if (start && end) return;
-            if (start) {
-                offset = c.getSecond();
-            }
-            if (end) {
-                length -= (offset + length) - c.getFirst();
-            }
+    private boolean isInsideComment(int index) {
+        return isInsideBlockComment(index) || isInsideDocComment(index);
+    }
+
+    private boolean isInsideLineComment(int index) {
+        final int lineStart = getLineStart(index);
+        final String linePart = text.substring(lineStart, index);
+        return linePart.contains("//");
+    }
+
+    private boolean isInsideDocComment(int index) {
+        final String before = text.substring(0, index);
+        final int lastClose = before.lastIndexOf("*/");
+        final int lastOpen = before.lastIndexOf("/**");
+        if (lastClose == -1 && lastOpen != -1) {
+            return true;
         }
+        else if (lastClose != -1 && lastOpen != -1) {
+            return lastOpen > lastClose;
+        }
+        return false;
+    }
+
+    private boolean isInsideBlockComment(int index) {
+        final String before = text.substring(0, index);
+        final int lastClose = before.lastIndexOf("*/");
+        final int lastOpen = before.lastIndexOf("/*");
+        if (lastClose == -1 && lastOpen != -1) {
+            return true;
+        }
+        else if (lastClose != -1 && lastOpen != -1) {
+            return lastOpen > lastClose;
+        }
+        return false;
+    }
+
+    private void updateSyntaxHighlighting2(int offset, int length) {
+        // TODO Highlighting for parts that are no longer inside of a comment
         try {
-            final int lineStart = getLineStart(offset);
-            final int lineEnd = getLineEnd(offset + length);
-            String text = this.text.substring(lineStart, lineEnd);
-            Tokenizer tokenizer = new Tokenizer(new StringCharStream("", text));
+            int lineStart = getLineStart(offset);
+            int lineEnd = getLineEnd(offset + length);
+            if(isInsideComment(lineStart)) {
+                final int bco = text.substring(0, lineStart).lastIndexOf("/*");
+                final int dco = text.substring(0, lineStart).lastIndexOf("/**");
+                lineStart = Math.max(bco, dco);
+            } else if (isInsideComment(lineStart) && !isInsideComment(lineEnd)) {
+                lineStart = text.substring(0, offset).lastIndexOf("*/") + 2;
+            }
+            if (isInsideComment(lineEnd)) {
+                final int bce = text.indexOf("*/", lineEnd);
+                lineEnd = bce == -1 ? text.length() : bce + 2;
+            }
+            String line = text.substring(lineStart, lineEnd);
+            Tokenizer tokenizer = new Tokenizer(new StringCharStream("", line));
             tokenizer.enableCommentTokens();
             Token token;
             do {
@@ -222,7 +250,8 @@ public class FDocument extends DefaultStyledDocument {
                 int pos = token.getPosition().getIndex() + lineStart;
                 setCharacterAttributes(pos, (token.getEndPosition().getIndex() + lineStart) - pos, style, true);
             } while (token.getType() != TokenType.EOF);
-        } catch (ParseException e) {
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
