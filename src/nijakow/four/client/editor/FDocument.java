@@ -224,20 +224,20 @@ public class FDocument extends DefaultStyledDocument {
     }
 
     private void updateSyntaxHighlighting2(int offset, int length) {
-        // TODO Highlighting for parts that are no longer inside of a comment
         try {
             int lineStart = getLineStart(offset);
             int lineEnd = getLineEnd(offset + length);
-            if(isInsideComment(lineStart)) {
-                final int bco = text.substring(0, lineStart).lastIndexOf("/*");
-                final int dco = text.substring(0, lineStart).lastIndexOf("/**");
-                lineStart = Math.max(bco, dco);
-            } else if (isInsideComment(lineStart) && !isInsideComment(lineEnd)) {
-                lineStart = text.substring(0, offset).lastIndexOf("*/") + 2;
+            final boolean first = isInsideComment(lineStart);
+            final boolean second = isInsideComment(lineEnd);
+            if (first) {
+                lineStart = text.substring(0, lineStart).lastIndexOf("/*");
             }
-            if (isInsideComment(lineEnd)) {
+            if (second) {
                 final int bce = text.indexOf("*/", lineEnd);
                 lineEnd = bce == -1 ? text.length() : bce + 2;
+            } else if (first) {
+                final int bco = text.indexOf("*/", lineEnd);
+                lineEnd = bco == -1 ? text.length() : bco + 1;
             }
             String line = text.substring(lineStart, lineEnd);
             Tokenizer tokenizer = new Tokenizer(new StringCharStream("", line));
@@ -251,6 +251,7 @@ public class FDocument extends DefaultStyledDocument {
                 setCharacterAttributes(pos, (token.getEndPosition().getIndex() + lineStart) - pos, style, true);
             } while (token.getType() != TokenType.EOF);
         } catch (Exception e) {
+            // TODO Handle this gracefully
             e.printStackTrace();
         }
     }
