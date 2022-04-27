@@ -114,9 +114,8 @@ public class FDocument extends DefaultStyledDocument {
         }
         super.remove(offs, len);
         if (highlighting) {
-            int finalLen = len;
             int finalOffs = offs;
-            threads.execute(() -> updateSyntaxHighlighting2(finalOffs, finalLen));
+            threads.execute(() -> updateSyntaxHighlighting2(finalOffs, 0));
         }
     }
 
