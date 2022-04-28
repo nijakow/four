@@ -429,6 +429,7 @@ public class ClientEditor extends JFrame implements ActionListener {
 		editor.toggleMode(dark);
 		editor.setLocationRelativeTo(this);
 		editor.setVisible(true);
+		if (doc.isSyntaxHighlighting()) doc.updateSyntaxHighlighting();
 	}
 
 	private void showThemeEditor(FTheme current, String name) {
@@ -436,6 +437,7 @@ public class ClientEditor extends JFrame implements ActionListener {
 		editor.toggleMode(dark);
 		editor.setLocationRelativeTo(this);
 		editor.setVisible(true);
+		if (doc.isSyntaxHighlighting()) doc.updateSyntaxHighlighting();
 	}
 
 	private void showSettingsWindow() {
