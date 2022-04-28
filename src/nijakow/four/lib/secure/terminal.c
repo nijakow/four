@@ -47,12 +47,13 @@ void close()
     $close(this.port);
 }
 
-private void process_editor(string key, string text)
+private void process_editor(string key, string text, bool cancelled)
 {
     func cb;
 
     cb = key_callbacks[key];
-    key_callbacks[key] = nil;
+    if (cancelled)
+        key_callbacks[key] = nil;
     if (cb != nil)
         call(cb, text);
 }
@@ -65,9 +66,9 @@ private void process_escaped(string escaped)
     for (int i = 1; i < List_Length(tokens); i++)
         tokens[i] = Base64_Decode(tokens[i]);
     if (tokens[0] == "editor/saved")
-        process_editor(tokens[1], tokens[2]);
+        process_editor(tokens[1], tokens[2], false);
     else if (tokens[1] == "editor/cancelled")
-        process_editor(tokens[1], nil);
+        process_editor(tokens[1], nil, true);
 }
 
 private void process_line(string line)
