@@ -15,7 +15,6 @@ public class FDocument extends DefaultStyledDocument {
     private boolean highlighting;
     private boolean autoIndenting;
     private FTheme theme;
-    //private final List<Token> idents;
     private final ExecutorService threads;
 
     public FDocument() {
@@ -77,7 +76,7 @@ public class FDocument extends DefaultStyledDocument {
         }
     }
 
-    public String getLineIndent(int offs) {
+    private String getLineIndent(int offs) {
         final String line = text.substring(getLineStart(offs), getLineEnd(offs));
         int i;
         for (i = 0; i < line.length() && Character.isWhitespace(line.charAt(i)); i++);
@@ -141,12 +140,9 @@ public class FDocument extends DefaultStyledDocument {
     }
 
     public List<FSuggestion> computeSuggestions(int cursorPosition) {
-        /*List<FSuggestion> ret = new ArrayList<>();
-        for (Token t : idents) {
-            ret.add(new FSuggestion(t.getPayload().toString()));
-        }
-        return ret;*/
-        return new ArrayList<>();
+        List<FSuggestion> ret = new ArrayList<>();
+        ret.add(new FSuggestion("Not implemented yet!"));
+        return ret;
     }
 
     public int getLineEnd(int position) {
@@ -161,7 +157,7 @@ public class FDocument extends DefaultStyledDocument {
         return i + 1;
     }
 
-    public boolean isOnlyWhitespacesOnLine(int endPosition) {
+    private boolean isOnlyWhitespacesOnLine(int endPosition) {
         for (int start = getLineStart(endPosition), i = endPosition - 1; i >= start; i--) {
             if (!Character.isWhitespace(text.charAt(i))) return false;
         }
