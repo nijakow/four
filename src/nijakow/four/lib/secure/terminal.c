@@ -1,7 +1,6 @@
 inherits "/lib/object.c";
 inherits "/lib/conversion/int_to_string.c";
 inherits "/lib/io/sprintf.c";
-inherits "/lib/base64/encode.c";
 inherits "/lib/string/substring.c";
 inherits "/lib/string/split.c";
 inherits "/lib/base64/encode.c";

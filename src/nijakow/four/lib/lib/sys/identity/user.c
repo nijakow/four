@@ -3,6 +3,12 @@ use $getshell;
 use $chsh;
 use $chpass;
 use $isactive;
+use $getuid;
+
+string User_Whoami()
+{
+    return $getuid();
+}
 
 bool User_Exists(string name)
 {
