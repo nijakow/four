@@ -77,6 +77,14 @@ public class PreferencesHelper {
 		return prefs.getBoolean(Key.AUTO_INDENTING, true);
 	}
 
+	public String getEditorTheme() {
+		return prefs.get(Key.EDITOR_THEME, Commands.Themes.DEFAULT);
+	}
+
+	public void setEditorTheme(String theme) {
+		prefs.put(Key.EDITOR_THEME, theme);
+	}
+
 	public void setAutoIndenting(boolean autoIndenting) {
 		prefs.putBoolean(Key.AUTO_INDENTING, autoIndenting);
 	}
@@ -164,12 +172,13 @@ public class PreferencesHelper {
 	public abstract static class Key {
 		public static final String AUTO_INDENTING    = "autoIndent";
 		public static final String DARK_MODE         = "darkMode";
-		public static final String EDITOR_WIDTH      = "editorWidth";
 		public static final String EDITOR_HEIGHT     = "editorHeight";
-		public static final String EDITOR_POS_X      = "editorPosX";
-		public static final String EDITOR_POS_Y      = "editorPosY";
 		public static final String EDITOR_HIGHLIGHT  = "editorHighlighting";
 		public static final String EDITOR_LINE_BREAK = "editorLineBreaking";
+		public static final String EDITOR_THEME      = "editorTheme";
+		public static final String EDITOR_POS_X      = "editorPosX";
+		public static final String EDITOR_POS_Y      = "editorPosY";
+		public static final String EDITOR_WIDTH      = "editorWidth";
 		public static final String HOSTNAME          = "hostname";
 		public static final String LINE_BREAKING     = "lineBreaking";
 		public static final String PORT_NUMBER       = "portNumber";

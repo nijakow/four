@@ -1,20 +1,14 @@
 package nijakow.four.client;
 
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.lang.reflect.Array;
-import java.nio.ByteBuffer;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
+import java.awt.dnd.*;
+import java.awt.event.*;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.LinkedList;
+import java.util.*;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -22,6 +16,7 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 import javax.swing.*;
+import javax.swing.Timer;
 import javax.swing.border.EtchedBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -46,6 +41,8 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 	private final JTextPane area;
 	private final StyledDocument term;
 	private final List<ClientEditor> editors;
+	private int[] ports;
+	private int portCounter;
 	private String buffer;
 	private JLabel connectionStatus;
 	private PreferencesHelper prefs;
@@ -58,7 +55,7 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 	private ScheduledFuture<?> reconnectorHandler;
 	private final ScheduledExecutorService queue;
 	private final Runnable reconnector = () -> {
-		connection = ClientConnection.getClientConnection(prefs.getHostname(), prefs.getPort());
+		connection = ClientConnection.getClientConnection(prefs.getHostname(), ports[portCounter]);
 		connection.setClientConnectionListener(this);
 		boolean wasConnected = false;
 		try {
@@ -75,11 +72,12 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 			connection.openStreams();
 		} catch (IOException ex) {
 			if (!wasConnected) {
+				int wasPort = ports[portCounter];
 				EventQueue.invokeLater(() -> {
 					if (bother) {
 						bother = false;
 						JOptionPane.showMessageDialog(this,
-								"Could not connect to \"" + prefs.getHostname() + "\" on port " + prefs.getPort(),
+								"Could not connect to \"" + prefs.getHostname() + "\" on port " + wasPort,
 								"Connection failed", JOptionPane.ERROR_MESSAGE);
 					}
 					labelTimer.stop();
@@ -87,17 +85,17 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 					connectionStatus.setText("Not connected!");
 					connectionStatus.setForeground(Color.red);
 				});
+				portCounter = portCounter == ports.length - 1 ? 0 : portCounter + 1;
+				if (wasPort != ports[portCounter]) {
+					bother = true;
+				}
 			}
 		}
 	};
 	
 	public ClientWindow(String hostname, int[] ports) {
 		super("Nijakow's \"Four\"");
-
 		final Font font = new Font("Monospaced", Font.PLAIN, 14);
-
-		// TODO macOS customization
-		// TODO iterate through ports
 		buffer = "";
 		bother = true;
 		prefs = PreferencesHelper.getInstance();
@@ -111,8 +109,10 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 			System.err.println("Could not set UI - will use default UI.");
 		}
 		queue = Executors.newScheduledThreadPool(2);
-		if (ports.length > 0)
+		this.ports = ports;
+		if (ports.length == 1)
 			prefs.setPort(ports[0]);
+		portCounter = 0;
 		getContentPane().setLayout(new BorderLayout());
 		JPanel south = new JPanel();
 		south.setOpaque(false);
@@ -498,45 +498,84 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 		}
 		return ret;
 	}
-	
-	private void parseArgument(String arg) {
-		if (arg.startsWith(Commands.Codes.SPECIAL_PWD)) {
-			pwf.setVisible(true);
-			prompt.setVisible(false);
-			pwf.requestFocusInWindow();
-			if (arg.length() > Commands.Codes.SPECIAL_PWD.length() + 1)
-				promptText.setText(new String(Base64.getDecoder().decode(arg.substring(arg.indexOf(Commands.Codes.SPECIAL_RAW) + 1)), StandardCharsets.UTF_8));
-			else
-				promptText.setText("");
-			validate();
-		} else if (arg.startsWith(Commands.Codes.SPECIAL_PROMPT)) {
-			if (arg.length() > Commands.Codes.SPECIAL_PROMPT.length() + 1)
-				promptText.setText(new String(Base64.getDecoder().decode(arg.substring(arg.indexOf(Commands.Codes.SPECIAL_RAW) + 1)), StandardCharsets.UTF_8));
-			else
-				promptText.setText("");
-		} else if (arg.startsWith(Commands.Codes.SPECIAL_EDIT)) {
-			String splitter = arg.substring(arg.indexOf(Commands.Codes.SPECIAL_RAW) + 1);
-			int i0 = splitter.indexOf(Commands.Codes.SPECIAL_RAW);
-			if (i0 < 0) return;
-			String id = new String(Base64.getDecoder().decode(splitter.substring(0, i0)), StandardCharsets.UTF_8);
-			splitter = splitter.substring(i0 + 1);
-			int i1 = splitter.indexOf(Commands.Codes.SPECIAL_RAW);
-			if (i1 < 0) return;
-			String title = new String(Base64.getDecoder().decode(splitter.substring(0, i1)), StandardCharsets.UTF_8);
-			splitter = new String(Base64.getDecoder().decode(splitter.substring(i1 + 1)), StandardCharsets.UTF_8);
-			openEditor(id, title, splitter);
-		} else if (arg.startsWith(Commands.Codes.SPECIAL_IMG)) {
-			try {
-				term.insertString(term.getLength(), " ", current);
-			} catch (BadLocationException e) {
-				e.printStackTrace();
+
+	private void parsePromptPwd(String arg) {
+		pwf.setVisible(true);
+		prompt.setVisible(false);
+		pwf.requestFocusInWindow();
+		if (arg.length() > 0)
+			promptText.setText(new String(Base64.getDecoder().decode(arg), StandardCharsets.UTF_8));
+		else
+			promptText.setText("");
+	}
+
+	private void parsePrompt(String arg) {
+		if (arg.length() > 0)
+			promptText.setText(new String(Base64.getDecoder().decode(arg), StandardCharsets.UTF_8));
+		else
+			promptText.setText("");
+	}
+
+	private void parseEdit(String arg) {
+		int i0 = arg.indexOf(Commands.Codes.SPECIAL_RAW);
+		if (i0 < 0) return;
+		String id = new String(Base64.getDecoder().decode(arg.substring(0, i0)), StandardCharsets.UTF_8);
+		arg = arg.substring(i0 + 1);
+		int i1 = arg.indexOf(Commands.Codes.SPECIAL_RAW);
+		if (i1 < 0) return;
+		String title = new String(Base64.getDecoder().decode(arg.substring(0, i1)), StandardCharsets.UTF_8);
+		arg = new String(Base64.getDecoder().decode(arg.substring(i1 + 1)), StandardCharsets.UTF_8);
+		openEditor(id, title, arg);
+	}
+
+	private void parseImg(String arg) {
+		try {
+			term.insertString(term.getLength(), " ", current);
+		} catch (BadLocationException e) {
+			e.printStackTrace();
+		}
+		new ImageLoader(arg, term.getLength(), area,
+				pane.getHeight() - pane.getHorizontalScrollBar().getHeight() - 5,
+				pane.getWidth() - pane.getVerticalScrollBar().getWidth() - 5)
+				.execute();
+	}
+
+	private void parseUpload(String arg) {
+		final JFileChooser chooser = new JFileChooser();
+		chooser.setDialogType(JFileChooser.SAVE_DIALOG);
+		chooser.setMultiSelectionEnabled(false);
+		chooser.setDragEnabled(true);
+		chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+		if (chooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
+			final File selected = chooser.getSelectedFile();
+			if (selected.exists() && JOptionPane.showConfirmDialog(this, "File exists!\nOverwrite?",
+					"File exists", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) != JOptionPane.YES_OPTION) {
+				return;
 			}
-			new ImageLoader(arg, term.getLength(), area,
-					pane.getHeight() - pane.getHorizontalScrollBar().getHeight() - 5,
-					pane.getWidth() - pane.getVerticalScrollBar().getWidth() - 5)
-					.execute();
-		} else
-			current = getStyleByName(arg);
+			queue.schedule(() -> {
+				try (BufferedOutputStream os = new BufferedOutputStream(new FileOutputStream(selected))) {
+					os.write(Base64.getDecoder().decode(arg));
+				} catch (IOException e) {
+					e.printStackTrace();
+					EventQueue.invokeLater(() -> JOptionPane.showMessageDialog(this,
+							"Could not save to file!", "Save to file", JOptionPane.ERROR_MESSAGE));
+				}
+			}, 0, TimeUnit.NANOSECONDS);
+		}
+	}
+
+	private void parseArgument(String arg) {
+		int first = arg.indexOf(Commands.Codes.SPECIAL_RAW);
+		if (first >= 0) {
+			switch (arg.substring(0, first)) {
+				case Commands.Codes.SPECIAL_PWD: parsePromptPwd(arg.substring(first + 1)); break;
+				case Commands.Codes.SPECIAL_PROMPT: parsePrompt(arg.substring(first + 1)); break;
+				case Commands.Codes.SPECIAL_EDIT: parseEdit(arg.substring(first + 1)); break;
+				case Commands.Codes.SPECIAL_IMG: parseImg(arg); break;
+				case Commands.Codes.SPECIAL_UPLOAD: parseUpload(arg.substring(first + 1)); break;
+				default: current = getStyleByName(arg); break;
+			}
+		} else current = getStyleByName(arg);
 	}
 
 	private void showError(String text) {
@@ -549,46 +588,105 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 		});
 	}
 
+	private void loadAndSend(File file) {
+		ArrayList<Byte> bs = new ArrayList<>();
+		try (BufferedInputStream is = new BufferedInputStream(new FileInputStream(file))) {
+			int b;
+			while ((b = is.read()) != -1) {
+				bs.add((byte) b);
+			}
+		} catch (IOException e) {
+			showError("Could not read file!\n");
+			return;
+		}
+		byte[] bts = new byte[bs.size()];
+		for (int i = 0; i < bs.size(); i++) {
+			bts[i] = bs.get(i);
+		}
+		try {
+			connection.send(Commands.Codes.SPECIAL_START + Commands.Codes.SPECIAL_UPLOAD + Commands.Codes.SPECIAL_RAW);
+			char[] array = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
+					'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
+					'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '-'};
+			Random r = new Random();
+			StringBuilder id = new StringBuilder();
+			for (int i = 0; i < 16; i++) {
+				id.append(array[r.nextInt(array.length)]);
+			}
+			connection.send(Base64.getEncoder().encodeToString(id.toString().getBytes(StandardCharsets.UTF_8)));
+			connection.send(Commands.Codes.SPECIAL_RAW);
+			connection.send(Base64.getEncoder().encodeToString(bts));
+			connection.send("" + Commands.Codes.SPECIAL_END);
+		} catch (IOException e) {
+			showError("*** Could not send message --- see console for more details! ***\n");
+		}
+	}
+
 	private boolean interpretsCommand(String command) {
-		String[] args = command.trim().split(" ");
-		if (args[0].equals(Commands.UPLOAD)) {
-			if (args.length == 1 || (args.length == 2 && args[1].isEmpty())) {
-				showError("Argument error!\n");
-				return true;
-			}
-			final JFileChooser chooser = new JFileChooser();
-			chooser.setDialogType(JFileChooser.OPEN_DIALOG);
-			chooser.setMultiSelectionEnabled(false);
-			chooser.setDragEnabled(true);
-			chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-			if (chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
-				queue.schedule(() -> {
-					ArrayList<Byte> bs = new ArrayList<>();
-					try (BufferedInputStream is = new BufferedInputStream(new FileInputStream(chooser.getSelectedFile()))) {
-						int b;
-						while ((b = is.read()) != -1) {
-							bs.add((byte) b);
-						}
-					} catch (IOException e) {
-						showError("Could not read file!\n");
-						return;
-					}
-					byte[] bts = new byte[bs.size()];
-					for (int i = 0; i < bs.size(); i++) {
-						bts[i] = bs.get(i);
-					}
+		command = command.trim();
+		if (command.equals(Commands.UPLOAD)) {
+			final JDialog dialog = new JDialog(this, "Upload files", false);
+			JPanel panel = new JPanel();
+			panel.setLayout(new BorderLayout());
+			JLabel label = new JLabel("Drop files here or click to select", SwingConstants.CENTER);
+			panel.add(label, BorderLayout.SOUTH);
+			panel.setTransferHandler(new TransferHandler() {
+				@Override
+				@SuppressWarnings("unchecked")
+				public boolean importData(TransferSupport support) {
 					try {
-						connection.send(Commands.Codes.SPECIAL_START + Commands.Codes.SPECIAL_UPLOAD + Commands.Codes.SPECIAL_RAW);
-						// TODO Send random ID
-						connection.send(Base64.getEncoder().encodeToString((args[1].isEmpty() ? args[2] : args[1]).getBytes(StandardCharsets.UTF_8)));
-						connection.send(Commands.Codes.SPECIAL_RAW);
-						connection.send(Base64.getEncoder().encodeToString(bts));
-						connection.send("" + Commands.Codes.SPECIAL_END);
-					} catch (IOException e) {
-						showError("*** Could not send message --- see console for more details! ***\n");
+						List<File> list = (List<File>) support.getTransferable().getTransferData(DataFlavor.javaFileListFlavor);
+						for (File f : list) {
+							queue.schedule(() -> loadAndSend(f), 0, TimeUnit.NANOSECONDS);
+						}
+					} catch (UnsupportedFlavorException | IOException e) {
+						return false;
 					}
-				}, 0, TimeUnit.NANOSECONDS);
-			}
+					dialog.dispose();
+					return true;
+				}
+
+				@Override
+				public boolean canImport(TransferSupport support) {
+					support.setDropAction(COPY);
+					return true;
+				}
+			});
+			panel.addMouseListener(new MouseAdapter() {
+				@Override
+				public void mouseClicked(MouseEvent e) {
+					final JFileChooser chooser = new JFileChooser();
+					chooser.setDialogType(JFileChooser.OPEN_DIALOG);
+					chooser.setMultiSelectionEnabled(false);
+					chooser.setDragEnabled(true);
+					chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+					if (chooser.showOpenDialog(dialog) == JFileChooser.APPROVE_OPTION) {
+						queue.schedule(() -> loadAndSend(chooser.getSelectedFile()), 0, TimeUnit.NANOSECONDS);
+						dialog.dispose();
+					}
+				}
+			});
+			dialog.getContentPane().add(panel);
+			dialog.addWindowListener(new WindowAdapter() {
+				@Override
+				public void windowActivated(WindowEvent e) {
+					if (prefs.getDarkMode()) {
+						dialog.getContentPane().setBackground(Color.darkGray);
+						panel.setBackground(Color.darkGray);
+						label.setBackground(Color.darkGray);
+						label.setForeground(Color.white);
+					} else {
+						dialog.getContentPane().setBackground(null);
+						panel.setBackground(null);
+						label.setBackground(null);
+						label.setForeground(null);
+					}
+				}
+			});
+			dialog.setSize(250, 250);
+			dialog.setLocationRelativeTo(this);
+			dialog.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+			dialog.setVisible(true);
 			return true;
 		}
 		return false;

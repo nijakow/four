@@ -55,16 +55,16 @@ public class Main {
 
 			case "--port":
 			case "-p":
-				int j = 0;
+				int j = i;
 				try {
-					for (; j < args.length - i; j++) {
-						ports.add(Integer.parseInt(args[i + 1]));
-						i++;
+					for (j = i; j < args.length; j++) {
+						ports.add(Integer.parseInt(args[j + 1]));
 					}
 				} catch (NumberFormatException | IndexOutOfBoundsException e) {
-					if (j == 0)
+					if (ports.isEmpty())
 						System.err.println("No proper port specified! Argument was: " + args[i]);
 				}
+				i = j;
 				break;
 
 			case "--root-password":

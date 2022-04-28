@@ -12,7 +12,6 @@ public abstract class Commands {
 		public static final String ACTION_PASSWORD           = "password";
 		public static final String ACTION_RECONNECT          = "reconnect";
 		public static final String ACTION_EDIT_SAVE          = "editor/accept";
-		public static final String ACTION_EDIT_SAVE_AS       = "editor/saveAs";
 		public static final String ACTION_EDIT_CLOSE         = "editor/reject";
 		public static final String ACTION_STATUS_LABEL_TIMER = "invisible";
 	}
@@ -57,5 +56,9 @@ public abstract class Commands {
 		@Deprecated public static final String STYLE_BLACK     = "BLACK";
 		@Deprecated	public static final String STYLE_GREEN     = "GREEN";
 		@Deprecated	public static final String STYLE_YELLOW    = "YELLOW";
+	}
+
+	public abstract static class Themes {
+		public static final String DEFAULT = "-default-";
 	}
 }
