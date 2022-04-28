@@ -59,7 +59,7 @@ public class FDocument extends DefaultStyledDocument {
         if (!highlighting)
             resetHighlight();
         else
-            threads.execute(() -> updateSyntaxHighlighting2(0, getLength()));
+            threads.execute(() -> updateSyntaxHighlighting2(0, getLength(), text));
     }
 
     public boolean isSyntaxHighlighting() {
@@ -100,11 +100,12 @@ public class FDocument extends DefaultStyledDocument {
         if (str.equals("\t")) {
             str = "    ";
         }
+        final String oldText = text;
         super.insertString(offs, str, a);
         if (highlighting) {
             String finalStr = str;
             int finalOffs = offs;
-            threads.execute(() -> updateSyntaxHighlighting2(finalOffs, finalStr.length()));
+            threads.execute(() -> updateSyntaxHighlighting2(finalOffs, finalStr.length(), oldText));
         }
     }
 
@@ -118,10 +119,11 @@ public class FDocument extends DefaultStyledDocument {
             len = lineEnd - lineStart;
             offs = lineStart;
         }
+        final String oldText = text;
         super.remove(offs, len);
         if (highlighting) {
             int finalOffs = offs;
-            threads.execute(() -> updateSyntaxHighlighting2(finalOffs, 0));
+            threads.execute(() -> updateSyntaxHighlighting2(finalOffs, 0, oldText));
         }
     }
 
@@ -165,7 +167,7 @@ public class FDocument extends DefaultStyledDocument {
     }
 
     public void updateSyntaxHighlighting() {
-        updateSyntaxHighlighting2(0, getLength());
+        updateSyntaxHighlighting2(0, getLength(), text);
     }
 
     private boolean isInsideComment(int index, final String text) {
@@ -210,8 +212,7 @@ public class FDocument extends DefaultStyledDocument {
         return false;
     }
 
-    private void updateSyntaxHighlighting2(int offset, int length) {
-        // TODO If block comment is removed, update the ex-comment
+    private void updateSyntaxHighlighting2(int offset, int length, final String oldText) {
         try {
             int lineStart = getLineStart(offset);
             int lineEnd = getLineEnd(offset + length);
@@ -220,12 +221,12 @@ public class FDocument extends DefaultStyledDocument {
             if (first) {
                 lineStart = text.substring(0, lineStart).lastIndexOf("/*");
             }
-            if (second) { // Or was second...
+            if (second) {
                 final int bce = text.indexOf("*/", lineEnd);
                 lineEnd = bce == -1 ? text.length() : bce + 2;
-            } else if (first) {
+            } else if (first || isInsideComment(lineEnd, oldText)) {
                 final int bco = text.indexOf("*/", lineEnd);
-                lineEnd = bco == -1 ? text.length() : bco + 1;
+                lineEnd = bco == -1 ? text.length() : bco + 2;
             }
             String line = text.substring(lineStart, lineEnd);
             Tokenizer tokenizer = new Tokenizer(new StringCharStream("", line));
@@ -243,41 +244,4 @@ public class FDocument extends DefaultStyledDocument {
             e.printStackTrace();
         }
     }
-
-    /*public void updateSyntaxHighlightingOld() {
-        try {
-            idents.clear();
-            List<Pair<Integer, Integer>> ideLocal = new ArrayList<>();
-            Tokenizer tokenizer = new Tokenizer(new StringCharStream("", text));
-            tokenizer.enableCommentTokens();
-            Token token;
-            int depth = 0;
-            do {
-                token = tokenizer.nextToken();
-                if (token.is(TokenType.LCURLY)) {
-                    depth++;
-                    ideLocal.add(new Pair<>(token.getPosition().getIndex() - 1, depth));
-                } else if (token.is(TokenType.RCURLY)) {
-                    depth--;
-                    ideLocal.add(new Pair<>(token.getPosition().getIndex(), depth));
-                }
-                Style style = theme.getStyle(token.getType()) == null ? def : theme.getStyle(token.getType()).asStyle(def);
-                if (style == null) style = def;
-                int pos = token.getPosition().getIndex();
-                setCharacterAttributes(pos, token.getEndPosition().getIndex() - pos, style, true);
-                // TODO Replace by the highlighter interface! - mhahnFr
-                if (token.getType() == TokenType.IDENT) idents.add(token);
-            } while (token.getType() != TokenType.EOF);
-            ASTClass c = new Parser(new Tokenizer(new StringCharStream("", text))).parseFile();
-            synchronized (this) {
-                ide.clear();
-                ide.addAll(ideLocal);
-            }
-        } catch (ParseException e) {
-            Style s = theme.getErrorStyle() == null ? def : theme.getErrorStyle().asStyle(def);
-            Token t = e.getToken();
-            if (t != null)
-               setCharacterAttributes(t.getPosition().getIndex(), t.getEndPosition().getIndex() - t.getPosition().getIndex(), s, false);
-        }
-    }*/
 }
