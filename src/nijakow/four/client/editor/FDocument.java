@@ -168,17 +168,19 @@ public class FDocument extends DefaultStyledDocument {
         updateSyntaxHighlighting2(0, getLength());
     }
 
-    private boolean isInsideComment(int index) {
-        return isInsideBlockComment(index) || isInsideDocComment(index);
+    private boolean isInsideComment(int index, final String text) {
+        return isInsideBlockComment(index, text) || isInsideDocComment(index, text);
     }
 
-    private boolean isInsideLineComment(int index) {
-        final int lineStart = getLineStart(index);
-        final String linePart = text.substring(lineStart, index);
-        return linePart.contains("//");
+    private boolean isInsideComment(int index) {
+        return isInsideComment(index, text);
     }
 
     private boolean isInsideDocComment(int index) {
+        return isInsideDocComment(index, text);
+    }
+
+    private boolean isInsideDocComment(int index, final String text) {
         final String before = text.substring(0, index);
         final int lastClose = before.lastIndexOf("*/");
         final int lastOpen = before.lastIndexOf("/**");
@@ -192,6 +194,10 @@ public class FDocument extends DefaultStyledDocument {
     }
 
     private boolean isInsideBlockComment(int index) {
+        return isInsideBlockComment(index, text);
+    }
+
+    private boolean isInsideBlockComment(int index, final String text) {
         final String before = text.substring(0, index);
         final int lastClose = before.lastIndexOf("*/");
         final int lastOpen = before.lastIndexOf("/*");
@@ -214,7 +220,7 @@ public class FDocument extends DefaultStyledDocument {
             if (first) {
                 lineStart = text.substring(0, lineStart).lastIndexOf("/*");
             }
-            if (second) {
+            if (second) { // Or was second...
                 final int bce = text.indexOf("*/", lineEnd);
                 lineEnd = bce == -1 ? text.length() : bce + 2;
             } else if (first) {
