@@ -409,6 +409,7 @@ public class FThemeEditor extends JDialog {
             saveToFile(true);
         });
         inTokens.addItemListener(event -> {
+            if (inTokens.getSelectedItem() == null) return;
             FStyle newParent = this.current.getStyle((TokenType) inTokens.getSelectedItem());
             if (newParent == null) {
                 newParent = new FStyle((TokenType) inTokens.getSelectedItem(), defaultStyle);
