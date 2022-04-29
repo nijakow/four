@@ -268,7 +268,12 @@ public class ScopedCompiler implements FCompiler {
 	public void compileMakeMapping(int length) {
 		writer.writeMakeMapping(length);
 	}
-	
+
+	@Override
+	public void compileCast(Type type) {
+		writer.writeTypeCast(type);
+	}
+
 	public Code finish() {
 		/*
 		 * TODO: Only do this if the programmer hasn't supplied their
