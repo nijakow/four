@@ -388,24 +388,18 @@ public class Key {
 			@Override
 			public void run(Fiber fiber, Instance self, Instance[] args) throws FourRuntimeException {
 				String path = args[0].asFString().asString();
-				FClosure callback = (args.length > 1) ? args[1].asFClosure() : null;
 				CompilationLogger logger = fiber.getVM().getLogger().newCompilationLogger();
 				try {
 					TextFile file = fiber.getVM().getFilesystem().resolveTextFile(path);
 					if (file == null || !file.getRights().checkReadAccess(fiber.getSharedState().getUser()))
-						fiber.setAccu(FInteger.getBoolean(false));
+						fiber.setAccu(new FString(""));
 					else {
 						file.compile(logger);
-						fiber.setAccu(FInteger.getBoolean(true));
+						fiber.setAccu(Instance.getNil());
 					}
 				} catch (FourCompilerException e) {
 					logger.tell(e);
-					if (callback != null) {
-						fiber.push(new FString(logger.getTranscript()));
-						callback.invoke(fiber, 1);
-					} else {
-						fiber.setAccu(FInteger.getBoolean(false));
-					}
+					fiber.setAccu(new FString(logger.getTranscript()));
 				}
 			}
 		};

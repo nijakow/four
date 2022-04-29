@@ -3,6 +3,7 @@ use $rm;
 use $filetext;
 use $filetext_set;
 use $filechildren;
+use $recompile;
 
 bool FileSystem_CreateFile(string path)
 {
@@ -27,4 +28,9 @@ bool FileSystem_WriteFile(string path, string text)
 string* FileSystem_GetFilesIn(string path)
 {
     return $filechildren(path);
+}
+
+string FileSystem_Compile(path)
+{
+    return $recompile(path);
 }
