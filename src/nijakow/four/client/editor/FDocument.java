@@ -224,7 +224,7 @@ public class FDocument extends DefaultStyledDocument {
             if (second) {
                 final int bce = text.indexOf("*/", lineEnd);
                 lineEnd = bce == -1 ? text.length() : bce + 2;
-            } else if (first || (lineEnd < oldText.length() && isInsideComment(lineEnd, oldText))) {
+            } else if (first || (lineEnd - 1 < oldText.length() && isInsideComment(lineEnd - 1, oldText))) { // TODO Find the lineEnd in the old text
                 final int bco = text.indexOf("*/", lineEnd);
                 lineEnd = bco == -1 ? text.length() : bco + 2;
             }
