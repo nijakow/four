@@ -92,7 +92,7 @@ public class FDocument extends DefaultStyledDocument {
                     str += "    ";
                 }
             } else if (str.equals("}") && isOnlyWhitespacesOnLine(offs)) {
-                final int indent = Math.min(getLineIndent(offs).length(), 4);
+                final int indent = Math.min(Math.min(getLineIndent(offs).length(), 4), Math.max(0, offs - getLineStart(offs)));
                 super.remove(offs - indent, indent);
                 offs -= indent;
             }
