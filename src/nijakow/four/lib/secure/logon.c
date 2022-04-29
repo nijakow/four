@@ -1,4 +1,5 @@
 inherits "/lib/app.c";
+inherits "/lib/sys/identity/user.c";
 
 use $login;
 
@@ -40,9 +41,21 @@ private void identification_failure()
     ask_username();
 }
 
+private void launch_shell_failed()
+{
+    if (User_IsRoot(this.username)) {
+        if (exec(exit, "/bin/sh.c", ["/bin/sh.c"]))
+            return;
+    }
+    printf("No login shell was found.\nPlease contact the system administrator.\n");
+    exit(0);
+}
+
 private void launch_shell()
 {
-    exec(exit, "/bin/sh.c", []);
+    string shell = User_GetShell(this.username);
+    if (shell == nil || !exec(exit, shell, [shell]))
+        launch_shell_failed();
 }
 
 private void receive_password(string pass)
