@@ -3,6 +3,7 @@ inherits "/lib/list/list.c";
 inherits "/lib/string/split.c";
 inherits "/lib/sys/fs/paths.c";
 inherits "/lib/sys/fs/stat.c";
+inherits "/lib/sys/identity/user.c";
 
 private void execute_command_in_path(string* argv, string path)
 {
@@ -58,7 +59,11 @@ private void receive(string line)
 
 private void restart()
 {
-    prompt(receive, "%s $ ", FileSystem_GetWorkingDirectory());
+    if (User_AmIRoot()) {
+        prompt(receive, "%s@four:%s# ", User_Whoami(), FileSystem_GetWorkingDirectory());
+    } else {
+        prompt(receive, "%s@four:%s$ ", User_Whoami(), FileSystem_GetWorkingDirectory());
+    }
 }
 
 private void restart_from_binary(...)

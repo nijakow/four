@@ -20,6 +20,11 @@ bool User_IsRoot(string name)
     return name == "root";
 }
 
+bool User_AmIRoot()
+{
+    return User_IsRoot(User_Whoami());
+}
+
 string User_GetShell(string name)
 {
     return $getshell(name);
