@@ -44,7 +44,7 @@ private void identification_failure()
 private void launch_shell_failed()
 {
     if (User_IsRoot(this.username)) {
-        if (exec(exit, "/bin/sh.c", ["/bin/sh.c"]))
+        if (exec(exit, "/bin/sh.c", {"/bin/sh.c"}))
             return;
     }
     printf("No login shell was found.\nPlease contact the system administrator.\n");
