@@ -202,6 +202,10 @@ public class InstructionWriter {
 		u16(length);
 	}
 
+	public void writeCast(Type type) {
+		writeTypeCheck(type);
+	}
+
 	public ByteCode finish() {
 		byte[] bytes = new byte[out.size()];
 		for (int i = 0; i < out.size(); i++)
