@@ -271,7 +271,7 @@ public class ScopedCompiler implements FCompiler {
 
 	@Override
 	public void compileCast(Type type) {
-		writer.writeCast(type);
+		writer.writeTypeCast(type);
 	}
 
 	public Code finish() {

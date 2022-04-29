@@ -44,10 +44,16 @@ public abstract class Type {
 		public String getName() { return "int"; }
 		
 		@Override
-		public Instance cast(Instance instance) {
+		public Instance cast(Instance instance) throws CastException {
 			if (check(instance))
 				return instance;
-			else
+			else if (Type.getString().check(instance)) {
+				try {
+					return FInteger.get(Integer.parseInt(instance.asFString().asString()));
+				} catch (NumberFormatException e) {
+					throw new CastException(this, instance);
+				}
+			} else
 				return FInteger.get(instance.asInt());
 		}
 		
