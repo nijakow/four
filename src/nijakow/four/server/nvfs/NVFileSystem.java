@@ -151,7 +151,11 @@ public class NVFileSystem implements FileParent, ISerializable {
         final String name = file.getName();
         final String newPath = path + "/" + name;
 
-        final boolean secure = newPath.equals("/") || newPath.startsWith("/secure") || newPath.startsWith("/root");
+        /*
+         * TODO, FIXME: newPath.startsWith("/secure") will also include "/securestuff"! That's not what we want!
+         *                                                                               - nijakow
+         */
+        final boolean secure = newPath.equals("/") || newPath.startsWith("/secure") || newPath.startsWith("/root") || newPath.startsWith("/sbin") || newPath.startsWith("/bin");
         final boolean essential = newPath.startsWith("/world/");    // Everything except /world/ is stdlib stuff
 
         final User user = db.getRootUser();
