@@ -54,7 +54,7 @@ private void launch_shell_failed()
 private void launch_shell()
 {
     string shell = User_GetShell(this.username);
-    if (shell == nil || !exec(exit, shell, [shell]))
+    if (shell == nil || !exec(exit, shell, {shell}))
         launch_shell_failed();
 }
 
