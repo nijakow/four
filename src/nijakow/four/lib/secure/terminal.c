@@ -1,10 +1,10 @@
-inherits "/lib/object.c";
-inherits "/lib/conversion/int_to_string.c";
-inherits "/lib/io/sprintf.c";
-inherits "/lib/string/substring.c";
-inherits "/lib/string/split.c";
-inherits "/lib/base64/encode.c";
-inherits "/lib/base64/decode.c";
+#include "/lib/object.c"
+#include "/lib/conversion/int_to_string.c"
+#include "/lib/io/sprintf.c"
+#include "/lib/string/substring.c"
+#include "/lib/string/split.c"
+#include "/lib/base64/encode.c"
+#include "/lib/base64/decode.c"
 
 use $write;
 use $on_receive;

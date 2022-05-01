@@ -1,5 +1,5 @@
-inherits "/lib/app.c";
-inherits "/lib/sys/fs/paths.c";
+#include "/lib/app.c"
+#include "/lib/sys/fs/paths.c"
 
 void main(string* argv)
 {

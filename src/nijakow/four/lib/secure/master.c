@@ -1,5 +1,5 @@
-inherits "/lib/object.c";
-inherits "/lib/io/log.c";
+#include "/lib/object.c"
+#include "/lib/io/log.c"
 
 use $on_connect;
 use $on_error;

@@ -1,7 +1,7 @@
-inherits "/lib/app.c";
-inherits "/lib/list/list.c";
-inherits "/lib/sys/fs/io.c";
-inherits "/lib/sys/fs/paths.c";
+#include "/lib/app.c"
+#include "/lib/list/list.c"
+#include "/lib/sys/fs/io.c"
+#include "/lib/sys/fs/paths.c"
 
 void main(string* argv)
 {

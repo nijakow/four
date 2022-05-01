@@ -1,9 +1,9 @@
-inherits "/lib/app.c";
-inherits "/lib/list/list.c";
-inherits "/lib/string/split.c";
-inherits "/lib/sys/fs/paths.c";
-inherits "/lib/sys/fs/stat.c";
-inherits "/lib/sys/identity/user.c";
+#include "/lib/app.c"
+#include "/lib/list/list.c"
+#include "/lib/string/split.c"
+#include "/lib/sys/fs/paths.c"
+#include "/lib/sys/fs/stat.c"
+#include "/lib/sys/identity/user.c"
 
 private void execute_command_in_path(string* argv, string path)
 {

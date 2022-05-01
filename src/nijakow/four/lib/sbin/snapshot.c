@@ -1,4 +1,4 @@
-inherits "/lib/app.c";
+#include "/lib/app.c"
 
 use $dumpfs;
 use $loadfs;

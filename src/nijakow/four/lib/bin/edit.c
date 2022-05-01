@@ -1,8 +1,8 @@
-inherits "/lib/app.c";
-inherits "/lib/list/list.c";
-inherits "/lib/sys/fs/io.c";
-inherits "/lib/sys/fs/paths.c";
-inherits "/lib/sys/fs/stat.c";
+#include "/lib/app.c"
+#include "/lib/list/list.c"
+#include "/lib/sys/fs/io.c"
+#include "/lib/sys/fs/paths.c"
+#include "/lib/sys/fs/stat.c"
 
 private void save_cb(string text, string path)
 {

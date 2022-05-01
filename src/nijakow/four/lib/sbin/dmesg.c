@@ -1,5 +1,5 @@
-inherits "/lib/app.c";
-inherits "/lib/conversion/string_to_int.c";
+#include "/lib/app.c"
+#include "/lib/conversion/string_to_int.c"
 
 use $getmsgs;
 

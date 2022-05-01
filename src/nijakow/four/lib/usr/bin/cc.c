@@ -1,6 +1,6 @@
-inherits "/lib/app.c";
-inherits "/lib/sys/fs/paths.c";
-inherits "/lib/sys/fs/io.c";
+#include "/lib/app.c"
+#include "/lib/sys/fs/paths.c"
+#include "/lib/sys/fs/io.c"
 
 void main(string* argv)
 {
