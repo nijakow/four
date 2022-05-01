@@ -18,7 +18,7 @@ public class Tokenizer {
 	public void enableCommentTokens() { this.commentTokensEnabled = true; }
 
 	private boolean isSpecial(int c) {
-		return !(Character.isAlphabetic(c) || Character.isDigit(c) || c == '_' || c == '$');
+		return !(Character.isAlphabetic(c) || Character.isDigit(c) || c == '_' || c == '$' || c == '#');
 	}
 	
 	private boolean peeks(String s) {
@@ -195,6 +195,7 @@ public class Tokenizer {
 		case "false": return new Token(this, pos, getPosition(), TokenType.FALSE);
 		case "use": return new Token(this, pos, getPosition(), TokenType.USE);
 		case "inherits": return new Token(this, pos, getPosition(), TokenType.INHERITS);
+		case "#include": return new Token(this, pos, getPosition(), TokenType.INHERITS);
 		case "any": return new Token(this, pos, getPosition(), TokenType.ANY);
 		case "void": return new Token(this, pos, getPosition(), TokenType.VOID);
 		case "int": return new Token(this, pos, getPosition(), TokenType.INT);
