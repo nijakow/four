@@ -383,7 +383,7 @@ public class Parser {
 					defs.add(new ASTInheritanceDef(pos, ((Instance) constant.getPayload()).asString()));
 				else
 					defs.add(new ASTInheritanceDef(pos, "undefined"));
-				expect(TokenType.SEMICOLON);
+				check(TokenType.SEMICOLON);	// Semicolon is optional
 			} /*else if (check(TokenType.STRUCT) || check(TokenType.CLASS)) {
 				StreamPosition pos = p();
 				Key name = expectKey();
