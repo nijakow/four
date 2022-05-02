@@ -13,7 +13,9 @@ public class CodeMeta {
         this.streamPosition = streamPosition;
         this.cDoc = cDoc;
         this.returnType = returnType;
-        this.argTypes = argTypes;
+        this.argTypes = new Type[argTypes.length];
+        for (int x = 0; x < argTypes.length; x++)
+            this.argTypes[x] = (argTypes[x] == null) ? Type.getAny() : argTypes[x];
     }
 
     public StreamPosition getStreamPosition() {
