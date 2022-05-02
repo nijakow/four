@@ -11,7 +11,6 @@ import java.util.concurrent.Executors;
 
 public class FDocument extends DefaultStyledDocument {
     private final Style def;
-    private String text;
     private boolean highlighting;
     private boolean autoIndenting;
     private FTheme theme;
@@ -21,14 +20,7 @@ public class FDocument extends DefaultStyledDocument {
         threads = Executors.newSingleThreadScheduledExecutor();
         def = getLogicalStyle(0);
         theme = new DefaultTheme();
-//        idents = new ArrayList<>();
-//        ide = new ArrayList<>();
         highlighting = false;
-        try {
-            text = getText(0, getLength());
-        } catch (BadLocationException e) {
-            e.printStackTrace();
-        }
     }
 
     public FDocument(boolean highlighting) {
@@ -59,25 +51,15 @@ public class FDocument extends DefaultStyledDocument {
         if (!highlighting)
             resetHighlight();
         else
-            threads.execute(() -> updateSyntaxHighlighting2(0, getLength(), text));
+            threads.execute(this::updateSyntaxHighlighting);
     }
 
     public boolean isSyntaxHighlighting() {
         return highlighting;
     }
 
-    @Override
-    protected void postRemoveUpdate(DefaultDocumentEvent chng) {
-        super.postRemoveUpdate(chng);
-        try {
-            text = getText(0, getLength());
-        } catch (BadLocationException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private String getLineIndent(int offs) {
-        final String line = text.substring(getLineStart(offs), getLineEnd(offs));
+    private String getLineIndent(int offs) throws BadLocationException {
+        final String line = getText(0, getLength()).substring(getLineStart(offs), getLineEnd(offs));
         int i;
         for (i = 0; i < line.length() && Character.isWhitespace(line.charAt(i)); i++);
         return StringHelper.generateFilledString(' ', i);
@@ -85,6 +67,7 @@ public class FDocument extends DefaultStyledDocument {
 
     @Override
     public void insertString(int offs, String str, AttributeSet a) throws BadLocationException {
+        final String text = getText(0, getLength());
         if (autoIndenting) {
             if (str.equals("\n")) {
                 str += getLineIndent(offs);
@@ -100,12 +83,11 @@ public class FDocument extends DefaultStyledDocument {
         if (str.equals("\t")) {
             str = "    ";
         }
-        final String oldText = text;
         super.insertString(offs, str, a);
         if (highlighting) {
             String finalStr = str;
             int finalOffs = offs;
-            threads.execute(() -> updateSyntaxHighlighting2(finalOffs, finalStr.length(), oldText));
+            threads.execute(() -> updateSyntaxHighlighting2(finalOffs, finalStr.length(), text));
         }
     }
 
@@ -119,21 +101,11 @@ public class FDocument extends DefaultStyledDocument {
             len = lineEnd - lineStart;
             offs = lineStart;
         }
-        final String oldText = text;
+        final String oldText = getText(0, getLength());
         super.remove(offs, len);
         if (highlighting) {
             int finalOffs = offs;
             threads.execute(() -> updateSyntaxHighlighting2(finalOffs, 0, oldText));
-        }
-    }
-
-    @Override
-    protected void insertUpdate(DefaultDocumentEvent chng, AttributeSet attr) {
-        super.insertUpdate(chng, attr);
-        try {
-            text = getText(0, getLength());
-        } catch (BadLocationException e) {
-            e.printStackTrace();
         }
     }
 
@@ -148,18 +120,36 @@ public class FDocument extends DefaultStyledDocument {
     }
 
     public int getLineEnd(int position) {
+        String text;
+        try {
+            text = getText(0, getLength());
+        } catch (BadLocationException e) {
+            return -1;
+        }
         int i;
         for (i = position; i < text.length() && text.charAt(i) != '\n'; i++);
         return i;
     }
 
     public int getLineStart(int position) {
+        String text;
+        try {
+            text = getText(0, getLength());
+        } catch (BadLocationException e) {
+            return -1;
+        }
         int i;
         for (i = position - 1; i >= 0 && text.charAt(i) != '\n'; i--);
         return i + 1;
     }
 
     private boolean isOnlyWhitespacesOnLine(int endPosition) {
+        String text;
+        try {
+            text = getText(0, getLength());
+        } catch (BadLocationException e) {
+            return false;
+        }
         for (int start = getLineStart(endPosition), i = endPosition - 1; i >= start; i--) {
             if (!Character.isWhitespace(text.charAt(i))) return false;
         }
@@ -167,6 +157,12 @@ public class FDocument extends DefaultStyledDocument {
     }
 
     public void updateSyntaxHighlighting() {
+        String text;
+        try {
+            text = getText(0, getLength());
+        } catch (BadLocationException e) {
+            return;
+        }
         updateSyntaxHighlighting2(0, getLength(), text);
     }
 
@@ -174,12 +170,12 @@ public class FDocument extends DefaultStyledDocument {
         return isInsideBlockComment(index, text) || isInsideDocComment(index, text);
     }
 
-    private boolean isInsideComment(int index) {
-        return isInsideComment(index, text);
+    private boolean isInsideComment(int index) throws BadLocationException {
+        return isInsideComment(index, getText(0, getLength()));
     }
 
-    private boolean isInsideDocComment(int index) {
-        return isInsideDocComment(index, text);
+    private boolean isInsideDocComment(int index) throws BadLocationException {
+        return isInsideDocComment(index, getText(0, getLength()));
     }
 
     private boolean isInsideDocComment(int index, final String text) {
@@ -195,8 +191,8 @@ public class FDocument extends DefaultStyledDocument {
         return false;
     }
 
-    private boolean isInsideBlockComment(int index) {
-        return isInsideBlockComment(index, text);
+    private boolean isInsideBlockComment(int index) throws BadLocationException {
+        return isInsideBlockComment(index, getText(0, getLength()));
     }
 
     private boolean isInsideBlockComment(int index, final String text) {
@@ -214,6 +210,7 @@ public class FDocument extends DefaultStyledDocument {
 
     private void updateSyntaxHighlighting2(int offset, int length, final String oldText) {
         try {
+            final String text = getText(0, getLength());
             int lineStart = getLineStart(offset);
             int lineEnd = getLineEnd(offset + length);
             final int oldLineEnd = oldText.length() - text.length() + lineEnd;
