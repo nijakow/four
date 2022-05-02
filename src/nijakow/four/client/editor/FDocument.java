@@ -216,6 +216,7 @@ public class FDocument extends DefaultStyledDocument {
         try {
             int lineStart = getLineStart(offset);
             int lineEnd = getLineEnd(offset + length);
+            final int oldLineEnd = oldText.length() - text.length() + lineEnd;
             final boolean first = isInsideComment(lineStart);
             final boolean second = isInsideComment(lineEnd);
             if (first) {
@@ -224,7 +225,7 @@ public class FDocument extends DefaultStyledDocument {
             if (second) {
                 final int bce = text.indexOf("*/", lineEnd);
                 lineEnd = bce == -1 ? text.length() : bce + 2;
-            } else if (first || (lineEnd - 1 < oldText.length() && isInsideComment(lineEnd - 1, oldText))) { // TODO Find the lineEnd in the old text
+            } else if (first || (oldLineEnd > 0 && oldLineEnd < oldText.length() && isInsideComment(oldLineEnd, oldText))) {
                 final int bco = text.indexOf("*/", lineEnd);
                 lineEnd = bco == -1 ? text.length() : bco + 2;
             }
