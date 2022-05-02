@@ -8,6 +8,7 @@ import javax.swing.text.StyleContext;
 import java.awt.Color;
 
 public class FStyle {
+    private boolean reentrant = false;
     private Boolean bold;
     private Boolean italic;
     private Boolean strike;
@@ -106,7 +107,11 @@ public class FStyle {
     }
 
     public Boolean isBold() {
-        return parent != null && bold == null ? parent.isBold() : bold;
+        if (reentrant) return null;
+        reentrant = true;
+        final Boolean p = parent != null && bold == null ? parent.isBold() : bold;
+        reentrant = false;
+        return p;
     }
 
     public void setBold(Boolean bold) {
@@ -118,7 +123,11 @@ public class FStyle {
     }
 
     public Boolean isItalic() {
-        return parent != null && italic == null ? parent.isItalic() : italic;
+        if (reentrant) return null;
+        reentrant = true;
+        final Boolean p = parent != null && italic == null ? parent.isItalic() : italic;
+        reentrant = false;
+        return p;
     }
 
     public void setItalic(Boolean italic) {
@@ -130,7 +139,11 @@ public class FStyle {
     }
 
     public Boolean isStrikeThrough() {
-        return parent != null && strike == null ? parent.isStrikeThrough() : strike;
+        if (reentrant) return null;
+        reentrant = true;
+        final Boolean p = parent != null && strike == null ? parent.isStrikeThrough() : strike;
+        reentrant = false;
+        return p;
     }
 
     public void setStrikeThrough(Boolean strike) {
@@ -142,7 +155,11 @@ public class FStyle {
     }
 
     public Boolean isUnderlined() {
-        return parent != null && underlined == null ? parent.isUnderlined() : underlined;
+        if (reentrant) return null;
+        reentrant = true;
+        final Boolean p = parent != null && underlined == null ? parent.isUnderlined() : underlined;
+        reentrant = false;
+        return p;
     }
 
     public void setUnderlined(Boolean underlined) {
@@ -154,7 +171,11 @@ public class FStyle {
     }
 
     public Integer getAlignment() {
-        return parent != null && alignment == null ? parent.getAlignment() : alignment;
+        if (reentrant) return null;
+        reentrant = true;
+        final Integer p = parent != null && alignment == null ? parent.getAlignment() : alignment;
+        reentrant = false;
+        return p;
     }
 
     public void setAlignment(Integer alignment) {
@@ -166,7 +187,11 @@ public class FStyle {
     }
 
     public Integer getBidiLevel() {
-        return parent != null && bidiLevel == null ? parent.getBidiLevel() : bidiLevel;
+        if (reentrant) return null;
+        reentrant = true;
+        final Integer p = parent != null && bidiLevel == null ? parent.getBidiLevel() : bidiLevel;
+        reentrant = false;
+        return p;
     }
 
     public void setBidiLevel(Integer bidiLevel) {
@@ -178,7 +203,11 @@ public class FStyle {
     }
 
     public Integer getSize() {
-        return parent != null && size == null ? parent.getSize() : size;
+        if (reentrant) return null;
+        reentrant = true;
+        final Integer p = parent != null && size == null ? parent.getSize() : size;
+        reentrant = false;
+        return p;
     }
 
     public void setSize(Integer size) {
@@ -190,7 +219,11 @@ public class FStyle {
     }
 
     public Float getFirstLineIndent() {
-        return parent != null && firstLineIndent == null ? parent.getFirstLineIndent() : firstLineIndent;
+        if (reentrant) return null;
+        reentrant = true;
+        final Float p = parent != null && firstLineIndent == null ? parent.getFirstLineIndent() : firstLineIndent;
+        reentrant = false;
+        return p;
     }
 
     public void setFirstLineIndent(Float firstLineIndent) {
@@ -202,7 +235,11 @@ public class FStyle {
     }
 
     public String getFamily() {
-        return parent != null && family == null ? parent.getFamily() : family;
+        if (reentrant) return null;
+        reentrant = true;
+        final String p = parent != null && family == null ? parent.getFamily() : family;
+        reentrant = false;
+        return p;
     }
 
     public void setFamily(String family) {
@@ -214,7 +251,11 @@ public class FStyle {
     }
 
     public Color getBackground() {
-        return parent != null && background == null ? parent.getBackground() : background;
+        if (reentrant) return null;
+        reentrant = true;
+        final Color p = parent != null && background == null ? parent.getBackground() : background;
+        reentrant = false;
+        return p;
     }
 
     public void setBackground(Color background) {
@@ -226,7 +267,11 @@ public class FStyle {
     }
 
     public Color getForeground() {
-        return parent != null && foreground == null ? parent.getForeground() : foreground;
+        if (reentrant) return null;
+        reentrant = true;
+        final Color p = parent != null && foreground == null ? parent.getForeground() : foreground;
+        reentrant = false;
+        return p;
     }
 
     public void setForeground(Color foreground) {

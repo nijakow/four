@@ -92,7 +92,7 @@ public class FDocument extends DefaultStyledDocument {
                     str += "    ";
                 }
             } else if (str.equals("}") && isOnlyWhitespacesOnLine(offs)) {
-                final int indent = Math.min(getLineIndent(offs).length(), 4);
+                final int indent = Math.min(Math.min(getLineIndent(offs).length(), 4), Math.max(0, offs - getLineStart(offs)));
                 super.remove(offs - indent, indent);
                 offs -= indent;
             }
@@ -224,7 +224,7 @@ public class FDocument extends DefaultStyledDocument {
             if (second) {
                 final int bce = text.indexOf("*/", lineEnd);
                 lineEnd = bce == -1 ? text.length() : bce + 2;
-            } else if (first) {// || isInsideComment(lineEnd, oldText)) {
+            } else if (first || (lineEnd - 1 < oldText.length() && isInsideComment(lineEnd - 1, oldText))) { // TODO Find the lineEnd in the old text
                 final int bco = text.indexOf("*/", lineEnd);
                 lineEnd = bco == -1 ? text.length() : bco + 2;
             }
