@@ -3,7 +3,9 @@ package nijakow.four.server.runtime.vm.fiber;
 import java.util.Stack;
 
 import nijakow.four.server.process.Process;
+import nijakow.four.server.runtime.exceptions.CastException;
 import nijakow.four.server.runtime.objects.blue.Blue;
+import nijakow.four.server.runtime.types.Type;
 import nijakow.four.server.runtime.vm.VM;
 import nijakow.four.server.runtime.vm.code.ByteCode;
 import nijakow.four.server.runtime.exceptions.FourRuntimeException;
@@ -66,8 +68,12 @@ public class Fiber {
 			args--;
 		}
 		setTop(f);
+		Type[] argTypes = code.getMeta().getArgTypes();
 		while (args --> 0) {
-			top.setLocal(args, pop());
+			Instance arg = pop();
+			if (!argTypes[args].check(arg))
+				throw new CastException(argTypes[args], arg);
+			top.setLocal(args, arg);
 		}
 	}
 	

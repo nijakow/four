@@ -131,6 +131,12 @@ public class Parser {
 		} else if (checkKeep(TokenType.CONSTANT)) {
 			return new ASTConstant(p(), (Instance) nextToken().getPayload());
 		} else if (check(TokenType.LPAREN)) {
+			StreamPosition pos = p();
+			Type type = parseType();
+			if (type != null) {
+				expect(TokenType.RPAREN);
+				return new ASTCast(pos, type, parseSimpleExpression());
+			}
 			ASTExpression expr = parseExpression();
 			expect(TokenType.RPAREN);
 			return expr;

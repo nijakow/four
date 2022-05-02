@@ -103,6 +103,11 @@ public class InstructionWriter {
 		type(type);
 	}
 
+	public void writeTypeCast(Type type) {
+		u8(Bytecodes.BYTECODE_TYPE_CAST);
+		type(type);
+	}
+
 	public void writeTell(StreamPosition pos) {
 		u8(Bytecodes.BYTECODE_TELL);
 		tell(pos);

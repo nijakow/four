@@ -18,7 +18,10 @@ public class Logger {
     }
 
     private String formatLine(Instant i, String l) {
-        return String.format("%12s %s", "[" + i.toString() + "]:", l);
+        String padded = i.toString();
+        while (padded.length() < 30)
+            padded += " ";
+        return String.format("%s %s", "[" + padded + "]:", l);
     }
 
     private void notifyNewLine(Instant now, String line) {
