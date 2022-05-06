@@ -1,9 +1,15 @@
+use $mkdir;
 use $touch;
 use $rm;
 use $filetext;
 use $filetext_set;
 use $filechildren;
 use $recompile;
+
+bool FileSystem_CreateDirectory(string path)
+{
+    return $mkdir(path);
+}
 
 bool FileSystem_CreateFile(string path)
 {
