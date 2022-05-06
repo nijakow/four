@@ -32,14 +32,14 @@ private void list_users(string group)
 
 private void usage(string appname)
 {
-    printf("usage: %s list|add|remove <username>\n", appname);
+    printf("usage: %s list|new|delete <username>\n", appname);
 }
 
 void main(string* argv)
 {
     if (argv.length == 2 && argv[1] == "list")
         list_users("users");
-    else if (argv.length == 3 && argv[1] == "add")
+    else if (argv.length == 3 && argv[1] == "new")
         add_user(argv[2]);
     else if (argv.length == 3 && argv[1] == "delete")
         delete_user(argv[2]);
