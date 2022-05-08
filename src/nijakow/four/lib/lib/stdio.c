@@ -1,6 +1,6 @@
 use $statics;
 
-private object terminal()
+object terminal()
 {
     return $statics()["terminal"];
 }

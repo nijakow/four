@@ -12,6 +12,7 @@ use $close;
 
 private any port;
 private func line_callback;
+private func crash_callback;
 private string line_buffer;
 private string escaped_line_buffer;
 private mapping key_callbacks;
@@ -46,6 +47,13 @@ void close()
     $close(this.port);
 }
 
+void set_crash_callback(func cb)
+{
+    if (this.crash_callback == nil) {
+        this.crash_callback = cb;
+    }
+}
+
 private void process_editor(string key, string text, bool cancelled)
 {
     func cb;
@@ -78,6 +86,15 @@ private void process_line(string line)
         cb = this.line_callback;
         this.line_callback = nil;
         call(cb, String_TrimNewline(line));
+        if (this.line_callback == nil) {
+            if (this.crash_callback != nil) {
+                call(this.crash_callback);
+            } else {
+                printf("\n");
+                printf("The program has crashed and there was no crash callback available.\n");
+                printf("This should not happen. Please contact the system administrator.\n");
+            }
+        }
     }
 }
 
@@ -112,6 +129,7 @@ void _init(any port)
 {
     "/lib/object.c"::_init();
     this.port = port;
+    this.crash_callback = nil;
     this.line_callback = nil;
     this.line_buffer = "";
     this.escaped_line_buffer = nil;

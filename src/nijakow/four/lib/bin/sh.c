@@ -71,7 +71,14 @@ private void restart_from_binary(...)
     restart();
 }
 
+private void crash_restart()
+{
+    printf("<<the application has crashed>>\n");
+    restart();
+}
+
 void main(string* argv)
 {
+    terminal()->set_crash_callback(this::crash_restart);
     restart();
 }
