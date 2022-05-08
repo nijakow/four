@@ -47,6 +47,13 @@ void upload(string text)
     $write(port, "\{file/upload:", Base64_Encode(text), "\}");
 }
 
+void download(func callback)
+{
+    string key = Conversion_IntToString(this.key_counter++);
+    this.key_callbacks[key] = callback;
+    $write(port, "\{file/download:", Base64_Encode(key), "\}");
+}
+
 void close()
 {
     $close(this.port);
@@ -70,6 +77,18 @@ private void process_editor(string key, string text, bool cancelled)
         call(cb, text);
 }
 
+private void process_upload(string key, string text)
+{
+    func cb;
+    cb = key_callbacks[key];
+    if (cb != nil) {
+        key_callbacks[key] = nil;
+        call(cb, text);
+    } else {
+        printf("Uploaded file was discarded.\n");
+    }
+}
+
 private void process_escaped(string escaped)
 {
     string* tokens;
@@ -79,8 +98,10 @@ private void process_escaped(string escaped)
         tokens[i] = Base64_Decode(tokens[i]);
     if (tokens[0] == "editor/saved")
         process_editor(tokens[1], tokens[2], false);
-    else if (tokens[1] == "editor/cancelled")
+    else if (tokens[0] == "editor/cancelled")
         process_editor(tokens[1], nil, true);
+    else if (tokens[0] == "file/upload")
+        process_upload(tokens[1], tokens[2]);
 }
 
 private void process_line(string line)
