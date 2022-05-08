@@ -606,7 +606,7 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 		}
 		try {
 			connection.send(Commands.Codes.SPECIAL_START + Commands.Codes.SPECIAL_UPLOAD + Commands.Codes.SPECIAL_RAW);
-			connection.send(Base64.getEncoder().encodeToString(key.getBytes(StandardCharsets.UTF_8)));
+			connection.send(key);
 			connection.send(Commands.Codes.SPECIAL_RAW);
 			connection.send(Base64.getEncoder().encodeToString(bts));
 			connection.send("" + Commands.Codes.SPECIAL_END);
