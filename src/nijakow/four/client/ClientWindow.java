@@ -573,6 +573,7 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 				case Commands.Codes.SPECIAL_EDIT: parseEdit(arg.substring(first + 1)); break;
 				case Commands.Codes.SPECIAL_IMG: parseImg(arg); break;
 				case Commands.Codes.SPECIAL_UPLOAD: parseUpload(arg.substring(first + 1)); break;
+				case Commands.Codes.SPECIAL_DOWNLOAD: performUpload(arg.substring(first + 1)); break;
 				default: current = getStyleByName(arg); break;
 			}
 		} else current = getStyleByName(arg);
@@ -588,7 +589,7 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 		});
 	}
 
-	private void loadAndSend(File file) {
+	private void loadAndSend(String key, File file) {
 		ArrayList<Byte> bs = new ArrayList<>();
 		try (BufferedInputStream is = new BufferedInputStream(new FileInputStream(file))) {
 			int b;
@@ -605,15 +606,7 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 		}
 		try {
 			connection.send(Commands.Codes.SPECIAL_START + Commands.Codes.SPECIAL_UPLOAD + Commands.Codes.SPECIAL_RAW);
-			char[] array = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
-					'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
-					'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '-'};
-			Random r = new Random();
-			StringBuilder id = new StringBuilder();
-			for (int i = 0; i < 16; i++) {
-				id.append(array[r.nextInt(array.length)]);
-			}
-			connection.send(Base64.getEncoder().encodeToString(id.toString().getBytes(StandardCharsets.UTF_8)));
+			connection.send(Base64.getEncoder().encodeToString(key.getBytes(StandardCharsets.UTF_8)));
 			connection.send(Commands.Codes.SPECIAL_RAW);
 			connection.send(Base64.getEncoder().encodeToString(bts));
 			connection.send("" + Commands.Codes.SPECIAL_END);
@@ -622,73 +615,72 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 		}
 	}
 
-	private boolean interpretsCommand(String command) {
-		command = command.trim();
-		if (command.equals(Commands.UPLOAD)) {
-			final JDialog dialog = new JDialog(this, "Upload files", false);
-			JPanel panel = new JPanel();
-			panel.setLayout(new BorderLayout());
-			JLabel label = new JLabel("Drop files here or click to select", SwingConstants.CENTER);
-			panel.add(label, BorderLayout.SOUTH);
-			panel.setTransferHandler(new TransferHandler() {
-				@Override
-				@SuppressWarnings("unchecked")
-				public boolean importData(TransferSupport support) {
-					try {
-						List<File> list = (List<File>) support.getTransferable().getTransferData(DataFlavor.javaFileListFlavor);
-						for (File f : list) {
-							queue.schedule(() -> loadAndSend(f), 0, TimeUnit.NANOSECONDS);
-						}
-					} catch (UnsupportedFlavorException | IOException e) {
-						return false;
+	private void performUpload(final String key) {
+		final JDialog dialog = new JDialog(this, "Upload files", false);
+		JPanel panel = new JPanel();
+		panel.setLayout(new BorderLayout());
+		JLabel label = new JLabel("Drop files here or click to select", SwingConstants.CENTER);
+		panel.add(label, BorderLayout.SOUTH);
+		panel.setTransferHandler(new TransferHandler() {
+			@Override
+			@SuppressWarnings("unchecked")
+			public boolean importData(TransferSupport support) {
+				try {
+					List<File> list = (List<File>) support.getTransferable().getTransferData(DataFlavor.javaFileListFlavor);
+					for (File f : list) {
+						queue.schedule(() -> loadAndSend(key, f), 0, TimeUnit.NANOSECONDS);
 					}
-					dialog.dispose();
-					return true;
+				} catch (UnsupportedFlavorException | IOException e) {
+					return false;
 				}
+				dialog.dispose();
+				return true;
+			}
 
-				@Override
-				public boolean canImport(TransferSupport support) {
-					support.setDropAction(COPY);
-					return true;
+			@Override
+			public boolean canImport(TransferSupport support) {
+				support.setDropAction(COPY);
+				return true;
+			}
+		});
+		panel.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				final JFileChooser chooser = new JFileChooser();
+				chooser.setDialogType(JFileChooser.OPEN_DIALOG);
+				chooser.setMultiSelectionEnabled(false);
+				chooser.setDragEnabled(true);
+				chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+				if (chooser.showOpenDialog(dialog) == JFileChooser.APPROVE_OPTION) {
+					queue.schedule(() -> loadAndSend(key, chooser.getSelectedFile()), 0, TimeUnit.NANOSECONDS);
+					dialog.dispose();
 				}
-			});
-			panel.addMouseListener(new MouseAdapter() {
-				@Override
-				public void mouseClicked(MouseEvent e) {
-					final JFileChooser chooser = new JFileChooser();
-					chooser.setDialogType(JFileChooser.OPEN_DIALOG);
-					chooser.setMultiSelectionEnabled(false);
-					chooser.setDragEnabled(true);
-					chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-					if (chooser.showOpenDialog(dialog) == JFileChooser.APPROVE_OPTION) {
-						queue.schedule(() -> loadAndSend(chooser.getSelectedFile()), 0, TimeUnit.NANOSECONDS);
-						dialog.dispose();
-					}
+			}
+		});
+		dialog.getContentPane().add(panel);
+		dialog.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowActivated(WindowEvent e) {
+				if (prefs.getDarkMode()) {
+					dialog.getContentPane().setBackground(Color.darkGray);
+					panel.setBackground(Color.darkGray);
+					label.setBackground(Color.darkGray);
+					label.setForeground(Color.white);
+				} else {
+					dialog.getContentPane().setBackground(null);
+					panel.setBackground(null);
+					label.setBackground(null);
+					label.setForeground(null);
 				}
-			});
-			dialog.getContentPane().add(panel);
-			dialog.addWindowListener(new WindowAdapter() {
-				@Override
-				public void windowActivated(WindowEvent e) {
-					if (prefs.getDarkMode()) {
-						dialog.getContentPane().setBackground(Color.darkGray);
-						panel.setBackground(Color.darkGray);
-						label.setBackground(Color.darkGray);
-						label.setForeground(Color.white);
-					} else {
-						dialog.getContentPane().setBackground(null);
-						panel.setBackground(null);
-						label.setBackground(null);
-						label.setForeground(null);
-					}
-				}
-			});
-			dialog.setSize(250, 250);
-			dialog.setLocationRelativeTo(this);
-			dialog.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-			dialog.setVisible(true);
-			return true;
-		}
+			}
+		});
+		dialog.setSize(250, 250);
+		dialog.setLocationRelativeTo(this);
+		dialog.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+		dialog.setVisible(true);
+	}
+
+	private boolean interpretsCommand(String command) {
 		return false;
 	}
 
