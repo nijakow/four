@@ -25,6 +25,7 @@ public abstract class Commands {
 		public static final String SPECIAL_PROMPT = "prompt/plain";
 		public static final String SPECIAL_PWD    = "prompt/password";
 		public static final String SPECIAL_UPLOAD = "file/upload";
+		public static final String SPECIAL_DOWNLOAD = "file/download";
 		public static final char SPECIAL_START    = 0x02;
 		public static final char SPECIAL_END      = 0x03;
 	}
