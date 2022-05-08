@@ -47,5 +47,7 @@ public interface FCompiler {
 	void compileMakeList(ListType type, int length);
 	void compileMakeMapping(int length);
 
+	void compileCast(Type type);
+
     void tell(AST ast);
 }

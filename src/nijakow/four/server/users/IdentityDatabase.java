@@ -13,7 +13,7 @@ public class IdentityDatabase {
     public IdentityDatabase() {
         this.usersGroup = newGroup("users");
         this.rootUser = newUser("root");
-        this.rootGroup = newGroup("wizards");
+        this.rootGroup = newGroup("gods");
         this.rootGroup.add(this.rootUser);
         this.unprivilegedUser = newUser("nouser");
     }
