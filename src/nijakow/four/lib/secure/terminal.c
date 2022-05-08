@@ -42,6 +42,11 @@ void open_editor(func callback, string title, string text)
     $write(port, "\{editor/edit:", Base64_Encode(key), ":", Base64_Encode(title), ":", Base64_Encode(text), "\}");
 }
 
+void upload(string text)
+{
+    $write(port, "\{file/upload:", Base64_Encode(text), "\}");
+}
+
 void close()
 {
     $close(this.port);
