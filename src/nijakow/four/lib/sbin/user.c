@@ -30,9 +30,18 @@ private void list_users(string group)
         printf("%s\n", member);
 }
 
+private void setpass(string pw, string name)
+{
+    if (User_ChangePassword(name, pw))
+        printf("Password updated.\n");
+    else
+        printf("Error, password could not be set!\n");
+    exit(0);
+}
+
 private void usage(string appname)
 {
-    printf("usage: %s list|new|delete <username>\n", appname);
+    printf("usage: %s list|new|delete|pass <username>\n", appname);
 }
 
 void main(string* argv)
@@ -43,7 +52,20 @@ void main(string* argv)
         add_user(argv[2]);
     else if (argv.length == 3 && argv[1] == "delete")
         delete_user(argv[2]);
-    else
+    else if ((argv.length == 2 || argv.length == 3) && argv[1] == "pass") {
+        string user;
+        if (argv.length == 3) {
+            if (!User_AmIRoot()) {
+                printf("Only root can do this!\n");
+                exit(1);
+                return;
+            }
+            user = argv[2];
+        } else
+            user = User_Whoami();
+        password(this::(argv[2])setpass, "Password for %s: ", argv[2]);
+        return;
+    } else
         usage(argv[0]);
     exit(0);
 }
