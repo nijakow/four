@@ -1,6 +1,7 @@
 #include "/lib/app.c"
 #include "/lib/sys/fs/paths.c"
 #include "/lib/sys/fs/io.c"
+#include "/lib/sys/fs/stat.c"
 
 private void save_cb(string text, string path)
 {
