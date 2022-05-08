@@ -21,7 +21,7 @@ private int parse_arg(string arg)
     return v;
 }
 
-bool process(string path, int mod)
+private bool process(string path, int mod)
 {
     return FileSystem_Chmod(FileSystem_ResolveHere(path), mod);
 }
