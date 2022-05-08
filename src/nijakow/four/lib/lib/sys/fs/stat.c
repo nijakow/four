@@ -1,9 +1,15 @@
 use $stat;
 use $checkexec;
+use $chmod;
 
 int FileSystem_Stat(string path)
 {
     return $stat(path);
+}
+
+bool FileSystem_Chmod(string path, int flags)
+{
+    return $chmod(path, flags);
 }
 
 bool FileSystem_Exists(string path)
