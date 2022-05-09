@@ -8,4 +8,5 @@ public interface IConnection {
 	void onInput(Consumer<String> consumer);
 	void onDisconnect(Runnable runnable);
 	void close();
+	void pushByte(byte b);
 }

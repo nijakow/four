@@ -80,11 +80,8 @@ public class Server {
 					for (p = 0; p < bytes.length; p++) {
 						if (bytes[p] == 0)
 							break;
+						((RawConnection) key.attachment()).pushByte(bytes[p]);
 					}
-					byte[] newbytes = new byte[p];
-					while (p --> 0)
-						newbytes[p] = bytes[p];
-					((RawConnection) key.attachment()).handleInput(newbytes);
 				}
 			}
 			iter.remove();
