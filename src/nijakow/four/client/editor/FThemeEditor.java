@@ -415,7 +415,13 @@ public class FThemeEditor extends JDialog {
                 newParent = new FStyle((TokenType) inTokens.getSelectedItem(), defaultStyle);
                 this.current.addStyle(newParent.getTokenType(), newParent);
             }
-            currentStyle.setParent(newParent);
+            try {
+                currentStyle.setParent(newParent);
+            } catch (IllegalArgumentException e) {
+                JOptionPane.showMessageDialog(this, "A style must not inherit itself!\n\nParent left unchanged.",
+                        "Inheritance error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
             if (fam.getForeground().equals(dark ? Color.darkGray : Color.lightGray)) {
                 if (newParent.getFamily() != null) {
                     fam.setText(newParent.getFamily());
