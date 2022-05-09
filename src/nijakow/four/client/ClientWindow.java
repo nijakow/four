@@ -2,12 +2,11 @@ package nijakow.four.client;
 
 import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
-import java.awt.dnd.*;
 import java.awt.event.*;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.*;
 import java.util.List;
 import java.util.concurrent.Executors;
@@ -553,7 +552,7 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 				return;
 			}
 			queue.schedule(() -> {
-				try (BufferedOutputStream os = new BufferedOutputStream(new FileOutputStream(selected))) {
+				try (BufferedOutputStream os = new BufferedOutputStream(Files.newOutputStream(selected.toPath()))) {
 					os.write(Base64.getDecoder().decode(arg));
 				} catch (IOException e) {
 					e.printStackTrace();
@@ -591,7 +590,7 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 
 	private void loadAndSend(String key, File file) {
 		ArrayList<Byte> bs = new ArrayList<>();
-		try (BufferedInputStream is = new BufferedInputStream(new FileInputStream(file))) {
+		try (BufferedInputStream is = new BufferedInputStream(Files.newInputStream(file.toPath()))) {
 			int b;
 			while ((b = is.read()) != -1) {
 				bs.add((byte) b);

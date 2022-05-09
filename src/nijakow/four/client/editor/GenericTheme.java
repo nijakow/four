@@ -29,10 +29,11 @@ public class GenericTheme extends WritableTheme {
     }
 
     private String readFile(File file) throws IOException {
-        BufferedReader reader = new BufferedReader(new FileReader(file));
         StringBuilder builder = new StringBuilder();
-        int i;
-        while ((i = reader.read()) != -1) builder.append((char) i);
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            int i;
+            while ((i = reader.read()) != -1) builder.append((char) i);
+        }
         return builder.toString();
     }
 

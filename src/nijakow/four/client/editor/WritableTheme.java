@@ -121,9 +121,10 @@ public class WritableTheme extends FTheme {
     }
 
     public void saveToFile(File file) throws IOException {
-        BufferedOutputStream os = new BufferedOutputStream(Files.newOutputStream(file.toPath()));
-        os.write(generateText().getBytes(StandardCharsets.UTF_8));
-        os.flush();
+        try (BufferedOutputStream os = new BufferedOutputStream(Files.newOutputStream(file.toPath()))) {
+            os.write(generateText().getBytes(StandardCharsets.UTF_8));
+            os.flush();
+        }
     }
 
     public abstract static class Types {
