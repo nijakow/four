@@ -8,6 +8,7 @@
 
 use $write;
 use $on_receive;
+use $on_escape;
 use $close;
 
 private any port;
@@ -89,13 +90,8 @@ private void process_upload(string key, string text)
     }
 }
 
-private void process_escaped(string escaped)
+void receive_escaped(string* tokens)
 {
-    string* tokens;
-
-    tokens = String_SplitOnChar(escaped, ':');
-    for (int i = 1; i < List_Length(tokens); i++)
-        tokens[i] = Base64_Decode(tokens[i]);
     if (tokens[0] == "editor/saved")
         process_editor(tokens[1], tokens[2], false);
     else if (tokens[0] == "editor/cancelled")
@@ -104,7 +100,7 @@ private void process_escaped(string escaped)
         process_upload(tokens[1], tokens[2]);
 }
 
-private void process_line(string line)
+void receive_line(string line)
 {
     func cb;
 
@@ -124,32 +120,6 @@ private void process_line(string line)
     }
 }
 
-private void process_char(char c)
-{
-    if (this.escaped_line_buffer != nil) {
-        if (c == '\}') {
-            process_escaped(this.escaped_line_buffer);
-            this.escaped_line_buffer = nil;
-        } else {
-            this.escaped_line_buffer = this.escaped_line_buffer + Conversion_CharToString(c);
-        }
-    } else {
-        if (c == '\{') {
-            this.escaped_line_buffer = "";
-        } else if (c == '\n') {
-            process_line(this.line_buffer);
-            this.line_buffer = "";
-        } else {
-            this.line_buffer = this.line_buffer + Conversion_CharToString(c);
-        }
-    }
-}
-
-private void receive(string line)
-{
-    for (int i = 0; i < String_Length(line); i++)
-        process_char(line[i]);
-}
 
 void _init(any port)
 {
@@ -161,5 +131,6 @@ void _init(any port)
     this.escaped_line_buffer = nil;
     this.key_callbacks = [];
     this.key_counter = 0;
-    $on_receive(port, this::receive);
+    $on_receive(port, this::receive_line);
+    $on_escape(port, this::receive_escaped);
 }
