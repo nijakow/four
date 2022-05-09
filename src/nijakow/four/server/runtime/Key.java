@@ -207,6 +207,13 @@ public class Key {
 				args[0].asFConnection().onReceive(fiber.getVM().createCallback(fiber.getSharedState(), args[1].asFClosure()));
 			}
 		};
+		get("$on_escape").code = new BuiltinCode() {
+
+			@Override
+			public void run(Fiber fiber, Instance self, Instance[] args) throws FourRuntimeException {
+				args[0].asFConnection().onEscape(fiber.getVM().createCallback(fiber.getSharedState(), args[1].asFClosure()));
+			}
+		};
 		get("$on_disconnect").code = new BuiltinCode() {
 			
 			@Override
