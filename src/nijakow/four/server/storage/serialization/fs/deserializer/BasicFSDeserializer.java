@@ -36,6 +36,10 @@ public class BasicFSDeserializer {
 
     private boolean extractFileByID(NVFileSystem nvfs, Directory parent, String name, String id, IdentityDatabase db) {
         final FileEntry entry = getEntry(id);
+        return extractFile(nvfs, db, parent, entry, name);
+    }
+
+    private boolean extractFile(NVFileSystem nvfs, IdentityDatabase db, Directory parent, FileEntry entry, String name) {
         if (entry == null)
             return false;
         boolean result = true;
@@ -88,8 +92,14 @@ public class BasicFSDeserializer {
 
     public void restore(NVFileSystem nvfs, IdentityDatabase db, Directory parent) {
         ensureParsed();
-        db.restore(specials.getOrDefault("users", ""));
-        extractDirectoryChildren(nvfs, parent, getEntry(firstID), db);
+        String toRestore = specials.getOrDefault("users", null);
+        if (toRestore != null)
+            db.restore(toRestore);
+        FileEntry entry = getEntry(firstID);
+        if (entry.isDirectory())
+            extractDirectoryChildren(nvfs, parent, entry, db);
+        else
+            extractFile(nvfs, db, parent, entry, entry.getName());
     }
 
     public void restore(NVFileSystem nvfs, IdentityDatabase db, Directory parent, String name) {
@@ -121,6 +131,8 @@ public class BasicFSDeserializer {
                 if (firstID == null) firstID = id;
                 entry = new FileEntry(id);
                 files.put(id, entry);
+            } else if (line.startsWith("Name: ")) {
+                entry.setName(line.substring(6).trim());
             } else if (line.startsWith("Path: ")) {
                 // Do nothing
             } else if (line.startsWith("Owner: ")) {

@@ -6,6 +6,7 @@ import java.util.Base64;
 public class FileEntry {
     private final String id;
     private final StringBuilder payload;
+    private String name;
     private String user;
     private String group;
     private int permissions;
@@ -15,6 +16,7 @@ public class FileEntry {
 
     protected FileEntry(String id) {
         this.id = id;
+        this.name = name;
         this.user = "root";
         this.group = "users";
         this.permissions = 0644;
@@ -22,6 +24,10 @@ public class FileEntry {
         this.type = "data-file";
         this.payload = new StringBuilder();
     }
+
+    public void setName(String name) { this.name = name; }
+
+    public String getName() { return this.name; }
 
     public void setOwner(String user) { this.user = user; }
     public void setGroup(String group) { this.group = group; }

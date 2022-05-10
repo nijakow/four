@@ -43,6 +43,7 @@ public abstract class File implements ISerializable {
 
     public final void writeOut(IFSSerializer serializer) {
         serializer.newEntry(getID());
+        serializer.writeName(getName());
         serializer.writePath(getFullName());
         serializer.writeOwner(rights.getUserAccessRights().getIdentity().getName());
         serializer.writeGroup(rights.getGroupAccessRights().getIdentity().getName());

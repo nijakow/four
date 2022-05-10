@@ -34,6 +34,11 @@ public class BasicFSSerializer implements IFSSerializer {
     }
 
     @Override
+    public void writeName(String name) {
+        stream.println("Name: " + name);
+    }
+
+    @Override
     public void writePath(String path) {
         stream.println("Path: " + path);
     }

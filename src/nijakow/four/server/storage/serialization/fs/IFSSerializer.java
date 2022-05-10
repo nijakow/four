@@ -5,6 +5,8 @@ import nijakow.four.server.nvfs.files.File;
 public interface IFSSerializer {
     void newMetaEntry(String type, byte[] payload);
     void newEntry(String id);
+
+    void writeName(String name);
     void writePath(String path);
     void writeOwner(String name);
     void writeGroup(String name);
