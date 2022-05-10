@@ -7,7 +7,15 @@ use $filechildren;
 use $recompile;
 use $mv;
 
+/**
+ * @deprecated
+ */
 bool FileSystem_CreateDirectory(string path)
+{
+    return $mkdir(path);
+}
+
+bool FileSystem_Mkdir(string path)
 {
     return $mkdir(path);
 }
@@ -30,6 +38,12 @@ string FileSystem_ReadFile(string path)
 bool FileSystem_WriteFile(string path, string text)
 {
     return $filetext_set(path, text);
+}
+
+bool FileSystem_CreateAndWriteFile(string path, string text)
+{
+    return (FileSystem_Exists(path) || FileSystem_CreateFile(path))
+        && FileSystem_WriteFile(path, text);
 }
 
 string* FileSystem_GetFilesIn(string path)

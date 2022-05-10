@@ -86,7 +86,10 @@ public class NVFileSystem implements FileParent, ISerializable {
 
     public Directory mkdir(String file, Identity identity, User owner, Group gowner) {
         Pair<String, String> path = splitPath(file);
-        return resolve(path.getFirst()).asDirectory().mkdir(path.getSecond(), identity, owner, gowner);
+        Directory dir = resolveDirectory(path.getFirst());
+        if (dir == null)
+            return null;
+        return dir.mkdir(path.getSecond(), identity, owner, gowner);
     }
 
     public boolean mv(String file, String loc, Identity identity) {

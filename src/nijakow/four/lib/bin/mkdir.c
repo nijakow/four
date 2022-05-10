@@ -10,7 +10,7 @@ void main(string* argv)
     for (int i = 1; i < argv.length; i++)
     {
         path = FileSystem_ResolveHere(argv[i]);
-        if (!FileSystem_CreateDirectory(path))
+        if (!FileSystem_Mkdir(path))
             printf("%s: error while creating directory!\n", argv[i]);
     }
     exit(0);

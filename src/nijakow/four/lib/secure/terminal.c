@@ -100,23 +100,31 @@ void receive_escaped(string* tokens)
         process_upload(tokens[1], tokens[2]);
 }
 
+private void handle_crash()
+{
+    if (this.crash_callback != nil) {
+        call(this.crash_callback);
+    } else {
+        printf("\n");
+        printf("The program has crashed and there was no crash callback available.\n");
+        printf("This should not happen. Please contact the system administrator.\n");
+    }
+}
+
 void receive_line(string line)
 {
     func cb;
 
-    if (this.line_callback != nil) {
-        cb = this.line_callback;
-        this.line_callback = nil;
+    if (this.line_callback == nil) {
+        handle_crash();
+        return;
+    }
+    cb = this.line_callback;
+    this.line_callback = nil;
+    if (cb != nil)
         call(cb, String_TrimNewline(line));
-        if (this.line_callback == nil) {
-            if (this.crash_callback != nil) {
-                call(this.crash_callback);
-            } else {
-                printf("\n");
-                printf("The program has crashed and there was no crash callback available.\n");
-                printf("This should not happen. Please contact the system administrator.\n");
-            }
-        }
+    if (this.line_callback == nil) {
+        handle_crash();
     }
 }
 
