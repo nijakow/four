@@ -5,6 +5,7 @@ use $filetext;
 use $filetext_set;
 use $filechildren;
 use $recompile;
+use $mv;
 
 bool FileSystem_CreateDirectory(string path)
 {
@@ -36,7 +37,12 @@ string* FileSystem_GetFilesIn(string path)
     return $filechildren(path);
 }
 
-string FileSystem_Compile(path)
+string FileSystem_Compile(string path)
 {
     return $recompile(path);
+}
+
+bool FileSystem_Move(string from, string to)
+{
+    return $mv(from, to);
 }
