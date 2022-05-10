@@ -19,6 +19,7 @@ import nijakow.four.server.runtime.objects.standard.FString;
 import nijakow.four.server.runtime.vm.code.BuiltinCode;
 import nijakow.four.server.runtime.vm.code.Code;
 import nijakow.four.server.runtime.vm.fiber.Fiber;
+import nijakow.four.server.storage.serialization.fs.BasicFSSerializer;
 import nijakow.four.server.users.Group;
 import nijakow.four.server.users.Identity;
 import nijakow.four.server.users.User;
@@ -703,6 +704,28 @@ public class Key {
 			@Override
 			public void run(Fiber fiber, Instance self, Instance[] args) throws CastException {
 				fiber.setAccu(FInteger.getBoolean(fiber.getVM().getFour().loadLatestSnapshot()));
+			}
+		};
+		get("$compress").code = new BuiltinCode() {
+
+			@Override
+			public void run(Fiber fiber, Instance self, Instance[] args) throws CastException {
+				final String path = args[0].asFString().asString();
+				final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+				BasicFSSerializer serializer = new BasicFSSerializer(outputStream);
+				final File file = fiber.getVM().getFilesystem().resolve(path);
+				// TODO: Check if file != null
+				if (file == null) {
+					fiber.setAccu(Instance.getNil());
+				} else {
+					serializer.serialize(file);
+					try {
+						fiber.setAccu(new FString(new String(outputStream.toByteArray(), StandardCharsets.UTF_8)));
+						outputStream.close();
+					} catch (IOException e) {
+						fiber.setAccu(Instance.getNil());
+					}
+				}
 			}
 		};
 		get("$getmsgs").code = new BuiltinCode() {
