@@ -20,6 +20,7 @@ import nijakow.four.server.runtime.vm.code.BuiltinCode;
 import nijakow.four.server.runtime.vm.code.Code;
 import nijakow.four.server.runtime.vm.fiber.Fiber;
 import nijakow.four.server.storage.serialization.fs.BasicFSSerializer;
+import nijakow.four.server.storage.serialization.fs.deserializer.BasicFSDeserializer;
 import nijakow.four.server.users.Group;
 import nijakow.four.server.users.Identity;
 import nijakow.four.server.users.User;
@@ -28,6 +29,7 @@ import nijakow.four.share.lang.base.CompilationException;
 import nijakow.four.share.lang.c.parser.ParseException;
 import nijakow.four.share.util.Pair;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -707,7 +709,6 @@ public class Key {
 			}
 		};
 		get("$compress").code = new BuiltinCode() {
-
 			@Override
 			public void run(Fiber fiber, Instance self, Instance[] args) throws CastException {
 				final String path = args[0].asFString().asString();
@@ -725,6 +726,24 @@ public class Key {
 					} catch (IOException e) {
 						fiber.setAccu(Instance.getNil());
 					}
+				}
+			}
+		};
+		get("$uncompress").code = new BuiltinCode() {
+			@Override
+			public void run(Fiber fiber, Instance self, Instance[] args) throws CastException {
+				final String path = args[0].asFString().asString();
+				final String dirpath = args[1].asFString().asString();
+				final TextFile file = fiber.getVM().getFilesystem().resolveTextFile(path);
+				final Directory dir = fiber.getVM().getFilesystem().resolveDirectory(dirpath);
+				if (file == null || dir == null) {
+					fiber.setAccu(FInteger.getBoolean(false));
+				} else {
+					final String contents = file.getContents();
+					final ByteArrayInputStream inputStream = new ByteArrayInputStream(contents.getBytes(StandardCharsets.UTF_8));
+					BasicFSDeserializer deserializer = new BasicFSDeserializer(inputStream);
+					deserializer.restore(fiber.getVM().getFilesystem(), fiber.getVM().getIdentityDB(), dir);
+					fiber.setAccu(FInteger.getBoolean(true));
 				}
 			}
 		};

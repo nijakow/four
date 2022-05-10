@@ -26,14 +26,14 @@ private void save_text(string text, string path)
 void main(string* argv)
 {
     if (argv.length != 3)
-        printf("Usage: compress <path> <file>\n");
+        printf("Usage: %s <file> <path>\n", argv[0]);
     else {
-        string path = FileSystem_ResolveHere(argv[1]);
+        string path = FileSystem_ResolveHere(argv[2]);
         string compressed = $compress(path);
         if (compressed == nil)
             printf("%s: error!\n", argv[1]);
         else {
-            string file = FileSystem_ResolveHere(argv[2]);
+            string file = FileSystem_ResolveHere(argv[1]);
             save_text(compressed, file);
         }
     }
