@@ -10,9 +10,9 @@ use $get_sibling;
 use $get_children;
 use $move_to;
 
-object get_parent() { return $get_parent(self); }
-object get_sibling() { return $get_sibling(self); }
-object get_children() { return $get_children(self); }
+object get_parent() { return $get_parent(this); }
+object get_sibling() { return $get_sibling(this); }
+object get_children() { return $get_children(this); }
 
 void move_to(object target)
 {
@@ -33,7 +33,7 @@ void set_short(string new_short) { this.short_description = new_short; }
 string get_long() { return this.long_description; }
 void set_long(string new_long) { this.long_description = new_long; }
 
-void add_id(string id) { List_Append(identifiers, id); }
+void add_id(string id) { List_Append(this.identifiers, id); }
 
 /*
  *     C o m m a n d   S e c t i o n
