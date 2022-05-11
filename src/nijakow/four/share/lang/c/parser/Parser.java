@@ -3,6 +3,8 @@ package nijakow.four.share.lang.c.parser;
 import java.util.ArrayList;
 import java.util.List;
 
+import nijakow.four.server.runtime.objects.standard.FString;
+import nijakow.four.server.runtime.types.ObjectType;
 import nijakow.four.share.lang.c.SlotVisibility;
 import nijakow.four.share.lang.c.ast.*;
 import nijakow.four.server.runtime.objects.standard.FInteger;
@@ -45,7 +47,12 @@ public class Parser {
 		} else if (check(TokenType.STRING)) {
 			return Type.getString();
 		} else if (check(TokenType.OBJECT)) {
-			return Type.getObject();
+			if (check(TokenType.LPAREN)) {
+				Type t = Type.getObject(((FString) nextToken().getPayload()).asString());	// TODO: Better checks here :)
+				expect(TokenType.RPAREN);
+				return t;
+			} else
+				return Type.getObject();
 		} else if (check(TokenType.FUNC)) {
 			return Type.getFunc();
 		} else if (check(TokenType.LIST)) {

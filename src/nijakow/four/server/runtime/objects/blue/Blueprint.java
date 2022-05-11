@@ -169,10 +169,18 @@ public class Blueprint {
 		return methods.containsKey(key);
 	}
 
-	private boolean extendsBlueprint(Blueprint bp) {
+	public boolean extendsBlueprint(Blueprint bp) {
+		if (this == bp) return true;
 		for (Blueprint parent : supers) {
-			if (parent == bp)
-				return true;
+			return parent.extendsBlueprint(bp);
+		}
+		return false;
+	}
+
+	public boolean extendsBlueprint(String bp) {
+		if (this.getFilename().equals(bp)) return true;
+		for (Blueprint parent : supers) {
+			return parent.extendsBlueprint(bp);
 		}
 		return false;
 	}

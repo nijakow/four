@@ -133,6 +133,8 @@ public class Blue extends FloatingInstance {
 		return new Blue(this);
 	}
 
+	public Blueprint getBlueprint() { return this.blueprint; }
+
     public void updateBlueprint(Blueprint blueprint) {
 		this.initialized = false;
 		this.blueprint = blueprint;
