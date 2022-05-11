@@ -50,9 +50,7 @@ public class VM {
 	}
 
 	public void setConnectCallback(Callback callback) {
-		getLogger().println(LogLevel.DEBUG, "Connect callback was set to " + callback);
 		this.getServer().onConnect((theConnection) -> {
-			getLogger().println(LogLevel.DEBUG, "Connect callback was invoked (" + callback + ")");
 			try {
 				callback.invoke(new FConnection(theConnection));
 			} catch (FourRuntimeException e) {

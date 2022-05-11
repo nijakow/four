@@ -13,7 +13,6 @@ private void logout_func(...)
 
 void receive(any port)
 {
-	System_Log("New connection!\n");
 	object terminal = new("/secure/terminal.c", port);
 	$statics()["terminal"] = terminal;
 	new("/secure/logon.c", this::logout_func)->_start();
