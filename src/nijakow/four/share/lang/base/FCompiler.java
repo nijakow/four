@@ -26,8 +26,8 @@ public interface FCompiler {
 	void compileLoadVACount();
 	void compileLoadConstant(Instance value);
 	
-	void compileLoadVariable(Key identifier);
-	void compileStoreVariable(Key identifier);
+	void compileLoadVariable(Key identifier) throws CompilationException;
+	void compileStoreVariable(Key identifier) throws CompilationException;
 
 	void compilePush();
 	void compileReturn();

@@ -5,7 +5,7 @@ private func _return_cb;
 
 void exit(any value)
 {
-    call(_return_cb, value);
+    call(this._return_cb, value);
 }
 
 any main(...)

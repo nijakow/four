@@ -44,7 +44,7 @@ private void identification_failure()
 private void launch_shell_failed()
 {
     if (User_IsRoot(this.username)) {
-        if (exec(exit, "/bin/sh.c", {"/bin/sh.c"}))
+        if (exec(this::exit, "/bin/sh.c", {"/bin/sh.c"}))
             return;
     }
     printf("No login shell was found.\nPlease contact the system administrator.\n");
@@ -54,7 +54,7 @@ private void launch_shell_failed()
 private void launch_shell()
 {
     string shell = User_GetShell(this.username);
-    if (shell == nil || !exec(exit, shell, {shell}))
+    if (shell == nil || !exec(this::exit, shell, {shell}))
         launch_shell_failed();
 }
 
@@ -69,7 +69,7 @@ private void receive_password(string pass)
 
 private void ask_password()
 {
-    password(receive_password, "password: ");
+    password(this::receive_password, "password: ");
 }
 
 private void receive_username(string username)
@@ -80,7 +80,7 @@ private void receive_username(string username)
 
 private void ask_username()
 {
-    prompt(receive_username, "login: ");
+    prompt(this::receive_username, "login: ");
 }
 
 void main()

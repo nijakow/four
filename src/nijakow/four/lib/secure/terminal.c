@@ -21,18 +21,18 @@ private int key_counter;
 
 void printf(string format, ...)
 {
-    $write(port, sprintf(format, ...));
+    $write(this.port, sprintf(format, ...));
 }
 
 void prompt(func callback, string prompt, ...)
 {
-    $write(port, "\{prompt/plain:", Base64_Encode(sprintf(prompt, ...)), "\}");
+    $write(this.port, "\{prompt/plain:", Base64_Encode(sprintf(prompt, ...)), "\}");
     this.line_callback = callback;
 }
 
 void password(func callback, string prompt, ...)
 {
-    $write(port, "\{prompt/password:", Base64_Encode(sprintf(prompt, ...)), "\}");
+    $write(this.port, "\{prompt/password:", Base64_Encode(sprintf(prompt, ...)), "\}");
     this.line_callback = callback;
 }
 
@@ -40,19 +40,19 @@ void open_editor(func callback, string title, string text)
 {
     string key = Conversion_IntToString(this.key_counter++);
     this.key_callbacks[key] = callback;
-    $write(port, "\{editor/edit:", Base64_Encode(key), ":", Base64_Encode(title), ":", Base64_Encode(text), "\}");
+    $write(this.port, "\{editor/edit:", Base64_Encode(key), ":", Base64_Encode(title), ":", Base64_Encode(text), "\}");
 }
 
 void upload(string text)
 {
-    $write(port, "\{file/upload:", Base64_Encode(text), "\}");
+    $write(this.port, "\{file/upload:", Base64_Encode(text), "\}");
 }
 
 void download(func callback)
 {
     string key = Conversion_IntToString(this.key_counter++);
     this.key_callbacks[key] = callback;
-    $write(port, "\{file/download:", Base64_Encode(key), "\}");
+    $write(this.port, "\{file/download:", Base64_Encode(key), "\}");
 }
 
 void close()
@@ -71,9 +71,9 @@ private void process_editor(string key, string text, bool cancelled)
 {
     func cb;
 
-    cb = key_callbacks[key];
+    cb = this.key_callbacks[key];
     if (cancelled)
-        key_callbacks[key] = nil;
+        this.key_callbacks[key] = nil;
     if (cb != nil)
         call(cb, text);
 }
@@ -81,9 +81,9 @@ private void process_editor(string key, string text, bool cancelled)
 private void process_upload(string key, string text)
 {
     func cb;
-    cb = key_callbacks[key];
+    cb = this.key_callbacks[key];
     if (cb != nil) {
-        key_callbacks[key] = nil;
+        this.key_callbacks[key] = nil;
         call(cb, text);
     } else {
         printf("Uploaded file was discarded.\n");

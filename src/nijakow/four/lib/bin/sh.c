@@ -25,11 +25,11 @@ private void execute_command_in_path(string* argv, string path)
         }
     } else {
         paths = String_SplitOnChar(path, ':');
-        if (exec(restart_from_binary, FileSystem_ResolveHere(argv[0]), argv))
+        if (exec(this::restart_from_binary, FileSystem_ResolveHere(argv[0]), argv))
             return;
         foreach (string pth : paths)
         {
-            if (exec(restart_from_binary, pth + "/" + argv[0] + ".c", argv))
+            if (exec(this::restart_from_binary, pth + "/" + argv[0] + ".c", argv))
                 return;
         }
         printf("%s: not found!\n", argv[0]);
@@ -60,9 +60,9 @@ private void receive(string line)
 private void restart()
 {
     if (User_AmIRoot()) {
-        prompt(receive, "%s@four:%s# ", User_Whoami(), FileSystem_GetWorkingDirectory());
+        prompt(this::receive, "%s@four:%s# ", User_Whoami(), FileSystem_GetWorkingDirectory());
     } else {
-        prompt(receive, "%s@four:%s$ ", User_Whoami(), FileSystem_GetWorkingDirectory());
+        prompt(this::receive, "%s@four:%s$ ", User_Whoami(), FileSystem_GetWorkingDirectory());
     }
 }
 
