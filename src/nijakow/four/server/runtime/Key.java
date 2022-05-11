@@ -13,6 +13,7 @@ import nijakow.four.server.runtime.objects.Instance;
 import nijakow.four.server.runtime.objects.blue.Blue;
 import nijakow.four.server.runtime.objects.blue.Blueprint;
 import nijakow.four.server.runtime.objects.collections.FList;
+import nijakow.four.server.runtime.objects.misc.FConnection;
 import nijakow.four.server.runtime.objects.standard.FClosure;
 import nijakow.four.server.runtime.objects.standard.FInteger;
 import nijakow.four.server.runtime.objects.standard.FString;
@@ -237,6 +238,20 @@ public class Key {
 			public void run(Fiber fiber, Instance self, Instance[] args) throws FourRuntimeException {
 				for (int x = 1; x < args.length; x++)
 					args[0].asFConnection().send(args[x]);
+			}
+		};
+		get("$write_special").code = new BuiltinCode() {
+
+			@Override
+			public void run(Fiber fiber, Instance self, Instance[] args) throws FourRuntimeException {
+				final FConnection connection = args[0].asFConnection();
+				connection.send("" + (char) 0x02);
+				connection.send(args[1].asFString().asString());
+				for (int x = 2; x < args.length; x++) {
+					connection.send(":");
+					connection.send(Base64.getEncoder().encodeToString(args[x].asFString().asString().getBytes(StandardCharsets.UTF_8)));
+				}
+				connection.send("" + (char) 0x03);
 			}
 		};
 		get("$close").code = new BuiltinCode() {

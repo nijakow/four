@@ -7,6 +7,7 @@
 #include "/lib/base64/decode.c"
 
 use $write;
+use $write_special;
 use $on_receive;
 use $on_escape;
 use $close;
@@ -26,13 +27,13 @@ void printf(string format, ...)
 
 void prompt(func callback, string prompt, ...)
 {
-    $write(this.port, "\{prompt/plain:", Base64_Encode(sprintf(prompt, ...)), "\}");
+    $write_special(this.port, "prompt/plain", sprintf(prompt, ...));
     this.line_callback = callback;
 }
 
 void password(func callback, string prompt, ...)
 {
-    $write(this.port, "\{prompt/password:", Base64_Encode(sprintf(prompt, ...)), "\}");
+    $write_special(this.port, "prompt/password", sprintf(prompt, ...));
     this.line_callback = callback;
 }
 
@@ -40,19 +41,19 @@ void open_editor(func callback, string title, string text)
 {
     string key = Conversion_IntToString(this.key_counter++);
     this.key_callbacks[key] = callback;
-    $write(this.port, "\{editor/edit:", Base64_Encode(key), ":", Base64_Encode(title), ":", Base64_Encode(text), "\}");
+    $write_special(this.port, "editor/edit", key, title, text);
 }
 
 void upload(string text)
 {
-    $write(this.port, "\{file/upload:", Base64_Encode(text), "\}");
+    $write_special(this.port, "file/upload:", text);
 }
 
 void download(func callback)
 {
     string key = Conversion_IntToString(this.key_counter++);
     this.key_callbacks[key] = callback;
-    $write(this.port, "\{file/download:", Base64_Encode(key), "\}");
+    $write_special(this.port, "file/download", key);
 }
 
 void close()

@@ -53,7 +53,11 @@ public class FConnection extends FloatingInstance {
 	}
 	
 	public void send(Instance instance) {
-		connection.writeString(instance.asString());
+		send(instance.asString());
+	}
+
+	public void send(String text) {
+		connection.writeString(text);
 	}
 	
 	public void close() {
