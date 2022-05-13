@@ -24,7 +24,14 @@ public class FString extends FloatingInstance {
 		this.value = value;
 		registerToPool();
 	}
-	
+
+	@Override
+	public String toString() {
+		if (this.value.length() >= 24)
+			return "\"" + this.value.substring(0, 24) + "\" [...]";
+		return "\"" + this.value + "\"";
+	}
+
 	@Override
 	public int hashCode() {
 		return value.hashCode();

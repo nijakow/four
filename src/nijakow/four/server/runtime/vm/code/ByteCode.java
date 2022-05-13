@@ -3,9 +3,19 @@ package nijakow.four.server.runtime.vm.code;
 import nijakow.four.server.runtime.Key;
 import nijakow.four.server.runtime.exceptions.FourRuntimeException;
 import nijakow.four.server.runtime.objects.Instance;
+import nijakow.four.server.runtime.objects.collections.FList;
+import nijakow.four.server.runtime.objects.collections.FMapping;
+import nijakow.four.server.runtime.objects.standard.FClosure;
+import nijakow.four.server.runtime.objects.standard.FInteger;
+import nijakow.four.server.runtime.types.ListType;
 import nijakow.four.server.runtime.types.Type;
+import nijakow.four.server.runtime.vm.Bytecodes;
 import nijakow.four.server.runtime.vm.fiber.Fiber;
+import nijakow.four.share.lang.c.ast.OperatorType;
 import nijakow.four.share.lang.c.parser.StreamPosition;
+
+import java.io.PrintStream;
+import java.io.PrintWriter;
 
 public class ByteCode implements Code {
 	private final CodeMeta meta;
@@ -79,4 +89,120 @@ public class ByteCode implements Code {
 	}
 
 	public CodeMeta getMeta() { return meta; }
+
+	public void disassemble(PrintStream writer) {
+		// TODO: Cache this string?
+		final ByteCode code = this;
+		int ip = 0;
+		while (code.boundsCheck(ip)) {
+			writer.print(String.format("%4d:   ", ip));
+			switch (code.u8(ip++)) {
+				case Bytecodes.BYTECODE_LOAD_THIS:
+					writer.println("LOAD_THIS");
+					break;
+				case Bytecodes.BYTECODE_LOAD_CONSTANT:
+					writer.println("CONST " + code.constant(code.u16(ip)));
+					ip += 2;
+					break;
+				case Bytecodes.BYTECODE_LOAD_LOCAL:
+					writer.println("LOAD_LOCAL " + code.u8(ip++));
+					break;
+				case Bytecodes.BYTECODE_STORE_LOCAL:
+					writer.println("STORE_LOCAL " + code.u8(ip++));
+					break;
+				case Bytecodes.BYTECODE_LOAD_INST:
+					writer.println("LOAD " + code.keyAt(code.u16(ip)));
+					ip += 2;
+					break;
+				case Bytecodes.BYTECODE_STORE_INST: {
+					writer.println("STORE " + code.keyAt(code.u16(ip)));
+					ip += 2;
+					break;
+				}
+				case Bytecodes.BYTECODE_LOAD_INDEX:
+					writer.println("INDEX");
+					break;
+				case Bytecodes.BYTECODE_STORE_INDEX: {
+					writer.println("STORE_INDEX");
+					break;
+				}
+				case Bytecodes.BYTECODE_PUSH:
+					writer.println("PUSH");
+					break;
+				case Bytecodes.BYTECODE_CALL:
+					writer.println("CALL " + code.u8(ip++));
+					break;
+				case Bytecodes.BYTECODE_CALL_VARARGS:
+					writer.println("CALL_VARARGS " + code.u8(ip++));
+					break;
+				case Bytecodes.BYTECODE_DOTCALL:
+					writer.println("DOTCALL " + code.keyAt(code.u16(ip)) + " " + code.u8(ip + 2));
+					ip += 3;
+					break;
+				case Bytecodes.BYTECODE_DOTCALL_VARARGS:
+					writer.println("DOTCALL_VARARGS " + code.keyAt(code.u16(ip)) + " " + code.u8(ip + 2));
+					ip += 3;
+					break;
+				case Bytecodes.BYTECODE_NEW:
+					writer.println("NEW " + code.keyAt(code.u16(ip)) + " " + code.u8(ip + 2));
+					ip += 3;
+					break;
+				case Bytecodes.BYTECODE_NEW_VARARGS:
+					writer.println("NEW_VARARGS " + code.keyAt(code.u16(ip)) + " " + code.u8(ip + 2));
+					ip += 3;
+					break;
+				case Bytecodes.BYTECODE_SCOPE: {
+					writer.println("SCOPE " + code.u8(ip) + " " + code.keyAt(code.u16(ip + 1)));
+					ip += 3;
+					break;
+				}
+				case Bytecodes.BYTECODE_JUMP:
+					writer.println("JUMP " + code.u16(ip));
+					ip += 2;
+					break;
+				case Bytecodes.BYTECODE_JUMP_IF_NOT:
+					writer.println("JUMP_IF_NOT " + code.u16(ip));
+					ip += 2;
+					break;
+				case Bytecodes.BYTECODE_OP: {
+					writer.println("OP <" + OperatorType.values()[code.u8(ip++)].name() + ">");
+					break;
+				}
+				case Bytecodes.BYTECODE_RETURN:
+					writer.println("RETURN");
+					break;
+				case Bytecodes.BYTECODE_LOAD_VANEXT:
+					writer.println("VA_NEXT");
+					break;
+				case Bytecodes.BYTECODE_LOAD_VACOUNT:
+					writer.println("VA_COUNT");
+					break;
+				case Bytecodes.BYTECODE_TYPE_CHECK:
+					writer.println("TYPE_CHECK " + code.type(code.u16(ip)));
+					ip += 2;
+					break;
+				case Bytecodes.BYTECODE_TYPE_CAST:
+					writer.println("TYPE_CAST " + code.type(code.u16(ip)));
+					ip += 2;
+					break;
+				case Bytecodes.BYTECODE_MAKE_LIST: {
+					writer.println("MAKE_LIST " + code.type(code.u16(ip)) + " " + code.u16(ip + 2));
+					ip += 4;
+					break;
+				}
+				case Bytecodes.BYTECODE_MAKE_MAPPING: {
+					writer.println("MAKE_MAPPING " + code.u16(ip));
+					ip += 2;
+					break;
+				}
+				case Bytecodes.BYTECODE_TELL: {
+					writer.println("(TELL) " + code.tell(code.u16(ip)));
+					ip += 2;
+					break;
+				}
+				default:
+					writer.println("???");
+			}
+		}
+	}
 }

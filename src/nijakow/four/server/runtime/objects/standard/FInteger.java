@@ -17,7 +17,12 @@ public class FInteger extends Instance {
 	public int hashCode() {
 		return value;
 	}
-	
+
+	@Override
+	public String toString() {
+		return Integer.toString(value);
+	}
+
 	@Override
 	public boolean equals(Object obj) {
 		if (obj == null) return false;
