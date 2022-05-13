@@ -55,8 +55,8 @@ public class FLauncherWindow extends JFrame implements ActionListener {
         try {
             new Thread(new Four(db, new NVFileSystem(db), storagePath, hostname == null ? "localhost" : hostname, ports)).start();
         } catch (IOException e) {
-            // TODO Handle this gracefully
-            throw new RuntimeException(e);
+            JOptionPane.showMessageDialog(this, "Could not open the library!",
+                    "Four: Server", JOptionPane.ERROR_MESSAGE);
         }
     }
 
