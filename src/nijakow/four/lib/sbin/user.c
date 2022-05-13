@@ -39,9 +39,21 @@ private void setpass(string pw, string name)
     exit(0);
 }
 
+private void perform_chsh(string user, string path)
+{
+    if (User_IsRoot(user))
+        printf("For stability reasons, changing the root shell is not possible.\n");
+    else {
+        if (User_ChangeShell(user, path))
+            printf("Shell changed.\n");
+        else
+            printf("Error, could not set the shell!\n");
+    }
+}
+
 private void usage(string appname)
 {
-    printf("usage: %s list|new|delete|pass <username>\n", appname);
+    printf("usage: %s list|new|delete|pass|shell <username>\n", appname);
 }
 
 void main(string* argv)
@@ -65,7 +77,19 @@ void main(string* argv)
             user = User_Whoami();
         password(this::(argv[2])setpass, "Password for %s: ", argv[2]);
         return;
-    } else
+    } else if ((argv.length == 3 || argv.length == 4) && argv[1] == "shell") {
+          string user;
+          if (argv.length == 4) {
+              if (!User_AmIRoot()) {
+                  printf("Only root can do this!\n");
+                  exit(1);
+                  return;
+              }
+              user = argv[2];
+          } else
+              user = User_Whoami();
+          perform_chsh(user, argv[3]);
+      } else
         usage(argv[0]);
     exit(0);
 }
