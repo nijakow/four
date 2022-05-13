@@ -38,6 +38,7 @@ public class DefaultTheme extends FTheme {
         addStyle(TokenType.FOR, new FStyle(TokenType.FOR, controlWord));
         addStyle(TokenType.NEW, new FStyle(TokenType.NEW, controlWord));
         addStyle(TokenType.THIS, new FStyle(TokenType.THIS, controlWord));
+        addStyle(TokenType.THISDOT, new FStyle(TokenType.THISDOT, controlWord));
         addStyle(TokenType.ELSE, new FStyle(TokenType.ELSE, controlWord));
         addStyle(TokenType.BREAK, new FStyle(TokenType.BREAK, controlWord));
         addStyle(TokenType.WHILE, new FStyle(TokenType.WHILE, controlWord));
