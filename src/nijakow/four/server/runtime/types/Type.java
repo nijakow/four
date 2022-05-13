@@ -2,7 +2,6 @@ package nijakow.four.server.runtime.types;
 
 import nijakow.four.server.runtime.exceptions.CastException;
 import nijakow.four.server.runtime.objects.*;
-import nijakow.four.server.runtime.objects.blue.Blue;
 import nijakow.four.server.runtime.objects.collections.FMapping;
 import nijakow.four.server.runtime.objects.standard.FClosure;
 import nijakow.four.server.runtime.objects.standard.FInteger;
@@ -83,23 +82,7 @@ public abstract class Type {
 		}
 	};
 	
-	private static final Type OBJECT = new Type() {
-
-		public String getName() { return "object"; }
-		
-		@Override
-		public Instance cast(Instance instance) throws CastException {
-			if (check(instance))
-				return instance;
-			else
-				return instance.asBlue();
-		}
-		
-		@Override
-		public boolean check(Instance instance) {
-			return (instance instanceof Blue) || instance.isNil();
-		}
-	};
+	private static final Type OBJECT = new ObjectType();
 	
 	private static final Type FUNC = new Type() {
 
@@ -145,6 +128,7 @@ public abstract class Type {
 	public static Type getBool() { return getInt(); }
 	public static Type getString() { return STRING; }
 	public static Type getObject() { return OBJECT; }
+	public static Type getObject(String bp) { return ObjectType.get(bp); }
 	public static Type getFunc() { return FUNC; }
 	public static ListType getList() { return ANY.listType(); }
 	public static Type getMapping() { return MAPPING; }

@@ -1,37 +1,22 @@
-inherits "/std/app.c";
+#include "/lib/app.c"
+#include "/lib/list/list.c"
+#include "/lib/sys/fs/io.c"
+#include "/lib/sys/fs/paths.c"
 
-inherits "/std/lib/sys/open.c";
-inherits "/std/lib/sys/read.c";
-inherits "/std/lib/sys/close.c";
-
-private void do_cat(string file)
+void main(string* argv)
 {
-    int    fd;
-    int    bytes_read;
-    char*  buffer;
+    string path;
+    string contents;
 
-    buffer = malloc(128);
-    fd = open(file, 1);
-    if (fd < 0) {
-        printf("%s: file not found\n", file);
-    } else {
-        while (true) {
-            bytes_read = read(fd, buffer);
-            if (bytes_read <= 0)
-                break;
-            for (int x = 0; x < bytes_read; x++)
-                printf("%c", buffer[x]);
-        }
-        close(fd);
-    }
-    exit();
-}
-
-void start()
-{
-    for (int i = 1; i < length(argv); i++)
+    for (int i = 1; i < List_Length(argv); i++)
     {
-        do_cat(resolve(pwd(), argv[i]));
+        path = FileSystem_ResolveHere(argv[i]);
+        contents = FileSystem_ReadFile(path);
+        if (contents == nil)
+            printf("%s: not found!\n", argv[i]);
+        else {
+            printf("%s", contents);
+        }
     }
-    exit();
+    exit(0);
 }

@@ -33,7 +33,7 @@ public abstract class File implements ISerializable {
     public void makeEssential() { this.essential = true; }
     public void makeUnessential() { this.essential = false; }
 
-    public boolean shouldBeSerialized() { return (!this.isPartOfStandardLibrary()) || (this.isEssential()); }
+    public boolean shouldBeSerialized() { /*return (!this.isPartOfStandardLibrary()) || (this.isEssential());*/ return true; }
 
     protected void serializeCore(ISerializer serializer) {
         serializer.openProperty("file.name").writeString(getName()).close();
@@ -43,6 +43,7 @@ public abstract class File implements ISerializable {
 
     public final void writeOut(IFSSerializer serializer) {
         serializer.newEntry(getID());
+        serializer.writeName(getName());
         serializer.writePath(getFullName());
         serializer.writeOwner(rights.getUserAccessRights().getIdentity().getName());
         serializer.writeGroup(rights.getGroupAccessRights().getIdentity().getName());

@@ -1,26 +1,31 @@
-inherits "/std/app.c";
+#include "/lib/app.c"
+#include "/lib/sys/identity/user.c"
 
-void process(string uid, string shell)
+private void perform_chsh(string user, string path)
 {
-    if (uid == finduser("root")) {
-        printf("It is unsafe to change root's shell!\n");
-    } else if (uid == nil) {
-        printf("User not found!\n");
-    } else if (!chsh(uid, shell)) {
-        printf("Could not set shell!\n");
+    if (User_IsRoot(user))
+        printf("For stability reasons, changing the root shell is not possible.\n");
+    else {
+        if (User_ChangeShell(user, path))
+            printf("Shell changed.\n");
+        else
+            printf("Error, could not set the shell!\n");
     }
-    exit();
 }
 
-void start()
+void main(string* argv)
 {
-    if (length(argv) == 2)
-        process(getuid(), argv[1]);
-    else if (length(argv) == 3)
-        process(finduser(argv[1]), argv[2]);
-    else
-    {
-        printf("Argument error!\n");
-        exit();
-    }
+    string user = User_Whoami();
+    string shell;
+
+    if (argv.length == 2)
+        perform_chsh(user, argv[1]);
+    else if (argv.length == 3) {
+        if (!User_AmIRoot())
+            printf("Only root is allowed to do this!\n");
+        else
+            perform_chsh(argv[1], argv[2]);
+    } else
+        printf("Usage: %s <username> shell\n", (argv.length != 0) ? argv[0] : "chsh");
+    exit(0);
 }

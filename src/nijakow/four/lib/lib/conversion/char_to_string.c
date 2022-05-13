@@ -1,6 +1,6 @@
 use $chr;
 
-string Char_To_String(char c)
+string Conversion_CharToString(char c)
 {
     return $chr(c);
 }

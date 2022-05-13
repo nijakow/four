@@ -14,7 +14,7 @@ public class ASTIdent extends ASTExpression {
 	}
 
 	@Override
-	void compile(FCompiler compiler) {
+	void compile(FCompiler compiler) throws CompilationException {
 		compiler.compileLoadVariable(identifier);
 	}
 

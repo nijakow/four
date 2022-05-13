@@ -1,14 +1,18 @@
-inherits "/std/app.c";
+#include "/lib/app.c"
+#include "/lib/list/list.c"
+#include "/lib/sys/fs/io.c"
+#include "/lib/sys/fs/paths.c"
 
-void start()
+void main(string* argv)
 {
-    if (length(argv) <= 1)
-        printf("Argument error!\n");
-    else {
-        for (int i = 1; i < length(argv); i++) {
-           if (!rm(resolve(pwd(), argv[i])))
-                printf("%s: error.\n", argv[i]);
-        }
+    string path;
+
+    for (int i = 1; i < List_Length(argv); i++)
+    {
+        path = FileSystem_ResolveHere(argv[i]);
+        // TODO: Recursive Delete
+        if (!FileSystem_DeleteFile(path))
+            printf("%s: error while deleting file!\n", argv[i]);
     }
-    exit();
+    exit(0);
 }

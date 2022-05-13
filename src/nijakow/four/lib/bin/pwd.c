@@ -1,7 +1,8 @@
-inherits "/std/app.c";
+#include "/lib/app.c"
+#include "/lib/sys/fs/paths.c"
 
-void start()
+void main(string* argv)
 {
-    printf("%s\n", pwd());
-    exit();
+    printf("%s\n", FileSystem_GetWorkingDirectory());
+    exit(0);
 }

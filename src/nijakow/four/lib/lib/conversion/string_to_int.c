@@ -1,13 +1,11 @@
-// TODO: Import Char_IsSpace
-// TODO: Import Char_IsDigit
-// TODO: Import String_Length
+inherits "/lib/char/char.c";
 
 int Conversion_StringToInt(string s)
 {
     int index = 0;
 	int factor = 1;
 	int num = 0;
-	int len = String_Length(s);
+	int len = s.length;
 
 	while (index < len && Char_IsSpace(s[index]))
 		index++;

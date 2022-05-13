@@ -1,36 +1,67 @@
-inherits "/secure/object.c";
-inherits "/std/thing/movement.c";
-inherits "/std/thing/descriptions.c";
-inherits "/std/thing/actions.c";
-inherits "/std/thing/light.c";
-
+#include "/lib/object.c"
+#include "/lib/list/list.c"
 
 /*
- *    M i s c e l l a n e o u s
+ *     L o c a t i o n   S e c t i o n
  */
 
-void write(...) {}
-void printf(...) { fprintf(this, ...); }
+use $get_parent;
+use $get_sibling;
+use $get_children;
+use $move_to;
 
-bool query_is_container() { return false; }
-bool query_is_heavy() { return false; }
+object get_parent() { return $get_parent(this); }
+object get_sibling() { return $get_sibling(this); }
+object get_children() { return $get_children(this); }
 
-void create()
+void move_to(object target)
 {
-    "/secure/object.c"::create();
-    "/std/thing/movement.c"::create();
-    "/std/thing/descriptions.c"::create();
-    "/std/thing/actions.c"::create();
-    "/std/thing/light.c"::create();
+    $move_to(target);
 }
 
+/*
+ *     N a m e   S e c t i o n
+ */
+
+private string short_description;
+private string long_description;
+private string* identifiers;
+
+string get_short() { return this.short_description; }
+void set_short(string new_short) { this.short_description = new_short; }
+
+string get_long() { return this.long_description; }
+void set_long(string new_long) { this.long_description = new_long; }
+
+void add_id(string id) { List_Append(this.identifiers, id); }
+
+/*
+ *     C o m m a n d   S e c t i o n
+ */
+
+bool obey(string command)
+{
+    return false;
+}
+
+/*
+ *     E v e n t   S e c t i o n
+ */
+
+void receive(string event)
+{
+}
+
+/*
+ *     C o n s t r u c t o r   S e c t i o n
+ */
 void reset()
 {
-    create();
 }
 
 void _init()
 {
-    "/secure/object.c"::_init();
-    create();
+    "/lib/object.c"::_init();
+    set_short("a thing");
+    this.identifiers = {};
 }

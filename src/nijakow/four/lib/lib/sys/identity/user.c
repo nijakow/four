@@ -3,6 +3,12 @@ use $getshell;
 use $chsh;
 use $chpass;
 use $isactive;
+use $getuid;
+
+string User_Whoami()
+{
+    return $getuid();
+}
 
 bool User_Exists(string name)
 {
@@ -12,6 +18,11 @@ bool User_Exists(string name)
 bool User_IsRoot(string name)
 {
     return name == "root";
+}
+
+bool User_AmIRoot()
+{
+    return User_IsRoot(User_Whoami());
 }
 
 string User_GetShell(string name)

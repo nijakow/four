@@ -1,5 +1,5 @@
-// TODO: Import String_Length(...)
-// TODO: Import Char_IsSpace(...)
+inherits "/lib/char/char.c";
+inherits "/lib/string/string.c";
 
 use $substr;
 
@@ -23,4 +23,14 @@ string String_Trim(string s)
     while ((start <= end) && Char_IsSpace(s[end]))
         end = end - 1;
     return String_IndexBasedSubstring(s, start, end + 1);
+}
+
+string String_TrimNewline(string s)
+{
+    int len = String_Length(s);
+
+    if (len > 0 && s[len - 1] == '\n')
+        return String_IndexBasedSubstring(s, 0, len - 1);
+    else
+        return s;
 }

@@ -1,14 +1,17 @@
-inherits "/std/app.c";
+#include "/lib/app.c"
+#include "/lib/list/list.c"
+#include "/lib/sys/fs/io.c"
+#include "/lib/sys/fs/paths.c"
 
-void start()
+void main(string* argv)
 {
-    if (length(argv) <= 1)
-        printf("Argument error!\n");
-    else {
-        for (int i = 1; i < length(argv); i++) {
-           if (!mkdir(resolve(pwd(), argv[i])))
-                printf("%s: error.\n", argv[i]);
-        }
+    string path;
+
+    for (int i = 1; i < argv.length; i++)
+    {
+        path = FileSystem_ResolveHere(argv[i]);
+        if (!FileSystem_Mkdir(path))
+            printf("%s: error while creating directory!\n", argv[i]);
     }
-    exit();
+    exit(0);
 }

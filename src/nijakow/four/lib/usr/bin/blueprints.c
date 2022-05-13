@@ -1,14 +1,12 @@
-inherits "/std/app.c";
+#include "/lib/app.c"
 
 use $blueprints;
 
-void start()
+void main(string* argv)
 {
-    if (length(argv) != 1)
-        printf("Argument error!\n");
-    else {
-        foreach (string s : $blueprints())
-            printf("%s\n", s);
+    for (string s : $blueprints())
+    {
+        printf("%s\n", s);
     }
-    exit();
+    exit(0);
 }

@@ -1,20 +1,22 @@
-inherits "/std/app.c";
+#include "/lib/app.c"
+#include "/lib/sys/fs/permissions.c"
+#include "/lib/sys/fs/paths.c"
 
-void start()
+private bool process(string path, string new_owner)
 {
-    if (length(argv) <= 1)
+    return FileSystem_SetFileGroup(FileSystem_ResolveHere(path), new_owner);
+}
+
+void main(string* argv)
+{
+    if (argv.length <= 1)
         printf("Argument error!\n");
     else {
-        string gid = findgroup(argv[1]);
-        if (gid == nil)
-            printf("Group %s not found!\n", argv[1]);
-        else {
-            for (int i = 2; i < length(argv); i++)
-            {
-                if (!chgrp(resolve(pwd(), argv[i]), gid))
-                    printf("%s: Can't change group!\n", argv[i]);
-            }
+        for (int i = 2; i < argv.length; i++)
+        {
+            if (!process(argv[i], argv[1]))
+                printf("%s: error!\n", argv[i]);
         }
     }
-    exit();
+    exit(0);
 }

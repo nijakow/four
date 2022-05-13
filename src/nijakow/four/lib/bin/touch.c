@@ -1,19 +1,17 @@
-inherits "/std/app.c";
+#include "/lib/app.c"
+#include "/lib/list/list.c"
+#include "/lib/sys/fs/io.c"
+#include "/lib/sys/fs/paths.c"
 
-void start()
+void main(string* argv)
 {
-    if (length(argv) <= 1)
-        printf("Argument error!\n");
-    else {
-        for (int x = 1; x < length(argv); x++)
-        {
-            string path = resolve(pwd(), argv[x]);
-            if (path != nil)
-            {
-                if (!touch(path))
-                    printf("Could not create file!\n");
-            }
-        }
+    string path;
+
+    for (int i = 1; i < List_Length(argv); i++)
+    {
+        path = FileSystem_ResolveHere(argv[i]);
+        if (!FileSystem_CreateFile(path))
+            printf("%s: error while creating file!\n", argv[i]);
     }
-    exit();
+    exit(0);
 }

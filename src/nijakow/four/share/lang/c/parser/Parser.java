@@ -3,6 +3,8 @@ package nijakow.four.share.lang.c.parser;
 import java.util.ArrayList;
 import java.util.List;
 
+import nijakow.four.server.runtime.objects.standard.FString;
+import nijakow.four.server.runtime.types.ObjectType;
 import nijakow.four.share.lang.c.SlotVisibility;
 import nijakow.four.share.lang.c.ast.*;
 import nijakow.four.server.runtime.objects.standard.FInteger;
@@ -45,7 +47,12 @@ public class Parser {
 		} else if (check(TokenType.STRING)) {
 			return Type.getString();
 		} else if (check(TokenType.OBJECT)) {
-			return Type.getObject();
+			if (check(TokenType.LPAREN)) {
+				Type t = Type.getObject(((FString) nextToken().getPayload()).asString());	// TODO: Better checks here :)
+				expect(TokenType.RPAREN);
+				return t;
+			} else
+				return Type.getObject();
 		} else if (check(TokenType.FUNC)) {
 			return Type.getFunc();
 		} else if (check(TokenType.LIST)) {
@@ -294,6 +301,13 @@ public class Parser {
 			return null;
 		}
 	}
+
+	private ASTInstruction parseForEachBody(StreamPosition pos, Type type, Key name) throws ParseException {
+		ASTExpression init = parseExpression();
+		expect(TokenType.RPAREN);
+		ASTInstruction body = parseInstruction();
+		return new ASTForeach(pos, type, name, init, body);
+	}
 	
 	private ASTInstruction parseInstruction() throws ParseException {
 		ASTVarDecl decl = parseVarDecl();
@@ -321,16 +335,22 @@ public class Parser {
 		} else if (check(TokenType.FOR)) {
 			StreamPosition pos = p();
 			expect(TokenType.LPAREN);
-			ASTInstruction init = parseVarDecl();
-			if (init == null) {
-				init = parseExpression();
-				expect(TokenType.SEMICOLON);
+			Pair<Type, Key> vardecl = parseVarAndType();
+			ASTInstruction init = null;
+			if (vardecl != null) {
+				if (check(TokenType.COLON))
+					return parseForEachBody(pos, vardecl.getFirst(), vardecl.getSecond());
+				else
+					init = new ASTVarDecl(pos, vardecl.getFirst(), vardecl.getSecond(), (check(TokenType.ASSIGNMENT) ? parseExpression() : null));
 			}
+			if (init == null)
+				init = parseExpression();
+			expect(TokenType.SEMICOLON);
 			ASTExpression condition = parseExpression();
 			expect(TokenType.SEMICOLON);
 			ASTExpression update = parseExpression();
 			expect(TokenType.RPAREN);
-			return new ASTFor(p(), init, condition, update, parseInstruction());
+			return new ASTFor(pos, init, condition, update, parseInstruction());
 		} else if (check(TokenType.FOREACH)) {
 			StreamPosition pos = p();
 			expect(TokenType.LPAREN);
@@ -338,10 +358,7 @@ public class Parser {
 			if (vt == null || vt.getFirst() == null || vt.getSecond() == null)
 				error("Expected a variable and a type!");
 			expect(TokenType.COLON);
-			ASTExpression init = parseExpression();
-			expect(TokenType.RPAREN);
-			ASTInstruction body = parseInstruction();
-			return new ASTForeach(pos, vt.getFirst(), vt.getSecond(), init, body);
+			return parseForEachBody(pos, vt.getFirst(), vt.getSecond());
 		} else if (check(TokenType.BREAK)) {
 			StreamPosition pos = p();
 			expect(TokenType.SEMICOLON);

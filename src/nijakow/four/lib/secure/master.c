@@ -1,22 +1,31 @@
-inherits "/secure/object.c";
+#include "/lib/object.c"
+#include "/lib/io/log.c"
 
 use $on_connect;
 use $on_error;
+use $statics;
+
+private void logout_func(...)
+{
+    $statics()["terminal"].printf("Goodbye!\n");
+    $statics()["terminal"].close();
+}
 
 void receive(any port)
 {
-	object connection = new("/secure/connection.c", port);
-	new("/secure/login.c", connection, nil, nil)->start();
+	object terminal = new("/secure/terminal.c", port);
+	$statics()["terminal"] = terminal;
+	new("/secure/logon.c", this::logout_func)->_start();
 }
 
 void handle_error(string key, string type, string msg)
 {
-    log("Received an error: ", key, " ", type, " ", msg, "\n");
+    System_Log("Received an error!\n");
 }
 
-void create()
+void _init()
 {
-    "/secure/object.c"::create();
+    "/lib/object.c"::_init();
     $on_error(this::handle_error);
     $on_connect(this::receive);
 }

@@ -5,7 +5,7 @@ use $removefromgroup;
 
 bool System_AddUser(string name)
 {
-    return $adduser(name);
+    return $adduser(name) != nil;
 }
 
 bool System_DeleteUser(string name)

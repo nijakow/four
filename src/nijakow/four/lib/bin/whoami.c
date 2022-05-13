@@ -1,7 +1,8 @@
-inherits "/std/app.c";
+#include "/lib/app.c"
+#include "/lib/sys/identity/user.c"
 
-void start()
+void main(string* argv)
 {
-    printf("%s\n", uname(getuid()));
-    exit();
+    printf("%s\n", User_Whoami());
+    exit(0);
 }

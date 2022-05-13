@@ -17,7 +17,7 @@ object the(string id)
     {
         if (!$is_initialized(obj)) {
             $set_initialized(obj);
-            obj->_init();
+            obj->_pre_init();
         }
     }
     return obj;

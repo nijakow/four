@@ -4,6 +4,7 @@ import nijakow.four.server.runtime.exceptions.FourRuntimeException;
 import nijakow.four.server.runtime.objects.FloatingInstance;
 import nijakow.four.server.runtime.objects.Instance;
 import nijakow.four.server.runtime.objects.blue.Blue;
+import nijakow.four.server.runtime.vm.fiber.Fiber;
 import nijakow.four.share.lang.base.CompilationException;
 import nijakow.four.share.lang.c.ast.ASTExpression;
 import nijakow.four.share.lang.c.parser.ParseException;
@@ -92,6 +93,14 @@ public class FString extends FloatingInstance {
 	public Code extractMethod(VM vm, Key key) throws CompilationException, ParseException {
 		Blue blue = getBlue(vm, vm.getFilesystem());
 		return blue.extractMethod(vm, key);
+	}
+
+	@Override
+	public void loadSlot(Fiber fiber, Key key) throws FourRuntimeException {
+		if (key == Key.get("length"))
+			fiber.setAccu(FInteger.get(length()));
+		else
+			super.loadSlot(fiber, key);
 	}
 
 	@Override

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.function.Consumer;
 
 import nijakow.four.server.runtime.vm.code.CodeMeta;
+import nijakow.four.share.lang.base.CompilationException;
 import nijakow.four.share.lang.base.FCompiler;
 import nijakow.four.share.lang.base.Label;
 import nijakow.four.share.lang.c.ast.AST;
@@ -180,24 +181,21 @@ public class ScopedCompiler implements FCompiler {
 	}
 
 	@Override
-	public void compileLoadVariable(Key identifier) {
+	public void compileLoadVariable(Key identifier) throws CompilationException {
 		Pair<Type, Integer> info = findLocalVariable(identifier);
-		if (info == null) {
-			compileLoadThis();
-			compileDot(identifier);
-		} else {
+		if (info == null)
+			throw new CompilationException("Local variable " + identifier + " does not exist!");
+		else {
 			writer.writeLoadLocal(info.getSecond());
 		}
 	}
 
 	@Override
-	public void compileStoreVariable(Key identifier) {
+	public void compileStoreVariable(Key identifier) throws CompilationException {
 		Pair<Type, Integer> info = findLocalVariable(identifier);
-		if (info == null) {
-			compilePush();
-			compileLoadThis();
-			compileDotAssign(identifier);
-		} else {
+		if (info == null)
+			throw new CompilationException("Local variable " + identifier + " does not exist!");
+		else {
 			writer.writeTypeCheck(info.getFirst());
 			writer.writeStoreLocal(info.getSecond());
 		}

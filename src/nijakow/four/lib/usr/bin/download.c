@@ -1,21 +1,21 @@
-inherits "/std/app.c";
+#include "/lib/app.c"
+#include "/lib/sys/fs/paths.c"
+#include "/lib/sys/fs/io.c"
 
-void start()
+private bool try_upload(string filename)
 {
-    if (length(argv) != 2)
-        printf("Argument error!\n");
-    else {
-        string path = resolve(pwd(), argv[1]);
-        string text = connection()->query_last_uploaded_file();
-        if (text == nil)
-            printf("No upload detected!\n");
-        else {
-            if (!(touch(path) && echo_into(path, text))) {
-                printf("Could not write \"%s\"!\n", path);
-            } else {
-                printf("\"%s\" written.\n", path);
-            }
-        }
+    string path = FileSystem_ResolveHere(filename);
+    string text = FileSystem_ReadFile(path);
+    if (text == nil) return false;
+    terminal()->upload(text);
+    return true;
+}
+
+void main(string* argv)
+{
+    for (int i = 1; i < argv.length; i++)
+    {
+        printf("%s: %s\n", argv[i], {"error!", "ok."}[try_upload(argv[i]) ? 1 : 0]);
     }
-    exit();
+    exit(0);
 }

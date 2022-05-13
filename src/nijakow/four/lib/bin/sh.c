@@ -1,119 +1,84 @@
-inherits "/std/app.c";
-inherits "/std/lib/fs/checks.c";
+#include "/lib/app.c"
+#include "/lib/list/list.c"
+#include "/lib/string/split.c"
+#include "/lib/sys/fs/paths.c"
+#include "/lib/sys/fs/stat.c"
+#include "/lib/sys/identity/user.c"
 
-private mapping mapped_pathnames;
-
-
-void arg_error()
+private void execute_command_in_path(string* argv, string path)
 {
-    printf("Argument error!\n");
-}
+    string result;
+    string* paths;
 
-void file_not_found_error()
-{
-    printf("File not found!\n");
-}
-
-void cmd_cd(list argv)
-{
-    if (length(argv) != 2)
-        arg_error();
-    else {
-        string newpwd = resolve(pwd(), argv[1]);
-        if (newpwd != nil && is_dir(newpwd)) {
-            if (!checkexec(newpwd)) {
-                printf("Permission denied!\n");
-            } else {
-                chdir(newpwd);
-            }
-        } else {
-            file_not_found_error();
+    if (argv[0] == "exit") {
+        exit(0);
+        return;
+    } else if (argv[0] == "cd") {
+        if (List_Length(argv) != 2)
+            printf("cd: argument error!\n");
+        else {
+            string path = FileSystem_ResolveHere(argv[1]);
+            if (!FileSystem_IsDirectory(path))
+                printf("%s: not a directory!\n", argv[1]);
+            else
+                FileSystem_SetCurrentDirectory(path);
         }
-    }
-    resume();
-}
-
-void cmd_edit_file__write(any id, string text)
-{
-    string path = mapped_pathnames[id];
-    if (path != nil && text != nil) {
-        connection()->mode_italic();
-        if(!echo_into(path, text)) {
-            connection()->mode_red();
-            printf("Could not write \"%s\"!\n", path);
-        } else {
-            connection()->mode_green();
-            printf("\"%s\" written.\n", path);
-        }
-        connection()->mode_normal();
-    }
-    resume();
-}
-
-void cmd_edit_file(list argv)
-{
-    if (length(argv) <= 1)
-        arg_error();
-    else {
-        for (int i = 1; i < length(argv); i++)
+    } else {
+        paths = String_SplitOnChar(path, ':');
+        if (exec(this::restart_from_binary, FileSystem_ResolveHere(argv[0]), argv))
+            return;
+        foreach (string pth : paths)
         {
-            string path = resolve(pwd(), argv[i]);
-            if (!exists(path) && !touch(path)) {
-                file_not_found_error();
-                continue;
-            }
-            string content = cat(path);
-            if (content == nil) {
-                file_not_found_error();
-            } else {
-                any id = edit(this->cmd_edit_file__write, path, content);
-                mapped_pathnames[id] = path;
-            }
+            if (exec(this::restart_from_binary, pth + "/" + argv[0] + ".c", argv))
+                return;
         }
+        printf("%s: not found!\n", argv[0]);
     }
-    resume();
+    restart();
 }
 
-bool launch_app(list argv)
+private void execute_command(string* argv)
 {
-    return execapp(this->resume, "/bin/" + argv[0] + ".c", argv)
-        || execapp(this->resume, "/sbin/" + argv[0] + ".c", argv)
-        || execapp(this->resume, "/usr/bin/" + argv[0] + ".c", argv)
-        || execapp(this->resume, resolve(pwd(), argv[0]), argv);
+    execute_command_in_path(argv, "/bin:/sbin:/usr/bin");
 }
 
-void receive(string line)
+private void receive(string line)
 {
-    list argv = split(line);
+    string* raw_tokens = String_SplitOnChar(line, ' ');
+    string* cooked_tokens = {};
+    foreach (string t : raw_tokens)
+    {
+        if (t != "")
+            List_Append(cooked_tokens, t);
+    }
+    if (List_Length(cooked_tokens) > 0)
+        execute_command(cooked_tokens);
+    else
+        restart();
+}
 
-    if (length(argv) == 0) resume();
-    else if (argv[0] == "exit")
-        exit();
-    else if (argv[0] == "cd")
-        cmd_cd(argv);
-    else if (argv[0] == "edit")
-        cmd_edit_file(argv);
-    else {
-        if (!launch_app(argv))
-        {
-            printf("%s: not a command!\n", argv[0]);
-            resume();
-        }
+private void restart()
+{
+    if (User_AmIRoot()) {
+        prompt(this::receive, "%s@four:%s# ", User_Whoami(), FileSystem_GetWorkingDirectory());
+    } else {
+        prompt(this::receive, "%s@four:%s$ ", User_Whoami(), FileSystem_GetWorkingDirectory());
     }
 }
 
-void resume()
+private void restart_from_binary(...)
 {
-    connection()->set_fallback(this::resume);
-    string ps1 = pwd();
-    string dollar = isroot() ? "# " : "$ ";
-    if (ps1 != nil) ps1 = ps1 + " " + dollar;
-    else ps1 = dollar;
-    prompt(this::receive, ps1);
+    restart();
 }
 
-void start()
+private void crash_restart()
 {
-    mapped_pathnames = [];
-    resume();
+    printf("<<the application has crashed>>\n");
+    restart();
+}
+
+void main(string* argv)
+{
+    terminal()->set_crash_callback(this::crash_restart);
+    restart();
 }

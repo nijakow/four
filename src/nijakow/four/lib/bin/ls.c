@@ -1,6 +1,11 @@
-inherits "/std/app.c";
+#include "/lib/app.c"
+#include "/lib/list/list.c"
+#include "/lib/sys/fs/io.c"
+#include "/lib/sys/fs/paths.c"
+#include "/lib/sys/fs/permissions.c"
+#include "/lib/sys/fs/stat.c"
 
-string rwxstr(int flags)
+private string rwxstr(int flags)
 {
     string s = "";
     if (flags & 0x04) s = s + "r";
@@ -12,7 +17,7 @@ string rwxstr(int flags)
     return s;
 }
 
-string rwx3str(int flags)
+private string rwx3str(int flags)
 {
     string head = "";
     string tail = "";
@@ -23,29 +28,31 @@ string rwx3str(int flags)
     return head + rwxstr(flags >> 6) + rwxstr(flags >> 3) + rwxstr(flags) + tail;
 }
 
-void do_ls1(string path, bool long_mode)
+private void do_ls1(string path, bool long_mode)
 {
     if (long_mode) {
-        printf("%s %s %s    ", rwx3str(stat(path)), strwid(uname(getown(path)), 8), strwid(gname(getgrp(path)), 8));
+        printf("%s %s %s    ", rwx3str(FileSystem_Stat(path)),
+                               String_Pad(FileSystem_GetFileOwner(path), 12),
+                               String_Pad(FileSystem_GetFileGroup(path), 12));
     }
-    printf("%s\n", basename(path));
+    printf("%s\n", FileSystem_Basename(path));
 }
 
-void do_ls(string dir, string name, bool long_mode, bool dir_mode, bool recursive)
+private void do_ls(string dir, string name, bool long_mode, bool dir_mode, bool recursive)
 {
-    if (!exists(dir)) {
+    if (!FileSystem_Exists(dir)) {
         printf("%s: file not found!\n", name);
         return;
     }
 
-    if (!is_dir(dir)) dir_mode = true;
+    if (!FileSystem_IsDirectory(dir)) dir_mode = true;
 
     if (dir_mode) {
         do_ls1(dir, long_mode);
         return;
     }
 
-    list files = ls(dir);
+    list files = FileSystem_GetFilesIn(dir);
     if (files == nil) {
         printf("%s: permission denied!\n", name);
         return;
@@ -59,7 +66,7 @@ void do_ls(string dir, string name, bool long_mode, bool dir_mode, bool recursiv
         string full;
         foreach (string f : files) {
             full = (dir == "/") ? dir + f : dir + "/" + f;
-            if (is_dir(full)) {
+            if (FileSystem_IsDirectory(full)) {
                 printf("\n%s:\n", full);
                 do_ls(full, name, long_mode, dir_mode, recursive);
             }
@@ -67,14 +74,14 @@ void do_ls(string dir, string name, bool long_mode, bool dir_mode, bool recursiv
     }
 }
 
-void start()
+void main(string* argv)
 {
     int off        = 1;
     bool long_mode = true;
     bool dir_mode  = false;
     bool recursive = false;
 
-    while (off < length(argv))
+    while (off < List_Length(argv))
     {
         if (argv[off] == "-l")
             long_mode = true;
@@ -109,18 +116,18 @@ void start()
         off = off + 1;
     }
 
-    if (length(argv) - off <= 0)
-        do_ls(pwd(), ".", long_mode, dir_mode, recursive);
-    else if (length(argv) >= 2) {
-        for (int i = off; i < length(argv); i++)
+    if (List_Length(argv) - off <= 0)
+        do_ls(FileSystem_GetWorkingDirectory(), ".", long_mode, dir_mode, recursive);
+    else if (List_Length(argv) >= 2) {
+        for (int i = off; i < List_Length(argv); i++)
         {
-            string path = resolve(pwd(), argv[i]);
+            string path = FileSystem_ResolveHere(argv[i]);
             do_ls(path, argv[i], long_mode, dir_mode, recursive);
-            if (i < length(argv) - 1)
+            if (i < List_Length(argv) - 1)
                 printf("\n");
         }
     } else {
         printf("Argument error!\n");
     }
-    exit();
+    exit(0);
 }

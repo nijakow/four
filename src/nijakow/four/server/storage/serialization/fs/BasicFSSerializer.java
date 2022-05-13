@@ -34,6 +34,11 @@ public class BasicFSSerializer implements IFSSerializer {
     }
 
     @Override
+    public void writeName(String name) {
+        stream.println("Name: " + name);
+    }
+
+    @Override
     public void writePath(String path) {
         stream.println("Path: " + path);
     }
@@ -93,13 +98,9 @@ public class BasicFSSerializer implements IFSSerializer {
             pendingFiles.poll().writeOut(this);
     }
 
-    private void serialize(File file) {
-        /*
-         * TODO: Add an extra mode for unessential files? If so, change Directory.writeOutPayload(...)!
-         *                                                                                - nijakow
-         */
-        if (file.isEssential())
-            queue(file);
+    public void serialize(File file) {
+        queue(file);
+        loop();
     }
 
     public void serialize(NVFileSystem fs) {

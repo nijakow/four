@@ -2,8 +2,11 @@ package nijakow.four.server.runtime.objects.misc;
 
 import nijakow.four.server.runtime.exceptions.FourRuntimeException;
 import nijakow.four.server.runtime.objects.FloatingInstance;
+import nijakow.four.server.runtime.objects.collections.FList;
 import nijakow.four.server.runtime.objects.standard.FString;
 import nijakow.four.server.runtime.objects.Instance;
+import nijakow.four.server.runtime.types.ListType;
+import nijakow.four.server.runtime.types.Type;
 import nijakow.four.server.runtime.vm.Callback;
 import nijakow.four.server.net.IConnection;
 
@@ -25,6 +28,19 @@ public class FConnection extends FloatingInstance {
 			}
 		});
 	}
+
+	public void onEscape(Callback cb) {
+		connection.onEscape((strs) -> {
+			try {
+				FList lst = new FList(Type.getString().listType());
+				for (String s : strs)
+					lst.append(new FString(s));
+				cb.invoke(lst);
+			} catch (FourRuntimeException e) {
+				e.printStackTrace();  // TODO: Handle this gracefully
+			}
+		});
+	}
 	
 	public void onDisconnect(Callback cb) {
 		connection.onDisconnect(() -> {
@@ -37,7 +53,11 @@ public class FConnection extends FloatingInstance {
 	}
 	
 	public void send(Instance instance) {
-		connection.writeString(instance.asString());
+		send(instance.asString());
+	}
+
+	public void send(String text) {
+		connection.writeString(text);
 	}
 	
 	public void close() {

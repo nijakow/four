@@ -1,15 +1,17 @@
-inherits "/std/app.c";
+#include "/lib/app.c"
+#include "/lib/conversion/string_to_int.c"
 
-void start()
+use $getmsgs;
+
+void main(string* argv)
 {
-    int amount = -1;
-    if (length(argv) == 2)
-        amount = atoi(argv[1]);
-    if (length(argv) < 1 || length(argv) > 2)
-        printf("Argument error!\n");
-    else {
-        foreach (string s : getmsgs(amount))
-            printf("%s\n", s);
+    int length = -1;
+
+    if (argv.length == 2)
+        length = Conversion_StringToInt(argv[1]);
+    foreach (string line : $getmsgs(length))
+    {
+        printf("%s\n", line);
     }
-    exit();
+    exit(0);
 }

@@ -1,59 +1,46 @@
-inherits "/std/app.c";
+#include "/lib/app.c"
+#include "/lib/sys/fs/stat.c"
+#include "/lib/sys/fs/paths.c"
 
-void start()
+private int parse_arg(string arg)
 {
-    if (length(argv) <= 1)
+    int i;
+    int v;
+
+    v = 0;
+    i = 0;
+    while (i < arg.length)
+    {
+        char c = arg[i];
+        if (c >= '0' && c <= '7')
+            v = (v * 8) + (c - '0');
+        else
+            return -1;
+        i++;
+    }
+    return v;
+}
+
+private bool process(string path, int mod)
+{
+    return FileSystem_Chmod(FileSystem_ResolveHere(path), mod);
+}
+
+void main(string* argv)
+{
+    if (argv.length <= 1)
         printf("Argument error!\n");
     else {
-        bool user  = false;
-        bool group = false;
-        bool other = false;
-        bool read  = false;
-        bool write = false;
-        bool exec  = false;
-        int  mode  = 0;
-        int  mini_bitmask = 0;
-
-        int index = 0;
-
-        string arg = argv[1];
-
-        for (int index = 0; index < strlen(arg); index++)
-        {
-            if (arg[index] == 'u') user = true;
-            else if (arg[index] == 'g') group = true;
-            else if (arg[index] == 'o') other = true;
-            else if (arg[index] == '-') mode = 1;
-            else if (arg[index] == '+') mode = 2;
-            else if (arg[index] == 'r') mini_bitmask = mini_bitmask | 0x04;
-            else if (arg[index] == 'w') mini_bitmask = mini_bitmask | 0x02;
-            else if (arg[index] == 'x') mini_bitmask = mini_bitmask | 0x01;
-            else {
-                printf("Unexpected character in flag string: %c!\n", arg[index]);
-                exit();
-                return;
-            }
-        }
-
-        int bitmask = 0;
-        if (user)  bitmask = bitmask | ((mini_bitmask & 0x07) << 6);
-        if (group) bitmask = bitmask | ((mini_bitmask & 0x07) << 3);
-        if (other) bitmask = bitmask | ((mini_bitmask & 0x07));
-
-        for (int i = 2; i < length(argv); i++)
-        {
-            string file = resolve(pwd(), argv[i]);
-            int flags   = stat(file);
-            if (flags < 0) {
-                connection()->write(argv[i], ": File not found!\n");
-            } else {
-                bool result = false;
-                     if (mode == 1) result = chmod(file, flags & (~bitmask));
-                else if (mode == 2) result = chmod(file, flags | bitmask);
-                if (!result)
-                    connection()->write(argv[i], ": Can't set permissions!\n");
+        int v = parse_arg(argv[1]);
+        if (v < 0)
+            printf("Flag error!\n");
+        else {
+            for (int i = 2; i < argv.length; i++)
+            {
+                if (!process(argv[i], v))
+                    printf("%s: error!\n", argv[i]);
             }
         }
     }
-    exit();
+    exit(0);
 }

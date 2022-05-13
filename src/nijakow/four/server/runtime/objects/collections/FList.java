@@ -1,6 +1,7 @@
 package nijakow.four.server.runtime.objects.collections;
 
 import nijakow.four.server.process.filedescriptor.IByteArray;
+import nijakow.four.server.runtime.Key;
 import nijakow.four.server.runtime.exceptions.FourRuntimeException;
 import nijakow.four.server.runtime.objects.FloatingInstance;
 import nijakow.four.server.runtime.objects.Instance;
@@ -8,6 +9,7 @@ import nijakow.four.server.runtime.objects.standard.FInteger;
 import nijakow.four.server.runtime.types.ListType;
 import nijakow.four.server.runtime.types.Type;
 import nijakow.four.server.runtime.exceptions.CastException;
+import nijakow.four.server.runtime.vm.fiber.Fiber;
 import nijakow.four.server.storage.serialization.base.ISerializer;
 
 import java.util.ArrayList;
@@ -110,4 +112,12 @@ public class FList extends FloatingInstance implements IByteArray {
     public int getLength() {
         return getSize();
     }
+
+	@Override
+	public void loadSlot(Fiber fiber, Key key) throws FourRuntimeException {
+		if (key == Key.get("length"))
+			fiber.setAccu(FInteger.get(length()));
+		else
+			super.loadSlot(fiber, key);
+	}
 }

@@ -1,15 +1,19 @@
-inherits "/std/app.c";
+#include "/lib/app.c"
+#include "/lib/sys/fs/paths.c"
+#include "/lib/sys/fs/io.c"
 
-void start()
+private bool move(string from, string to)
 {
-    if (length(argv) != 3)
-        printf("Argument error!\n");
+    return FileSystem_Move(from, to);
+}
+
+void main(string* argv)
+{
+    if (argv.length != 3)
+        printf("%s: argument error!\n", argv[0]);
     else {
-        string from = resolve(pwd(), argv[1]);
-        string to   = resolve(pwd(), argv[2]);
-        if (from == nil || to == nil || !mv(from, to)) {
-            printf("File not found!\n");
-        }
+        if (!move(FileSystem_ResolveHere(argv[1]), FileSystem_ResolveHere(argv[2])))
+            printf("%s: error!\n", argv[1]);
     }
-    exit();
+    exit(0);
 }
