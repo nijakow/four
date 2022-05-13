@@ -125,6 +125,8 @@ public class Parser {
 	private ASTExpression parseSimpleExpression() throws ParseException {
 		if (check(TokenType.THIS)) {
 			return new ASTThis(p());
+		} else if (check(TokenType.THISDOT)) {
+			return new ASTDot(p(), new ASTThis(p()), expectKey());
 		} else if (check(TokenType.NIL)) {
 			return new ASTConstant(p(), Instance.getNil());
 		} else if (check(TokenType.TRUE)) {
