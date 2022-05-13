@@ -46,7 +46,7 @@ void open_editor(func callback, string title, string text)
 
 void upload(string text)
 {
-    $write_special(this.port, "file/upload:", text);
+    $write_special(this.port, "file/upload", text);
 }
 
 void download(func callback)
