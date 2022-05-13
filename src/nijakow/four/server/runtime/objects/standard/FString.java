@@ -27,9 +27,23 @@ public class FString extends FloatingInstance {
 
 	@Override
 	public String toString() {
-		if (this.value.length() >= 24)
-			return "\"" + this.value.substring(0, 24) + "\" [...]";
-		return "\"" + this.value + "\"";
+		boolean endReached = true;
+		StringBuilder sb = new StringBuilder("\"");
+		for (int x = 0; x < this.value.length(); x++) {
+			if (x >= 24) {
+				sb.append("\" [...]");
+				endReached = false;
+				break;
+			}
+			char c = this.value.charAt(x);
+			if (c >= 32 && c < 127)
+				sb.append(c);
+			else
+				sb.append("\\x" + String.format("%02x", (int) c));
+		}
+		if (endReached)
+			sb.append('\"');
+		return sb.toString();
 	}
 
 	@Override
