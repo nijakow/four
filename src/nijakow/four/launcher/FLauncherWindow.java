@@ -41,13 +41,7 @@ public class FLauncherWindow extends JFrame implements ActionListener {
         getContentPane().add(content);
         pack();
         setLocationRelativeTo(null);
-    }
-
-    @Override
-    public void dispose() {
-        super.dispose();
-        // TODO if something is running, only close the window
-        System.exit(0);
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     }
 
     private void launchServer() {
