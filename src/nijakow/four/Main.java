@@ -1,5 +1,6 @@
 package nijakow.four;
 
+import nijakow.four.launcher.FLauncherWindow;
 import nijakow.four.server.users.IdentityDatabase;
 import nijakow.four.share.lang.base.CompilationException;
 import nijakow.four.share.lang.c.parser.ParseException;
@@ -125,8 +126,9 @@ public class Main {
 		int[] ps = new int[ports.size()];
 		for (int i = 0; i < ps.length; i++)
 			ps[i] = ports.get(i);
-		if (!server && clients == 0)
-			clients = 1;
+		if (!server && clients == 0) {
+			FLauncherWindow.showWindow(ps, guest, hostname, storage, db);
+		}
 		while (clients --> 0)
 			ClientWindow.openWindow(hostname, ps);
 		if (server) {
