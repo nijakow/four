@@ -2,6 +2,7 @@
 #include "/lib/char/char.c"
 
 private string pattern;
+private func   callback;
 
 private bool match_loop(string pattern, string value, int a, int b)
 {
@@ -13,6 +14,9 @@ private bool match_loop(string pattern, string value, int a, int b)
         if (Char_IsSpace(this.pattern[a])) {
             if (Char_IsSpace(value[b])) b = b + 1;
             else a = a + 1;
+        }
+        else if (Char_IsSpace(value[b])) {
+            b = b + 1;
         }
         else if (this.pattern[a] == '%') {
             if (match_loop(pattern, value, a + 1, b))
@@ -37,16 +41,14 @@ bool match(string value)
     return match_loop(this.pattern, value, 0, 0);
 }
 
-void set_pattern(string pattern)
+void execute()
 {
-    this.pattern = pattern;
+    if (this.callback != nil)
+        call(this.callback);
 }
 
-void execute(mapping params)
+void _init(string pattern, func cb)
 {
-}
-
-void _init()
-{
-    this.pattern = nil;
+    this.pattern  = pattern;
+    this.callback = cb;
 }

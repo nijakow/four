@@ -5,8 +5,9 @@ private object player;
 private void describe()
 {
     object location = this.player->get_parent();
-    if (location != nil)
-    {
+    if (location == nil)
+        printf("You are floating in the void.\n");
+    else {
         printf("%s\n", location->get_short());
         printf("%s\n", location->get_desc());
         // TODO: List everything that's here
@@ -20,9 +21,6 @@ private void receive(string line)
         return;
     } else if (line == "") {
         restart();
-    } else if (line == "look") {
-        describe();
-        restart();
     } else {
         if (!this.player->obey(line))
             printf("???\n");
@@ -35,8 +33,15 @@ private void restart()
     prompt(this::receive, "> ");
 }
 
+private void cmd_look()
+{
+    describe();
+}
+
 void main(string* argv)
 {
     this.player = new("/std/thing.c");  // TODO: Find player
+    this.player.add_command("look", this::cmd_look);
+    this.player.add_command("examine", this::cmd_look);
     restart();
 }

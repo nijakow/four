@@ -43,8 +43,22 @@ void add_id(string id) { List_Append(this.identifiers, id); }
  *     C o m m a n d   S e c t i o n
  */
 
+private object* commands;
+
+void add_command(string pattern, func callback)
+{
+    List_Append(this.commands, new("/std/command.c", pattern, callback));
+}
+
 bool obey(string command)
 {
+    for (object o : this.commands)
+    {
+        if (o->match(command)) {
+            o->execute();
+            return true;
+        }
+    }
     return false;
 }
 
@@ -65,6 +79,7 @@ void reset()
     set_long("A thing.");
     set_desc("This is a thing. It has no description.");
     this.identifiers = {};
+    this.commands = {};
 }
 
 void _init()
