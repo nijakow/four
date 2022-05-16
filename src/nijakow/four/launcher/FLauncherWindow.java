@@ -18,15 +18,17 @@ public class FLauncherWindow extends JFrame implements ActionListener {
     private boolean guestEnable;
     private String hostname;
     private String storagePath;
-    private IdentityDatabase db;
+    private final IdentityDatabase db;
+    private final NVFileSystem fs;
 
-    public FLauncherWindow(int[] ports, boolean guestEnable, String hostname, String storage, IdentityDatabase db) {
+    public FLauncherWindow(int[] ports, boolean guestEnable, String hostname, String storage, IdentityDatabase db, NVFileSystem fs) {
         super("Four: Launcher");
         this.ports = ports;
         this.guestEnable = guestEnable;
         this.hostname = hostname;
         this.storagePath = storage;
         this.db = db;
+        this.fs = fs;
         JPanel content = new JPanel(new BorderLayout());
         JPanel launchButtons = new JPanel(new GridLayout(1, 2));
         JButton launchServer = new JButton("Launch Server...");
@@ -47,7 +49,7 @@ public class FLauncherWindow extends JFrame implements ActionListener {
     private void launchServer() {
         // TODO Better threading model!!!
         try {
-            new Thread(new Four(db, new NVFileSystem(db), storagePath, hostname == null ? "localhost" : hostname, ports)).start();
+            new Thread(new Four(db, fs, storagePath, hostname == null ? "localhost" : hostname, ports)).start();
         } catch (IOException e) {
             JOptionPane.showMessageDialog(this, "Could not open the library!",
                     "Four: Server", JOptionPane.ERROR_MESSAGE);
@@ -66,7 +68,7 @@ public class FLauncherWindow extends JFrame implements ActionListener {
         }
     }
 
-    public static void showWindow(int[] ports, boolean guestEnable, String hostname, String storage, IdentityDatabase db) {
-        EventQueue.invokeLater(() -> new FLauncherWindow(ports, guestEnable, hostname, storage, db).setVisible(true));
+    public static void showWindow(int[] ports, boolean guestEnable, String hostname, String storage, IdentityDatabase db, NVFileSystem fs) {
+        EventQueue.invokeLater(() -> new FLauncherWindow(ports, guestEnable, hostname, storage, db, fs).setVisible(true));
     }
 }

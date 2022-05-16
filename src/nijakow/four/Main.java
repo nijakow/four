@@ -127,7 +127,7 @@ public class Main {
 		for (int i = 0; i < ps.length; i++)
 			ps[i] = ports.get(i);
 		if (!server && clients == 0) {
-			FLauncherWindow.showWindow(ps, guest, hostname, storage, db);
+			FLauncherWindow.showWindow(ps, guest, hostname, storage, db, fileSystem);
 		}
 		while (clients --> 0)
 			ClientWindow.openWindow(hostname, ps);
