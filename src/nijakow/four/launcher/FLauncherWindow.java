@@ -3,6 +3,7 @@ package nijakow.four.launcher;
 import nijakow.four.client.ClientWindow;
 import nijakow.four.server.Four;
 import nijakow.four.server.nvfs.NVFileSystem;
+import nijakow.four.server.runtime.exceptions.FourRuntimeException;
 import nijakow.four.server.users.IdentityDatabase;
 import nijakow.four.share.lang.base.CompilationException;
 import nijakow.four.share.lang.c.parser.ParseException;
@@ -69,12 +70,20 @@ public class FLauncherWindow extends JFrame implements ActionListener {
 
     private void launchServer() {
         // TODO Better threading model!!!
-        try {
-            new Thread(new Four(db, fs, storagePath, hostname == null ? "localhost" : hostname, ports)).start();
-        } catch (IOException e) {
-            JOptionPane.showMessageDialog(this, "Could not open the library!",
-                    "Four: Server", JOptionPane.ERROR_MESSAGE);
-        }
+        new Thread(() -> {
+            try (Four f = new Four(db, fs, storagePath, hostname == null ? "localhost" : hostname, ports)) {
+                f.loop();
+            } catch (IOException e) {
+                JOptionPane.showMessageDialog(this, "Could not open the library!",
+                        "Four: Server", JOptionPane.ERROR_MESSAGE);
+            } catch (FourRuntimeException e) {
+                JOptionPane.showMessageDialog(this, "Could not open master.c!",
+                        "Four: Server", JOptionPane.ERROR_MESSAGE);
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, "Could not kill server!",
+                        "Four: Server", JOptionPane.ERROR_MESSAGE);
+            }
+        }).start();
     }
 
     private void launchClient() {
@@ -93,7 +102,7 @@ public class FLauncherWindow extends JFrame implements ActionListener {
                 libDir = dir;
             } catch (CompilationException | ParseException e) {
                 e.printStackTrace();
-                JOptionPane.showMessageDialog(this, "Could not open library1!",
+                JOptionPane.showMessageDialog(this, "Could not open library!",
                         "Four: Launcher", JOptionPane.ERROR_MESSAGE);
             }
         }
