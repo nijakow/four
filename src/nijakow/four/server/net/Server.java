@@ -15,7 +15,7 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.function.Consumer;
 
-public class Server {
+public class Server implements AutoCloseable {
 	private final Logger logger;
 	private final Selector selector;
 	private Consumer<IConnection> onConnectFunc = null;
@@ -86,5 +86,19 @@ public class Server {
 			}
 			iter.remove();
 		}
+	}
+
+	@Override
+	public void close() throws Exception {
+		final Set<SelectionKey> keys = selector.selectedKeys();
+		for (SelectionKey key : keys) {
+			key.cancel();
+			key.channel().close();
+			if (!key.isAcceptable()) {
+				((RawConnection) key.attachment()).blockAllIO();
+				((RawConnection) key.attachment()).close();
+			}
+		}
+		selector.close();
 	}
 }

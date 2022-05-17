@@ -14,12 +14,9 @@ import nijakow.four.server.storage.serialization.fs.deserializer.BasicFSDeserial
 import nijakow.four.server.users.IdentityDatabase;
 import nijakow.four.server.runtime.vm.VM;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 
-public class Four {
+public class Four implements AutoCloseable {
 	private final Logger logger;
 	private final IdentityDatabase db;
 	private final NVFileSystem fs;
@@ -119,5 +116,10 @@ public class Four {
 				}
 			}
 		}
+	}
+
+	@Override
+	public void close() throws Exception {
+		server.close();
 	}
 }
