@@ -4,17 +4,23 @@ import nijakow.four.client.ClientWindow;
 import nijakow.four.server.Four;
 import nijakow.four.server.nvfs.NVFileSystem;
 import nijakow.four.server.users.IdentityDatabase;
+import nijakow.four.share.lang.base.CompilationException;
+import nijakow.four.share.lang.c.parser.ParseException;
 
 import javax.swing.*;
+import javax.swing.border.EtchedBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.io.IOException;
 
 public class FLauncherWindow extends JFrame implements ActionListener {
     private static final String SERVER = "server";
     private static final String CLIENT = "client";
+    private static final String CHOOSE = "choose";
     private int[] ports;
+    private File libDir;
     private boolean guestEnable;
     private String hostname;
     private String storagePath;
@@ -29,7 +35,22 @@ public class FLauncherWindow extends JFrame implements ActionListener {
         this.storagePath = storage;
         this.db = db;
         this.fs = fs;
+        libDir = null;
         JPanel content = new JPanel(new BorderLayout());
+        JPanel path = new JPanel(new GridLayout(2, 1));
+        JPanel entering = new JPanel();
+        entering.setLayout(new BoxLayout(entering, BoxLayout.X_AXIS));
+        JLabel pathDesc = new JLabel("Enter the path to the four library:");
+        JButton pathSelect = new JButton("Select...");
+        pathSelect.setActionCommand(CHOOSE);
+        pathSelect.addActionListener(this);
+        JTextField pathEnter = new JTextField();
+        entering.add(pathEnter);
+        entering.add(pathSelect);
+        path.add(pathDesc);
+        path.add(entering);
+        path.setBorder(new EtchedBorder());
+        content.add(path, BorderLayout.CENTER);
         JPanel launchButtons = new JPanel(new GridLayout(1, 2));
         JButton launchServer = new JButton("Launch Server...");
         launchServer.setActionCommand(SERVER);
@@ -60,11 +81,30 @@ public class FLauncherWindow extends JFrame implements ActionListener {
         ClientWindow.openWindow(hostname, ports);
     }
 
+    private void chooseLib() {
+        JFileChooser chooser = new JFileChooser();
+        chooser.setDragEnabled(true);
+        chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        chooser.setMultiSelectionEnabled(false);
+        if (chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+            File dir = chooser.getSelectedFile();
+            try {
+                fs.load(dir, db);
+                libDir = dir;
+            } catch (CompilationException | ParseException e) {
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(this, "Could not open library1!",
+                        "Four: Launcher", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
         switch (e.getActionCommand()) {
             case SERVER: launchServer(); break;
             case CLIENT: launchClient(); break;
+            case CHOOSE: chooseLib(); break;
         }
     }
 
