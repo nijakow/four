@@ -12,7 +12,7 @@ import java.util.ArrayList;
 
 public class Main {
 
-	public static void main(String[] args) throws IOException, CompilationException, ParseException {
+	public static void main(String[] args) throws Exception {
 		IdentityDatabase db = new IdentityDatabase();
 		NVFileSystem fileSystem = new NVFileSystem(db);
 		String storage = "/tmp/four";
@@ -134,7 +134,7 @@ public class Main {
 			if (guest) {
 				db.newUser("guest").setPassword("42");
 			}
-			four.run();
+			four.loop();
 		}
 	}
 }
