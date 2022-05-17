@@ -92,13 +92,12 @@ public class Server implements AutoCloseable {
 	public void close() throws Exception {
 		final Set<SelectionKey> keys = selector.keys();
 		for (SelectionKey key : keys) {
-			key.cancel();
-			(key.channel()).close();
 			if (!key.isAcceptable()) {
 				((RawConnection) key.attachment()).blockAllIO();
 				((RawConnection) key.attachment()).close();
 			}
 			key.channel().close();
+			key.cancel();
 		}
 		selector.close();
 	}
