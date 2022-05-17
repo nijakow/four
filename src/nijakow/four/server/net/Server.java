@@ -93,8 +93,10 @@ public class Server implements AutoCloseable {
 		final Set<SelectionKey> keys = selector.keys();
 		for (SelectionKey key : keys) {
 			if (!key.isAcceptable()) {
-				((RawConnection) key.attachment()).blockAllIO();
-				((RawConnection) key.attachment()).close();
+				if (key.attachment() != null) {
+					((RawConnection) key.attachment()).blockAllIO();
+					((RawConnection) key.attachment()).close();
+				}
 			}
 			key.channel().close();
 			key.cancel();
