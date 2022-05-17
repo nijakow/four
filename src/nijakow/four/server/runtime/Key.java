@@ -12,6 +12,7 @@ import nijakow.four.server.runtime.exceptions.FourRuntimeException;
 import nijakow.four.server.runtime.objects.Instance;
 import nijakow.four.server.runtime.objects.blue.Blue;
 import nijakow.four.server.runtime.objects.blue.Blueprint;
+import nijakow.four.server.runtime.objects.blue.Method;
 import nijakow.four.server.runtime.objects.collections.FList;
 import nijakow.four.server.runtime.objects.misc.FConnection;
 import nijakow.four.server.runtime.objects.standard.FClosure;
@@ -30,10 +31,7 @@ import nijakow.four.share.lang.base.CompilationException;
 import nijakow.four.share.lang.c.parser.ParseException;
 import nijakow.four.share.util.Pair;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -874,11 +872,28 @@ public class Key {
 			public void run(Fiber fiber, Instance self, Instance[] args) throws CastException {
 				final Blueprint blueprint = Blueprint.findBlueprint(args[0].asFString().asString());
 				final Key sym = Key.get(args[1].asFString().asString());
-				FList lst = new FList();
 				String result = null;
 				if (blueprint != null)
 					result = blueprint.getSymInfo(sym);
 				fiber.setAccu(result == null ? Instance.getNil() : new FString(result));
+			}
+		};
+		get("$disassemble").code = new BuiltinCode() {
+
+			@Override
+			public void run(Fiber fiber, Instance self, Instance[] args) throws CastException {
+				final Blueprint blueprint = Blueprint.findBlueprint(args[0].asFString().asString());
+				final Key sym = Key.get(args[1].asFString().asString());
+				fiber.setAccu(Instance.getNil());
+				if (blueprint != null) {
+					Method method = blueprint.getMethod(sym);
+					if (method != null) {
+						ByteArrayOutputStream bao = new ByteArrayOutputStream();
+						PrintStream printStream = new PrintStream(bao);
+						method.getCode().asByteCode().disassemble(printStream);
+						fiber.setAccu(new FString(new String(bao.toByteArray(), StandardCharsets.UTF_8)));
+					}
+				}
 			}
 		};
 		get("$syscall_open").code = new BuiltinCode() {

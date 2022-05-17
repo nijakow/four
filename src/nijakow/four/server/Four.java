@@ -19,7 +19,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-public class Four implements Runnable {
+public class Four {
 	private final Logger logger;
 	private final IdentityDatabase db;
 	private final NVFileSystem fs;
@@ -94,14 +94,8 @@ public class Four implements Runnable {
 		return loadSnapshot(getStorageManager().getLatestSnapshot());
 	}
 	
-	public void run() {
-		try {
-			start();
-		} catch (FourRuntimeException e) {
-			logger.printException(LogLevel.CRITICAL, e);
-			logger.println(LogLevel.CRITICAL, "Fatal error! Stopping...");
-			return;
-		}
+	public void loop() throws FourRuntimeException {
+		start();
 
 		while (true) {
 			try {

@@ -14,7 +14,13 @@ public class StringCharStreamPosition implements StreamPosition {
 		this.text = text;
 		this.index = index;
 	}
-	
+
+	@Override
+	public String toString() {
+		final Pair<Integer, Integer> pos = this.getPos();
+		return this.fileName + " " + pos.getFirst() + ":" + pos.getSecond();
+	}
+
 	@Override
 	public String getText() {
 		return text;

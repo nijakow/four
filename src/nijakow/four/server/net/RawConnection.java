@@ -56,7 +56,7 @@ public class RawConnection implements IConnection {
 				for (int i = 0; i < elements.length; i++)
 					elements[i] = currentEscaped.get(i);
 				final String escaped = new String(elements, StandardCharsets.UTF_8);
-				String[] split = escaped.split(":");
+				String[] split = escaped.split(":", -1);
 				for (int index = 1; index < split.length; index++)
 					split[index] = new String(Base64.getDecoder().decode(split[index]), StandardCharsets.UTF_8);
 				currentEscaped.clear();

@@ -171,6 +171,7 @@ public class Tokenizer {
 				throw new ParseException(pos, "Expected \"\'\"!");
 			return new Token(this, pos, getPosition(), TokenType.CONSTANT, FInteger.get(c));
 		}
+		else if (peeks("this.")) return new Token(this, pos, getPosition(), TokenType.THISDOT);
 		
 		
 		StringBuilder builder = new StringBuilder();

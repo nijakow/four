@@ -24,6 +24,7 @@ public class InstructionWriter {
 	private int maxLocal = 0;
 	private int paramCount = 0;
 	private boolean hasVarargs = false;
+	private int lastTellPos = -1;
 	
 	public InstructionWriter(CodeMeta meta) {
 		this.meta = meta;
@@ -109,8 +110,11 @@ public class InstructionWriter {
 	}
 
 	public void writeTell(StreamPosition pos) {
+		if (lastTellPos == out.size())
+			return;	// Don't update the tell
 		u8(Bytecodes.BYTECODE_TELL);
 		tell(pos);
+		lastTellPos = out.size();
 	}
 
 	public void writeLoadThis() {
