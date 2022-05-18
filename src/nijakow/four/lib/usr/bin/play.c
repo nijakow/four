@@ -33,7 +33,7 @@ private void restart()
     prompt(this::receive, "> ");
 }
 
-private void cmd_look()
+private void cmd_look(string* args)
 {
     describe();
 }

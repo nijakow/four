@@ -17,11 +17,7 @@ bool obey(string command)
     {
         string* lst = o->match(command);
         if (lst != nil) {
-            for (string s : lst)
-            {
-                $log("Command: ", s, "\n");
-            }
-            o->execute();
+            o->execute(lst);
             return true;
         }
     }

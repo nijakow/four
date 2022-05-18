@@ -46,13 +46,21 @@ string* match(string value)
 {
     if (this.pattern == nil)
         return nil;
-    return matcher(value, 0, 0, "");
+    string* result = matcher(value, 0, 0, "");
+    if (result != nil)
+    {
+        string* rev = {};
+        for (int i = result->length - 1; i >= 0; i--)
+            List_Append(rev, result[i]);
+        result = rev;
+    }
+    return result;
 }
 
-void execute()
+void execute(string* args)
 {
     if (this.callback != nil)
-        call(this.callback);
+        call(this.callback, args);
 }
 
 void _init(string pattern, func cb)
