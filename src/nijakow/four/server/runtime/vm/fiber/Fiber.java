@@ -19,6 +19,7 @@ public class Fiber {
 	private final Stack<Instance> stack = new Stack<>();
 	private Frame top = null;
 	private StreamPosition lastTell = null;
+	private boolean isPaused = false;
 
 	public Fiber(VM vm) { this(vm, new Process(vm)); }
 	public Fiber(VM vm, Process state) {
@@ -29,6 +30,20 @@ public class Fiber {
 	public VM getVM() { return vm; }
 
 	public Process getSharedState() { return state; }
+
+	public boolean isPaused() { return this.isPaused; }
+	public void restart() {
+		if (isPaused()) {
+			isPaused = false;
+			getVM().restartFiber(this);
+		}
+	}
+	public void pause() {
+		if (!isPaused()) {
+			isPaused = true;
+			getVM().pauseFiber(this);
+		}
+	}
 	
 	public Instance getAccu() {
 		return accumulator;

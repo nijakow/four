@@ -25,7 +25,7 @@ import java.util.*;
 
 public class VM {
 	private final Four four;
-	private final Queue<Fiber> fibers = new LinkedList<>();
+	private final ArrayList<Fiber> fibers = new ArrayList<>();
 	private final PriorityQueue<ComparablePair<Long, Callback>> pendingCallbacks = new PriorityQueue<>();
 	private Callback errorCallback = null;
 	
@@ -67,6 +67,14 @@ public class VM {
 		if (this.errorCallback != null)
 			this.errorCallback.invoke(new FString(type), new FString(name), new FString(message));
 	}
+
+	public void pauseFiber(Fiber fiber) {
+		fibers.remove(fiber);
+	}
+
+	public void restartFiber(Fiber fiber) {
+		fibers.add(fiber);
+	}
 	
 	public long notificationWish() {
 		long time = System.currentTimeMillis();
@@ -88,38 +96,38 @@ public class VM {
 			pendingCallbacks.poll().getSecond().invoke();
 		}
 	}
-	
-	private void runAllActiveFibers() throws FourRuntimeException {
-		while (!fibers.isEmpty()) {
-			long startTime = System.currentTimeMillis();
-			int x = 0;
-			Fiber fiber = fibers.poll();
-			try {
-				User user = fiber.getSharedState().getUser();
-				if (user != null)
-					user.notifyActive();
-				while (!fiber.isTerminated()) {
-					if (x >= 1000000) {
-						if (System.currentTimeMillis() - startTime >= 2500)
-							throw new FourRuntimeException("Process timed out!");
-						else
-							x = 0;
-					}
-					fiber.tick();
-					x++;
+
+	private void runFiber(Fiber fiber) throws FourRuntimeException {
+		int ticks = 0;
+		try {
+			User user = fiber.getSharedState().getUser();
+			if (user != null)
+				user.notifyActive();
+			while (!fiber.isTerminated() && !fiber.isPaused()) {
+				if (ticks >= 100000) {
+					return;
 				}
-			} catch (FourRuntimeException e) {
-				StreamPosition lastTell = fiber.getLastTell();
-				if (lastTell != null) {
-					getLogger().println(LogLevel.ERROR, "Caught " + e.getClass());
-					getLogger().println(LogLevel.ERROR, "Execution context:");
-					getLogger().println(LogLevel.ERROR, fiber.getLastTell().makeErrorText(e.getMessage()));
-				} else {
-					getLogger().printException(e);
-					getLogger().println(LogLevel.INFO, "The exception was caught, the VM will continue to run.");
-				}
-				reportError("four", e.getClass().getName(), e.getMessage());
+				fiber.tick();
+				ticks++;
 			}
+		} catch (FourRuntimeException e) {
+			StreamPosition lastTell = fiber.getLastTell();
+			if (lastTell != null) {
+				getLogger().println(LogLevel.ERROR, "Caught " + e.getClass());
+				getLogger().println(LogLevel.ERROR, "Execution context:");
+				getLogger().println(LogLevel.ERROR, fiber.getLastTell().makeErrorText(e.getMessage()));
+			} else {
+				getLogger().printException(e);
+				getLogger().println(LogLevel.INFO, "The exception was caught, the VM will continue to run.");
+			}
+			reportError("four", e.getClass().getName(), e.getMessage());
+		}
+	}
+
+	private void runAllActiveFibers() throws FourRuntimeException {
+		Fiber[] fibers = this.fibers.toArray(new Fiber[]{});
+		for (Fiber fiber : fibers) {
+			runFiber(fiber);
 		}
 	}
 	
