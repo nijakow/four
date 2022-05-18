@@ -57,15 +57,11 @@ private void launch_shell(string username)
 
 void main()
 {
-    while (true)
-    {
-        banner();
-        string username = this.prompt("login: ");
-        string password = this.password("password: ");
-        if ($login(username, password))
-        {
-            launch_shell(username);
-            exit(0);
-        }
-    }
+    banner();
+    string username = this.prompt("login: ");
+    string password = this.password("password: ");
+    if ($login(username, password))
+        launch_shell(username);
+    else
+        identification_failure();
 }

@@ -4,6 +4,7 @@
 use $on_connect;
 use $on_error;
 use $statics;
+use $exec;
 
 private void logout_func()
 {
@@ -11,11 +12,16 @@ private void logout_func()
     $statics()["terminal"].close();
 }
 
+private void start_logon()
+{
+    new("/secure/logon.c")->_start();
+}
+
 void receive(any port)
 {
 	object terminal = new("/secure/terminal.c", port);
 	$statics()["terminal"] = terminal;
-	new("/secure/logon.c")->_start();
+	$exec(this::start_logon);
 	logout_func();
 }
 
