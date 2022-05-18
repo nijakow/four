@@ -17,9 +17,10 @@ import java.io.File;
 import java.io.IOException;
 
 public class FLauncherWindow extends JFrame implements ActionListener {
-    private static final String SERVER = "server";
-    private static final String CLIENT = "client";
-    private static final String CHOOSE = "choose";
+    private static final String SERVER   = "server";
+    private static final String CLIENT   = "client";
+    private static final String CHOOSE   = "choose";
+    private static final String ROOT_PWD = "root-pwd";
     private int[] ports;
     private File libDir;
     private boolean guestEnable;
@@ -27,6 +28,7 @@ public class FLauncherWindow extends JFrame implements ActionListener {
     private String storagePath;
     private final IdentityDatabase db;
     private final NVFileSystem fs;
+    private final JLabel pathEnter;
 
     public FLauncherWindow(int[] ports, boolean guestEnable, String hostname, String storage, IdentityDatabase db, NVFileSystem fs) {
         super("Four: Launcher");
@@ -38,20 +40,26 @@ public class FLauncherWindow extends JFrame implements ActionListener {
         this.fs = fs;
         libDir = null;
         JPanel content = new JPanel(new BorderLayout());
+        JPanel options = new JPanel(new GridLayout(2, 1));
         JPanel path = new JPanel(new GridLayout(2, 1));
-        JPanel entering = new JPanel();
-        entering.setLayout(new BoxLayout(entering, BoxLayout.X_AXIS));
+        JPanel entering = new JPanel(new BorderLayout());
         JLabel pathDesc = new JLabel("Enter the path to the four library:");
-        JButton pathSelect = new JButton("Select...");
+        JButton pathSelect = new JButton("Load...");
         pathSelect.setActionCommand(CHOOSE);
         pathSelect.addActionListener(this);
-        JTextField pathEnter = new JTextField();
-        entering.add(pathEnter);
-        entering.add(pathSelect);
+        pathEnter = new JLabel();
+        pathEnter.setFont(pathEnter.getFont().deriveFont(Font.BOLD));
+        entering.add(pathEnter, BorderLayout.CENTER);
+        entering.add(pathSelect, BorderLayout.EAST);
         path.add(pathDesc);
         path.add(entering);
         path.setBorder(new EtchedBorder());
-        content.add(path, BorderLayout.CENTER);
+        options.add(path);
+        JButton rootPwd = new JButton("Set root's password");
+        rootPwd.setActionCommand(ROOT_PWD);
+        rootPwd.addActionListener(this);
+        content.add(rootPwd, BorderLayout.NORTH);
+        content.add(options, BorderLayout.CENTER);
         JPanel launchButtons = new JPanel(new GridLayout(1, 2));
         JButton launchServer = new JButton("Launch Server...");
         launchServer.setActionCommand(SERVER);
@@ -100,11 +108,23 @@ public class FLauncherWindow extends JFrame implements ActionListener {
             try {
                 fs.load(dir, db);
                 libDir = dir;
+                pathEnter.setText(libDir.getAbsolutePath());
             } catch (CompilationException | ParseException e) {
                 e.printStackTrace();
                 JOptionPane.showMessageDialog(this, "Could not open library!",
                         "Four: Launcher", JOptionPane.ERROR_MESSAGE);
             }
+        }
+    }
+
+    private void setRootPassword() {
+        JPanel content = new JPanel(new GridLayout(2, 1));
+        content.add(new JLabel("Enter the password for user \"root\":"));
+        JPasswordField pwd = new JPasswordField();
+        content.add(pwd);
+        if (JOptionPane.showOptionDialog(this, content, "Four: Launcher",
+                JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null) == JOptionPane.OK_OPTION) {
+            db.getRootUser().setPassword(String.valueOf(pwd.getPassword()));
         }
     }
 
@@ -114,6 +134,7 @@ public class FLauncherWindow extends JFrame implements ActionListener {
             case SERVER: launchServer(); break;
             case CLIENT: launchClient(); break;
             case CHOOSE: chooseLib(); break;
+            case ROOT_PWD: setRootPassword(); break;
         }
     }
 
