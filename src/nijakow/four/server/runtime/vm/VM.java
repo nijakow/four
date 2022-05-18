@@ -111,6 +111,7 @@ public class VM {
 				ticks++;
 			}
 		} catch (FourRuntimeException e) {
+			fiber.pause();
 			StreamPosition lastTell = fiber.getLastTell();
 			if (lastTell != null) {
 				getLogger().println(LogLevel.ERROR, "Caught " + e.getClass());

@@ -175,8 +175,11 @@ public class Key {
 
 			@Override
 			public void run(Fiber fiber, Instance self, Instance[] args) throws FourRuntimeException {
-				fiber.setAccu(args[1]);
-				fiber.nonlocalExit(args[0].asFClosure().getFrame());
+				final FClosure closure = args[0].asFClosure();
+				fiber.nonlocalExit(closure.getFrame());
+				for (int i = 1; i < args.length; i++)
+					fiber.push(args[i]);
+				closure.invoke(fiber, args.length - 1);
 			}
 		};
 		get("$sleep").code = new BuiltinCode() {

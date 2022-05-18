@@ -94,8 +94,9 @@ public class Fiber {
 
 	public void nonlocalExit(Frame frame) {
 		while (top != null) {
+			Frame lastFrame = top;
 			setTop(top.getPrevious());
-			if (top == frame)
+			if (lastFrame == frame)
 				break;
 		}
 	}

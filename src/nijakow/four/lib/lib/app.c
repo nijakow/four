@@ -1,11 +1,13 @@
 inherits "/lib/object.c";
 inherits "/lib/stdio.c";
 
+use $nonlocal_exit;
+
 private func _return_cb;
 
 void exit(any value)
 {
-    call(this._return_cb, value);
+    $nonlocal_exit(this._return_cb, value);
 }
 
 any main(...)
@@ -15,7 +17,7 @@ any main(...)
 
 void _start(...)
 {
-    main(...);
+    exit(main(...));
 }
 
 bool exec(func cb, string path, ...)

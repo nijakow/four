@@ -26,16 +26,16 @@ void printf(string format, ...)
     $write(this.port, sprintf(format, ...));
 }
 
-void prompt(func callback, string prompt, ...)
+string prompt(string prompt, ...)
 {
     $write_special(this.port, "prompt/plain", sprintf(prompt, ...));
-    call(callback, $read(this.port));
+    return $read(this.port);
 }
 
-void password(func callback, string prompt, ...)
+string password(string prompt, ...)
 {
     $write_special(this.port, "prompt/password", sprintf(prompt, ...));
-    call(callback, $read(this.port));
+    return $read(this.port);
 }
 
 void open_editor(func callback, string title, string text)

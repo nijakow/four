@@ -14,25 +14,6 @@ private void describe()
     }
 }
 
-private void receive(string line)
-{
-    if (line == "exit") {
-        exit(0);
-        return;
-    } else if (line == "") {
-        restart();
-    } else {
-        if (!this.player->obey(line))
-            printf("???\n");
-        restart();
-    }
-}
-
-private void restart()
-{
-    prompt(this::receive, "> ");
-}
-
 private void cmd_look(string* args)
 {
     describe();
@@ -43,11 +24,26 @@ private void event_callback(string event)
     printf("%s", event);
 }
 
+private void main_loop()
+{
+    while (true)
+    {
+        string line = this.prompt("> ");
+        if (line == "exit") {
+            return;
+        } else if (line == "") {
+        } else {
+            if (!this.player->obey(line))
+                printf("???\n");
+        }
+    }
+}
+
 void main(string* argv)
 {
     this.player = new("/std/thing.c");  // TODO: Find player
     this.player.add_command("look", this::cmd_look);
     this.player.add_command("examine", this::cmd_look);
     this.player.set_event_callback(this::event_callback);
-    restart();
+    main_loop();
 }

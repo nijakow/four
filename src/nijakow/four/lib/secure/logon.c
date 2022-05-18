@@ -3,8 +3,6 @@
 
 use $login;
 
-private string username;
-
 private void banner()
 {
     printf("\n");
@@ -38,12 +36,11 @@ private void identification_failure()
     printf("\n");
     printf("Credentials not recognized.\n");
     printf("\n");
-    ask_username();
 }
 
-private void launch_shell_failed()
+private void launch_shell_failed(string username)
 {
-    if (User_IsRoot(this.username)) {
+    if (User_IsRoot(username)) {
         if (exec(this::exit, "/bin/sh.c", {"/bin/sh.c"}))
             return;
     }
@@ -51,40 +48,24 @@ private void launch_shell_failed()
     exit(0);
 }
 
-private void launch_shell()
+private void launch_shell(string username)
 {
-    string shell = User_GetShell(this.username);
+    string shell = User_GetShell(username);
     if (shell == nil || !exec(this::exit, shell, {shell}))
-        launch_shell_failed();
-}
-
-private void receive_password(string pass)
-{
-    if (!$login(this.username, pass)) {
-        identification_failure();
-    } else {
-        launch_shell();
-    }
-}
-
-private void ask_password()
-{
-    password(this::receive_password, "password: ");
-}
-
-private void receive_username(string username)
-{
-    this.username = username;
-    ask_password();
-}
-
-private void ask_username()
-{
-    prompt(this::receive_username, "login: ");
+        launch_shell_failed(username);
 }
 
 void main()
 {
-    banner();
-    ask_username();
+    while (true)
+    {
+        banner();
+        string username = this.prompt("login: ");
+        string password = this.password("password: ");
+        if ($login(username, password))
+        {
+            launch_shell(username);
+            exit(0);
+        }
+    }
 }
