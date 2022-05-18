@@ -38,10 +38,16 @@ private void cmd_look()
     describe();
 }
 
+private void event_callback(string event)
+{
+    printf("%s", event);
+}
+
 void main(string* argv)
 {
     this.player = new("/std/thing.c");  // TODO: Find player
     this.player.add_command("look", this::cmd_look);
     this.player.add_command("examine", this::cmd_look);
+    this.player.set_event_callback(this::event_callback);
     restart();
 }
