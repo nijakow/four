@@ -102,7 +102,11 @@ public class Key {
 			
 			@Override
 			public void run(Fiber fiber, Instance self, Instance[] args) throws CastException, CompilationException, ParseException {
-				Blue blue = fiber.getVM().getFilesystem().getBlue(fiber.getVM(), args[0].asFString().asString());
+				Blue blue = null;
+				try {
+					blue = fiber.getVM().getFilesystem().getBlue(fiber.getVM(), args[0].asFString().asString());
+				} catch (ParseException | CompilationException e) {
+				}
 				if (blue == null)
 					fiber.setAccu(Instance.getNil());
 				else
