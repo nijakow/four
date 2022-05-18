@@ -20,6 +20,8 @@ string sprintf(string format, ...)
             c      = format[index];
             if (c == 'd')
                 result = result + Conversion_IntToString(va_next);
+            else if (c == 'c')
+                result = Conversion_CharToString(va_next);
             else if (c == 's')
                 result = result + va_next;
             else
