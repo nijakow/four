@@ -6,6 +6,7 @@
 #include "/lib/base64/encode.c"
 #include "/lib/base64/decode.c"
 
+use $read;
 use $write;
 use $write_special;
 use $on_receive;
@@ -28,13 +29,13 @@ void printf(string format, ...)
 void prompt(func callback, string prompt, ...)
 {
     $write_special(this.port, "prompt/plain", sprintf(prompt, ...));
-    this.line_callback = callback;
+    call(callback, $read(this.port));
 }
 
 void password(func callback, string prompt, ...)
 {
     $write_special(this.port, "prompt/password", sprintf(prompt, ...));
-    this.line_callback = callback;
+    call(callback, $read(this.port));
 }
 
 void open_editor(func callback, string title, string text)
@@ -112,6 +113,7 @@ private void handle_crash()
     }
 }
 
+/*
 void receive_line(string line)
 {
     func cb;
@@ -128,6 +130,7 @@ void receive_line(string line)
         handle_crash();
     }
 }
+*/
 
 
 void _init(any port)
@@ -140,6 +143,5 @@ void _init(any port)
     this.escaped_line_buffer = nil;
     this.key_callbacks = [];
     this.key_counter = 0;
-    $on_receive(port, this::receive_line);
     $on_escape(port, this::receive_escaped);
 }

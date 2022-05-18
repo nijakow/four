@@ -69,15 +69,15 @@ public class RawConnection implements IConnection {
 			if (b == 0x02) {
 				isEscaped = true;
 				return;
-			}
-			currentLine.add(b);
-			if (b == '\n') {
+			} else if (b == '\n') {
 				byte[] elements = new byte[currentLine.size()];
 				for (int i = 0; i < elements.length; i++)
 					elements[i] = currentLine.get(i);
 				currentLine.clear();
 				if (inputHandler != null)
 					inputHandler.accept(new String(elements, StandardCharsets.UTF_8));
+			} else {
+				currentLine.add(b);
 			}
 		}
 	}
