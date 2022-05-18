@@ -6,10 +6,8 @@ private object* commands;
 
 void add_command(string pattern, func callback)
 {
-    List_Append(this.commands, new("/std/command.c", pattern, callback));
+    List_Append(this.commands, new("/std/thing/command.c", pattern, callback));
 }
-
-use $log;
 
 bool obey(string command)
 {

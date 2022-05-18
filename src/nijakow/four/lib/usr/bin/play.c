@@ -4,13 +4,21 @@ private object player;
 
 private void describe()
 {
+    string* here;
+
     object location = this.player->get_parent();
     if (location == nil)
         printf("You are floating in the void.\n");
     else {
         printf("%s\n", location->get_short());
         printf("%s\n", location->get_desc());
-        // TODO: List everything that's here
+        here = {};
+        this.player->collect_here(here, false);
+        for (object o : here)
+        {
+            if (o != this.player)
+                printf("%s.\n", o->get_long());
+        }
     }
 }
 
