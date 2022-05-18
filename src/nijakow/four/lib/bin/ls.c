@@ -52,7 +52,7 @@ private void do_ls(string dir, string name, bool long_mode, bool dir_mode, bool 
         return;
     }
 
-    list files = FileSystem_GetFilesIn(dir);
+    string* files = FileSystem_GetFilesIn(dir);
     if (files == nil) {
         printf("%s: permission denied!\n", name);
         return;

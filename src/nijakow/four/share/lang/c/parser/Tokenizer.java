@@ -205,7 +205,7 @@ public class Tokenizer {
 		case "string": return new Token(this, pos, getPosition(), TokenType.STRING);
 		case "object": return new Token(this, pos, getPosition(), TokenType.OBJECT);
 		case "func": return new Token(this, pos, getPosition(), TokenType.FUNC);
-		case "list": return new Token(this, pos, getPosition(), TokenType.LIST);
+		//case "list": return new Token(this, pos, getPosition(), TokenType.LIST);
 		case "mapping": return new Token(this, pos, getPosition(), TokenType.MAPPING);
 		case "struct": return new Token(this, pos, getPosition(), TokenType.STRUCT);
 		case "class": return new Token(this, pos, getPosition(), TokenType.CLASS);

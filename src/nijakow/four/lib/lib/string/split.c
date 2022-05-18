@@ -7,7 +7,7 @@ string* String_SplitOnChar(string s, char c)
     int pos = 0;
     int start = 0;
     int len = String_Length(s);
-    list lst = {};
+    string* lst = {};
 
     while (pos < len)
     {
