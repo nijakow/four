@@ -9,11 +9,18 @@ void add_command(string pattern, func callback)
     List_Append(this.commands, new("/std/command.c", pattern, callback));
 }
 
+use $log;
+
 bool obey(string command)
 {
     for (object o : this.commands)
     {
-        if (o->match(command)) {
+        string* lst = o->match(command);
+        if (lst != nil) {
+            for (string s : lst)
+            {
+                $log("Command: ", s, "\n");
+            }
             o->execute();
             return true;
         }

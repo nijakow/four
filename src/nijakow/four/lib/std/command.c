@@ -1,44 +1,52 @@
 #include "/lib/object.c"
 #include "/lib/char/char.c"
+#include "/lib/list/list.c"
+#include "/lib/conversion/char_to_string.c"
 
 private string pattern;
 private func   callback;
 
-private bool match_loop(string pattern, string value, int a, int b)
-{
-    while (true)
-    {
-        if (a >= this.pattern->length) return true;
-        else if (b >= value.length) return false;
+use $log;
 
-        if (Char_IsSpace(this.pattern[a])) {
-            if (Char_IsSpace(value[b])) b = b + 1;
-            else a = a + 1;
+private string* matcher(string value, int a, int b, string current)
+{
+    if (a >= this.pattern->length) {
+        if (b >= value->length)
+            return {};
+        else
+            return nil;
+    }
+    else if (b >= value.length) return nil;
+
+    if (this.pattern[a] == '%') {
+        string* result = matcher(value, a + 1, b + 1, "");
+        if (result != nil)
+        {
+            List_Append(result, current + Conversion_CharToString(value[b]));
+            return result;
         }
-        else if (Char_IsSpace(value[b])) {
-            b = b + 1;
-        }
-        else if (this.pattern[a] == '%') {
-            if (match_loop(pattern, value, a + 1, b))
-                return true;
-            // TODO
-            return match_loop(pattern, value, a, b + 1);
-        }
-        else if (this.pattern[a] == value[b]) {
-            a = a + 1;
-            b = b + 1;
-        }
-        else {
-            return false;
-        }
+        return matcher(value, a, b + 1, current + Conversion_CharToString(value[b]));
+    }
+    else if (Char_IsSpace(this.pattern[a])) {
+        if (Char_IsSpace(value[b])) return matcher(value, a, b + 1, "");
+        else return matcher(value, a + 1, b, "");
+    }
+    else if (Char_IsSpace(value[b])) {
+        return matcher(value, a, b + 1, "");
+    }
+    else if (this.pattern[a] == value[b]) {
+        return matcher(value, a + 1, b + 1, "");
+    }
+    else {
+        return nil;
     }
 }
 
-bool match(string value)
+string* match(string value)
 {
     if (this.pattern == nil)
-        return false;
-    return match_loop(this.pattern, value, 0, 0);
+        return nil;
+    return matcher(value, 0, 0, "");
 }
 
 void execute()
