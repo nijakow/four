@@ -5,7 +5,6 @@ import nijakow.four.server.storage.serialization.fs.IFSSerializer;
 import nijakow.four.server.users.Group;
 import nijakow.four.server.users.Identity;
 import nijakow.four.server.users.User;
-import nijakow.four.server.storage.serialization.base.ISerializer;
 import nijakow.four.share.util.Pair;
 
 import java.nio.charset.StandardCharsets;
@@ -125,21 +124,6 @@ public class Directory extends File implements FileParent {
         File f = files.get(name);
         if (f != null) return f;
         else return super.resolve1(name);
-    }
-
-    @Override
-    public String getSerializationClassID() {
-        return "NVFSDirectory";
-    }
-
-    @Override
-    public void serialize(ISerializer serializer) {
-        serializeCore(serializer);
-        ISerializer mapser = serializer.openProperty("directory.files");
-        for (String key : files.keySet()) {
-            mapser.openProperty(key).writeObject(files.get(key)).close();
-        }
-        mapser.close();
     }
 
     @Override

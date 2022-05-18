@@ -12,7 +12,6 @@ import nijakow.four.server.runtime.vm.code.Code;
 import nijakow.four.server.runtime.Key;
 import nijakow.four.server.nvfs.NVFileSystem;
 import nijakow.four.server.runtime.vm.VM;
-import nijakow.four.server.storage.serialization.base.ISerializer;
 import nijakow.four.share.lang.c.parser.Parser;
 import nijakow.four.share.lang.c.parser.StringCharStream;
 import nijakow.four.share.lang.c.parser.Tokenizer;
@@ -123,20 +122,4 @@ public class FString extends FloatingInstance {
 		else
 			super.loadSlot(fiber, key);
 	}
-
-	@Override
-	public String getSerializationClassID() {
-		return "string";
-	}
-
-	@Override
-	public void serialize(ISerializer serializer) {
-		serializer.writeString(value);
-	}
-
-    public Code compileAsCode() throws ParseException, CompilationException {
-		Parser parser = new Parser(new Tokenizer(new StringCharStream("<string>", this.value)));
-		ASTExpression expr = parser.parseLine();
-		return expr.compileStandalone();
-    }
 }

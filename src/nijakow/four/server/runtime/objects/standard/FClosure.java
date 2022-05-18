@@ -6,7 +6,6 @@ import nijakow.four.server.runtime.objects.Instance;
 import nijakow.four.server.runtime.objects.blue.Blue;
 import nijakow.four.server.runtime.vm.fiber.Fiber;
 import nijakow.four.server.runtime.vm.fiber.Frame;
-import nijakow.four.server.storage.serialization.base.ISerializer;
 
 public class FClosure extends Instance {
 	private final Frame frame;
@@ -47,17 +46,5 @@ public class FClosure extends Instance {
 
 	public void invokeIn(Fiber fiber, int millis, int args) {
 		fiber.getVM().invokeIn(fiber.getSharedState(), this, millis);
-	}
-
-	@Override
-	public String getSerializationClassID() {
-		return "closure";
-	}
-
-	@Override
-	public void serialize(ISerializer serializer) {
-		serializer.openProperty("instance.self").writeObject(self).close();
-		serializer.openProperty("instance.instance").writeObject(instance).close();
-		serializer.openProperty("instance.selector").writeString(key.getName()).close();
 	}
 }

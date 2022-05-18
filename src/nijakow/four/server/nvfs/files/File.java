@@ -6,12 +6,10 @@ import nijakow.four.server.nvfs.security.FileAccessRights;
 import nijakow.four.server.users.Group;
 import nijakow.four.server.users.Identity;
 import nijakow.four.server.users.User;
-import nijakow.four.server.storage.serialization.base.ISerializable;
-import nijakow.four.server.storage.serialization.base.ISerializer;
 
 import java.util.UUID;
 
-public abstract class File implements ISerializable {
+public abstract class File {
     private final UUID uuid;
     private FileParent parent;
     private FileAccessRights rights;
@@ -34,12 +32,6 @@ public abstract class File implements ISerializable {
     public void makeUnessential() { this.essential = false; }
 
     public boolean shouldBeSerialized() { /*return (!this.isPartOfStandardLibrary()) || (this.isEssential());*/ return true; }
-
-    protected void serializeCore(ISerializer serializer) {
-        serializer.openProperty("file.name").writeString(getName()).close();
-        serializer.openProperty("file.path").writeString(getFullName()).close();
-        // TODO: Permissions!
-    }
 
     public final void writeOut(IFSSerializer serializer) {
         serializer.newEntry(getID());

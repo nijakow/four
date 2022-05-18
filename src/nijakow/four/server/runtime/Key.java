@@ -464,17 +464,6 @@ public class Key {
 				}
 			}
 		};
-		get("$eval").code = new BuiltinCode() {
-			@Override
-			public void run(Fiber fiber, Instance self, Instance[] args) throws FourRuntimeException {
-				Code code = args[1].asFString().compileAsCode();
-				if (code != null) {
-					for (int x = 2; x < args.length; x++)
-						fiber.push(args[x]);
-					code.invoke(fiber, args.length - 2, args[0]);
-				}
-			}
-		};
 		get("$getuid").code = new BuiltinCode() {
 			@Override
 			public void run(Fiber fiber, Instance self, Instance[] args) throws FourRuntimeException {

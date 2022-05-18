@@ -1,7 +1,6 @@
 package nijakow.four.server.runtime.objects.standard;
 
 import nijakow.four.server.runtime.objects.Instance;
-import nijakow.four.server.storage.serialization.base.ISerializer;
 
 public class FInteger extends Instance {
 	private final int value;
@@ -51,15 +50,5 @@ public class FInteger extends Instance {
 	@Override
 	public Instance plus(Instance y) {
 		return new FInteger(value + y.asInt());
-	}
-
-	@Override
-	public String getSerializationClassID() {
-		return "int";
-	}
-
-	@Override
-	public void serialize(ISerializer serializer) {
-		serializer.writeInt(value);
 	}
 }

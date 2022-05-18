@@ -13,10 +13,8 @@ import nijakow.four.server.runtime.exceptions.CastException;
 import nijakow.four.server.runtime.exceptions.FourRuntimeException;
 import nijakow.four.server.runtime.vm.fiber.Fiber;
 import nijakow.four.server.runtime.vm.VM;
-import nijakow.four.server.storage.serialization.base.ISerializable;
-import nijakow.four.server.storage.serialization.base.ISerializer;
 
-public abstract class Instance implements ISerializable {
+public abstract class Instance {
 	private static final Instance NIL = new Instance() {
 		@Override
 		public String toString() {
@@ -25,15 +23,6 @@ public abstract class Instance implements ISerializable {
 
 		@Override
 		public String getType() { return "nil"; }
-
-		@Override
-		public String getSerializationClassID() {
-			return "nil";
-		}
-
-		@Override
-		public void serialize(ISerializer serializer) {
-		}
 	};
 
 	public static Instance getNil() { return NIL; }
@@ -77,15 +66,5 @@ public abstract class Instance implements ISerializable {
 	
 	public Code extractMethod(VM vm, Key key) throws FourRuntimeException {
 		throw new FourRuntimeException("Oof. Can't extract method in " + this);
-	}
-
-	@Override
-	public String getSerializationClassID() {
-		return "Instance";	// FIXME: This is just a dummy!
-	}
-
-	@Override
-	public void serialize(ISerializer serializer) {
-		// FIXME: This is just a dummy!
 	}
 }
