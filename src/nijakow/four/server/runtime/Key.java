@@ -231,11 +231,19 @@ public class Key {
 			}
 		};
 		get("$write").code = new BuiltinCode() {
-			
+
 			@Override
 			public void run(Fiber fiber, Instance self, Instance[] args) throws FourRuntimeException {
 				for (int x = 1; x < args.length; x++)
 					args[0].asFConnection().send(args[x]);
+			}
+		};
+		get("$read").code = new BuiltinCode() {
+			
+			@Override
+			public void run(Fiber fiber, Instance self, Instance[] args) throws FourRuntimeException {
+				fiber.pause();
+				args[0].asFConnection().onReceiveRunFiber(fiber);
 			}
 		};
 		get("$write_special").code = new BuiltinCode() {

@@ -9,6 +9,7 @@ import nijakow.four.server.runtime.types.ListType;
 import nijakow.four.server.runtime.types.Type;
 import nijakow.four.server.runtime.vm.Callback;
 import nijakow.four.server.net.IConnection;
+import nijakow.four.server.runtime.vm.fiber.Fiber;
 
 public class FConnection extends FloatingInstance {
 	private final IConnection connection;
@@ -26,6 +27,13 @@ public class FConnection extends FloatingInstance {
 			} catch (FourRuntimeException e) {
 				e.printStackTrace();  // TODO: Handle this gracefully
 			}
+		});
+	}
+
+	public void onReceiveRunFiber(Fiber fiber) {
+		connection.onInput((s) -> {
+			fiber.setAccu(new FString(s));
+			fiber.restart();
 		});
 	}
 
