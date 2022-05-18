@@ -91,6 +91,14 @@ public class Fiber {
 			top.setLocal(args, arg);
 		}
 	}
+
+	public void nonlocalExit(Frame frame) {
+		while (top != null) {
+			setTop(top.getPrevious());
+			if (top == frame)
+				break;
+		}
+	}
 	
 	public boolean isTerminated() {
 		return top == null;

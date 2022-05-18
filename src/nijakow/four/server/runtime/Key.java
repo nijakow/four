@@ -171,6 +171,14 @@ public class Key {
 				args[0].asFClosure().invoke(fiber, args.length - 1);
 			}
 		};
+		get("$nonlocal_exit").code = new BuiltinCode() {
+
+			@Override
+			public void run(Fiber fiber, Instance self, Instance[] args) throws FourRuntimeException {
+				fiber.setAccu(args[1]);
+				fiber.nonlocalExit(args[0].asFClosure().getFrame());
+			}
+		};
 		get("$sleep").code = new BuiltinCode() {
 
 			@Override

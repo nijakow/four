@@ -14,7 +14,7 @@ public class Callback {
 	private final FClosure closure;
 	
 	public Callback(VM vm, Process state, Blue subject, Key message) {
-		this(vm, state, new FClosure(subject, subject, message));
+		this(vm, state, new FClosure(null, subject, subject, message));
 	}
 	
 	public Callback(VM vm, Process state, FClosure closure) {

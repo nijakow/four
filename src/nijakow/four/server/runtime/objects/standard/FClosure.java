@@ -5,9 +5,11 @@ import nijakow.four.server.runtime.exceptions.FourRuntimeException;
 import nijakow.four.server.runtime.objects.Instance;
 import nijakow.four.server.runtime.objects.blue.Blue;
 import nijakow.four.server.runtime.vm.fiber.Fiber;
+import nijakow.four.server.runtime.vm.fiber.Frame;
 import nijakow.four.server.storage.serialization.base.ISerializer;
 
 public class FClosure extends Instance {
+	private final Frame frame;
 	private final Instance self;
 	private final Instance instance;
 	private final Key key;
@@ -16,19 +18,24 @@ public class FClosure extends Instance {
 	@Override
 	public String getType() { return "function"; }
 
-	public FClosure(Blue self, Instance instance, Key key, Instance[] args) {
+	public FClosure(Frame frame, Blue self, Instance instance, Key key, Instance[] args) {
+		this.frame = frame;
 		this.self = self;
 		this.instance = instance;
 		this.key = key;
 		this.args = args;
 	}
-	public FClosure(Blue self, Instance instance, Key key) {
-		this(self, instance, key, new Instance[0]);
+	public FClosure(Frame frame, Blue self, Instance instance, Key key) {
+		this(frame, self, instance, key, new Instance[0]);
 	}
 	
 	@Override
 	public FClosure asFClosure() {
 		return this;
+	}
+
+	public Frame getFrame() {
+		return this.frame;
 	}
 
 	@Override

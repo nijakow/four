@@ -99,7 +99,7 @@ public class Blue extends FloatingInstance {
 	public void loadSlot(Fiber fiber, Key key) throws FourRuntimeException {
 		Slot slot = blueprint.getSlot(key);
 		if (slot == null)
-			fiber.setAccu(new FClosure(this, this, key));
+			fiber.setAccu(new FClosure(null, this, this, key));
 		else if (slots.containsKey(key))
 			fiber.setAccu(slots.get(key));
 		else

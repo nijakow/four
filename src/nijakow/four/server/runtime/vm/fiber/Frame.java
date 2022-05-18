@@ -31,7 +31,11 @@ public class Frame {
 		this.self = self;
 		this.locals = new Instance[code.getLocalCount()];
 	}
-	
+
+	public Frame getPrevious() {
+		return previous;
+	}
+
 	public void setLocal(int index, Instance value) {
 		locals[index] = value;
 	}
@@ -156,7 +160,7 @@ public class Frame {
 			Instance[] theArgs = new Instance[args];
 			while (args > 0)
 				theArgs[--args] = fiber.pop();
-			fiber.setAccu(new FClosure(self, fiber.getAccu(), key, theArgs));
+			fiber.setAccu(new FClosure(this, self, fiber.getAccu(), key, theArgs));
 			break;
 		}
 		case Bytecodes.BYTECODE_JUMP:
