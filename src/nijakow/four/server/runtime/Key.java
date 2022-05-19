@@ -209,7 +209,7 @@ public class Key {
 
 			@Override
 			public void run(Fiber fiber, Instance self, Instance[] args) throws FourRuntimeException {
-				args[0].asFClosure().invokeIn(fiber, args[1].asInt(), args.length - 1);
+				fiber.sleep(args[0].asInt());
 			}
 		};
 		get("$log").code = new BuiltinCode() {
@@ -220,13 +220,6 @@ public class Key {
 				for (Instance arg : args) {
 					logger.print(LogLevel.INTERNAL, arg.asString());
 				}
-			}
-		};
-		get("$pause").code = new BuiltinCode() {
-			
-			@Override
-			public void run(Fiber fiber, Instance self, Instance[] args) throws FourRuntimeException {
-				fiber.getVM().invokeIn(fiber.getSharedState(), args[0].asBlue(), args[1].asKey(), args[2].asInt());
 			}
 		};
 		get("$on_connect").code = new BuiltinCode() {

@@ -48,6 +48,13 @@ public class Fiber {
 		}
 	}
 
+	public void sleep(long millis) {
+		if (!isPaused()) {
+			isPaused = true;
+			getVM().sleepFiber(this, millis);
+		}
+	}
+
 	public void restartWithValue(Instance value) {
 		if (isPaused()) {
 			setAccu(value);
@@ -137,5 +144,5 @@ public class Fiber {
 
     public boolean isRoot() {
 		return getSharedState().getUser() != null && vm.getIdentityDB().getRootUser() == getSharedState().getUser();
-    }
+	}
 }

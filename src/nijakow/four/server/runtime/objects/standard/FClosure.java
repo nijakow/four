@@ -43,8 +43,4 @@ public class FClosure extends Instance {
 			fiber.push(this.args[x]);
 		instance.extractMethod(fiber.getVM(), key).invoke(fiber, args + this.args.length, this.self);
 	}
-
-	public void invokeIn(Fiber fiber, int millis, int args) {
-		fiber.getVM().invokeIn(fiber.getSharedState(), this, millis);
-	}
 }

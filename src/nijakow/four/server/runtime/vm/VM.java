@@ -26,7 +26,7 @@ import java.util.*;
 public class VM {
 	private final Four four;
 	private final ArrayList<Fiber> fibers = new ArrayList<>();
-	private final PriorityQueue<ComparablePair<Long, Callback>> pendingCallbacks = new PriorityQueue<>();
+	private final PriorityQueue<ComparablePair<Long, Fiber>> sleepingFibers = new PriorityQueue<>();
 	private Callback errorCallback = null;
 	
 	public VM(Four four) {
@@ -78,10 +78,10 @@ public class VM {
 	
 	public long notificationWish() {
 		long time = System.currentTimeMillis();
-		if (pendingCallbacks.isEmpty())
+		if (sleepingFibers.isEmpty())
 			return 1;
 		else {
-			long diff = pendingCallbacks.peek().getFirst() - time;
+			long diff = sleepingFibers.peek().getFirst() - time;
 			if (diff < 0)
 				return 0;
 			else
@@ -92,8 +92,8 @@ public class VM {
 	private void wakeCallbacks() throws FourRuntimeException {
 		long time = System.currentTimeMillis();
 		
-		while (!pendingCallbacks.isEmpty() && pendingCallbacks.peek().getFirst() <= time) {
-			pendingCallbacks.poll().getSecond().invoke();
+		while (!sleepingFibers.isEmpty() && sleepingFibers.peek().getFirst() <= time) {
+			sleepingFibers.poll().getSecond().restart();
 		}
 	}
 
@@ -166,14 +166,9 @@ public class VM {
 		fibers.add(fiber);
 		return fiber;
 	}
-	
-	public void invokeIn(Process state, Blue subject, Key message, long millis) {
-		long time = System.currentTimeMillis();
-		pendingCallbacks.add(new ComparablePair<>(time + millis, createCallback(state, subject, message)));
-	}
 
-	public void invokeIn(Process state, FClosure closure, long millis) {
+	public void sleepFiber(Fiber fiber, long millis) {
 		long time = System.currentTimeMillis();
-		pendingCallbacks.add(new ComparablePair<>(time + millis, new Callback(this, state, closure)));
+		sleepingFibers.add(new ComparablePair<>(time + millis, fiber));
 	}
 }
