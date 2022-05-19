@@ -11,7 +11,6 @@ import nijakow.four.server.runtime.objects.blue.Blueprint;
 import nijakow.four.server.users.Group;
 import nijakow.four.server.users.Identity;
 import nijakow.four.server.users.User;
-import nijakow.four.server.storage.serialization.base.ISerializer;
 import nijakow.four.share.lang.base.CompilationException;
 import nijakow.four.share.lang.c.ast.ASTClass;
 import nijakow.four.share.lang.c.parser.ParseException;
@@ -104,20 +103,6 @@ public class TextFile extends File implements IByteFile {
             isDirty = false;
         }
         return blueprint;
-    }
-
-    @Override
-    public String getSerializationClassID() {
-        return "NVFSTextFile";
-    }
-
-    @Override
-    public void serialize(ISerializer serializer) {
-        serializeCore(serializer);
-        serializer.openProperty("textfile.contents").writeString(getContents()).close();
-        Blue instance = getBlue();
-        if (instance != null)
-            serializer.openProperty("textfile.instance").writeObject(instance).close();
     }
 
     @Override

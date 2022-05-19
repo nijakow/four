@@ -5,9 +5,10 @@ import nijakow.four.server.runtime.exceptions.FourRuntimeException;
 import nijakow.four.server.runtime.objects.Instance;
 import nijakow.four.server.runtime.objects.blue.Blue;
 import nijakow.four.server.runtime.vm.fiber.Fiber;
-import nijakow.four.server.storage.serialization.base.ISerializer;
+import nijakow.four.server.runtime.vm.fiber.Frame;
 
 public class FClosure extends Instance {
+	private final Frame frame;
 	private final Instance self;
 	private final Instance instance;
 	private final Key key;
@@ -16,19 +17,24 @@ public class FClosure extends Instance {
 	@Override
 	public String getType() { return "function"; }
 
-	public FClosure(Blue self, Instance instance, Key key, Instance[] args) {
+	public FClosure(Frame frame, Blue self, Instance instance, Key key, Instance[] args) {
+		this.frame = frame;
 		this.self = self;
 		this.instance = instance;
 		this.key = key;
 		this.args = args;
 	}
-	public FClosure(Blue self, Instance instance, Key key) {
-		this(self, instance, key, new Instance[0]);
+	public FClosure(Frame frame, Blue self, Instance instance, Key key) {
+		this(frame, self, instance, key, new Instance[0]);
 	}
 	
 	@Override
 	public FClosure asFClosure() {
 		return this;
+	}
+
+	public Frame getFrame() {
+		return this.frame;
 	}
 
 	@Override
@@ -40,17 +46,5 @@ public class FClosure extends Instance {
 
 	public void invokeIn(Fiber fiber, int millis, int args) {
 		fiber.getVM().invokeIn(fiber.getSharedState(), this, millis);
-	}
-
-	@Override
-	public String getSerializationClassID() {
-		return "closure";
-	}
-
-	@Override
-	public void serialize(ISerializer serializer) {
-		serializer.openProperty("instance.self").writeObject(self).close();
-		serializer.openProperty("instance.instance").writeObject(instance).close();
-		serializer.openProperty("instance.selector").writeString(key.getName()).close();
 	}
 }

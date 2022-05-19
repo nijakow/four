@@ -11,7 +11,6 @@ import nijakow.four.server.runtime.Key;
 import nijakow.four.server.runtime.exceptions.FourRuntimeException;
 import nijakow.four.server.runtime.vm.fiber.Fiber;
 import nijakow.four.server.runtime.vm.VM;
-import nijakow.four.server.storage.serialization.base.ISerializer;
 
 public class Blue extends FloatingInstance {
 	private static long ID_COUNTER = 0;
@@ -99,7 +98,7 @@ public class Blue extends FloatingInstance {
 	public void loadSlot(Fiber fiber, Key key) throws FourRuntimeException {
 		Slot slot = blueprint.getSlot(key);
 		if (slot == null)
-			fiber.setAccu(new FClosure(this, this, key));
+			fiber.setAccu(new FClosure(null, this, this, key));
 		else if (slots.containsKey(key))
 			fiber.setAccu(slots.get(key));
 		else
@@ -139,18 +138,4 @@ public class Blue extends FloatingInstance {
 		this.initialized = false;
 		this.blueprint = blueprint;
     }
-
-	@Override
-	public String getSerializationClassID() {
-		return "blue";
-	}
-
-	@Override
-	public void serialize(ISerializer serializer) {
-		ISerializer mapser = serializer.openProperty("blue.slots");
-		for (Key key : slots.keySet()) {
-			mapser.openProperty(key.getName()).writeObject(slots.get(key)).close();
-		}
-		mapser.close();
-	}
 }

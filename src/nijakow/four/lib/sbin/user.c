@@ -30,13 +30,12 @@ private void list_users(string group)
         printf("%s\n", member);
 }
 
-private void setpass(string pw, string name)
+private void setpass(string name, string pw)
 {
     if (User_ChangePassword(name, pw))
         printf("Password updated.\n");
     else
         printf("Error, password could not be set!\n");
-    exit(0);
 }
 
 private void perform_chsh(string user, string path)
@@ -75,8 +74,7 @@ void main(string* argv)
             user = argv[2];
         } else
             user = User_Whoami();
-        password(this::(argv[2])setpass, "Password for %s: ", argv[2]);
-        return;
+        setpass(user, password("Password for %s: ", argv[2]));
     } else if ((argv.length == 3 || argv.length == 4) && argv[1] == "shell") {
           string user;
           if (argv.length == 4) {
@@ -91,5 +89,4 @@ void main(string* argv)
           perform_chsh(user, argv[3]);
       } else
         usage(argv[0]);
-    exit(0);
 }

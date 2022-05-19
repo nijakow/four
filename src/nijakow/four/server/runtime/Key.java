@@ -102,7 +102,11 @@ public class Key {
 			
 			@Override
 			public void run(Fiber fiber, Instance self, Instance[] args) throws CastException, CompilationException, ParseException {
-				Blue blue = fiber.getVM().getFilesystem().getBlue(fiber.getVM(), args[0].asFString().asString());
+				Blue blue = null;
+				try {
+					blue = fiber.getVM().getFilesystem().getBlue(fiber.getVM(), args[0].asFString().asString());
+				} catch (ParseException | CompilationException e) {
+				}
 				if (blue == null)
 					fiber.setAccu(Instance.getNil());
 				else
@@ -171,6 +175,36 @@ public class Key {
 				args[0].asFClosure().invoke(fiber, args.length - 1);
 			}
 		};
+		get("$exec").code = new BuiltinCode() {
+
+			@Override
+			public void run(Fiber fiber, Instance self, Instance[] args) throws FourRuntimeException {
+				Instance[] args2 = new Instance[args.length - 1];
+				for (int i = 0; i < args2.length; i++)
+					args2[i] = args[i + 1];
+				Fiber f = fiber.getVM().startFiber(fiber.getSharedState(), args[0].asFClosure(), args2);
+				f.returnTo(fiber);
+				fiber.pause();
+			}
+		};
+		get("$exit").code = new BuiltinCode() {
+
+			@Override
+			public void run(Fiber fiber, Instance self, Instance[] args) throws FourRuntimeException {
+				fiber.terminate(args[0]);
+			}
+		};
+		get("$nonlocal_exit").code = new BuiltinCode() {
+
+			@Override
+			public void run(Fiber fiber, Instance self, Instance[] args) throws FourRuntimeException {
+				final FClosure closure = args[0].asFClosure();
+				fiber.nonlocalExit(closure.getFrame());
+				for (int i = 1; i < args.length; i++)
+					fiber.push(args[i]);
+				closure.invoke(fiber, args.length - 1);
+			}
+		};
 		get("$sleep").code = new BuiltinCode() {
 
 			@Override
@@ -231,11 +265,19 @@ public class Key {
 			}
 		};
 		get("$write").code = new BuiltinCode() {
-			
+
 			@Override
 			public void run(Fiber fiber, Instance self, Instance[] args) throws FourRuntimeException {
 				for (int x = 1; x < args.length; x++)
 					args[0].asFConnection().send(args[x]);
+			}
+		};
+		get("$read").code = new BuiltinCode() {
+			
+			@Override
+			public void run(Fiber fiber, Instance self, Instance[] args) throws FourRuntimeException {
+				fiber.pause();
+				args[0].asFConnection().onReceiveRunFiber(fiber);
 			}
 		};
 		get("$write_special").code = new BuiltinCode() {
@@ -423,17 +465,6 @@ public class Key {
 				} catch (FourCompilerException e) {
 					logger.tell(e);
 					fiber.setAccu(new FString(logger.getTranscript()));
-				}
-			}
-		};
-		get("$eval").code = new BuiltinCode() {
-			@Override
-			public void run(Fiber fiber, Instance self, Instance[] args) throws FourRuntimeException {
-				Code code = args[1].asFString().compileAsCode();
-				if (code != null) {
-					for (int x = 2; x < args.length; x++)
-						fiber.push(args[x]);
-					code.invoke(fiber, args.length - 2, args[0]);
 				}
 			}
 		};

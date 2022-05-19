@@ -1,11 +1,12 @@
 inherits "/lib/object.c";
 inherits "/lib/stdio.c";
 
-private func _return_cb;
+use $exec;
+use $exit;
 
 void exit(any value)
 {
-    call(this._return_cb, value);
+    $exit(value);
 }
 
 any main(...)
@@ -15,22 +16,26 @@ any main(...)
 
 void _start(...)
 {
-    main(...);
+    exit(main(...));
+}
+
+private void run_instance(object instance, ...)
+{
+    instance->_start(...);
 }
 
 bool exec(func cb, string path, ...)
 {
-    object instance = new(path, cb);
+    object instance = new(path);
     if (instance == nil)
         return false;
     else {
-        instance->_start(...);
+        call(cb, $exec(this::run_instance, instance, ...));
         return true;
     }
 }
 
-void _init(func return_callback)
+void _init()
 {
     "/lib/object.c"::_init();
-    this._return_cb = return_callback;
 }

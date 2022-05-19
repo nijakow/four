@@ -5,6 +5,7 @@ import java.util.Stack;
 import nijakow.four.server.process.Process;
 import nijakow.four.server.runtime.exceptions.CastException;
 import nijakow.four.server.runtime.objects.blue.Blue;
+import nijakow.four.server.runtime.objects.standard.FClosure;
 import nijakow.four.server.runtime.types.Type;
 import nijakow.four.server.runtime.vm.VM;
 import nijakow.four.server.runtime.vm.code.ByteCode;
@@ -19,6 +20,8 @@ public class Fiber {
 	private final Stack<Instance> stack = new Stack<>();
 	private Frame top = null;
 	private StreamPosition lastTell = null;
+	private boolean isPaused = false;
+	private Fiber returnTo;
 
 	public Fiber(VM vm) { this(vm, new Process(vm)); }
 	public Fiber(VM vm, Process state) {
@@ -29,6 +32,42 @@ public class Fiber {
 	public VM getVM() { return vm; }
 
 	public Process getSharedState() { return state; }
+
+	public boolean isPaused() { return this.isPaused; }
+	public void restart() {
+		if (isPaused()) {
+			isPaused = false;
+			getVM().restartFiber(this);
+		}
+	}
+
+	public void pause() {
+		if (!isPaused()) {
+			isPaused = true;
+			getVM().pauseFiber(this);
+		}
+	}
+
+	public void restartWithValue(Instance value) {
+		if (isPaused()) {
+			setAccu(value);
+			restart();
+		}
+	}
+
+	public void terminate(Instance value) {
+		pause();
+		if (this.returnTo != null)
+			this.returnTo.restartWithValue(value);
+	}
+
+	public void returnTo(Fiber fiber) {
+		this.returnTo = fiber;
+	}
+
+	public void terminate() {
+		terminate(getAccu());
+	}
 	
 	public Instance getAccu() {
 		return accumulator;
@@ -76,6 +115,15 @@ public class Fiber {
 			top.setLocal(args, arg);
 		}
 	}
+
+	public void nonlocalExit(Frame frame) {
+		while (top != null) {
+			Frame lastFrame = top;
+			setTop(top.getPrevious());
+			if (lastFrame == frame)
+				break;
+		}
+	}
 	
 	public boolean isTerminated() {
 		return top == null;
@@ -83,6 +131,8 @@ public class Fiber {
 	
 	public void tick() throws FourRuntimeException {
 		top.tick(this);
+		if (top == null)
+			terminate();
 	}
 
     public boolean isRoot() {

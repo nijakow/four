@@ -11,8 +11,8 @@ private void execute_command_in_path(string* argv, string path)
     string* paths;
 
     if (argv[0] == "exit") {
+        printf("Exiting!\n");
         exit(0);
-        return;
     } else if (argv[0] == "cd") {
         if (List_Length(argv) != 2)
             printf("cd: argument error!\n");
@@ -34,7 +34,6 @@ private void execute_command_in_path(string* argv, string path)
         }
         printf("%s: not found!\n", argv[0]);
     }
-    restart();
 }
 
 private void execute_command(string* argv)
@@ -53,32 +52,25 @@ private void receive(string line)
     }
     if (List_Length(cooked_tokens) > 0)
         execute_command(cooked_tokens);
-    else
-        restart();
 }
 
-private void restart()
+private string shell_prompt()
 {
     if (User_AmIRoot()) {
-        prompt(this::receive, "%s@four:%s# ", User_Whoami(), FileSystem_GetWorkingDirectory());
+        return prompt("%s@four:%s# ", User_Whoami(), FileSystem_GetWorkingDirectory());
     } else {
-        prompt(this::receive, "%s@four:%s$ ", User_Whoami(), FileSystem_GetWorkingDirectory());
+        return prompt("%s@four:%s$ ", User_Whoami(), FileSystem_GetWorkingDirectory());
     }
 }
 
 private void restart_from_binary(...)
 {
-    restart();
-}
-
-private void crash_restart()
-{
-    printf("<<the application has crashed>>\n");
-    restart();
 }
 
 void main(string* argv)
 {
-    terminal()->set_crash_callback(this::crash_restart);
-    restart();
+    while (true)
+    {
+        receive(shell_prompt());
+    }
 }

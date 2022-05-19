@@ -15,15 +15,13 @@ import nijakow.four.server.nvfs.files.Directory;
 import nijakow.four.server.nvfs.files.File;
 import nijakow.four.server.nvfs.files.TextFile;
 import nijakow.four.server.runtime.objects.blue.Blue;
-import nijakow.four.server.storage.serialization.base.ISerializable;
-import nijakow.four.server.storage.serialization.base.ISerializer;
 import nijakow.four.share.util.Pair;
 
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-public class NVFileSystem implements FileParent, ISerializable {
+public class NVFileSystem implements FileParent {
     private Directory root;
 
     public NVFileSystem(IdentityDatabase db) {
@@ -211,16 +209,6 @@ public class NVFileSystem implements FileParent, ISerializable {
         if (file == null)
             return null;
         return file.getBlueprint();
-    }
-
-    @Override
-    public String getSerializationClassID() {
-        return "NVFSFileSystem";
-    }
-
-    @Override
-    public void serialize(ISerializer serializer) {
-        getRoot().serialize(serializer);
     }
 
     public void writeOut(IFSSerializer serializer) {

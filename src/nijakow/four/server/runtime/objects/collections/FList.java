@@ -10,7 +10,6 @@ import nijakow.four.server.runtime.types.ListType;
 import nijakow.four.server.runtime.types.Type;
 import nijakow.four.server.runtime.exceptions.CastException;
 import nijakow.four.server.runtime.vm.fiber.Fiber;
-import nijakow.four.server.storage.serialization.base.ISerializer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -81,20 +80,6 @@ public class FList extends FloatingInstance implements IByteArray {
 	
 	public Instance remove(int i) {
 		return list.remove(i);
-	}
-
-	@Override
-	public String getSerializationClassID() {
-		return "list";
-	}
-
-	@Override
-	public void serialize(ISerializer serializer) {
-		ISerializer arraySerializer = serializer.openProperty("list.values");
-		arraySerializer.writeInt(list.size());
-		for (Instance i : list)
-			arraySerializer.openEntry().writeObject(i).close();
-		arraySerializer.close();
 	}
 
     @Override
