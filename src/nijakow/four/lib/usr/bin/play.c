@@ -27,6 +27,22 @@ private void cmd_look(string* args)
     describe();
 }
 
+private void cmd_examine(string* args)
+{
+    object* objects;
+
+    objects = {};
+    this.player->find_here(objects, args[0], false);
+    if (objects.length == 0)
+        printf("Nothing found!\n");
+    else {
+        for (object obj : objects)
+        {
+            printf("%s\n - %s\n", obj->get_long(), obj->get_desc());
+        }
+    }
+}
+
 private void event_callback(string event)
 {
     printf("%s", event);
@@ -52,6 +68,7 @@ void main(string* argv)
     this.player = new("/std/thing.c");  // TODO: Find player
     this.player.add_command("look", this::cmd_look);
     this.player.add_command("examine", this::cmd_look);
+    this.player.add_command("examine %", this::cmd_examine);
     this.player.set_event_callback(this::event_callback);
     this.player.move_to(the("/std/test/workroom.c"));
     object teacup = the("/std/test/teacup.c");

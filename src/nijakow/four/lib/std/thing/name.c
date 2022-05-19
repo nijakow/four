@@ -18,6 +18,18 @@ void set_desc(string new_desc) { this.desc = new_desc; }
 
 void add_id(string id) { List_Append(this.identifiers, id); }
 
+use $log;
+
+bool reacts_to_id(string id)
+{
+    for (string s : this.identifiers)
+    {
+        if (s == id)
+            return true;
+    }
+    return false;
+}
+
 void reset()
 {
     set_short("a thing");

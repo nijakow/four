@@ -20,3 +20,8 @@ string* String_SplitOnChar(string s, char c)
     List_Append(lst, String_IndexBasedSubstring(s, start, pos));
     return lst;
 }
+
+string* String_SplitOnWhitespace(string s)
+{
+    return String_SplitOnChar(s, ' ');
+}

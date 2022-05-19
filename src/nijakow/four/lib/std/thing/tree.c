@@ -1,4 +1,5 @@
 #include "/lib/list/list.c"
+#include "/lib/string/split.c"
 
 /*
  *     T r e e   S e c t i o n
@@ -56,6 +57,30 @@ void collect_here(object* list, bool all)
     }
 }
 
+void find_here(object* results, string name, bool all)
+{
+    object* here;
+    string* ids;
+    bool    found;
+
+    ids = String_SplitOnWhitespace(name);
+    here = {};
+    collect_here(here, all);
+    for (object obj : here)
+    {
+        found = true;
+        for (string s : ids)
+        {
+            if (!obj->reacts_to_id(s))
+            {
+                found = false;
+                break;
+            }
+        }
+        if (found)
+            List_Append(results, obj);
+    }
+}
 
 void reset()
 {

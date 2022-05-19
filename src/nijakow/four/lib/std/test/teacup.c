@@ -11,6 +11,8 @@ void reset()
     enable_living(this::tick);
     set_short("teacup");
     set_long("A teacup lies here.");
+    add_id("teacup");
+    add_id("cup");
 }
 
 void _init()
