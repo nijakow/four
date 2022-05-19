@@ -4,7 +4,7 @@ private mapping room_exits;
 
 object query_room_exit(object player, string direction)
 {
-    return room_exits[direction];
+    return this.room_exits[direction];
 }
 
 void add_exit(string direction, object exit)
@@ -16,7 +16,7 @@ void reset()
 {
     "/std/thing.c"::reset();
     enable_container();
-    this.room_exits = {};
+    this.room_exits = [];
 }
 
 void _init()

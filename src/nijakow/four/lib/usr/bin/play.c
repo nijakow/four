@@ -17,7 +17,7 @@ private void describe()
         for (object o : here)
         {
             if (o != this.player)
-                printf("%s.\n", o->get_long());
+                printf(" - %s\n", o->get_long());
         }
     }
 }
@@ -53,5 +53,8 @@ void main(string* argv)
     this.player.add_command("look", this::cmd_look);
     this.player.add_command("examine", this::cmd_look);
     this.player.set_event_callback(this::event_callback);
+    this.player.move_to(the("/std/test/workroom.c"));
+    object teacup = the("/std/test/teacup.c");
+    teacup->move_to(the("/std/test/workroom.c"));
     main_loop();
 }

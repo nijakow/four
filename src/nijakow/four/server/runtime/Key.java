@@ -175,6 +175,16 @@ public class Key {
 				args[0].asFClosure().invoke(fiber, args.length - 1);
 			}
 		};
+		get("$fork").code = new BuiltinCode() {
+
+			@Override
+			public void run(Fiber fiber, Instance self, Instance[] args) throws FourRuntimeException {
+				Instance[] args2 = new Instance[args.length - 1];
+				for (int i = 0; i < args2.length; i++)
+					args2[i] = args[i + 1];
+				Fiber f = fiber.getVM().startFiber(fiber.getSharedState(), args[0].asFClosure(), args2);
+			}
+		};
 		get("$exec").code = new BuiltinCode() {
 
 			@Override

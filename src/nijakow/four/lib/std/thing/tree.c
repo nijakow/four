@@ -48,7 +48,7 @@ void collect_children(object* list, bool all)
 
 void collect_here(object* list, bool all)
 {
-    if (query_is_opaque()) {
+    if (get_parent() == nil || query_is_opaque()) {
         collect_children(list, all);
     } else {
         if (get_parent() != nil)

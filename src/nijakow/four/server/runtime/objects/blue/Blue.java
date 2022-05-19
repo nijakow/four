@@ -106,10 +106,10 @@ public class Blue extends FloatingInstance {
 	}
 	
 	@Override
-	public void storeSlot(Fiber fiber, Key key, Instance value) {
+	public void storeSlot(Fiber fiber, Key key, Instance value) throws FourRuntimeException {
 		Slot slot = blueprint.getSlot(key);
 		if (slot == null || !slot.getType().check(value))
-			throw new RuntimeException("Oof. Slot not found (or wrong type): " + key);
+			throw new FourRuntimeException("Oof. Slot not found (or wrong type): " + key);
 		slots.put(key, value);
 	}
 	

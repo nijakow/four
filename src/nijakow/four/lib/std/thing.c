@@ -7,6 +7,7 @@
 #include "/std/thing/events.c"
 #include "/std/thing/act.c"
 #include "/std/thing/commands.c"
+#include "/std/thing/living.c"
 
 /*
  *     C o n s t r u c t o r   S e c t i o n
@@ -19,6 +20,7 @@ void reset()
     "/std/thing/events.c"::reset();
     "/std/thing/act.c"::reset();
     "/std/thing/commands.c"::reset();
+    "/std/thing/living.c"::reset();
 }
 
 void _init()
@@ -30,5 +32,11 @@ void _init()
     "/std/thing/events.c"::_init();
     "/std/thing/act.c"::_init();
     "/std/thing/commands.c"::_init();
+    "/std/thing/living.c"::_init();
     reset();
+}
+
+void _pre_init()
+{
+    this._init();
 }
