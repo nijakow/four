@@ -33,9 +33,14 @@ private void restart()
     prompt(this::receive, "> ");
 }
 
-private void cmd_look()
+private void cmd_look(string* args)
 {
     describe();
+}
+
+private void event_callback(string event)
+{
+    printf("%s", event);
 }
 
 void main(string* argv)
@@ -43,5 +48,6 @@ void main(string* argv)
     this.player = new("/std/thing.c");  // TODO: Find player
     this.player.add_command("look", this::cmd_look);
     this.player.add_command("examine", this::cmd_look);
+    this.player.set_event_callback(this::event_callback);
     restart();
 }

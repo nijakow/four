@@ -1,89 +1,34 @@
 #include "/lib/object.c"
 #include "/lib/list/list.c"
 
-/*
- *     L o c a t i o n   S e c t i o n
- */
-
-use $get_parent;
-use $get_sibling;
-use $get_children;
-use $move_to;
-
-object get_parent() { return $get_parent(this); }
-object get_sibling() { return $get_sibling(this); }
-object get_children() { return $get_children(this); }
-
-void move_to(object target)
-{
-    $move_to(target);
-}
-
-/*
- *     N a m e   S e c t i o n
- */
-
-private string short_text;
-private string long_text;
-private string desc;
-private string* identifiers;
-
-string get_short() { return this.short_text; }
-void set_short(string new_short) { this.short_text = new_short; }
-
-string get_long() { return this.long_text; }
-void set_long(string new_long) { this.long_text = new_long; }
-
-string get_desc() { return this.desc; }
-void set_desc(string new_desc) { this.desc = new_desc; }
-
-void add_id(string id) { List_Append(this.identifiers, id); }
-
-/*
- *     C o m m a n d   S e c t i o n
- */
-
-private object* commands;
-
-void add_command(string pattern, func callback)
-{
-    List_Append(this.commands, new("/std/command.c", pattern, callback));
-}
-
-bool obey(string command)
-{
-    for (object o : this.commands)
-    {
-        if (o->match(command)) {
-            o->execute();
-            return true;
-        }
-    }
-    return false;
-}
-
-/*
- *     E v e n t   S e c t i o n
- */
-
-void receive(string event)
-{
-}
+#include "/std/thing/tree.c"
+#include "/std/thing/container.c"
+#include "/std/thing/name.c"
+#include "/std/thing/events.c"
+#include "/std/thing/act.c"
+#include "/std/thing/commands.c"
 
 /*
  *     C o n s t r u c t o r   S e c t i o n
  */
 void reset()
 {
-    set_short("a thing");
-    set_long("A thing.");
-    set_desc("This is a thing. It has no description.");
-    this.identifiers = {};
-    this.commands = {};
+    "/std/thing/tree.c"::reset();
+    "/std/thing/container.c"::reset();
+    "/std/thing/name.c"::reset();
+    "/std/thing/events.c"::reset();
+    "/std/thing/act.c"::reset();
+    "/std/thing/commands.c"::reset();
 }
 
 void _init()
 {
     "/lib/object.c"::_init();
+    "/std/thing/tree.c"::_init();
+    "/std/thing/container.c"::_init();
+    "/std/thing/name.c"::_init();
+    "/std/thing/events.c"::_init();
+    "/std/thing/act.c"::_init();
+    "/std/thing/commands.c"::_init();
     reset();
 }
