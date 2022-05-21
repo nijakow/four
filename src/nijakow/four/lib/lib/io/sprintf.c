@@ -1,6 +1,7 @@
 inherits "/lib/conversion/char_to_string.c";
 inherits "/lib/conversion/int_to_string.c";
 inherits "/lib/string/string.c";
+inherits "/lib/string/capitalize.c";
 
 use $log;
 
@@ -24,6 +25,8 @@ string sprintf(string format, ...)
                 result = Conversion_CharToString(va_next);
             else if (c == 's')
                 result = result + va_next;
+            else if (c == 'S')
+                result = result + String_Capitalize(va_next);
             else
                 result = result + "%" + Conversion_CharToString(format[index]);
         }

@@ -21,6 +21,7 @@ public class ASTReturn extends ASTInstruction {
 		} else {
 			value.compile(compiler);
 		}
+		compiler.tell(this);
 		compiler.compileReturn();
 	}
 }

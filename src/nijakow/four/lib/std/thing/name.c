@@ -2,10 +2,14 @@
  *     N a m e   S e c t i o n
  */
 
+private string article;
 private string short_text;
 private string long_text;
 private string desc;
 private string* identifiers;
+
+string get_article() { return this.article; }
+string set_article(string article) { this.article = article; }
 
 string get_short() { return this.short_text; }
 void set_short(string new_short) { this.short_text = new_short; }
@@ -15,6 +19,8 @@ void set_long(string new_long) { this.long_text = new_long; }
 
 string get_desc() { return this.desc; }
 void set_desc(string new_desc) { this.desc = new_desc; }
+
+string get_name() { return ((get_article() == "") ? "" : (get_article() + " ")) + get_short(); }
 
 void add_id(string id) { List_Append(this.identifiers, id); }
 
@@ -32,9 +38,10 @@ bool reacts_to_id(string id)
 
 void reset()
 {
-    set_short("a thing");
-    set_long("A thing.");
-    set_desc("This is a thing. It has no description.");
+    set_article("a");
+    set_short("thing");
+    set_long("A thing lies here. This is most likely a bug.");
+    set_desc("This is a thing. It has no description. It is probably a bug.");
     this.identifiers = {};
 }
 

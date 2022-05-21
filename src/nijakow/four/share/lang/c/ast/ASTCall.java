@@ -23,6 +23,7 @@ public class ASTCall extends ASTExpression {
 			expr.compile(compiler);
 			compiler.compilePush();
 		}
+		compiler.tell(this);
 		expr.compileCall(compiler, args.length, hasVarargs);
 	}
 }
