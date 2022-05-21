@@ -18,12 +18,16 @@ public class Token {
     }
 
     public Token next() {
-        if (this.cachedNextToken != null)
+        if (this.cachedNextToken == null)
             this.cachedNextToken = tokenizer.nextToken();
         return this.cachedNextToken;
     }
 
     public TokenType getType() {
         return type;
+    }
+
+    public Object getPayload() {
+        return payload;
     }
 }

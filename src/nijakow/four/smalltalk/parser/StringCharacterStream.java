@@ -34,6 +34,6 @@ public class StringCharacterStream implements CharacterStream {
             }
             read();
         }
-        return false;
+        return true;
     }
 }

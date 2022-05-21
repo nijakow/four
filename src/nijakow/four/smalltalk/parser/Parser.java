@@ -6,7 +6,6 @@ import nijakow.four.smalltalk.objects.STSymbol;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Supplier;
 
 public class Parser {
     private final Tokenizer tokenizer;
@@ -25,14 +24,29 @@ public class Parser {
             current = current.next();
     }
 
-    private boolean checkUnary() { return false; }
-    private boolean checkBinary() { return false; }
-    private boolean checkNAry() { return false; }
+    private boolean isUnary() { return !isBinary() && !isNAry(); }
+    private boolean isBinary() {
+        String name = getSymbolName();
+        if (name == null) return false;
+        char c = name.charAt(name.length() - 1);
+        return !(Character.isAlphabetic(c) || Character.isDigit(c));
+    }
+    private boolean isNAry() {
+        String name = getSymbolName();
+        return name != null && name.charAt(name.length() - 1) == ':';
+    }
 
-    private String getSymbolName() { return ""; }
+    private String getSymbolName() {
+        if (!is(TokenType.SYMBOL))
+            return null;
+        return ((STSymbol) current().getPayload()).getName();
+    }
 
     private STSymbol expectSymbol() {
-        return null;
+        expect(TokenType.SYMBOL);
+        STSymbol sym = (STSymbol) current().getPayload();
+        advance();
+        return sym;
     }
 
     private boolean is(TokenType type) {
@@ -49,39 +63,35 @@ public class Parser {
 
     private void expect(TokenType type) {
         if (!check(type)) {
-            // TODO
+            throw new RuntimeException("Expected " + type + ", got " + current().getType());
         }
     }
 
-    private <T> Pair<STSymbol, T[]> parseSmalltalkOp(Supplier<T> subparser, int level) {
+    private Pair<STSymbol, STSymbol[]> parseSmalltalkArglist() {
         StringBuilder name = new StringBuilder();
-        List<T> ts = new ArrayList<>();
+        List<STSymbol> ts = new ArrayList<>();
 
-        if (checkUnary()) {
+        if (isUnary()) {
             name.append(getSymbolName());
             advance();
-        } else if (checkBinary()) {
+        } else if (isBinary()) {
             name.append(getSymbolName());
             advance();
-            ts.add(subparser.get());
+            ts.add(expectSymbol());
         } else {
-            if (!checkNAry())
+            if (!isNAry())
                 return null;
-            while (checkNAry()) {
+            while (isNAry()) {
                 name.append(getSymbolName());
                 advance();
-                subparser.get();
+                ts.add(expectSymbol());
             }
         }
-        return new Pair<>(STSymbol.get(name.toString()), (T[]) ts.toArray());
-    }
-
-    private <T> Pair<STSymbol, T[]> parseSmalltalkOp(Supplier<T> subparser) {
-        return parseSmalltalkOp(subparser, 3);
+        return new Pair<>(STSymbol.get(name.toString()), ts.toArray(new STSymbol[]{}));
     }
 
     private ExprAST parseSend(ExprAST receiver) {
-        Pair<STSymbol, ExprAST[]> pair = parseSmalltalkOp(() -> parseExpression());
+        Pair<STSymbol, ExprAST[]> pair = null;  // TODO
         if (pair == null)
             return receiver;
         return new SendAST(receiver, pair.getFirst(), pair.getSecond());
@@ -104,7 +114,7 @@ public class Parser {
 
     private ExprAST parseExpression() {
         ExprAST expr = parseSimpleExpression();
-        ExprAST next = expr;
+        ExprAST next = null;
 
         while (expr != next || check(TokenType.SEMICOLON)) {
             next = expr;
@@ -122,13 +132,15 @@ public class Parser {
                 if (check(type))
                     break;
                 expect(TokenType.DOT);
+                if (check(type))
+                    break;
             }
         }
         return new ExprsAST(expressions.toArray(new ExprAST[]{}));
     }
 
     public MethodAST parseMethod() {
-        Pair<STSymbol, STSymbol[]> head = parseSmalltalkOp(() -> expectSymbol());
+        Pair<STSymbol, STSymbol[]> head = parseSmalltalkArglist();
         List<STSymbol> locals = new ArrayList<>();
         if (check(TokenType.BAR)) {
             while (is(TokenType.SYMBOL)) {

@@ -5,6 +5,6 @@ public enum TokenType {
     LPAREN, RPAREN,
     LBRACK, RBRACK,
     BAR,
-    DOT, COMMA, SEMICOLON,
+    DOT, COMMA, COLON, SEMICOLON,
     SYMBOL, SELF
 }
