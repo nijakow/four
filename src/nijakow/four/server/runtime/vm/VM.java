@@ -17,10 +17,9 @@ import nijakow.four.server.users.IdentityDatabase;
 import nijakow.four.server.users.User;
 import nijakow.four.server.runtime.vm.fiber.Fiber;
 import nijakow.four.server.process.Process;
-import nijakow.four.share.lang.c.parser.StreamPosition;
+import nijakow.four.share.lang.base.parser.StreamPosition;
 import nijakow.four.share.util.ComparablePair;
 
-import java.io.FileOutputStream;
 import java.util.*;
 
 public class VM {

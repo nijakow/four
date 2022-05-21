@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import nijakow.four.server.runtime.objects.standard.FString;
-import nijakow.four.server.runtime.types.ObjectType;
+import nijakow.four.share.lang.base.parser.StreamPosition;
 import nijakow.four.share.lang.c.SlotVisibility;
 import nijakow.four.share.lang.c.ast.*;
 import nijakow.four.server.runtime.objects.standard.FInteger;

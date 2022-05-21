@@ -1,7 +1,7 @@
 package nijakow.four.server.runtime.vm.code;
 
 import nijakow.four.server.runtime.types.Type;
-import nijakow.four.share.lang.c.parser.StreamPosition;
+import nijakow.four.share.lang.base.parser.StreamPosition;
 
 public class CodeMeta {
     private final StreamPosition streamPosition;

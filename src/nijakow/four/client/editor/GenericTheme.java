@@ -1,8 +1,8 @@
 package nijakow.four.client.editor;
 
 import nijakow.four.share.lang.c.parser.ParseException;
-import nijakow.four.share.lang.c.parser.StreamPosition;
-import nijakow.four.share.lang.c.parser.StringCharStream;
+import nijakow.four.share.lang.base.parser.StreamPosition;
+import nijakow.four.share.lang.base.parser.StringCharStream;
 import nijakow.four.share.lang.c.parser.TokenType;
 
 import java.awt.*;

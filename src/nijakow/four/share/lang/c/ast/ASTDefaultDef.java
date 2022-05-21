@@ -6,7 +6,7 @@ import nijakow.four.server.runtime.vm.code.Code;
 import nijakow.four.server.runtime.FourClassLoader;
 import nijakow.four.server.runtime.Key;
 import nijakow.four.share.lang.c.SlotVisibility;
-import nijakow.four.share.lang.c.parser.StreamPosition;
+import nijakow.four.share.lang.base.parser.StreamPosition;
 
 public class ASTDefaultDef extends ASTDefinition {
 

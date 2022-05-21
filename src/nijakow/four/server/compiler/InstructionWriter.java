@@ -12,7 +12,7 @@ import nijakow.four.server.runtime.Key;
 import nijakow.four.server.runtime.types.ListType;
 import nijakow.four.server.runtime.types.Type;
 import nijakow.four.server.runtime.vm.Bytecodes;
-import nijakow.four.share.lang.c.parser.StreamPosition;
+import nijakow.four.share.lang.base.parser.StreamPosition;
 
 public class InstructionWriter {
 	private final CodeMeta meta;

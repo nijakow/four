@@ -1,6 +1,7 @@
 package nijakow.four.client.editor;
 
 import nijakow.four.client.utils.StringHelper;
+import nijakow.four.share.lang.base.parser.StringCharStream;
 import nijakow.four.share.lang.c.parser.*;
 
 import javax.swing.text.*;

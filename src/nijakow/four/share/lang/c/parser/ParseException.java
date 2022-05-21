@@ -1,7 +1,7 @@
 package nijakow.four.share.lang.c.parser;
 
 import nijakow.four.share.lang.FourCompilerException;
-import nijakow.four.share.util.Pair;
+import nijakow.four.share.lang.base.parser.StreamPosition;
 
 public class ParseException extends FourCompilerException {
 	private final Token token;

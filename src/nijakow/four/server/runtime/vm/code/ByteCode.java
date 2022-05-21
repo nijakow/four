@@ -3,19 +3,13 @@ package nijakow.four.server.runtime.vm.code;
 import nijakow.four.server.runtime.Key;
 import nijakow.four.server.runtime.exceptions.FourRuntimeException;
 import nijakow.four.server.runtime.objects.Instance;
-import nijakow.four.server.runtime.objects.collections.FList;
-import nijakow.four.server.runtime.objects.collections.FMapping;
-import nijakow.four.server.runtime.objects.standard.FClosure;
-import nijakow.four.server.runtime.objects.standard.FInteger;
-import nijakow.four.server.runtime.types.ListType;
 import nijakow.four.server.runtime.types.Type;
 import nijakow.four.server.runtime.vm.Bytecodes;
 import nijakow.four.server.runtime.vm.fiber.Fiber;
 import nijakow.four.share.lang.c.ast.OperatorType;
-import nijakow.four.share.lang.c.parser.StreamPosition;
+import nijakow.four.share.lang.base.parser.StreamPosition;
 
 import java.io.PrintStream;
-import java.io.PrintWriter;
 
 public class ByteCode implements Code {
 	private final CodeMeta meta;

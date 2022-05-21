@@ -6,15 +6,11 @@ import nijakow.four.server.runtime.objects.Instance;
 import nijakow.four.server.runtime.objects.blue.Blue;
 import nijakow.four.server.runtime.vm.fiber.Fiber;
 import nijakow.four.share.lang.base.CompilationException;
-import nijakow.four.share.lang.c.ast.ASTExpression;
 import nijakow.four.share.lang.c.parser.ParseException;
 import nijakow.four.server.runtime.vm.code.Code;
 import nijakow.four.server.runtime.Key;
 import nijakow.four.server.nvfs.NVFileSystem;
 import nijakow.four.server.runtime.vm.VM;
-import nijakow.four.share.lang.c.parser.Parser;
-import nijakow.four.share.lang.c.parser.StringCharStream;
-import nijakow.four.share.lang.c.parser.Tokenizer;
 
 public class FString extends FloatingInstance {
 	private final String value;

@@ -6,7 +6,7 @@ import nijakow.four.server.runtime.vm.code.Code;
 import nijakow.four.server.runtime.vm.code.CodeMeta;
 import nijakow.four.share.lang.base.CompilationException;
 import nijakow.four.share.lang.base.FCompiler;
-import nijakow.four.share.lang.c.parser.StreamPosition;
+import nijakow.four.share.lang.base.parser.StreamPosition;
 
 public abstract class ASTInstruction extends AST {
 

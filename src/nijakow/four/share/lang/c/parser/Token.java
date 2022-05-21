@@ -1,5 +1,7 @@
 package nijakow.four.share.lang.c.parser;
 
+import nijakow.four.share.lang.base.parser.StreamPosition;
+
 public class Token {
 	private final Tokenizer tokenizer;
 	private final StreamPosition position;

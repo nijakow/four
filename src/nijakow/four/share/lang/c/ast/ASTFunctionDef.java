@@ -8,7 +8,7 @@ import nijakow.four.server.runtime.objects.blue.Blueprint;
 import nijakow.four.server.runtime.types.Type;
 import nijakow.four.server.runtime.vm.code.Code;
 import nijakow.four.share.lang.c.SlotVisibility;
-import nijakow.four.share.lang.c.parser.StreamPosition;
+import nijakow.four.share.lang.base.parser.StreamPosition;
 import nijakow.four.share.util.Pair;
 
 public class ASTFunctionDef extends ASTDefinition {

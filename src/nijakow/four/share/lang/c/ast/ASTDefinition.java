@@ -3,7 +3,7 @@ package nijakow.four.share.lang.c.ast;
 import nijakow.four.server.runtime.Key;
 import nijakow.four.server.runtime.types.Type;
 import nijakow.four.share.lang.c.SlotVisibility;
-import nijakow.four.share.lang.c.parser.StreamPosition;
+import nijakow.four.share.lang.base.parser.StreamPosition;
 
 public abstract class ASTDefinition extends ASTDecl {
 	private final SlotVisibility visibility;

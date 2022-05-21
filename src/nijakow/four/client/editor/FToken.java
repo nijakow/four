@@ -1,6 +1,6 @@
 package nijakow.four.client.editor;
 
-import nijakow.four.share.lang.c.parser.StreamPosition;
+import nijakow.four.share.lang.base.parser.StreamPosition;
 
 public final class FToken {
     private final FTokenType type;

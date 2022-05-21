@@ -5,13 +5,12 @@ import java.util.Stack;
 import nijakow.four.server.process.Process;
 import nijakow.four.server.runtime.exceptions.CastException;
 import nijakow.four.server.runtime.objects.blue.Blue;
-import nijakow.four.server.runtime.objects.standard.FClosure;
 import nijakow.four.server.runtime.types.Type;
 import nijakow.four.server.runtime.vm.VM;
 import nijakow.four.server.runtime.vm.code.ByteCode;
 import nijakow.four.server.runtime.exceptions.FourRuntimeException;
 import nijakow.four.server.runtime.objects.Instance;
-import nijakow.four.share.lang.c.parser.StreamPosition;
+import nijakow.four.share.lang.base.parser.StreamPosition;
 
 public class Fiber {
 	private final VM vm;

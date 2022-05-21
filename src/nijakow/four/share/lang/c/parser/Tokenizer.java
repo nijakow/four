@@ -2,6 +2,8 @@ package nijakow.four.share.lang.c.parser;
 
 import java.util.Stack;
 
+import nijakow.four.share.lang.base.parser.CharStream;
+import nijakow.four.share.lang.base.parser.StreamPosition;
 import nijakow.four.share.lang.c.ast.OperatorType;
 import nijakow.four.server.runtime.objects.standard.FInteger;
 import nijakow.four.server.runtime.objects.standard.FString;

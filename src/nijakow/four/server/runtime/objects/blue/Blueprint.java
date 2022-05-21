@@ -2,13 +2,12 @@ package nijakow.four.server.runtime.objects.blue;
 
 import java.util.*;
 
-import nijakow.four.server.runtime.objects.FloatingInstance;
 import nijakow.four.server.runtime.vm.code.ByteCode;
 import nijakow.four.server.runtime.vm.code.Code;
 import nijakow.four.server.runtime.Key;
 import nijakow.four.server.runtime.types.Type;
 import nijakow.four.share.lang.c.SlotVisibility;
-import nijakow.four.share.lang.c.parser.StreamPosition;
+import nijakow.four.share.lang.base.parser.StreamPosition;
 
 public class Blueprint {
 	private static final Set<Blueprint> instances;

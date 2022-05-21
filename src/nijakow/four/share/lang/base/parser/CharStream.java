@@ -1,4 +1,4 @@
-package nijakow.four.share.lang.c.parser;
+package nijakow.four.share.lang.base.parser;
 
 public interface CharStream {
 	int peek();

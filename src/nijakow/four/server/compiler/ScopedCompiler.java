@@ -15,7 +15,7 @@ import nijakow.four.server.runtime.objects.Instance;
 import nijakow.four.server.runtime.Key;
 import nijakow.four.server.runtime.types.ListType;
 import nijakow.four.server.runtime.types.Type;
-import nijakow.four.share.lang.c.parser.StreamPosition;
+import nijakow.four.share.lang.base.parser.StreamPosition;
 import nijakow.four.share.util.Pair;
 
 class ScopedCompilerLabel implements Label {

@@ -15,7 +15,7 @@ import nijakow.four.share.lang.base.CompilationException;
 import nijakow.four.share.lang.c.ast.ASTClass;
 import nijakow.four.share.lang.c.parser.ParseException;
 import nijakow.four.share.lang.c.parser.Parser;
-import nijakow.four.share.lang.c.parser.StringCharStream;
+import nijakow.four.share.lang.base.parser.StringCharStream;
 import nijakow.four.share.lang.c.parser.Tokenizer;
 
 import java.nio.charset.StandardCharsets;
