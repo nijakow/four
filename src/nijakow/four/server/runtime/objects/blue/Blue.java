@@ -1,7 +1,6 @@
 package nijakow.four.server.runtime.objects.blue;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import nijakow.four.server.runtime.objects.FloatingInstance;
 import nijakow.four.server.runtime.objects.standard.FClosure;
@@ -14,6 +13,12 @@ import nijakow.four.server.runtime.vm.VM;
 
 public class Blue extends FloatingInstance {
 	private static long ID_COUNTER = 0;
+	private static final Set<Blue> blues;
+
+	static {
+		blues = Collections.newSetFromMap(new WeakHashMap<>());
+	}
+
 	private final long id;
 	private boolean initialized = false;
 	private Blueprint blueprint;
@@ -24,6 +29,7 @@ public class Blue extends FloatingInstance {
 		this.id = ID_COUNTER++;
 		parent = sibling = children = null;
 		registerToPool();
+		blues.add(this);
 	}
 	
 	public Blue(Blueprint blueprint) {
@@ -75,6 +81,17 @@ public class Blue extends FloatingInstance {
 
 	public boolean isInitialized() { return initialized; }
 	public void setInitialized() { initialized = true; }
+
+	public boolean isTickable() {
+		return blueprint.getMethod(Key.get("_tick")) != null;
+	}
+	public static Blue[] getTickables() {
+		ArrayList<Blue> tickables = new ArrayList<>();
+		for (Blue b : blues)
+			if (b.isTickable())
+				tickables.add(b);
+		return tickables.toArray(new Blue[]{});
+	}
 	
 	@Override
 	public String toString() {

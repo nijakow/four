@@ -18,6 +18,7 @@ import nijakow.four.server.runtime.objects.misc.FConnection;
 import nijakow.four.server.runtime.objects.standard.FClosure;
 import nijakow.four.server.runtime.objects.standard.FInteger;
 import nijakow.four.server.runtime.objects.standard.FString;
+import nijakow.four.server.runtime.types.Type;
 import nijakow.four.server.runtime.vm.code.BuiltinCode;
 import nijakow.four.server.runtime.vm.code.Code;
 import nijakow.four.server.runtime.vm.fiber.Fiber;
@@ -118,6 +119,16 @@ public class Key {
 			@Override
 			public void run(Fiber fiber, Instance self, Instance[] args) throws CastException {
 				fiber.setAccu(FInteger.getBoolean(args[0].asBlue().isInitialized()));
+			}
+		};
+		get("$get_tickables").code = new BuiltinCode() {
+
+			@Override
+			public void run(Fiber fiber, Instance self, Instance[] args) throws CastException {
+				FList list = new FList();
+				for (Blue b : Blue.getTickables())
+					list.append(b);
+				fiber.setAccu(list);
 			}
 		};
 		get("$get_parent").code = new BuiltinCode() {
