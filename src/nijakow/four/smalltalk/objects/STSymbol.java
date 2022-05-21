@@ -12,6 +12,8 @@ public class STSymbol extends STInstance {
     }
 
     public String getName() { return this.name; }
+    public STInstance getValue() { return value; }
+    public void setValue(STInstance value) { this.value = value; }
 
     private static Map<String, STSymbol> symbols = new HashMap<>();
     public static STSymbol get(String name) {
