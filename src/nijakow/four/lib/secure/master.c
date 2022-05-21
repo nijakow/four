@@ -5,6 +5,30 @@ use $on_connect;
 use $on_error;
 use $statics;
 use $exec;
+use $fork;
+use $log;
+use $sleep;
+use $get_tickables;
+
+private void ticker_loop()
+{
+    while (true)
+    {
+        $log("Ticking now...\n");
+        for (any o : $get_tickables())
+            o->_tick();
+        $sleep(5000);
+    }
+}
+
+private void ticker()
+{
+    /*
+     * Run the ticker loop in its own thread to
+     * avoid crash cascades.
+     */
+    $exec(this::ticker_loop);
+}
 
 private void logout_func()
 {
@@ -35,4 +59,5 @@ void _init()
     "/lib/object.c"::_init();
     $on_error(this::handle_error);
     $on_connect(this::receive);
+    $fork(this::ticker);
 }
