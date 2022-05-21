@@ -107,6 +107,17 @@ public class Parser {
         return receiver;
     }
 
+    private BlockAST parseBlock() {
+        List<STSymbol> ts = new ArrayList<>();
+
+        while (check(TokenType.COLON))
+            ts.add(expectSymbol());
+        if (!ts.isEmpty())
+            expect(TokenType.BAR);
+
+        return new BlockAST(ts.toArray(new STSymbol[]{}), parseExpressionsUntil(TokenType.RBRACK));
+    }
+
     private ExprAST parseSimpleExpression() {
         if (check(TokenType.LPAREN)) {
             ExprAST ast = parseExpression();
@@ -116,6 +127,8 @@ public class Parser {
             SymbolAST ast = new SymbolAST(STSymbol.get(getSymbolName()));
             advance();
             return ast;
+        } else if (check(TokenType.LBRACK)) {
+            return parseBlock();
         } else {
             expect(TokenType.SELF);
             return new SelfAST();

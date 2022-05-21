@@ -2,7 +2,7 @@ package nijakow.four.smalltalk.ast;
 
 import nijakow.four.smalltalk.objects.STSymbol;
 
-public class BlockAST {
+public class BlockAST extends ExprAST {
     private final STSymbol[] args;
     private final ExprAST body;
 
