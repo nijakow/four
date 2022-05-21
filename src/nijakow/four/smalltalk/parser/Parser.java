@@ -1,10 +1,7 @@
 package nijakow.four.smalltalk.parser;
 
 import nijakow.four.share.util.Pair;
-import nijakow.four.smalltalk.ast.ExprAST;
-import nijakow.four.smalltalk.ast.ExprsAST;
-import nijakow.four.smalltalk.ast.BlockAST;
-import nijakow.four.smalltalk.ast.MethodAST;
+import nijakow.four.smalltalk.ast.*;
 import nijakow.four.smalltalk.objects.STSymbol;
 
 import java.util.ArrayList;
@@ -56,7 +53,7 @@ public class Parser {
         }
     }
 
-    private <T> Pair<STSymbol, T[]> parseSmalltalkOp(Supplier<T> subparser) {
+    private <T> Pair<STSymbol, T[]> parseSmalltalkOp(Supplier<T> subparser, int level) {
         StringBuilder name = new StringBuilder();
         List<T> ts = new ArrayList<>();
 
@@ -68,6 +65,8 @@ public class Parser {
             advance();
             ts.add(subparser.get());
         } else {
+            if (!checkNAry())
+                return null;
             while (checkNAry()) {
                 name.append(getSymbolName());
                 advance();
@@ -75,6 +74,44 @@ public class Parser {
             }
         }
         return new Pair<>(STSymbol.get(name.toString()), (T[]) ts.toArray());
+    }
+
+    private <T> Pair<STSymbol, T[]> parseSmalltalkOp(Supplier<T> subparser) {
+        return parseSmalltalkOp(subparser, 3);
+    }
+
+    private ExprAST parseSend(ExprAST receiver) {
+        Pair<STSymbol, ExprAST[]> pair = parseSmalltalkOp(() -> parseExpression());
+        if (pair == null)
+            return receiver;
+        return new SendAST(receiver, pair.getFirst(), pair.getSecond());
+    }
+
+    private ExprAST parseSimpleExpression() {
+        if (check(TokenType.LPAREN)) {
+            ExprAST ast = parseExpression();
+            expect(TokenType.RPAREN);
+            return ast;
+        } else if (is(TokenType.SYMBOL)) {
+            SymbolAST ast = new SymbolAST(STSymbol.get(getSymbolName()));
+            advance();
+            return ast;
+        } else {
+            expect(TokenType.SELF);
+            return new SelfAST();
+        }
+    }
+
+    private ExprAST parseExpression() {
+        ExprAST expr = parseSimpleExpression();
+        ExprAST next = expr;
+
+        while (expr != next || check(TokenType.SEMICOLON)) {
+            next = expr;
+            expr = parseSend(expr);
+        }
+
+        return expr;
     }
 
     private ExprsAST parseExpressionsUntil(TokenType type) {
@@ -90,7 +127,7 @@ public class Parser {
         return new ExprsAST(expressions.toArray(new ExprAST[]{}));
     }
 
-    private MethodAST parseMethod() {
+    public MethodAST parseMethod() {
         Pair<STSymbol, STSymbol[]> head = parseSmalltalkOp(() -> expectSymbol());
         List<STSymbol> locals = new ArrayList<>();
         if (check(TokenType.BAR)) {
