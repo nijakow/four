@@ -24,12 +24,12 @@ public class Parser {
             current = current.next();
     }
 
-    private boolean isUnary() { return !isBinary() && !isNAry(); }
+    private boolean isUnary() { return is(TokenType.SYMBOL) && !isBinary() && !isNAry(); }
     private boolean isBinary() {
         String name = getSymbolName();
         if (name == null) return false;
         char c = name.charAt(name.length() - 1);
-        return !(Character.isAlphabetic(c) || Character.isDigit(c));
+        return c != ':' && !(Character.isAlphabetic(c) || Character.isDigit(c));
     }
     private boolean isNAry() {
         String name = getSymbolName();
@@ -43,10 +43,9 @@ public class Parser {
     }
 
     private STSymbol expectSymbol() {
+        Token t = current();
         expect(TokenType.SYMBOL);
-        STSymbol sym = (STSymbol) current().getPayload();
-        advance();
-        return sym;
+        return (STSymbol) t.getPayload();
     }
 
     private boolean is(TokenType type) {
@@ -90,11 +89,22 @@ public class Parser {
         return new Pair<>(STSymbol.get(name.toString()), ts.toArray(new STSymbol[]{}));
     }
 
-    private ExprAST parseSend(ExprAST receiver) {
-        Pair<STSymbol, ExprAST[]> pair = null;  // TODO
-        if (pair == null)
-            return receiver;
-        return new SendAST(receiver, pair.getFirst(), pair.getSecond());
+    private ExprAST parseSend(ExprAST receiver, int prio) {
+        if (isUnary()) {
+            return new SendAST(receiver, expectSymbol(), new ExprAST[]{});
+        } else if (prio > 0 && isBinary()) {
+            return new SendAST(receiver, expectSymbol(), new ExprAST[]{ parseExpression(0) });
+        } else if (prio > 1 && isNAry()) {
+            StringBuilder name = new StringBuilder();
+            List<ExprAST> ts = new ArrayList<>();
+            while (isNAry()) {
+                name.append(getSymbolName());
+                advance();
+                ts.add(parseExpression(1));
+            }
+            return new SendAST(receiver, STSymbol.get(name.toString()), ts.toArray(new ExprAST[]{}));
+        }
+        return receiver;
     }
 
     private ExprAST parseSimpleExpression() {
@@ -112,16 +122,20 @@ public class Parser {
         }
     }
 
-    private ExprAST parseExpression() {
+    private ExprAST parseExpression(int prio) {
         ExprAST expr = parseSimpleExpression();
         ExprAST next = null;
 
         while (expr != next || check(TokenType.SEMICOLON)) {
             next = expr;
-            expr = parseSend(expr);
+            expr = parseSend(expr, prio);
         }
 
         return expr;
+    }
+
+    private ExprAST parseExpression() {
+        return parseExpression(2);
     }
 
     private ExprsAST parseExpressionsUntil(TokenType type) {

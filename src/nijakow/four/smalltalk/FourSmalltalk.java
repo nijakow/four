@@ -8,7 +8,7 @@ import nijakow.four.smalltalk.parser.Tokenizer;
 public class FourSmalltalk {
 
     public static void main(String[] args) {
-        StringCharacterStream cs = new StringCharacterStream("foo\n [ self. ]");
+        StringCharacterStream cs = new StringCharacterStream("foo: a bar: b\n [ self x: a y: (b + self). ]");
         Tokenizer tokenizer = new Tokenizer(cs);
         Parser parser = new Parser(tokenizer);
         MethodAST method = parser.parseMethod();
