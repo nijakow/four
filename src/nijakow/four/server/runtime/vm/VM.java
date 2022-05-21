@@ -77,6 +77,8 @@ public class VM {
 	}
 	
 	public long notificationWish() {
+		if (!fibers.isEmpty())
+			return 1;
 		long time = System.currentTimeMillis();
 		if (sleepingFibers.isEmpty())
 			return 1;

@@ -6,7 +6,6 @@ use $on_error;
 use $statics;
 use $exec;
 use $fork;
-use $log;
 use $sleep;
 use $get_tickables;
 
@@ -14,7 +13,6 @@ private void ticker_loop()
 {
     while (true)
     {
-        $log("Ticking now...\n");
         for (any o : $get_tickables())
             o->_tick();
         $sleep(5000);

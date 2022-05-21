@@ -1,6 +1,7 @@
 #include "/lib/app.c"
 
 private object player;
+private object terminal;
 
 private void describe()
 {
@@ -45,7 +46,7 @@ private void cmd_examine(string* args)
 
 private void event_callback(string event)
 {
-    printf("%s", event);
+    this.terminal->printf("%s", event);
 }
 
 private void main_loop()
@@ -63,8 +64,10 @@ private void main_loop()
     }
 }
 
+use $statics;
 void main(string* argv)
 {
+    this.terminal = $statics()["terminal"];
     this.player = new("/std/thing.c");  // TODO: Find player
     this.player.add_command("look", this::cmd_look);
     this.player.add_command("examine", this::cmd_look);

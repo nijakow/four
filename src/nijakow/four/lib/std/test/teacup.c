@@ -1,6 +1,6 @@
 #include "/std/thing.c"
 
-private void tick()
+private void _tick()
 {
     this.act("418 I'm a teacup.\n");
 }
@@ -8,7 +8,6 @@ private void tick()
 void reset()
 {
     "/std/thing.c"::reset();
-    enable_living(this::tick);
     set_short("teacup");
     set_long("A teacup lies here.");
     add_id("teacup");
