@@ -12,7 +12,7 @@ import java.util.Vector;
 
 public class Fiber {
     private final SmalltalkVM vm;
-    private boolean isPaused = false;
+    private boolean isPaused = true;
     private STInstance accu;
     private Context top;
     private final Vector<STInstance> stack;
@@ -76,7 +76,7 @@ public class Fiber {
     }
 
     public void enter(Context lexical, VMInstruction instruction, int args) {
-        Context context = new Context(top(), lexical, instruction, sp - args - 2);
+        Context context = new Context(top(), lexical, instruction, sp - args - 1);
         this.top = context;
     }
 
@@ -84,6 +84,7 @@ public class Fiber {
         push(self);
         for (STInstance arg : args)
             push(arg);
+        setAccu(self);
         send(message, args.length);
     }
 
@@ -98,6 +99,7 @@ public class Fiber {
     public void normalReturn() {
         sp = top().getBase();
         top = top().getParent();
+        maybeHalt();
     }
 
     public void lexicalReturn() {
@@ -111,10 +113,12 @@ public class Fiber {
             }
         }
         top = top().getParent();
+        maybeHalt();
     }
 
     public void runForAWhile() {
         for (int x = 0; x < 32 * 1024; x++) {
+            maybeHalt();
             if (!isRunning()) break;
             top().step(this);
         }
@@ -146,5 +150,11 @@ public class Fiber {
          *                                                           - nijakow
          */
         pause();
+    }
+
+    public void maybeHalt() {
+        if (isDead() && !isPaused()) {
+            halt();
+        }
     }
 }

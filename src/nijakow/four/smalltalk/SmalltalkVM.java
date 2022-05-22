@@ -36,6 +36,7 @@ public class SmalltalkVM {
     public void startFiber(STInstance self, STSymbol message, STInstance[] args) {
         Fiber fiber = new Fiber(this);
         fiber.enter(self, message, args);
+        fiber.restart();
     }
 
     public void restartFiber(Fiber fiber) { runningSet.add(fiber); }

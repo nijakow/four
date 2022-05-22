@@ -6,8 +6,9 @@ public class STObject extends STInstance {
     private STClass clazz;
     private STInstance[] values;
 
-    STObject(int slotCount) {
-        values = new STInstance[slotCount];
+    STObject(STClass clazz, int slotCount) {
+        this.clazz = clazz;
+        this.values = new STInstance[slotCount];
     }
 
     public STInstance get(int index) {

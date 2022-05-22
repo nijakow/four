@@ -31,7 +31,7 @@ public class STClass extends STInstance {
     }
 
     public STObject instantiate() {
-        return new STObject(members.length);
+        return new STObject(this, members.length);
     }
 
     public STClass subclass(STSymbol[] members) {

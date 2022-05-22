@@ -15,7 +15,6 @@ public class SendInstruction extends VMInstruction {
 
     @Override
     public void run(Fiber fiber) {
-        // TODO
-        throw new RuntimeException("Sending is not yet implemented!");
+        fiber.send(this.message, this.args);
     }
 }

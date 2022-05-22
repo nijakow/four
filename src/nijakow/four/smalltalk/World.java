@@ -79,7 +79,7 @@ public class World {
         });
 
         STClass fourClass = objectClass.subclass();
-        fourClass.addMethodFromSource("run\n[\n    sayHi.\n]\n");
+        fourClass.addMethodFromSource("run\n[\n    self sayHi.\n]\n");
 
         STObject four = fourClass.instantiate();
         setValue("Four", four);
