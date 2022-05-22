@@ -1,5 +1,6 @@
 package nijakow.four.smalltalk.vm;
 
+import nijakow.four.smalltalk.SmalltalkVM;
 import nijakow.four.smalltalk.objects.STClosure;
 import nijakow.four.smalltalk.objects.STInstance;
 import nijakow.four.smalltalk.objects.STMethod;
@@ -7,10 +8,16 @@ import nijakow.four.smalltalk.objects.STMethod;
 import java.util.Vector;
 
 public class Fiber {
+    private final SmalltalkVM vm;
+    private boolean isPaused = false;
     private STInstance accu;
     private Context top;
     private final Vector<STInstance> stack = new Vector<>();
     private int sp = 0;
+
+    public Fiber(SmalltalkVM vm) {
+        this.vm = vm;
+    }
 
     public Context top() {
         return null;
@@ -70,12 +77,37 @@ public class Fiber {
     }
 
     public void runForAWhile() {
-        for (int x = 0; x < 1024; x++) {
+        for (int x = 0; x < 32 * 1024; x++) {
+            if (!isRunning()) break;
             top().step(this);
         }
     }
 
     public boolean isRunning() {
-        return top() != null;
+        return !isPaused() && !isDead();
+    }
+    public boolean isPaused() { return isPaused; }
+    public boolean isDead() { return top() == null; }
+
+    public void restart() {
+        if (isPaused) {
+            isPaused = false;
+            vm.restartFiber(this);
+        }
+    }
+
+    public void pause() {
+        if (!isPaused) {
+            isPaused = true;
+            vm.pauseFiber(this);
+        }
+    }
+
+    public void halt() {
+        /*
+         * TODO: Put a lock bit into the system that blocks normal reactivations!
+         *                                                           - nijakow
+         */
+        pause();
     }
 }
