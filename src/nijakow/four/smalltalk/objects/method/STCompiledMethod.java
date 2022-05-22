@@ -4,6 +4,7 @@ import nijakow.four.smalltalk.World;
 import nijakow.four.smalltalk.objects.STClass;
 import nijakow.four.smalltalk.objects.STInstance;
 import nijakow.four.smalltalk.objects.STSymbol;
+import nijakow.four.smalltalk.vm.Context;
 import nijakow.four.smalltalk.vm.Fiber;
 import nijakow.four.smalltalk.vm.instructions.VMInstruction;
 
@@ -25,9 +26,9 @@ public class STCompiledMethod extends STInstance implements STMethod {
     }
 
     @Override
-    public void execute(Fiber fiber, int args) {
+    public void execute(Fiber fiber, int args, Context context) {
         // TODO: Check args!
-        fiber.enter(null, this.instructions, args);
+        fiber.enter(context, this.instructions, args);
     }
 
     @Override

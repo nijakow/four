@@ -67,7 +67,7 @@ public class Fiber {
         push(getAccu());
     }
 
-    private void push(STInstance value) {
+    public void push(STInstance value) {
         stack.set(sp++, value);
     }
 
@@ -93,7 +93,7 @@ public class Fiber {
         STMethod m = instance.getInstanceMethod(this.getVM().getWorld(), message);
         if (m == null)
             throw new RuntimeException("Method not found!");
-        m.execute(this, args);
+        m.execute(this, args, null);
     }
 
     public void normalReturn() {
