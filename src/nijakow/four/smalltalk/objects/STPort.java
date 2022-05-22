@@ -19,6 +19,10 @@ public class STPort extends STInstance {
         // TODO: this.connection.onDisconnect();
     }
 
+    private String generateKey() {
+        return "" + Math.random();  // TODO: Generate better keys!
+    }
+
     @Override
     public STClass getClass(World world) {
         return world.getPortClass();
@@ -51,7 +55,7 @@ public class STPort extends STInstance {
     }
 
     public void edit(String title, String text, Consumer<STString> consumer) {
-        final String key = "" + Math.random(); // TODO: Generate a better key
+        final String key = generateKey();
         keys.put(key, (string) -> {
             keys.remove(key);
             consumer.accept(string == null ? null : new STString(string));
@@ -64,13 +68,19 @@ public class STPort extends STInstance {
     }
 
     public void downloadFromUser(Consumer<STString> consumer) {
-        // TODO
+        final String key = generateKey();
+        keys.put(key, (string) -> {
+            keys.remove(key);
+            consumer.accept(string == null ? null : new STString(string));
+        });
+        writeEscaped("file/download", key);
     }
 
     private void processEscaped(String[] message) {
         switch (message[0])
         {
             case "editor/saved":
+            case "file/upload":
                 if (keys.containsKey(message[1]))
                     keys.get(message[1]).accept(message[2]);
                 break;
@@ -79,6 +89,7 @@ public class STPort extends STInstance {
                     keys.get(message[1]).accept(null);
                 break;
             default:
+                System.err.println(message[0]);
                 // TODO: Warning
                 break;
         }

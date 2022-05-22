@@ -107,6 +107,10 @@ public class STClass extends STInstance {
         return -1;
     }
 
+    public STSymbol[] getSelectors() {
+        return methods.keySet().toArray(new STSymbol[0]);
+    }
+
     @Override
     public STClass getClass(World world) {
         return world.getMetaClass();

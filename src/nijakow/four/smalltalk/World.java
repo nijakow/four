@@ -136,6 +136,11 @@ public class World {
         metaClass.addMethod("addMethod:", (fiber, args) -> {
             ((STClass) args[0]).addMethodFromSource(((STString) args[1]).getValue());
         });
+        metaClass.addMethod("selectors", (fiber, args) -> {
+            STSymbol[] selectors = ((STClass) args[0]).getSelectors();
+            STArray result = new STArray(selectors);
+            fiber.setAccu(result);
+        });
 
         nilClass = objectClass.subclass();
         booleanClass = objectClass.subclass();
@@ -246,6 +251,10 @@ public class World {
         portClass.addMethodFromSource("edit\n[\n  ^ self edit: '' title: 'Something new'\n]\n");
         portClass.addMethod("uploadToUser:", (fiber, args) -> {
             ((STPort) args[0]).uploadToUser(((STString) args[1]).getValue());
+        });
+        portClass.addMethod("downloadFromUser", (fiber, args) -> {
+            fiber.pause();
+            ((STPort) args[0]).downloadFromUser((STString file) -> fiber.restartWithValue(file));
         });
         portClass.addMethod("close", (fiber, args) -> {
             ((STPort) args[0]).close();
