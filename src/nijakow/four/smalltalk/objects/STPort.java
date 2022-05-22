@@ -5,13 +5,18 @@ import nijakow.four.smalltalk.net.IConnection;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Consumer;
 
 public class STPort extends STInstance {
     private final IConnection connection;
+    private final Map<String, Consumer<String>> keys = new HashMap<>();
 
     public STPort(IConnection connection) {
         this.connection = connection;
+        this.connection.onEscape((strings) -> processEscaped(strings));
+        // TODO: this.connection.onDisconnect();
     }
 
     @Override
@@ -46,8 +51,8 @@ public class STPort extends STInstance {
     }
 
     public void edit(String title, String text, Consumer<STString> consumer) {
-        final String key = "0"; // TODO: Generate a random key
-        // TODO: Set up callback
+        final String key = "" + Math.random(); // TODO: Generate a better key
+        keys.put(key, (string) -> consumer.accept(string == null ? null : new STString(string)));
         writeEscaped("editor/edit", key, title, text);
     }
 
@@ -57,6 +62,21 @@ public class STPort extends STInstance {
 
     public void downloadFromUser(Consumer<STString> consumer) {
         // TODO
+    }
+
+    private void processEscaped(String[] message) {
+        switch (message[0])
+        {
+            case "editor/saved":
+                keys.get(message[1]).accept(message[2]);
+                break;
+            case "editor/cancelled":
+                keys.get(message[1]).accept(null);
+                break;
+            default:
+                // TODO: Warning
+                break;
+        }
     }
 
     public void close() {

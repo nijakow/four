@@ -88,6 +88,9 @@ public class Fiber {
         setAccu(self);
         send(message, args.length);
     }
+    public void enter(STInstance self, String message, STInstance[] args) {
+        enter(self, STSymbol.get(message), args);
+    }
 
     public void send(STSymbol message, int args) {
         STInstance instance = stack.get(sp - args - 1);

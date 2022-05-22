@@ -76,16 +76,17 @@ public class World {
     public void buildDefaultWorld() {
         objectClass = new STClass();
         setValue("Object", objectClass);
-
-        objectClass.addMethod("sayHi", (fiber, args) -> {
-            System.out.println("Hi! :D");
-        });
+        objectClass.addMethodFromSource("init\n[\n]\n");
 
         metaClass = new STClass();
+        setValue("Class", metaClass);
         metaClass.addMethod("subclass:", (fiber, args) -> {
             final STSymbol name = ((STSymbol) args[1]);
             STClass clazz = ((STClass) args[0]).subclass();
             setValue(name, clazz);
+        });
+        metaClass.addMethod("new", (fiber, args) -> {
+            fiber.enter(((STClass) args[0]).instantiate(), "init", new STInstance[]{});
         });
 
         integerClass = objectClass.subclass();
@@ -112,6 +113,7 @@ public class World {
         closureClass.addMethod("value:value:value:value:", valueBuiltin);
         closureClass.addMethod("value:value:value:value:value:", valueBuiltin);
         closureClass.addMethod("value:value:value:value:value:value:", valueBuiltin);
+        closureClass.addMethod("value:value:value:value:value:value:value:", valueBuiltin);
 
         portClass.addMethod("prompt:", (fiber, args) -> {
             fiber.pause();
@@ -126,13 +128,17 @@ public class World {
         portClass.addMethod("out:", (fiber, args) -> {
             ((STPort) args[0]).write(((STString) args[1]).getValue());
         });
+        portClass.addMethod("edit:title:", (fiber, args) -> {
+            fiber.pause();
+            ((STPort) args[0]).edit(((STString) args[1]).getValue(), ((STString) args[2]).getValue(), (v) -> fiber.restartWithValue(v));
+        });
         portClass.addMethod("close", (fiber, args) -> {
             ((STPort) args[0]).close();
         });
 
         STClass fourClass = objectClass.subclass();
         fourClass.addMethodFromSource("run\n[\n]\n");
-        fourClass.addMethodFromSource("newConnection: connection\n[\n    connection out: (connection prompt: '42 > '); close.\n]\n");
+        fourClass.addMethodFromSource("newConnection: connection\n[\n    connection out: (connection edit: 'Hi?' title: 'Hello!').\n    connection out: (connection prompt: '42 > ').\n    connection close.\n]\n");
 
         STObject four = fourClass.instantiate();
         setValue("Four", four);
