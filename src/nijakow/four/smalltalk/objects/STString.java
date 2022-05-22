@@ -14,6 +14,11 @@ public class STString extends STInstance {
     }
 
     @Override
+    public String toString() {
+        return "'" + getValue() + "'";
+    }
+
+    @Override
     public STClass getClass(World world) {
         return world.getStringClass();
     }

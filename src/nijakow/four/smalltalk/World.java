@@ -35,7 +35,7 @@ public class World {
     }
 
     public STInstance getValue(STSymbol symbol) {
-        return bindings.get(symbol);
+        return bindings.getOrDefault(symbol, STNil.get());
     }
 
     public void setValue(String name, STInstance value) {
@@ -96,7 +96,7 @@ public class World {
         objectClass.addMethod("toString", (fiber, args) -> fiber.setAccu(new STString(args[0].toString())));
         objectClass.addMethod("=", (fiber, args) -> fiber.setAccu(STBoolean.get(args[0] == args[1])));
 
-        metaClass = new STClass();
+        metaClass = objectClass.subclass();
         setValue("Class", metaClass);
         metaClass.addMethod("new", (fiber, args) -> {
             fiber.enter(((STClass) args[0]).instantiate(), "init", new STInstance[]{});
@@ -115,10 +115,13 @@ public class World {
         });
         metaClass.addMethod("method:", (fiber, args) -> {
             STMethod method = ((STClass) args[0]).getMethod((STSymbol) args[1]);
-            fiber.setAccu(method.asInstance());
+            if (method == null || method.asInstance() == null)
+                fiber.setAccu(STNil.get());
+            else
+                fiber.setAccu(method.asInstance());
         });
 
-        nilClass = new STClass();
+        nilClass = objectClass.subclass();
         booleanClass = objectClass.subclass();
         integerClass = objectClass.subclass();
         stringClass = objectClass.subclass();
@@ -162,6 +165,7 @@ public class World {
             ((STClosure) args[0]).execute(fiber, args.length - 1);
         };
 
+        setValue("BlockClosure", closureClass);
         closureClass.addMethod("value", valueBuiltin);
         closureClass.addMethod("value:", valueBuiltin);
         closureClass.addMethod("value:value:", valueBuiltin);
@@ -203,7 +207,7 @@ public class World {
 
         STClass fourClass = objectClass.subclass();
         fourClass.addMethodFromSource("run\n[\n]\n");
-        fourClass.addMethodFromSource("newConnection: connection\n[\n    1 to: 10 do: [ :i | connection out: (i toString); cr; out: (Integer method: #'to:do:') source ].\n]\n");
+        fourClass.addMethodFromSource("newConnection: connection\n[\n    [ connection out: (connection prompt: 'Smalltalk> ') compile value toString; cr ] repeat.\n]\n");
 
         STObject four = fourClass.instantiate();
         setValue("Four", four);

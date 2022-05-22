@@ -46,9 +46,13 @@ public class Fiber {
     }
 
     public void loadLexicalSelf(Context context) {
-        while (context.getLexical() != null)
-            context = context.getLexical();
-        setAccu(stack.get(context.getBase()));
+        if (context == null)
+            loadSelf();
+        else {
+            while (context.getLexical() != null)
+                context = context.getLexical();
+            setAccu(stack.get(context.getBase()));
+        }
     }
 
     private Context lexical(int depth) {
