@@ -154,6 +154,8 @@ public class World {
 
         setValue("Boolean", booleanClass);
         booleanClass.addMethod("not", (fiber, args) -> fiber.setAccu(STBoolean.get(!args[0].isTrue())));
+        booleanClass.addMethod("&", (fiber, args) -> fiber.setAccu(STBoolean.get(args[0].isTrue() && args[1].isTrue())));
+        booleanClass.addMethod("|", (fiber, args) -> fiber.setAccu(STBoolean.get(args[0].isTrue() || args[1].isTrue())));
 
         setValue("Integer", integerClass);
         integerClass.addMethod("asChar", (fiber, args) -> fiber.setAccu(STCharacter.get((char) ((STInteger) args[0]).getValue())));
@@ -162,6 +164,13 @@ public class World {
         integerClass.addMethod("*", (fiber, args) -> fiber.setAccu(STInteger.get(((STInteger) args[0]).getValue() * ((STInteger) args[1]).getValue())));
         integerClass.addMethod("/", (fiber, args) -> fiber.setAccu(STInteger.get(((STInteger) args[0]).getValue() / ((STInteger) args[1]).getValue())));
         integerClass.addMethod("mod:", (fiber, args) -> fiber.setAccu(STInteger.get(((STInteger) args[0]).getValue() % ((STInteger) args[1]).getValue())));
+        integerClass.addMethod("negate", (fiber, args) -> fiber.setAccu(STInteger.get(-((STInteger) args[0]).getValue())));
+        integerClass.addMethod("bitAnd:", (fiber, args) -> fiber.setAccu(STInteger.get(((STInteger) args[0]).getValue() & ((STInteger) args[1]).getValue())));
+        integerClass.addMethod("bitOr:", (fiber, args) -> fiber.setAccu(STInteger.get(((STInteger) args[0]).getValue() | ((STInteger) args[1]).getValue())));
+        integerClass.addMethod("bitXor:", (fiber, args) -> fiber.setAccu(STInteger.get(((STInteger) args[0]).getValue() ^ ((STInteger) args[1]).getValue())));
+        integerClass.addMethod("leftShift:", (fiber, args) -> fiber.setAccu(STInteger.get(((STInteger) args[0]).getValue() << ((STInteger) args[1]).getValue())));
+        integerClass.addMethod("rightShift:", (fiber, args) -> fiber.setAccu(STInteger.get(((STInteger) args[0]).getValue() >> ((STInteger) args[1]).getValue())));
+        integerClass.addMethod("bitNot", (fiber, args) -> fiber.setAccu(STInteger.get(~((STInteger) args[0]).getValue())));
         integerClass.addMethod("<", (fiber, args) -> fiber.setAccu(STBoolean.get(((STInteger) args[0]).getValue() < ((STInteger) args[1]).getValue())));
         integerClass.addMethod("<=", (fiber, args) -> fiber.setAccu(STBoolean.get(((STInteger) args[0]).getValue() <= ((STInteger) args[1]).getValue())));
         integerClass.addMethod(">", (fiber, args) -> fiber.setAccu(STBoolean.get(((STInteger) args[0]).getValue() > ((STInteger) args[1]).getValue())));
