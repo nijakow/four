@@ -105,6 +105,8 @@ public class World {
         objectClass.addMethod("asBool", (fiber, args) -> fiber.setAccu(STBoolean.get(args[0].isTrue())));
         objectClass.addMethod("toString", (fiber, args) -> fiber.setAccu(new STString(args[0].toString())));
         objectClass.addMethod("=", (fiber, args) -> fiber.setAccu(STBoolean.get(args[0].is(args[1]))));
+        objectClass.addMethodFromSource("writeOn: w\n[\n    w out: self toString\n]\n");
+        objectClass.addMethodFromSource("storeOn: w\n[\n    w out: self toString\n]\n");
 
         metaClass = objectClass.subclass();
         setValue("Class", metaClass);
@@ -184,6 +186,7 @@ public class World {
 
         setValue("Character", characterClass);
         characterClass.addMethod("asInt", (fiber, args) -> fiber.setAccu(STInteger.get(((STCharacter) args[0]).getValue())));
+        characterClass.addMethodFromSource("writeOn: w\n[\n    w outputChar: self\n]\n");
 
         setValue("String", stringClass);
         stringClass.addMethod("size", (fiber, args) -> fiber.setAccu(STInteger.get((((STString) args[0]).getValue().length()))));
@@ -192,6 +195,8 @@ public class World {
         stringClass.addMethod("+", (fiber, args) -> fiber.setAccu(new STString(((STString) args[0]).getValue() + ((STString) args[1]).getValue())));
         stringClass.addMethod("compile", (fiber, args) -> fiber.setAccu(new STClosure(((STString) args[0]).compile(), null)));
         stringClass.addMethod("asSymbol", (fiber, args) -> fiber.setAccu(STSymbol.get(((STString) args[0]).getValue())));
+        stringClass.addMethodFromSource("do: block\n[\n    0 to: self size - 1 do: [ :i | block value: (self at: i) ]\n]\n");
+        stringClass.addMethodFromSource("writeOn: w\n[\n    self do: [ :c | w out: c ]\n]\n");
 
         setValue("Symbol", symbolClass);
         symbolClass.addMethod("asString", (fiber, args) -> fiber.setAccu(new STString(((STSymbol) args[0]).getName())));
@@ -237,9 +242,11 @@ public class World {
             ((STPort) args[0]).password(((STString) args[1]).getValue());
             ((STPort) args[0]).onInput((STString line) -> fiber.restartWithValue(line));
         });
-        portClass.addMethod("out:", (fiber, args) -> {
-            ((STPort) args[0]).write(((STString) args[1]).getValue());
+        portClass.addMethod("outputChar:", (fiber, args) -> {
+            ((STPort) args[0]).write("" + ((STCharacter) args[1]).getValue());
         });
+        portClass.addMethodFromSource("out: obj\n[\n    obj writeOn: self.\n  ^ self\n]\n");
+        portClass.addMethodFromSource("store: obj\n[\n    obj storeOn: self.\n  ^ self\n]\n");
         portClass.addMethodFromSource("cr\n[\n    self out: '\n'.\n]\n");
         portClass.addMethod("edit:title:", (fiber, args) -> {
             fiber.pause();
@@ -262,7 +269,7 @@ public class World {
 
         STClass fourClass = objectClass.subclass();
         fourClass.addMethodFromSource("run\n[\n]\n");
-        fourClass.addMethodFromSource("newConnection: connection\n[\n    Transcript := connection.\n    [ connection out: (connection prompt: 'Smalltalk> ') compile value toString; cr ] repeat.\n]\n");
+        fourClass.addMethodFromSource("newConnection: connection\n[\n    Transcript := connection.\n    [ connection store: (connection prompt: 'Smalltalk> ') compile value; cr ] repeat.\n]\n");
 
         STObject four = (STObject) fourClass.instantiate();
         setValue("Four", four);
