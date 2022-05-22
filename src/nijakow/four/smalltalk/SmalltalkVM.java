@@ -1,5 +1,7 @@
 package nijakow.four.smalltalk;
 
+import nijakow.four.smalltalk.objects.STInstance;
+import nijakow.four.smalltalk.objects.STSymbol;
 import nijakow.four.smalltalk.vm.Fiber;
 
 import java.util.ArrayList;
@@ -29,6 +31,11 @@ public class SmalltalkVM {
             final Fiber fiber = runningSet.get(i);
             fiber.runForAWhile();
         }
+    }
+
+    public void startFiber(STInstance self, STSymbol message, STInstance[] args) {
+        Fiber fiber = new Fiber(this);
+        fiber.enter(self, message, args);
     }
 
     public void restartFiber(Fiber fiber) { runningSet.add(fiber); }

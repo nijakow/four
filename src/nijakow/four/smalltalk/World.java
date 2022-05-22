@@ -2,6 +2,7 @@ package nijakow.four.smalltalk;
 
 import nijakow.four.smalltalk.objects.STClass;
 import nijakow.four.smalltalk.objects.STInstance;
+import nijakow.four.smalltalk.objects.STObject;
 import nijakow.four.smalltalk.objects.STSymbol;
 
 import java.util.HashMap;
@@ -10,6 +11,7 @@ import java.util.Map;
 public class World {
     private final Map<STSymbol, STInstance> bindings = new HashMap<>();
 
+    private STClass objectClass;
     private STClass metaClass;
     private STClass integerClass;
     private STClass stringClass;
@@ -23,6 +25,10 @@ public class World {
 
     public STInstance getValue(STSymbol symbol) {
         return bindings.get(symbol);
+    }
+
+    public void setValue(String name, STInstance value) {
+        setValue(STSymbol.get(name), value);
     }
 
     public void setValue(STSymbol symbol, STInstance value) {
@@ -58,11 +64,24 @@ public class World {
     }
 
     public void buildDefaultWorld() {
-        STClass objectClass = new STClass();
-        setValue(STSymbol.get("Object"), objectClass);
+        objectClass = new STClass();
+        setValue("Object", objectClass);
 
         objectClass.addMethod("sayHi", (fiber, args) -> {
             System.out.println("Hi! :D");
         });
+
+        metaClass = objectClass.subclass();
+        metaClass.addMethod("subclass:", (fiber, args) -> {
+            final STSymbol name = ((STSymbol) args[1]);
+            STClass clazz = ((STClass) args[0]).subclass();
+            setValue(name, clazz);
+        });
+
+        STClass fourClass = objectClass.subclass();
+        fourClass.addMethodFromSource("run\n[\n    sayHi.\n]\n");
+
+        STObject four = fourClass.instantiate();
+        setValue("Four", four);
     }
 }

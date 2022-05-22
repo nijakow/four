@@ -20,7 +20,7 @@ public class STClass extends STInstance {
     private final STSymbol[] members;
     private final Map<STSymbol, STMethod> methods;
 
-    public STClass(STClass superclass, STSymbol[] members) {
+    private STClass(STClass superclass, STSymbol[] members) {
         this.superclass = superclass;
         this.members = members;
         this.methods = new HashMap<>();
@@ -33,6 +33,15 @@ public class STClass extends STInstance {
     public STObject instantiate() {
         return new STObject(members.length);
     }
+
+    public STClass subclass(STSymbol[] members) {
+        return new STClass(this, members);
+    }
+
+    public STClass subclass() {
+        return new STClass(this, new STSymbol[]{});
+    }
+
 
     public STCompiler openCompiler() {
         return new STCompiler(this, null);

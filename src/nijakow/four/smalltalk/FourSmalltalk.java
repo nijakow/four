@@ -2,6 +2,8 @@ package nijakow.four.smalltalk;
 
 import nijakow.four.smalltalk.logging.Logger;
 import nijakow.four.smalltalk.net.Server;
+import nijakow.four.smalltalk.objects.STInstance;
+import nijakow.four.smalltalk.objects.STSymbol;
 
 import java.io.IOException;
 
@@ -24,6 +26,7 @@ public class FourSmalltalk {
     }
 
     public void run() throws IOException {
+        vm.startFiber(this.world.getValue(STSymbol.get("Four")), STSymbol.get("run"), new STInstance[]{});
         while (true) {
             vm.tick();
             server.tick(vm.getPreferredIdleTime());

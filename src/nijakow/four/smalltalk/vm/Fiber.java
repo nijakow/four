@@ -15,11 +15,13 @@ public class Fiber {
     private boolean isPaused = false;
     private STInstance accu;
     private Context top;
-    private final Vector<STInstance> stack = new Vector<>();
+    private final Vector<STInstance> stack;
     private int sp = 0;
 
     public Fiber(SmalltalkVM vm) {
         this.vm = vm;
+        this.stack = new Vector<>(1024 * 32);
+        this.stack.setSize(1024 * 32);
     }
 
     public SmalltalkVM getVM() {
@@ -62,7 +64,11 @@ public class Fiber {
     }
 
     public void push() {
-        stack.set(sp++, getAccu());
+        push(getAccu());
+    }
+
+    private void push(STInstance value) {
+        stack.set(sp++, value);
     }
 
     public STInstance pop() {
@@ -74,9 +80,16 @@ public class Fiber {
         this.top = context;
     }
 
-    public void send(STSymbol symbol, int args) {
+    public void enter(STInstance self, STSymbol message, STInstance[] args) {
+        push(self);
+        for (STInstance arg : args)
+            push(arg);
+        send(message, args.length);
+    }
+
+    public void send(STSymbol message, int args) {
         STInstance instance = stack.get(sp - args - 1);
-        STMethod m = instance.getInstanceMethod(this.getVM().getWorld(), symbol);
+        STMethod m = instance.getInstanceMethod(this.getVM().getWorld(), message);
         if (m == null)
             throw new RuntimeException("Method not found!");
         m.execute(this, args);
