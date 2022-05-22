@@ -21,6 +21,7 @@ public class World {
     private STClass integerClass;
     private STClass stringClass;
     private STClass symbolClass;
+    private STClass arrayClass;
     private STClass closureClass;
     private STClass methodClass;
     private STClass compiledMethodClass;
@@ -70,6 +71,10 @@ public class World {
         return this.symbolClass;
     }
 
+    public STClass getArrayClass() {
+        return this.arrayClass;
+    }
+
     public STClass getClosureClass() {
         return this.closureClass;
     }
@@ -101,6 +106,9 @@ public class World {
         metaClass.addMethod("new", (fiber, args) -> {
             fiber.enter(((STClass) args[0]).instantiate(), "init", new STInstance[]{});
         });
+        metaClass.addMethod("new:", (fiber, args) -> {
+            fiber.enter(((STClass) args[0]).instantiate(args[1]), "init", new STInstance[]{});
+        });
         metaClass.addMethod("parent", (fiber, args) -> {
             STClass parent = ((STClass) args[0]).getSuperClass();
             if (parent == null)
@@ -129,6 +137,7 @@ public class World {
         integerClass = objectClass.subclass();
         stringClass = objectClass.subclass();
         symbolClass = objectClass.subclass();
+        arrayClass = objectClass.subclass();
         closureClass = objectClass.subclass();
         methodClass = objectClass.subclass();
         compiledMethodClass = methodClass.subclass();
@@ -161,6 +170,13 @@ public class World {
 
         setValue("Symbol", symbolClass);
         symbolClass.addMethod("asString", (fiber, args) -> fiber.setAccu(new STString(((STSymbol) args[0]).getName())));
+
+        setValue("Array", arrayClass);
+        arrayClass.setInstantiator(() -> new STArray(0));
+        arrayClass.setInstantiator2((size) -> new STArray(((STInteger) size).getValue()));
+        arrayClass.addMethod("size", (fiber, args) -> fiber.setAccu(STInteger.get(((STArray) args[0]).getSize())));
+        arrayClass.addMethod("at:", (fiber, args) -> fiber.setAccu(((STArray) args[0]).get(((STInteger) args[1]).getValue())));
+        arrayClass.addMethod("at:put:", (fiber, args) -> ((STArray) args[0]).set(((STInteger) args[1]).getValue(), args[2]));
 
         setValue("Method", methodClass);
         BiConsumer<Fiber, STInstance[]> valueBuiltin = (fiber, args) -> {
@@ -219,7 +235,7 @@ public class World {
         fourClass.addMethodFromSource("run\n[\n]\n");
         fourClass.addMethodFromSource("newConnection: connection\n[\n    Transcript := connection.\n    [ connection out: (connection prompt: 'Smalltalk> ') compile value toString; cr ] repeat.\n]\n");
 
-        STObject four = fourClass.instantiate();
+        STObject four = (STObject) fourClass.instantiate();
         setValue("Four", four);
     }
 }

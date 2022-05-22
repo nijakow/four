@@ -14,16 +14,22 @@ import nijakow.four.smalltalk.vm.Fiber;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiConsumer;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 public class STClass extends STInstance {
     private final STClass superclass;
     private final STSymbol[] members;
     private final Map<STSymbol, STMethod> methods;
+    private Supplier<STInstance> instantiator;
+    private Function<STInstance, STInstance> instantiator2;
 
     private STClass(STClass superclass, STSymbol[] members) {
         this.superclass = superclass;
         this.members = members;
         this.methods = new HashMap<>();
+        this.instantiator = () -> new STObject(this, this.members.length);
+        this.instantiator2 = (arg) -> STNil.get();
     }
 
     public STClass() {
@@ -34,8 +40,20 @@ public class STClass extends STInstance {
         return this.superclass;
     }
 
-    public STObject instantiate() {
-        return new STObject(this, members.length);
+    public STInstance instantiate() {
+        return instantiator.get();
+    }
+
+    public void setInstantiator(Supplier<STInstance> instantiator) {
+        this.instantiator = instantiator;
+    }
+
+    public STInstance instantiate(STInstance argument) {
+        return instantiator2.apply(argument);
+    }
+
+    public void setInstantiator2(Function<STInstance, STInstance> instantiator) {
+        this.instantiator2 = instantiator;
     }
 
     public STClass subclass(STSymbol[] members) {
