@@ -120,6 +120,9 @@ public class World {
             else
                 fiber.setAccu(method.asInstance());
         });
+        metaClass.addMethod("addMethod:", (fiber, args) -> {
+            ((STClass) args[0]).addMethodFromSource(((STString) args[1]).getValue());
+        });
 
         nilClass = objectClass.subclass();
         booleanClass = objectClass.subclass();
@@ -200,6 +203,10 @@ public class World {
                 if (v == null) fiber.restartWithValue(STNil.get());
                 else fiber.restartWithValue(v);
             });
+        });
+        portClass.addMethodFromSource("edit\n[\n  ^ self edit: '' title: 'Something new'\n]\n");
+        portClass.addMethod("uploadToUser:", (fiber, args) -> {
+            ((STPort) args[0]).uploadToUser(((STString) args[1]).getValue());
         });
         portClass.addMethod("close", (fiber, args) -> {
             ((STPort) args[0]).close();
