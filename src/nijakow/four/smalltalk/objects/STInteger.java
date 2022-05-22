@@ -9,12 +9,16 @@ public class STInteger extends STInstance {
         this.value = value;
     }
 
-    public static STInteger get(int value) {
-        return new STInteger(value);
-    }
-
     @Override
     public STClass getClass(World world) {
         return world.getIntegerClass();
+    }
+
+    public int getValue() {
+        return this.value;
+    }
+
+    public static STInteger get(int value) {
+        return new STInteger(value);
     }
 }

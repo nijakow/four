@@ -98,6 +98,15 @@ public class World {
         builtinMethodClass = methodClass.subclass();
         portClass = objectClass.subclass();
 
+        integerClass.addMethod("+", (fiber, args) -> fiber.setAccu(STInteger.get(((STInteger) args[0]).getValue() + ((STInteger) args[1]).getValue())));
+        integerClass.addMethod("-", (fiber, args) -> fiber.setAccu(STInteger.get(((STInteger) args[0]).getValue() - ((STInteger) args[1]).getValue())));
+        integerClass.addMethod("*", (fiber, args) -> fiber.setAccu(STInteger.get(((STInteger) args[0]).getValue() * ((STInteger) args[1]).getValue())));
+        integerClass.addMethod("/", (fiber, args) -> fiber.setAccu(STInteger.get(((STInteger) args[0]).getValue() / ((STInteger) args[1]).getValue())));
+        integerClass.addMethod("mod:", (fiber, args) -> fiber.setAccu(STInteger.get(((STInteger) args[0]).getValue() % ((STInteger) args[1]).getValue())));
+
+        stringClass.addMethod("+", (fiber, args) -> fiber.setAccu(new STString(((STString) args[0]).getValue() + ((STString) args[1]).getValue())));
+        stringClass.addMethod("compile", (fiber, args) -> fiber.setAccu(new STClosure(((STString) args[0]).compile(), null)));
+
         BiConsumer<Fiber, STInstance[]> valueBuiltin = (fiber, args) -> {
             fiber.loadSelf();
             fiber.push();
@@ -138,7 +147,7 @@ public class World {
 
         STClass fourClass = objectClass.subclass();
         fourClass.addMethodFromSource("run\n[\n]\n");
-        fourClass.addMethodFromSource("newConnection: connection\n[\n    connection out: (connection edit: 'Hi?' title: 'Hello!').\n    connection out: (connection prompt: '42 > ').\n    connection close.\n]\n");
+        fourClass.addMethodFromSource("newConnection: connection\n[\nconnection out: ('\\'4\\' + \\'2\\'' compile value).\n]\n");
 
         STObject four = fourClass.instantiate();
         setValue("Four", four);

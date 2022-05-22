@@ -199,6 +199,18 @@ public class Parser {
         return new MethodAST(head.getFirst(), head.getSecond(), locals.toArray(new STSymbol[]{}), parseExpressionsUntil(TokenType.RBRACK));
     }
 
+    public CommandLineAST parseCL() {
+        List<STSymbol> locals = new ArrayList<>();
+        if (check(TokenType.BAR)) {
+            while (is(TokenType.IDENTIFIER)) {
+                locals.add(STSymbol.get(getSymbolName()));
+                advance();
+            }
+            expect(TokenType.BAR);
+        }
+        return new CommandLineAST(locals.toArray(new STSymbol[]{}), parseExpression());
+    }
+
     public Parser(Tokenizer tokenizer) {
         this.tokenizer = tokenizer;
     }

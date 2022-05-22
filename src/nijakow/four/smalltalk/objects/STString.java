@@ -1,6 +1,10 @@
 package nijakow.four.smalltalk.objects;
 
 import nijakow.four.smalltalk.World;
+import nijakow.four.smalltalk.objects.method.STCompiledMethod;
+import nijakow.four.smalltalk.parser.Parser;
+import nijakow.four.smalltalk.parser.StringCharacterStream;
+import nijakow.four.smalltalk.parser.Tokenizer;
 
 public class STString extends STInstance {
     private final String value;
@@ -16,5 +20,12 @@ public class STString extends STInstance {
 
     public String getValue() {
         return this.value;
+    }
+
+    public STCompiledMethod compile() {
+        StringCharacterStream stream = new StringCharacterStream(getValue());
+        Tokenizer tokenizer = new Tokenizer(stream);
+        Parser parser = new Parser(tokenizer);
+        return parser.parseCL().compile(getValue());
     }
 }
