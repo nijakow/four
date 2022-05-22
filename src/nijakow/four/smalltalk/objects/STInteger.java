@@ -1,5 +1,7 @@
 package nijakow.four.smalltalk.objects;
 
+import nijakow.four.smalltalk.World;
+
 public class STInteger extends STInstance {
     private final int value;
 
@@ -9,5 +11,10 @@ public class STInteger extends STInstance {
 
     public static STInteger get(int value) {
         return new STInteger(value);
+    }
+
+    @Override
+    public STClass getClass(World world) {
+        return world.getIntegerClass();
     }
 }

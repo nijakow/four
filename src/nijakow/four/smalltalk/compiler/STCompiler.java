@@ -3,7 +3,7 @@ package nijakow.four.smalltalk.compiler;
 import nijakow.four.share.util.Pair;
 import nijakow.four.smalltalk.objects.STClass;
 import nijakow.four.smalltalk.objects.STInstance;
-import nijakow.four.smalltalk.objects.STMethod;
+import nijakow.four.smalltalk.objects.method.STCompiledMethod;
 import nijakow.four.smalltalk.objects.STSymbol;
 import nijakow.four.smalltalk.vm.instructions.*;
 
@@ -27,11 +27,11 @@ public class STCompiler {
     public void addLocal(STSymbol symbol) { locals.add(symbol); }
     public void addArg(STSymbol arg) { argCount++; addLocal(arg); }
 
-    public STMethod finish(String source) {
-        return new STMethod(argCount, locals.size(), first, source);
+    public STCompiledMethod finish(String source) {
+        return new STCompiledMethod(argCount, locals.size(), first, source);
     }
-    public STMethod finish() {
-        return new STMethod(argCount, locals.size(), first);
+    public STCompiledMethod finish() {
+        return new STCompiledMethod(argCount, locals.size(), first);
     }
 
     private void addInstruction(VMInstruction instruction) {
@@ -52,7 +52,7 @@ public class STCompiler {
         addInstruction(new LoadConstantInstruction(value));
     }
 
-    public void writeLoadClosure(STMethod method) {
+    public void writeLoadClosure(STCompiledMethod method) {
         addInstruction(new LoadClosureInstruction(method));
     }
 

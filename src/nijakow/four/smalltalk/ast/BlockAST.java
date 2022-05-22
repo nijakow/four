@@ -1,7 +1,7 @@
 package nijakow.four.smalltalk.ast;
 
 import nijakow.four.smalltalk.compiler.STCompiler;
-import nijakow.four.smalltalk.objects.STMethod;
+import nijakow.four.smalltalk.objects.method.STCompiledMethod;
 import nijakow.four.smalltalk.objects.STSymbol;
 
 public class BlockAST extends ExprAST {
@@ -13,7 +13,7 @@ public class BlockAST extends ExprAST {
         this.body = body;
     }
 
-    private STMethod compileThisMethod(STCompiler context) {
+    private STCompiledMethod compileThisMethod(STCompiler context) {
         STCompiler compiler = context.subscope();
         for (STSymbol arg : args)
             compiler.addArg(arg);

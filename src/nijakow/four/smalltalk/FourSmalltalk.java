@@ -6,14 +6,17 @@ import nijakow.four.smalltalk.net.Server;
 import java.io.IOException;
 
 public class FourSmalltalk {
-    private SmalltalkVM vm;
-    private Server server;
-    private Logger logger;
+    private final World world;
+    private final SmalltalkVM vm;
+    private final Server server;
+    private final Logger logger;
 
     public FourSmalltalk() throws IOException {
         this.logger = new Logger();
-        this.vm = new SmalltalkVM();
+        this.world = new World();
+        this.vm = new SmalltalkVM(this.world);
         this.server = new Server(this.logger);
+        this.world.buildDefaultWorld();
     }
 
     public void serveOn(String hostname, int port) throws IOException {

@@ -3,7 +3,10 @@ package nijakow.four.smalltalk.vm;
 import nijakow.four.smalltalk.SmalltalkVM;
 import nijakow.four.smalltalk.objects.STClosure;
 import nijakow.four.smalltalk.objects.STInstance;
-import nijakow.four.smalltalk.objects.STMethod;
+import nijakow.four.smalltalk.objects.STSymbol;
+import nijakow.four.smalltalk.objects.method.STCompiledMethod;
+import nijakow.four.smalltalk.objects.method.STMethod;
+import nijakow.four.smalltalk.vm.instructions.VMInstruction;
 
 import java.util.Vector;
 
@@ -19,8 +22,12 @@ public class Fiber {
         this.vm = vm;
     }
 
+    public SmalltalkVM getVM() {
+        return this.vm;
+    }
+
     public Context top() {
-        return null;
+        return top;
     }
 
     public STInstance getAccu() {
@@ -50,12 +57,29 @@ public class Fiber {
         stack.set(lexical(depth).getBase() + offset + 1, getAccu());
     }
 
-    public void loadClosure(STMethod method) {
+    public void loadClosure(STCompiledMethod method) {
         setAccu(new STClosure(method, top()));
     }
 
     public void push() {
         stack.set(sp++, getAccu());
+    }
+
+    public STInstance pop() {
+        return stack.get(--sp);
+    }
+
+    public void enter(Context lexical, VMInstruction instruction, int args) {
+        Context context = new Context(top(), lexical, instruction, sp - args - 2);
+        this.top = context;
+    }
+
+    public void send(STSymbol symbol, int args) {
+        STInstance instance = stack.get(sp - args - 1);
+        STMethod m = instance.getInstanceMethod(this.getVM().getWorld(), symbol);
+        if (m == null)
+            throw new RuntimeException("Method not found!");
+        m.execute(this, args);
     }
 
     public void normalReturn() {

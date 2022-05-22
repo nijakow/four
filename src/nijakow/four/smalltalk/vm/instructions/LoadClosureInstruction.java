@@ -1,12 +1,12 @@
 package nijakow.four.smalltalk.vm.instructions;
 
-import nijakow.four.smalltalk.objects.STMethod;
+import nijakow.four.smalltalk.objects.method.STCompiledMethod;
 import nijakow.four.smalltalk.vm.Fiber;
 
 public class LoadClosureInstruction extends VMInstruction {
-    private final STMethod method;
+    private final STCompiledMethod method;
 
-    public LoadClosureInstruction(STMethod method) {
+    public LoadClosureInstruction(STCompiledMethod method) {
         this.method = method;
     }
 

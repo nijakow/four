@@ -9,9 +9,10 @@ public class Context {
     private final int base;
     private VMInstruction instruction;
 
-    public Context(Context parent, Context lexical, int base) {
+    public Context(Context parent, Context lexical, VMInstruction instruction, int base) {
         this.parent = parent;
         this.lexical = lexical;
+        this.instruction = instruction;
         this.base = base;
     }
 

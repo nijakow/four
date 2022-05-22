@@ -12,6 +12,6 @@ public class StoreGlobalInstruction extends VMInstruction {
 
     @Override
     public void run(Fiber fiber) {
-        symbol.setValue(fiber.getAccu());
+        fiber.getVM().getWorld().setValue(this.symbol, fiber.getAccu());
     }
 }

@@ -1,5 +1,7 @@
 package nijakow.four.smalltalk.objects;
 
+import nijakow.four.smalltalk.World;
+
 public class STObject extends STInstance {
     private STClass clazz;
     private STInstance[] values;
@@ -14,5 +16,10 @@ public class STObject extends STInstance {
 
     public void set(int index, STInstance value) {
         values[index] = value;
+    }
+
+    @Override
+    public STClass getClass(World world) {
+        return this.clazz;
     }
 }
