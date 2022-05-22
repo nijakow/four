@@ -1,5 +1,6 @@
 package nijakow.four.smalltalk.ast;
 
+import nijakow.four.smalltalk.compiler.STCompiler;
 import nijakow.four.smalltalk.objects.STSymbol;
 
 public class AssignAST extends ExprAST {
@@ -9,5 +10,10 @@ public class AssignAST extends ExprAST {
     public AssignAST(STSymbol lhs, ExprAST rhs) {
         this.lhs = lhs;
         this.rhs = rhs;
+    }
+
+    @Override
+    public void compile(STCompiler compiler) {
+        // TODO
     }
 }

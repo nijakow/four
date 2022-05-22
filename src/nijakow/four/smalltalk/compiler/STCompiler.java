@@ -2,28 +2,37 @@ package nijakow.four.smalltalk.compiler;
 
 import nijakow.four.smalltalk.objects.STInstance;
 import nijakow.four.smalltalk.objects.STMethod;
-import nijakow.four.smalltalk.objects.STObject;
 import nijakow.four.smalltalk.objects.STSymbol;
 import nijakow.four.smalltalk.vm.instructions.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Compiler {
-    private final Compiler parent;
+public class STCompiler {
+    private final STCompiler parent;
     private final List<STSymbol> locals = new ArrayList<>();
+    private int argCount = 0;
     private VMInstruction first;
     private VMInstruction last;
 
-    private Compiler(Compiler parent) {
+    private STCompiler(STCompiler parent) {
         this.parent = parent;
     }
 
-    public Compiler() {
+    public STCompiler() {
         this(null);
     }
 
+    public STCompiler subscope() {
+        return new STCompiler(this);
+    }
+
     public void addLocal(STSymbol symbol) { locals.add(symbol); }
+    public void addArg(STSymbol arg) { argCount++; addLocal(arg); }
+
+    public STMethod finish() {
+        return new STMethod(argCount, locals.size(), first);
+    }
 
     private void addInstruction(VMInstruction instruction) {
         if (first == null) {
@@ -65,5 +74,17 @@ public class Compiler {
 
     public void writePush() {
         addInstruction(new PushInstruction());
+    }
+
+    public void writeSend(STSymbol message, int args) {
+        addInstruction(new SendInstruction(message, args));
+    }
+
+    public void writeReturn() {
+        addInstruction(new ReturnInstruction());
+    }
+
+    public void writeLoad(STSymbol symbol) {
+
     }
 }

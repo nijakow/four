@@ -39,4 +39,8 @@ public class Fiber {
     public void push() {
         // TODO
     }
+
+    public void lexicalReturn() {
+        // TODO
+    }
 }

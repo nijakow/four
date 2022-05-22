@@ -1,4 +1,8 @@
 package nijakow.four.smalltalk.ast;
 
-public class ExprAST extends SmalltalkAST {
+import nijakow.four.smalltalk.compiler.STCompiler;
+
+public abstract class ExprAST extends SmalltalkAST {
+
+    public abstract void compile(STCompiler compiler);
 }
