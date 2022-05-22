@@ -118,17 +118,23 @@ public class Parser {
         return new BlockAST(ts.toArray(new STSymbol[]{}), parseExpressionsUntil(TokenType.RBRACK));
     }
 
-    private ExprAST parseSimpleExpression() {
+    private ExprAST parseSimpleExpression(int prio) {
         if (check(TokenType.LPAREN)) {
             ExprAST ast = parseExpression();
             expect(TokenType.RPAREN);
             return ast;
         } else if (is(TokenType.SYMBOL)) {
-            SymbolAST ast = new SymbolAST(STSymbol.get(getSymbolName()));
+            STSymbol symbol = STSymbol.get(getSymbolName());
             advance();
-            return ast;
+            if (check(TokenType.ASSIGN)) {
+                return new AssignAST(symbol, parseExpression(prio));
+            } else {
+                return new SymbolAST(symbol);
+            }
         } else if (check(TokenType.LBRACK)) {
             return parseBlock();
+        } else if (check(TokenType.CARET)) {
+            return new ReturnAST(parseExpression(prio));
         } else {
             expect(TokenType.SELF);
             return new SelfAST();
@@ -136,7 +142,7 @@ public class Parser {
     }
 
     private ExprAST parseExpression(int prio) {
-        ExprAST expr = parseSimpleExpression();
+        ExprAST expr = parseSimpleExpression(prio);
         ExprAST next = null;
 
         while (expr != next || check(TokenType.SEMICOLON)) {

@@ -4,7 +4,8 @@ public enum TokenType {
     EOF,
     LPAREN, RPAREN,
     LBRACK, RBRACK,
-    BAR,
+    BAR, CARET,
     DOT, COMMA, COLON, SEMICOLON,
+    ASSIGN,
     SYMBOL, SELF
 }

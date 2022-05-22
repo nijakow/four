@@ -1,5 +1,6 @@
 package nijakow.four.smalltalk.compiler;
 
+import nijakow.four.share.util.Pair;
 import nijakow.four.smalltalk.objects.STInstance;
 import nijakow.four.smalltalk.objects.STMethod;
 import nijakow.four.smalltalk.objects.STSymbol;
@@ -84,7 +85,30 @@ public class STCompiler {
         addInstruction(new ReturnInstruction());
     }
 
-    public void writeLoad(STSymbol symbol) {
+    private Pair<Integer, Integer> find(STSymbol symbol) {
+        int index = locals.indexOf(symbol);
+        if (index >= 0)
+            return new Pair<>(0, index);
+        Pair<Integer, Integer> result = parent.find(symbol);
+        if (result == null)
+            return null;
+        else
+            return new Pair<>(result.getFirst() + 1, result.getSecond());
+    }
 
+    public void writeLoad(STSymbol symbol) {
+        Pair<Integer, Integer> result = find(symbol);
+        if (result != null)
+            writeLoadLocal(result.getFirst(), result.getSecond());
+        else    // TODO: Class variables!
+            writeLoadGlobal(symbol);
+    }
+
+    public void writeStore(STSymbol symbol) {
+        Pair<Integer, Integer> result = find(symbol);
+        if (result != null)
+            writeStoreLocal(result.getFirst(), result.getSecond());
+        else    // TODO: Class variables!
+            writeStoreGlobal(symbol);
     }
 }

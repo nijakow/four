@@ -14,6 +14,7 @@ public class AssignAST extends ExprAST {
 
     @Override
     public void compile(STCompiler compiler) {
-        // TODO
+        rhs.compile(compiler);
+        compiler.writeStore(lhs);
     }
 }
