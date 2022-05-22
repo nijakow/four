@@ -159,6 +159,9 @@ public class World {
         stringClass.addMethod("compile", (fiber, args) -> fiber.setAccu(new STClosure(((STString) args[0]).compile(), null)));
         stringClass.addMethod("asSymbol", (fiber, args) -> fiber.setAccu(STSymbol.get(((STString) args[0]).getValue())));
 
+        setValue("Symbol", symbolClass);
+        symbolClass.addMethod("asString", (fiber, args) -> fiber.setAccu(new STString(((STSymbol) args[0]).getName())));
+
         setValue("Method", methodClass);
         BiConsumer<Fiber, STInstance[]> valueBuiltin = (fiber, args) -> {
             fiber.loadLexicalSelf(((STClosure) args[0]).getContext());

@@ -9,7 +9,7 @@ public class VMJumpIfNotInstruction extends VMInstruction {
     }
 
     public void setTarget(VMInstruction value) {
-        this.target = target;
+        this.target = value;
     }
 
     @Override
