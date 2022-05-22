@@ -19,6 +19,7 @@ public class World {
     private STClass nilClass;
     private STClass booleanClass;
     private STClass integerClass;
+    private STClass characterClass;
     private STClass stringClass;
     private STClass symbolClass;
     private STClass arrayClass;
@@ -61,6 +62,10 @@ public class World {
 
     public STClass getIntegerClass() {
         return this.integerClass;
+    }
+
+    public STClass getCharacterClass() {
+        return this.characterClass;
     }
 
     public STClass getStringClass() {
@@ -135,6 +140,7 @@ public class World {
         nilClass = objectClass.subclass();
         booleanClass = objectClass.subclass();
         integerClass = objectClass.subclass();
+        characterClass = objectClass.subclass();
         stringClass = objectClass.subclass();
         symbolClass = objectClass.subclass();
         arrayClass = objectClass.subclass();
@@ -150,6 +156,7 @@ public class World {
         booleanClass.addMethod("not", (fiber, args) -> fiber.setAccu(STBoolean.get(!args[0].isTrue())));
 
         setValue("Integer", integerClass);
+        integerClass.addMethod("asChar", (fiber, args) -> fiber.setAccu(STCharacter.get((char) ((STInteger) args[0]).getValue())));
         integerClass.addMethod("+", (fiber, args) -> fiber.setAccu(STInteger.get(((STInteger) args[0]).getValue() + ((STInteger) args[1]).getValue())));
         integerClass.addMethod("-", (fiber, args) -> fiber.setAccu(STInteger.get(((STInteger) args[0]).getValue() - ((STInteger) args[1]).getValue())));
         integerClass.addMethod("*", (fiber, args) -> fiber.setAccu(STInteger.get(((STInteger) args[0]).getValue() * ((STInteger) args[1]).getValue())));
@@ -161,8 +168,12 @@ public class World {
         integerClass.addMethod(">=", (fiber, args) -> fiber.setAccu(STBoolean.get(((STInteger) args[0]).getValue() >= ((STInteger) args[1]).getValue())));
         integerClass.addMethodFromSource("to: upper do: block | v\n[\n    v := self.\n    [ v <= upper ] whileTrue: [\n        block value: v.\n        v := v + 1.\n    ].\n  ^ self\n]\n");
 
+        setValue("Character", characterClass);
+        characterClass.addMethod("asInt", (fiber, args) -> fiber.setAccu(STInteger.get(((STCharacter) args[0]).getValue())));
+
         setValue("String", stringClass);
         stringClass.addMethod("size", (fiber, args) -> fiber.setAccu(STInteger.get((((STString) args[0]).getValue().length()))));
+        stringClass.addMethod("at:", (fiber, args) -> fiber.setAccu(STCharacter.get((((STString) args[0]).getValue().charAt(((STInteger) args[1]).getValue())))));
         stringClass.addMethod("from:to:", (fiber, args) -> fiber.setAccu(new STString((((STString) args[0]).getValue().substring(((STInteger) args[1]).getValue(), ((STInteger) args[2]).getValue())))));
         stringClass.addMethod("+", (fiber, args) -> fiber.setAccu(new STString(((STString) args[0]).getValue() + ((STString) args[1]).getValue())));
         stringClass.addMethod("compile", (fiber, args) -> fiber.setAccu(new STClosure(((STString) args[0]).compile(), null)));

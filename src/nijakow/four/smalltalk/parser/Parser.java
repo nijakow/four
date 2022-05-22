@@ -135,6 +135,10 @@ public class Parser {
             STInteger integer = STInteger.get((Integer) current().getPayload());
             advance();
             return new ConstantAST(integer);
+        } else if (is(TokenType.CHARACTER)) {
+            STCharacter character = (STCharacter) current().getPayload();
+            advance();
+            return new ConstantAST(character);
         } else if (is(TokenType.STRING)) {
             STString string = new STString((String) current().getPayload());
             advance();

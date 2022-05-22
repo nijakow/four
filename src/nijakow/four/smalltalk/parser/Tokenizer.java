@@ -1,5 +1,6 @@
 package nijakow.four.smalltalk.parser;
 
+import nijakow.four.smalltalk.objects.STCharacter;
 import nijakow.four.smalltalk.objects.STSymbol;
 
 public class Tokenizer {
@@ -28,6 +29,7 @@ public class Tokenizer {
                 case 't': return '\t';
                 case 'e': return '\033';
                 case 'b': return '\b';
+                case 's': return ' ';
                 default: return c;
             }
         }
@@ -48,6 +50,7 @@ public class Tokenizer {
 
         if (!stream.hasNext()) return new Token(TokenType.EOF, null, this);
         else if (stream.peeks("\"")) { /* Comment */ readStringUntil('\"'); return nextToken(); }
+        else if (stream.peeks("$")) return new Token(TokenType.CHARACTER, STCharacter.get(readChar()), this);
         else if (stream.peeks("\'")) return new Token(TokenType.STRING, readStringUntil('\''), this);
         else if (stream.peeks("#\'")) return new Token(TokenType.SYMBOL, STSymbol.get(readStringUntil('\'')), this);
         else if (stream.peeks(":=")) return new Token(TokenType.ASSIGN, this);
