@@ -94,7 +94,7 @@ public class World {
         objectClass.addMethod("class", (fiber, args) -> fiber.setAccu(args[0].getClass(fiber.getVM().getWorld())));
         objectClass.addMethod("asBool", (fiber, args) -> fiber.setAccu(STBoolean.get(args[0].isTrue())));
         objectClass.addMethod("toString", (fiber, args) -> fiber.setAccu(new STString(args[0].toString())));
-        objectClass.addMethod("=", (fiber, args) -> fiber.setAccu(STBoolean.get(args[0] == args[1])));
+        objectClass.addMethod("=", (fiber, args) -> fiber.setAccu(STBoolean.get(args[0].is(args[1]))));
 
         metaClass = objectClass.subclass();
         setValue("Class", metaClass);
@@ -207,7 +207,7 @@ public class World {
 
         STClass fourClass = objectClass.subclass();
         fourClass.addMethodFromSource("run\n[\n]\n");
-        fourClass.addMethodFromSource("newConnection: connection\n[\n    [ connection out: (connection prompt: 'Smalltalk> ') compile value toString; cr ] repeat.\n]\n");
+        fourClass.addMethodFromSource("newConnection: connection\n[\n    Transcript := connection.\n    [ connection out: (connection prompt: 'Smalltalk> ') compile value toString; cr ] repeat.\n]\n");
 
         STObject four = fourClass.instantiate();
         setValue("Four", four);

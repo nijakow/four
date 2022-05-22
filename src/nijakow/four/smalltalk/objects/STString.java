@@ -19,6 +19,11 @@ public class STString extends STInstance {
     }
 
     @Override
+    public boolean is(Object obj) {
+        return (obj instanceof STString) && getValue().equals(((STString) obj).getValue());
+    }
+
+    @Override
     public STClass getClass(World world) {
         return world.getStringClass();
     }

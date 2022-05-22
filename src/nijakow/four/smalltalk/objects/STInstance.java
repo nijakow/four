@@ -9,6 +9,10 @@ public abstract class STInstance {
         return getClass(world).findMethod(name);
     }
 
+    public boolean is(Object obj) {
+        return this == obj;
+    }
+
     public boolean isTrue() {
         return this != STBoolean.getFalse();
     }
