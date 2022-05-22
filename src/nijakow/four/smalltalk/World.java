@@ -195,7 +195,7 @@ public class World {
         stringClass.addMethod("+", (fiber, args) -> fiber.setAccu(new STString(((STString) args[0]).getValue() + ((STString) args[1]).getValue())));
         stringClass.addMethod("compile", (fiber, args) -> fiber.setAccu(new STClosure(((STString) args[0]).compile(), null)));
         stringClass.addMethod("asSymbol", (fiber, args) -> fiber.setAccu(STSymbol.get(((STString) args[0]).getValue())));
-        stringClass.addMethodFromSource("do: block\n[\n    0 to: self size - 1 do: [ :i | block value: (self at: i) ]\n]\n");
+        stringClass.addMethodFromSource("do: block\n[\n    0 to: self size - 1 do: [ :i | block value: (self at: i) ].\n  ^ self\n]\n");
         stringClass.addMethodFromSource("writeOn: w\n[\n    self do: [ :c | w out: c ]\n]\n");
 
         setValue("Symbol", symbolClass);
@@ -207,6 +207,7 @@ public class World {
         arrayClass.addMethod("size", (fiber, args) -> fiber.setAccu(STInteger.get(((STArray) args[0]).getSize())));
         arrayClass.addMethod("at:", (fiber, args) -> fiber.setAccu(((STArray) args[0]).get(((STInteger) args[1]).getValue())));
         arrayClass.addMethod("at:put:", (fiber, args) -> ((STArray) args[0]).set(((STInteger) args[1]).getValue(), args[2]));
+        arrayClass.addMethodFromSource("do: block\n[\n    0 to: self size - 1 do: [ :i | block value: (self at: i) ].\n  ^ self\n]\n");
 
         setValue("Method", methodClass);
         BiConsumer<Fiber, STInstance[]> valueBuiltin = (fiber, args) -> {
