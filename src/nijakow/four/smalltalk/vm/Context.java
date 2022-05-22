@@ -28,7 +28,11 @@ public class Context {
     }
 
     public void step(Fiber fiber) {
-        instruction.run(fiber);
-        instruction = instruction.getNext();
+        if (instruction == null)
+            fiber.normalReturn();
+        else {
+            instruction.run(fiber);
+            instruction = instruction.getNext();
+        }
     }
 }

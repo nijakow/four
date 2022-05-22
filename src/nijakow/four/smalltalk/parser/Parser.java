@@ -2,6 +2,8 @@ package nijakow.four.smalltalk.parser;
 
 import nijakow.four.share.util.Pair;
 import nijakow.four.smalltalk.ast.*;
+import nijakow.four.smalltalk.objects.STInteger;
+import nijakow.four.smalltalk.objects.STString;
 import nijakow.four.smalltalk.objects.STSymbol;
 
 import java.util.ArrayList;
@@ -24,7 +26,7 @@ public class Parser {
             current = current.next();
     }
 
-    private boolean isUnary() { return is(TokenType.SYMBOL) && !isBinary() && !isNAry(); }
+    private boolean isUnary() { return is(TokenType.IDENTIFIER) && !isBinary() && !isNAry(); }
     private boolean isBinary() {
         String name = getSymbolName();
         if (name == null) return false;
@@ -37,14 +39,14 @@ public class Parser {
     }
 
     private String getSymbolName() {
-        if (!is(TokenType.SYMBOL))
+        if (!is(TokenType.IDENTIFIER))
             return null;
         return ((STSymbol) current().getPayload()).getName();
     }
 
     private STSymbol expectSymbol() {
         Token t = current();
-        expect(TokenType.SYMBOL);
+        expect(TokenType.IDENTIFIER);
         return (STSymbol) t.getPayload();
     }
 
@@ -123,7 +125,7 @@ public class Parser {
             ExprAST ast = parseExpression();
             expect(TokenType.RPAREN);
             return ast;
-        } else if (is(TokenType.SYMBOL)) {
+        } else if (is(TokenType.IDENTIFIER)) {
             STSymbol symbol = STSymbol.get(getSymbolName());
             advance();
             if (check(TokenType.ASSIGN)) {
@@ -131,6 +133,18 @@ public class Parser {
             } else {
                 return new SymbolAST(symbol);
             }
+        } else if (is(TokenType.INTEGER)) {
+            STInteger integer = STInteger.get((Integer) current().getPayload());
+            advance();
+            return new ConstantAST(integer);
+        } else if (is(TokenType.STRING)) {
+            STString string = new STString((String) current().getPayload());
+            advance();
+            return new ConstantAST(string);
+        } else if (is(TokenType.SYMBOL)) {
+            STSymbol symbol = (STSymbol) current().getPayload();
+            advance();
+            return new ConstantAST(symbol);
         } else if (check(TokenType.LBRACK)) {
             return parseBlock();
         } else if (check(TokenType.CARET)) {
@@ -145,7 +159,7 @@ public class Parser {
         ExprAST expr = parseSimpleExpression(prio);
         ExprAST next = null;
 
-        while (expr != next || check(TokenType.SEMICOLON)) {
+        while (expr != next || (prio >= 2 && check(TokenType.SEMICOLON))) {
             next = expr;
             expr = parseSend(expr, prio);
         }
@@ -176,13 +190,13 @@ public class Parser {
         Pair<STSymbol, STSymbol[]> head = parseSmalltalkArglist();
         List<STSymbol> locals = new ArrayList<>();
         if (check(TokenType.BAR)) {
-            while (is(TokenType.SYMBOL)) {
+            while (is(TokenType.IDENTIFIER)) {
                 locals.add(STSymbol.get(getSymbolName()));
                 advance();
             }
         }
         expect(TokenType.LBRACK);
-        return new MethodAST(head.getFirst(), head.getSecond(), new BlockAST(locals.toArray(new STSymbol[]{}), parseExpressionsUntil(TokenType.RBRACK)));
+        return new MethodAST(head.getFirst(), head.getSecond(), locals.toArray(new STSymbol[]{}), parseExpressionsUntil(TokenType.RBRACK));
     }
 
     public Parser(Tokenizer tokenizer) {

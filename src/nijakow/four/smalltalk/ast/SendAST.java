@@ -16,6 +16,8 @@ public class SendAST extends ExprAST {
 
     @Override
     public void compile(STCompiler compiler) {
+        receiver.compile(compiler);
+        compiler.writePush();
         for (ExprAST arg : arguments) {
             arg.compile(compiler);
             compiler.writePush();

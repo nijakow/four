@@ -18,7 +18,7 @@ public class STCompiler {
     private VMInstruction first;
     private VMInstruction last;
 
-    public STCompiler(STClass clazz, STCompiler parent) { this.clazz = clazz; this.parent = null; }
+    public STCompiler(STClass clazz, STCompiler parent) { this.clazz = clazz; this.parent = parent; }
 
     public STCompiler subscope() {
         return new STCompiler(this.clazz, this);
@@ -27,6 +27,9 @@ public class STCompiler {
     public void addLocal(STSymbol symbol) { locals.add(symbol); }
     public void addArg(STSymbol arg) { argCount++; addLocal(arg); }
 
+    public STMethod finish(String source) {
+        return new STMethod(argCount, locals.size(), first, source);
+    }
     public STMethod finish() {
         return new STMethod(argCount, locals.size(), first);
     }
@@ -92,7 +95,7 @@ public class STCompiler {
         int index = locals.indexOf(symbol);
         if (index >= 0)
             return new Pair<>(0, index);
-        Pair<Integer, Integer> result = parent.find(symbol);
+        Pair<Integer, Integer> result = (parent == null) ? null : parent.find(symbol);
         if (result == null)
             return null;
         else

@@ -16,7 +16,6 @@ public class Fiber {
         return null;
     }
 
-
     public STInstance getAccu() {
         return this.accu;
     }
@@ -52,6 +51,11 @@ public class Fiber {
         stack.set(sp++, getAccu());
     }
 
+    public void normalReturn() {
+        sp = top().getBase();
+        top = top().getParent();
+    }
+
     public void lexicalReturn() {
         Context context = top().getLexical();
         sp = top().getBase();
@@ -63,5 +67,15 @@ public class Fiber {
             }
         }
         top = top().getParent();
+    }
+
+    public void runForAWhile() {
+        for (int x = 0; x < 1024; x++) {
+            top().step(this);
+        }
+    }
+
+    public boolean isRunning() {
+        return top() != null;
     }
 }
