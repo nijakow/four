@@ -1,6 +1,7 @@
 package nijakow.four.smalltalk.compiler;
 
 import nijakow.four.share.util.Pair;
+import nijakow.four.smalltalk.objects.STClass;
 import nijakow.four.smalltalk.objects.STInstance;
 import nijakow.four.smalltalk.objects.STMethod;
 import nijakow.four.smalltalk.objects.STSymbol;
@@ -10,22 +11,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class STCompiler {
+    private final STClass clazz;
     private final STCompiler parent;
     private final List<STSymbol> locals = new ArrayList<>();
     private int argCount = 0;
     private VMInstruction first;
     private VMInstruction last;
 
-    private STCompiler(STCompiler parent) {
-        this.parent = parent;
-    }
-
-    public STCompiler() {
-        this(null);
-    }
+    public STCompiler(STClass clazz, STCompiler parent) { this.clazz = clazz; this.parent = null; }
 
     public STCompiler subscope() {
-        return new STCompiler(this);
+        return new STCompiler(this.clazz, this);
     }
 
     public void addLocal(STSymbol symbol) { locals.add(symbol); }
@@ -65,6 +61,13 @@ public class STCompiler {
         addInstruction(new StoreLocalInstruction(depth, offset));
     }
 
+    public void writeLoadInstance(int offset) {
+        addInstruction(new LoadInstanceInstruction(offset));
+    }
+    public void writeStoreInstance(int offset) {
+        addInstruction(new StoreInstanceInstruction(offset));
+    }
+
     public void writeLoadGlobal(STSymbol symbol) {
         addInstruction(new LoadGlobalInstruction(symbol));
     }
@@ -97,18 +100,28 @@ public class STCompiler {
     }
 
     public void writeLoad(STSymbol symbol) {
-        Pair<Integer, Integer> result = find(symbol);
-        if (result != null)
-            writeLoadLocal(result.getFirst(), result.getSecond());
-        else    // TODO: Class variables!
-            writeLoadGlobal(symbol);
+        int index = this.clazz.findMember(symbol);
+        if (index >= 0)
+            writeLoadInstance(index);
+        else {
+            Pair<Integer, Integer> result = find(symbol);
+            if (result != null)
+                writeLoadLocal(result.getFirst(), result.getSecond());
+            else
+                writeLoadGlobal(symbol);
+        }
     }
 
     public void writeStore(STSymbol symbol) {
-        Pair<Integer, Integer> result = find(symbol);
-        if (result != null)
-            writeStoreLocal(result.getFirst(), result.getSecond());
-        else    // TODO: Class variables!
-            writeStoreGlobal(symbol);
+        int index = this.clazz.findMember(symbol);
+        if (index >= 0)
+            writeStoreInstance(index);
+        else {
+            Pair<Integer, Integer> result = find(symbol);
+            if (result != null)
+                writeStoreLocal(result.getFirst(), result.getSecond());
+            else
+                writeStoreGlobal(symbol);
+        }
     }
 }
