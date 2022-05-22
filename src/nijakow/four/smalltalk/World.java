@@ -270,7 +270,7 @@ public class World {
 
         STClass fourClass = objectClass.subclass();
         fourClass.addMethodFromSource("run\n[\n]\n");
-        fourClass.addMethodFromSource("newConnection: connection\n[\n    Transcript := connection.\n    [ connection store: (connection prompt: 'Smalltalk> ') compile value; cr ] repeat.\n]\n");
+        fourClass.addMethodFromSource("newConnection: connection | line\n[\n    Transcript := connection.\n    [\n        line := connection prompt: 'Smalltalk > '.\n        (line = '') ifFalse: [ connection store: line compile value; cr ].\n    ] repeat.\n]\n");
 
         STObject four = (STObject) fourClass.instantiate();
         setValue("Four", four);
