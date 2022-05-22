@@ -10,6 +10,7 @@ public abstract class VMInstruction {
 
     public abstract void run(Fiber fiber);
 
+    public VMInstruction getNext() { return this.next; }
     public void setNext(VMInstruction next) {
         this.next = next;
     }
