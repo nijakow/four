@@ -5,7 +5,8 @@ import nijakow.four.smalltalk.vm.Fiber;
 public class LoadSelfInstruction extends VMInstruction {
 
     @Override
-    public void run(Fiber fiber) {
+    public VMInstruction run(Fiber fiber) {
         fiber.loadSelf();
+        return getNext();
     }
 }

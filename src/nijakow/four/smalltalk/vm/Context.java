@@ -32,8 +32,7 @@ public class Context {
         if (instruction == null)
             fiber.normalReturn();
         else {
-            instruction.run(fiber);
-            instruction = instruction.getNext();
+            instruction = instruction.run(fiber);
         }
     }
 

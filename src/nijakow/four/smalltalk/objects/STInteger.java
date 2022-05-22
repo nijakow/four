@@ -10,6 +10,11 @@ public class STInteger extends STInstance {
     }
 
     @Override
+    public String toString() {
+        return Integer.toString(value);
+    }
+
+    @Override
     public STClass getClass(World world) {
         return world.getIntegerClass();
     }

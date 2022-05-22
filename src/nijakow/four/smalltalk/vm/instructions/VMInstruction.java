@@ -8,7 +8,7 @@ public abstract class VMInstruction {
     protected VMInstruction() {
     }
 
-    public abstract void run(Fiber fiber);
+    public abstract VMInstruction run(Fiber fiber);
 
     public VMInstruction getNext() { return this.next; }
     public void setNext(VMInstruction next) {

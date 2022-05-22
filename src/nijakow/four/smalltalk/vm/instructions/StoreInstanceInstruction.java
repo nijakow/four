@@ -12,9 +12,10 @@ public class StoreInstanceInstruction extends VMInstruction {
     }
 
     @Override
-    public void run(Fiber fiber) {
+    public VMInstruction run(Fiber fiber) {
         STInstance value = fiber.getAccu();
         fiber.loadSelf();
         ((STObject) fiber.getAccu()).set(offset, value);
+        return getNext();
     }
 }

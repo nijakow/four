@@ -11,7 +11,8 @@ public class LoadClosureInstruction extends VMInstruction {
     }
 
     @Override
-    public void run(Fiber fiber) {
+    public VMInstruction run(Fiber fiber) {
         fiber.loadClosure(method);
+        return getNext();
     }
 }

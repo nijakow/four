@@ -24,7 +24,7 @@ public class STCompilerLabel {
 
     public void place() {
         if (instruction == null) {
-            instruction = compiler.currentInstruction();
+            instruction = compiler.writeNOOPInstruction();
             for (Consumer<VMInstruction> consumer : pending)
                 consumer.accept(instruction);
             pending.clear();

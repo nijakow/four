@@ -10,6 +10,11 @@ public class STNil extends STInstance {
     private STNil() {}
 
     @Override
+    public String toString() {
+        return "nil";
+    }
+
+    @Override
     public STClass getClass(World world) {
         return world.getNilClass();
     }

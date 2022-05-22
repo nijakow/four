@@ -7,5 +7,5 @@ public enum TokenType {
     BAR, CARET,
     DOT, COMMA, COLON, SEMICOLON,
     ASSIGN,
-    SELF
+    SELF, SUPER, TRUE, FALSE, NIL, THISCONTEXT
 }

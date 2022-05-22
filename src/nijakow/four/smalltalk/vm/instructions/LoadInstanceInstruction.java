@@ -11,7 +11,8 @@ public class LoadInstanceInstruction extends VMInstruction {
     }
 
     @Override
-    public void run(Fiber fiber) {
+    public VMInstruction run(Fiber fiber) {
         fiber.setAccu(((STObject) fiber.getAccu()).get(offset));
+        return getNext();
     }
 }

@@ -9,11 +9,11 @@ public class VMJumpInstruction extends VMInstruction {
     }
 
     public void setTarget(VMInstruction value) {
-        this.target = target;
+        this.target = value;
     }
 
     @Override
-    public void run(Fiber fiber) {
-        fiber.top().jumpTo(target);
+    public VMInstruction run(Fiber fiber) {
+        return target;
     }
 }

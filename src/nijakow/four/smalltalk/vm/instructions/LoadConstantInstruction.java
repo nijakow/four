@@ -11,7 +11,8 @@ public class LoadConstantInstruction extends VMInstruction {
     }
 
     @Override
-    public void run(Fiber fiber) {
+    public VMInstruction run(Fiber fiber) {
         fiber.setAccu(this.value);
+        return getNext();
     }
 }

@@ -2,7 +2,6 @@ package nijakow.four.smalltalk.vm.instructions;
 
 import nijakow.four.smalltalk.objects.STSymbol;
 import nijakow.four.smalltalk.vm.Fiber;
-import nijakow.four.smalltalk.vm.instructions.VMInstruction;
 
 public class SendInstruction extends VMInstruction {
     private final STSymbol message;
@@ -14,7 +13,8 @@ public class SendInstruction extends VMInstruction {
     }
 
     @Override
-    public void run(Fiber fiber) {
+    public VMInstruction run(Fiber fiber) {
         fiber.send(this.message, this.args);
+        return getNext();
     }
 }

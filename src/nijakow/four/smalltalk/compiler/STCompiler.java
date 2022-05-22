@@ -45,10 +45,10 @@ public class STCompiler {
         }
     }
 
-    VMInstruction currentInstruction() {
-        if (last == null)
-            addInstruction(new NOOPInstruction());
-        return last;
+    public VMInstruction writeNOOPInstruction() {
+        final NOOPInstruction noop = new NOOPInstruction();
+        addInstruction(noop);
+        return noop;
     }
 
     public void writeLoadSelf() {
@@ -145,5 +145,9 @@ public class STCompiler {
         VMJumpIfNotInstruction jump = new VMJumpIfNotInstruction();
         addInstruction(jump);
         return (value) -> jump.setTarget(value);
+    }
+
+    public STCompilerLabel openLabel() {
+        return new STCompilerLabel(this);
     }
 }

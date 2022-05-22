@@ -2,9 +2,7 @@ package nijakow.four.smalltalk.parser;
 
 import nijakow.four.share.util.Pair;
 import nijakow.four.smalltalk.ast.*;
-import nijakow.four.smalltalk.objects.STInteger;
-import nijakow.four.smalltalk.objects.STString;
-import nijakow.four.smalltalk.objects.STSymbol;
+import nijakow.four.smalltalk.objects.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -149,6 +147,12 @@ public class Parser {
             return parseBlock();
         } else if (check(TokenType.CARET)) {
             return new ReturnAST(parseExpression(prio));
+        } else if (check(TokenType.TRUE)) {
+            return new ConstantAST(STBoolean.getTrue());
+        } else if (check(TokenType.FALSE)) {
+            return new ConstantAST(STBoolean.getFalse());
+        } else if (check(TokenType.NIL)) {
+            return new ConstantAST(STNil.get());
         } else {
             expect(TokenType.SELF);
             return new SelfAST();

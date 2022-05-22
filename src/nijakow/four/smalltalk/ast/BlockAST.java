@@ -25,4 +25,8 @@ public class BlockAST extends ExprAST {
     public void compile(STCompiler compiler) {
         compiler.writeLoadClosure(compileThisMethod(compiler));
     }
+
+    public ExprAST getBody() {
+        return this.body;
+    }
 }

@@ -1,7 +1,5 @@
 package nijakow.four.smalltalk.vm.instructions;
 
-import nijakow.four.smalltalk.objects.STBoolean;
-import nijakow.four.smalltalk.objects.STInstance;
 import nijakow.four.smalltalk.vm.Fiber;
 
 public class VMJumpIfNotInstruction extends VMInstruction {
@@ -15,8 +13,9 @@ public class VMJumpIfNotInstruction extends VMInstruction {
     }
 
     @Override
-    public void run(Fiber fiber) {
+    public VMInstruction run(Fiber fiber) {
         if (!fiber.getAccu().isTrue())
-            fiber.top().jumpTo(target);
+            return target;
+        return getNext();
     }
 }

@@ -12,7 +12,8 @@ public class StoreLocalInstruction extends VMInstruction {
     }
 
     @Override
-    public void run(Fiber fiber) {
+    public VMInstruction run(Fiber fiber) {
         fiber.storeVariable(depth, offset);
+        return getNext();
     }
 }

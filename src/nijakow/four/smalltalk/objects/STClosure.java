@@ -23,4 +23,8 @@ public class STClosure extends STInstance {
     public void execute(Fiber fiber, int args) {
         this.method.execute(fiber, args, context);
     }
+
+    public Context getContext() {
+        return context;
+    }
 }

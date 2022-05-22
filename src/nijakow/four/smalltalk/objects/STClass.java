@@ -30,6 +30,10 @@ public class STClass extends STInstance {
         this(null, new STSymbol[]{});
     }
 
+    public STClass getSuperClass() {
+        return this.superclass;
+    }
+
     public STObject instantiate() {
         return new STObject(this, members.length);
     }

@@ -79,6 +79,11 @@ public class Tokenizer {
         }
 
         if ("self".equals(str)) return new Token(TokenType.SELF, this);
+        else if ("super".equals(str)) return new Token(TokenType.SUPER, this);
+        else if ("true".equals(str)) return new Token(TokenType.TRUE, this);
+        else if ("false".equals(str)) return new Token(TokenType.FALSE, this);
+        else if ("nil".equals(str)) return new Token(TokenType.NIL, this);
+        else if ("thisContext".equals(str)) return new Token(TokenType.THISCONTEXT, this);
         else return new Token(TokenType.IDENTIFIER, STSymbol.get(str), this);
     }
 }

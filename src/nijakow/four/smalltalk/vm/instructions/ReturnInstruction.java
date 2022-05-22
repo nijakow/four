@@ -4,7 +4,8 @@ import nijakow.four.smalltalk.vm.Fiber;
 
 public class ReturnInstruction extends VMInstruction {
     @Override
-    public void run(Fiber fiber) {
+    public VMInstruction run(Fiber fiber) {
         fiber.lexicalReturn();
+        return getNext();
     }
 }

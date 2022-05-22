@@ -45,6 +45,12 @@ public class Fiber {
         setAccu(stack.get(top().getBase()));
     }
 
+    public void loadLexicalSelf(Context context) {
+        while (context.getLexical() != null)
+            context = context.getLexical();
+        setAccu(stack.get(context.getBase()));
+    }
+
     private Context lexical(int depth) {
         Context context = top();
         while (depth --> 0)
@@ -76,8 +82,9 @@ public class Fiber {
         return stack.get(--sp);
     }
 
-    public void enter(Context lexical, VMInstruction instruction, int args) {
+    public void enter(Context lexical, VMInstruction instruction, int args, int locals) {
         Context context = new Context(top(), lexical, instruction, sp - args - 1);
+        sp += locals - args;
         this.top = context;
     }
 

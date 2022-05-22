@@ -17,6 +17,11 @@ public class STBoolean extends STInstance {
     }
 
     @Override
+    public String toString() {
+        return isTrue() ? "true" : "false";
+    }
+
+    @Override
     public STClass getClass(World world) {
         return world.getBooleanClass();
     }

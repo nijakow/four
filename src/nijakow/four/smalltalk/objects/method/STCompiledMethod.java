@@ -28,7 +28,7 @@ public class STCompiledMethod extends STInstance implements STMethod {
     @Override
     public void execute(Fiber fiber, int args, Context context) {
         // TODO: Check args!
-        fiber.enter(context, this.instructions, args);
+        fiber.enter(context, this.instructions, args, this.locals);
     }
 
     @Override
