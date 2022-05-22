@@ -21,6 +21,7 @@ public class STBuiltinMethod extends STInstance implements STMethod {
         STInstance[] arglist = new STInstance[args];
         while (args --> 0)
             arglist[args] = fiber.pop();
+        fiber.setAccu(arglist[0]);
         consumer.accept(fiber, arglist);
     }
 

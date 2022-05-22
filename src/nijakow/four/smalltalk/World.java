@@ -20,8 +20,13 @@ public class World {
     private STClass methodClass;
     private STClass compiledMethodClass;
     private STClass builtinMethodClass;
+    private STClass portClass;
 
     public World() {
+    }
+
+    public STInstance getValue(String name) {
+        return getValue(STSymbol.get(name));
     }
 
     public STInstance getValue(STSymbol symbol) {
@@ -64,6 +69,10 @@ public class World {
         return this.builtinMethodClass;
     }
 
+    public STClass getPortClass() {
+        return this.portClass;
+    }
+
     public void buildDefaultWorld() {
         objectClass = new STClass();
         setValue("Object", objectClass);
@@ -86,6 +95,7 @@ public class World {
         methodClass = objectClass.subclass();
         compiledMethodClass = methodClass.subclass();
         builtinMethodClass = methodClass.subclass();
+        portClass = objectClass.subclass();
 
         BiConsumer<Fiber, STInstance[]> valueBuiltin = (fiber, args) -> {
             fiber.loadSelf();
@@ -103,9 +113,16 @@ public class World {
         closureClass.addMethod("value:value:value:value:value:", valueBuiltin);
         closureClass.addMethod("value:value:value:value:value:value:", valueBuiltin);
 
+        portClass.addMethod("out:", (fiber, args) -> {
+            ((STPort) args[0]).write(((STString) args[1]).getValue());
+        });
+        portClass.addMethod("close", (fiber, args) -> {
+            ((STPort) args[0]).close();
+        });
+
         STClass fourClass = objectClass.subclass();
-        fourClass.addMethodFromSource("run\n[\n    [ :x | self pleaseSayHi: x ] value: 42.\n    [ :x | self pleaseSayHi: x ] value: 43.\n]\n");
-        fourClass.addMethodFromSource("pleaseSayHi: x\n[\n    x sayHi.\n]\n");
+        fourClass.addMethodFromSource("run\n[\n]\n");
+        fourClass.addMethodFromSource("newConnection: connection\n[\n    connection out: 'Hi!'; close.\n]\n");
 
         STObject four = fourClass.instantiate();
         setValue("Four", four);

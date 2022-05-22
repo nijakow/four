@@ -13,4 +13,8 @@ public class STString extends STInstance {
     public STClass getClass(World world) {
         return world.getStringClass();
     }
+
+    public String getValue() {
+        return this.value;
+    }
 }

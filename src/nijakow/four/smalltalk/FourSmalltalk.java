@@ -1,8 +1,10 @@
 package nijakow.four.smalltalk;
 
+import nijakow.four.client.ClientWindow;
 import nijakow.four.smalltalk.logging.Logger;
 import nijakow.four.smalltalk.net.Server;
 import nijakow.four.smalltalk.objects.STInstance;
+import nijakow.four.smalltalk.objects.STPort;
 import nijakow.four.smalltalk.objects.STSymbol;
 
 import java.io.IOException;
@@ -19,6 +21,12 @@ public class FourSmalltalk {
         this.vm = new SmalltalkVM(this.world);
         this.server = new Server(this.logger);
         this.world.buildDefaultWorld();
+        this.server.onConnect((connection) -> {
+            final STInstance master = this.world.getValue("Four");
+            this.vm.startFiber(master, "newConnection:", new STInstance[]{
+                    new STPort(connection)
+            });
+        });
     }
 
     public void serveOn(String hostname, int port) throws IOException {
@@ -36,6 +44,7 @@ public class FourSmalltalk {
     public static void main(String[] args) throws IOException {
         FourSmalltalk four = new FourSmalltalk();
         four.serveOn("localhost", 4242);
+        ClientWindow.openWindow("localhost", new int[] {4242});
         four.run();
     }
 }

@@ -92,7 +92,7 @@ public class Fiber {
         STInstance instance = stack.get(sp - args - 1);
         STMethod m = instance.getInstanceMethod(this.getVM().getWorld(), message);
         if (m == null)
-            throw new RuntimeException("Method not found!");
+            throw new RuntimeException("Method not found: " + message + "!");
         m.execute(this, args, null);
     }
 

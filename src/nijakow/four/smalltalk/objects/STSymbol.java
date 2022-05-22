@@ -12,6 +12,11 @@ public class STSymbol extends STInstance {
         this.name = name;
     }
 
+    @Override
+    public String toString() {
+        return "#'" + getName() + "'";
+    }
+
     public String getName() { return this.name; }
 
     private static Map<String, STSymbol> symbols = new HashMap<>();
