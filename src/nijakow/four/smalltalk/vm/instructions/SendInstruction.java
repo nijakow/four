@@ -1,4 +1,4 @@
-package nijakow.four.smalltalk.compiler;
+package nijakow.four.smalltalk.vm.instructions;
 
 import nijakow.four.smalltalk.objects.STSymbol;
 import nijakow.four.smalltalk.vm.Fiber;
