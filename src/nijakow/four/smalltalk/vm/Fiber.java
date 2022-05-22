@@ -3,6 +3,7 @@ package nijakow.four.smalltalk.vm;
 import nijakow.four.smalltalk.SmalltalkVM;
 import nijakow.four.smalltalk.objects.STClosure;
 import nijakow.four.smalltalk.objects.STInstance;
+import nijakow.four.smalltalk.objects.STString;
 import nijakow.four.smalltalk.objects.STSymbol;
 import nijakow.four.smalltalk.objects.method.STCompiledMethod;
 import nijakow.four.smalltalk.objects.method.STMethod;
@@ -135,6 +136,11 @@ public class Fiber {
             isPaused = false;
             vm.restartFiber(this);
         }
+    }
+
+    public void restartWithValue(STInstance value) {
+        setAccu(value);
+        restart();
     }
 
     public void pause() {

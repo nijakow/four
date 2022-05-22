@@ -4,6 +4,7 @@ import nijakow.four.smalltalk.World;
 import nijakow.four.smalltalk.net.IConnection;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.function.Consumer;
 
 public class STPort extends STInstance {
@@ -23,7 +24,39 @@ public class STPort extends STInstance {
     }
 
     public void write(String text) {
-        this.connection.writeBytes(text.getBytes(StandardCharsets.UTF_8));
+        this.connection.writeString(text);
+    }
+
+    public void writeEscaped(String code, String... args) {
+        this.connection.writeString("\02");
+        this.connection.writeString(code);
+        for (int i = 0; i < args.length; i++) {
+            this.connection.writeString(":");
+            this.connection.writeString(Base64.getEncoder().encodeToString(args[i].getBytes(StandardCharsets.UTF_8)));
+        }
+        this.connection.writeString("\03");
+    }
+
+    public void prompt(String prompt) {
+        writeEscaped("prompt/plain", prompt);
+    }
+
+    public void password(String prompt) {
+        writeEscaped("prompt/password", prompt);
+    }
+
+    public void edit(String title, String text, Consumer<STString> consumer) {
+        final String key = "0"; // TODO: Generate a random key
+        // TODO: Set up callback
+        writeEscaped("editor/edit", key, title, text);
+    }
+
+    public void uploadToUser(String text) {
+        writeEscaped("file/upload", text);
+    }
+
+    public void downloadFromUser(Consumer<STString> consumer) {
+        // TODO
     }
 
     public void close() {

@@ -113,6 +113,16 @@ public class World {
         closureClass.addMethod("value:value:value:value:value:", valueBuiltin);
         closureClass.addMethod("value:value:value:value:value:value:", valueBuiltin);
 
+        portClass.addMethod("prompt:", (fiber, args) -> {
+            fiber.pause();
+            ((STPort) args[0]).prompt(((STString) args[1]).getValue());
+            ((STPort) args[0]).onInput((STString line) -> fiber.restartWithValue(line));
+        });
+        portClass.addMethod("password:", (fiber, args) -> {
+            fiber.pause();
+            ((STPort) args[0]).password(((STString) args[1]).getValue());
+            ((STPort) args[0]).onInput((STString line) -> fiber.restartWithValue(line));
+        });
         portClass.addMethod("out:", (fiber, args) -> {
             ((STPort) args[0]).write(((STString) args[1]).getValue());
         });
@@ -122,7 +132,7 @@ public class World {
 
         STClass fourClass = objectClass.subclass();
         fourClass.addMethodFromSource("run\n[\n]\n");
-        fourClass.addMethodFromSource("newConnection: connection\n[\n    connection out: 'Hi!'; close.\n]\n");
+        fourClass.addMethodFromSource("newConnection: connection\n[\n    connection out: (connection prompt: '42 > '); close.\n]\n");
 
         STObject four = fourClass.instantiate();
         setValue("Four", four);
