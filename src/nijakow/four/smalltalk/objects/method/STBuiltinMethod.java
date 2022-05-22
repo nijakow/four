@@ -26,6 +26,11 @@ public class STBuiltinMethod extends STInstance implements STMethod {
     }
 
     @Override
+    public STInstance asInstance() {
+        return this;
+    }
+
+    @Override
     public STClass getClass(World world) {
         return world.getBuiltinMethodClass();
     }

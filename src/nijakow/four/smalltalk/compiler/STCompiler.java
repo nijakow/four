@@ -9,6 +9,7 @@ import nijakow.four.smalltalk.vm.instructions.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class STCompiler {
     private final STClass clazz;
@@ -42,6 +43,12 @@ public class STCompiler {
             last.setNext(instruction);
             last = instruction;
         }
+    }
+
+    VMInstruction currentInstruction() {
+        if (last == null)
+            addInstruction(new NOOPInstruction());
+        return last;
     }
 
     public void writeLoadSelf() {
@@ -126,5 +133,17 @@ public class STCompiler {
             else
                 writeStoreGlobal(symbol);
         }
+    }
+
+    Consumer<VMInstruction> writeJump() {
+        VMJumpInstruction jump = new VMJumpInstruction();
+        addInstruction(jump);
+        return (value) -> jump.setTarget(value);
+    }
+
+    Consumer<VMInstruction> writeJumpIfNot() {
+        VMJumpIfNotInstruction jump = new VMJumpIfNotInstruction();
+        addInstruction(jump);
+        return (value) -> jump.setTarget(value);
     }
 }

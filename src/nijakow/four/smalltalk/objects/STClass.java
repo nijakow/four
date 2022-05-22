@@ -67,6 +67,10 @@ public class STClass extends STInstance {
         addMethod(STSymbol.get(name), method);
     }
 
+    public STMethod getMethod(STSymbol name) {
+        return methods.get(name);
+    }
+
     public STMethod findMethod(STSymbol name) {
         STMethod method = methods.get(name);
         if (method == null)

@@ -35,4 +35,13 @@ public class STCompiledMethod extends STInstance implements STMethod {
     public STClass getClass(World world) {
         return world.getCompiledMethodClass();
     }
+
+    @Override
+    public STInstance asInstance() {
+        return this;
+    }
+
+    public String getSource() {
+        return this.source == null ? "" : this.source;
+    }
 }

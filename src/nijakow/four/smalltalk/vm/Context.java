@@ -36,4 +36,8 @@ public class Context {
             instruction = instruction.getNext();
         }
     }
+
+    public void jumpTo(VMInstruction target) {
+        instruction = target;
+    }
 }

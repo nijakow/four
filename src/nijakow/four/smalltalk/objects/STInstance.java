@@ -8,4 +8,8 @@ public abstract class STInstance {
     public STMethod getInstanceMethod(World world, STSymbol name) {
         return getClass(world).findMethod(name);
     }
+
+    public boolean isTrue() {
+        return this != STBoolean.getFalse();
+    }
 }
