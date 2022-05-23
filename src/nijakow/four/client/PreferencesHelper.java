@@ -77,6 +77,8 @@ public class PreferencesHelper {
 		return prefs.getBoolean(Key.AUTO_INDENTING, true);
 	}
 
+	public boolean getShiftForNewline() { return prefs.getBoolean(Key.SHIFT_FOR_NEWLINE, false); }
+
 	public String getEditorTheme() {
 		return prefs.get(Key.EDITOR_THEME, Commands.Themes.DEFAULT);
 	}
@@ -147,6 +149,8 @@ public class PreferencesHelper {
 		prefs.putBoolean(Key.DARK_MODE, enabled);
 	}
 
+	public void setShiftForNewline(boolean value) { prefs.putBoolean(Key.SHIFT_FOR_NEWLINE, value); }
+
 	public void flushOrThrow() throws BackingStoreException {
 		prefs.flush();
 	}
@@ -181,6 +185,7 @@ public class PreferencesHelper {
 		public static final String EDITOR_WIDTH      = "editorWidth";
 		public static final String HOSTNAME          = "hostname";
 		public static final String LINE_BREAKING     = "lineBreaking";
+		public static final String SHIFT_FOR_NEWLINE = "shiftForNewline";
 		public static final String PORT_NUMBER       = "portNumber";
 		public static final String WINDOW_POS_X      = "windowPosX";
 		public static final String WINDOW_POS_Y      = "windowPosY";

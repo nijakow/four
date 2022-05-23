@@ -127,7 +127,7 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 		smalltalk.addFocusListener(new FocusListener() {
 			@Override
 			public void focusGained(FocusEvent e) {
-				smalltalk.getKeymap().addActionForKeyStroke(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), new AbstractAction() {
+				smalltalk.getKeymap().addActionForKeyStroke(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, prefs.getShiftForNewline() ? 0 : KeyEvent.SHIFT_DOWN_MASK), new AbstractAction() {
 					@Override
 					public void actionPerformed(ActionEvent e) {
 						final String content = smalltalk.getText();
@@ -150,7 +150,7 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 						smalltalk.setText("");
 					}
 				});
-				smalltalk.getKeymap().addActionForKeyStroke(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, KeyEvent.SHIFT_DOWN_MASK), new AbstractAction() {
+				smalltalk.getKeymap().addActionForKeyStroke(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, prefs.getShiftForNewline() ? KeyEvent.SHIFT_DOWN_MASK : 0), new AbstractAction() {
 					@Override
 					public void actionPerformed(ActionEvent e) {
 						try {
@@ -397,9 +397,14 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 			prefs.setLineBreaking(lineBreak.isSelected());
 			setLineBreaking(prefs.getLineBreaking());
 		});
+		JCheckBox shiftForNewline = new JCheckBox("Accept Smalltalk messages with Enter");
+		shiftForNewline.addItemListener(event -> {
+			prefs.setShiftForNewline(shiftForNewline.isSelected());
+		});
 		JCheckBox darkMode = new JCheckBox("Dark mode");
 		settingsWindow.getContentPane().add(darkMode);
 		settingsWindow.getContentPane().add(lineBreak);
+		settingsWindow.getContentPane().add(shiftForNewline);
 		darkMode.addItemListener(event -> {
 			boolean dark = darkMode.isSelected();
 			toggleMode(dark);
@@ -410,6 +415,8 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 				darkMode.setBackground(Color.darkGray);
 				lineBreak.setForeground(Color.white);
 				lineBreak.setBackground(Color.darkGray);
+				shiftForNewline.setForeground(Color.white);
+				shiftForNewline.setBackground(Color.darkGray);
 				hostname.setBackground(Color.gray);
 				hostname.setCaretColor(Color.white);
 				hostname.setForeground(Color.white);
@@ -426,6 +433,8 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 				darkMode.setBackground(null);
 				lineBreak.setForeground(null);
 				lineBreak.setBackground(null);
+				shiftForNewline.setForeground(null);
+				shiftForNewline.setBackground(null);
 				hostname.setBackground(Color.white);
 				hostname.setCaretColor(null);
 				hostname.setForeground(null);
@@ -444,6 +453,7 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 				hostname.setText(prefs.getHostname());
 				portNo.setText(Integer.toString(prefs.getPort()));
 				lineBreak.setSelected(prefs.getLineBreaking());
+				shiftForNewline.setSelected(prefs.getShiftForNewline());
 				darkMode.setSelected(prefs.getDarkMode());
 			}
 
