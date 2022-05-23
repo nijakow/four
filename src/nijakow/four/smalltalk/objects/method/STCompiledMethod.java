@@ -64,6 +64,10 @@ public class STCompiledMethod extends STInstance implements STMethod {
         return this;
     }
 
+    public STSymbol getName() { return this.name; }
+
+    public STClass getHoldingClass() { return this.clazz; }
+
     public String getSource() {
         return this.source == null ? "" : this.source;
     }

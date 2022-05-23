@@ -244,6 +244,14 @@ public class World {
         closureClass.addMethodFromSource("whileTrue: body\n[\n    [\n        (self value) ifFalse: [ ^ self ].\n        body value.\n    ] repeat.\n]\n");
 
         setValue("CompiledMethod", compiledMethodClass);
+        compiledMethodClass.addMethod("holdingClass", (fiber, args) -> {
+            STClass name = args[0].asCompiledMethod().getHoldingClass();
+            fiber.setAccu(name == null ? STNil.get() : name);
+        });
+        compiledMethodClass.addMethod("name", (fiber, args) -> {
+            STSymbol name = args[0].asCompiledMethod().getName();
+            fiber.setAccu(name == null ? STNil.get() : name);
+        });
         compiledMethodClass.addMethod("source", (fiber, args) -> fiber.setAccu(new STString(args[0].asCompiledMethod().getSource())));
 
         setValue("Port", portClass);
