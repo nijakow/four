@@ -117,6 +117,7 @@ public class World {
         objectClass.addMethod("asBool", (fiber, args) -> fiber.setAccu(STBoolean.get(args[0].isTrue())));
         objectClass.addMethod("toString", (fiber, args) -> fiber.setAccu(new STString(args[0].toString())));
         objectClass.addMethod("=", (fiber, args) -> fiber.setAccu(STBoolean.get(args[0].is(args[1]))));
+        objectClass.addMethod("!=", (fiber, args) -> fiber.setAccu(STBoolean.get(!args[0].is(args[1]))));
         objectClass.addMethodFromSource("writeOn: w\n[\n    w out: self toString\n]\n");
         objectClass.addMethodFromSource("storeOn: w\n[\n    w out: self toString\n]\n");
 
@@ -158,7 +159,8 @@ public class World {
                 fiber.setAccu(method.asInstance());
         });
         metaClass.addMethod("addMethod:", (fiber, args) -> {
-            args[0].asClass().addMethodFromSource(args[1].asString().getValue());
+            if (args[1] != STNil.get())
+                args[0].asClass().addMethodFromSource(args[1].asString().getValue());
         });
         metaClass.addMethod("selectors", (fiber, args) -> {
             STSymbol[] selectors = args[0].asClass().getSelectors();
@@ -169,8 +171,8 @@ public class World {
             args[1].asClosure().execute(fiber, 0);
             fiber.top().setHandler(args[2].asClosure());
         });
-        metaClass.addMethodFromSource("addMethod\n[\n    self addMethod: Transcript edit.\n]\n");
-        metaClass.addMethodFromSource("editMethod: name\n[\n    self addMethod: (Transcript edit: (self method: name) source title: ('Method ' + (name asString))).\n]\n");
+        metaClass.addMethodFromSource("edit\n[\n    self addMethod: Transcript edit.\n]\n");
+        metaClass.addMethodFromSource("edit: name | text\n[\n    ((self method: name) = nil) ifTrue: [\n        text := (name asString) + ' | \"Local variables\"\\n[\\n  ^ self\\n]\\n'.\n    ] ifFalse: [\n        text := (self method: name) source.\n    ].\n    self addMethod: (Transcript edit: text title: ('Method ' + (name asString))).\n]\n");
 
         nilClass = objectClass.subclass();
         booleanClass = objectClass.subclass();
