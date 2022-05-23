@@ -11,18 +11,16 @@ import nijakow.four.smalltalk.parser.Parser;
 import nijakow.four.smalltalk.parser.StringCharacterStream;
 import nijakow.four.smalltalk.parser.Tokenizer;
 import nijakow.four.smalltalk.vm.Builtin;
-import nijakow.four.smalltalk.vm.Fiber;
 import nijakow.four.smalltalk.vm.FourException;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class STClass extends STInstance {
     private final STClass superclass;
-    private final STSymbol[] members;
+    private STSymbol[] members;
     private final Map<STSymbol, STMethod> methods;
     private Supplier<STInstance> instantiator;
     private Function<STInstance, STInstance> instantiator2;
@@ -70,6 +68,24 @@ public class STClass extends STInstance {
 
     public STClass subclass() {
         return new STClass(this, new STSymbol[]{});
+    }
+
+    public STSymbol[] getInstanceVariableNames() {
+        STSymbol[] names = new STSymbol[this.members.length];
+        for (int i = 0; i < names.length; i++)
+            names[i] = this.members[i];
+        return names;
+    }
+
+    public void setInstanceVariableNames(String value) {
+        String[] varnames = value.split("\\s+");
+        STSymbol[] vars = new STSymbol[varnames.length];
+        for (int i = 0; i < vars.length; i++)
+            vars[i] = STSymbol.get(varnames[i]);
+        this.members = vars;
+        /*
+         * TODO: Update all instances
+         */
     }
 
 

@@ -144,6 +144,12 @@ public class World {
             STClass clazz = args[0].asClass().subclass();
             setValue(name, clazz);
         });
+        metaClass.addMethod("instanceVariables", (fiber, args) -> {
+            fiber.setAccu(new STArray(args[0].asClass().getInstanceVariableNames()));
+        });
+        metaClass.addMethod("instanceVariableNames:", (fiber, args) -> {
+            args[0].asClass().setInstanceVariableNames(args[1].asString().getValue());
+        });
         metaClass.addMethod("method:", (fiber, args) -> {
             STMethod method = args[0].asClass().getMethod(args[1].asSymbol());
             if (method == null || method.asInstance() == null)
