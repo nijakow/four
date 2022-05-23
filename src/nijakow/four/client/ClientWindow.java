@@ -119,7 +119,7 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 		south.setOpaque(false);
 		south.setLayout(new BoxLayout(south, BoxLayout.X_AXIS));
 		smalltalk = new JTextPane();
-		smalltalk.setFont(new Font("Monospaced", Font.PLAIN, 16));
+		smalltalk.setFont(new Font("Monospaced", Font.PLAIN, 14));
 		FDocument o = new FDocument();
 		o.setHighlightingEnabled(true);
 		smalltalk.setDocument(o);
