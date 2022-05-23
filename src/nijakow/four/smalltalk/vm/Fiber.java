@@ -107,13 +107,17 @@ public class Fiber {
         STInstance instance = stack.get(sp - args - 1);
         STMethod m = instance.getInstanceMethod(this.getVM().getWorld(), message);
         if (m == null)
-            throw new RuntimeException("Method not found: " + message + "!");
+            throw new FourException("Method not found: " + message + "!");
         m.execute(this, args, null);
     }
 
-    public void normalReturn() {
+    private void popContext() {
         sp = top().getBase();
         top = top().getParent();
+    }
+
+    public void normalReturn() {
+        popContext();
         maybeHalt();
     }
 
@@ -121,8 +125,7 @@ public class Fiber {
         Context context = top().getLexical();
         sp = top().getBase();
         while (context != null) {
-            sp = top().getBase();
-            top = top().getParent();
+            popContext();
             if (top() == context)
                 context = context.getLexical();
         }
@@ -130,11 +133,30 @@ public class Fiber {
         maybeHalt();
     }
 
+    public boolean callHandler() {
+        Context context = top();
+        while (context != null) {
+            loadSelf();
+            popContext();
+            if (context.getHandler() != null) {
+                push();
+                context.getHandler().execute(this, 1);
+                return true;
+            }
+        }
+        return false;
+    }
+
     public void runForAWhile() throws FourException {
         for (int x = 0; x < 32 * 1024; x++) {
             maybeHalt();
             if (!isRunning()) break;
-            top().step(this);
+            try {
+                top().step(this);
+            } catch (FourException e) {
+                if (!callHandler())
+                    throw e;
+            }
         }
     }
 

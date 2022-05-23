@@ -30,6 +30,7 @@ public class World {
     private STClass compiledMethodClass;
     private STClass builtinMethodClass;
     private STClass portClass;
+    private STClass exceptionClass;
 
     public World() {
     }
@@ -145,6 +146,10 @@ public class World {
             STArray result = new STArray(selectors);
             fiber.setAccu(result);
         });
+        metaClass.addMethod("handle:do:", (fiber, args) -> {
+            args[1].asClosure().execute(fiber, 0);
+            fiber.top().setHandler(args[2].asClosure());
+        });
 
         nilClass = objectClass.subclass();
         booleanClass = objectClass.subclass();
@@ -158,6 +163,7 @@ public class World {
         compiledMethodClass = methodClass.subclass();
         builtinMethodClass = methodClass.subclass();
         portClass = objectClass.subclass();
+        exceptionClass = objectClass.subclass();
 
         setValue("Nil", nilClass);
 
@@ -275,6 +281,8 @@ public class World {
         portClass.addMethod("close", (fiber, args) -> {
             args[0].asPort().close();
         });
+
+        setValue("Exception", exceptionClass);
 
         STClass fourClass = objectClass.subclass();
         fourClass.addMethodFromSource("run\n[\n]\n");
