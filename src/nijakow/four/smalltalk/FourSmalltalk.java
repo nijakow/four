@@ -6,6 +6,7 @@ import nijakow.four.smalltalk.net.Server;
 import nijakow.four.smalltalk.objects.STInstance;
 import nijakow.four.smalltalk.objects.STPort;
 import nijakow.four.smalltalk.objects.STSymbol;
+import nijakow.four.smalltalk.vm.FourException;
 
 import java.io.IOException;
 
@@ -23,9 +24,13 @@ public class FourSmalltalk {
         this.world.buildDefaultWorld();
         this.server.onConnect((connection) -> {
             final STInstance master = this.world.getValue("Four");
-            this.vm.startFiber(master, "newConnection:", new STInstance[]{
-                    new STPort(connection)
-            });
+            try {
+                this.vm.startFiber(master, "newConnection:", new STInstance[]{
+                        new STPort(connection)
+                });
+            } catch (FourException e) {
+                throw new RuntimeException(e);
+            }
         });
     }
 
@@ -33,7 +38,7 @@ public class FourSmalltalk {
         this.server.serveOn(hostname, port);
     }
 
-    public void run() throws IOException {
+    public void run() throws IOException, FourException {
         vm.startFiber(this.world.getValue(STSymbol.get("Four")), STSymbol.get("run"), new STInstance[]{});
         while (true) {
             vm.tick();
@@ -41,7 +46,7 @@ public class FourSmalltalk {
         }
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, FourException {
         FourSmalltalk four = new FourSmalltalk();
         four.serveOn("localhost", 4242);
         ClientWindow.openWindow("localhost", new int[] {4242});

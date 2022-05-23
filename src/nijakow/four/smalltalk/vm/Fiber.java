@@ -92,18 +92,18 @@ public class Fiber {
         this.top = context;
     }
 
-    public void enter(STInstance self, STSymbol message, STInstance[] args) {
+    public void enter(STInstance self, STSymbol message, STInstance[] args) throws FourException {
         push(self);
         for (STInstance arg : args)
             push(arg);
         setAccu(self);
         send(message, args.length);
     }
-    public void enter(STInstance self, String message, STInstance[] args) {
+    public void enter(STInstance self, String message, STInstance[] args) throws FourException {
         enter(self, STSymbol.get(message), args);
     }
 
-    public void send(STSymbol message, int args) {
+    public void send(STSymbol message, int args) throws FourException {
         STInstance instance = stack.get(sp - args - 1);
         STMethod m = instance.getInstanceMethod(this.getVM().getWorld(), message);
         if (m == null)
@@ -131,7 +131,7 @@ public class Fiber {
         maybeHalt();
     }
 
-    public void runForAWhile() {
+    public void runForAWhile() throws FourException {
         for (int x = 0; x < 32 * 1024; x++) {
             maybeHalt();
             if (!isRunning()) break;

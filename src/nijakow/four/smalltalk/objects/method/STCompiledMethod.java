@@ -6,6 +6,7 @@ import nijakow.four.smalltalk.objects.STInstance;
 import nijakow.four.smalltalk.objects.STSymbol;
 import nijakow.four.smalltalk.vm.Context;
 import nijakow.four.smalltalk.vm.Fiber;
+import nijakow.four.smalltalk.vm.FourException;
 import nijakow.four.smalltalk.vm.instructions.VMInstruction;
 
 public class STCompiledMethod extends STInstance implements STMethod {
@@ -28,6 +29,11 @@ public class STCompiledMethod extends STInstance implements STMethod {
     @Override
     public String toString() {
         return "CompiledMethod";
+    }
+
+    @Override
+    public STCompiledMethod asCompiledMethod() throws FourException {
+        return this;
     }
 
     @Override

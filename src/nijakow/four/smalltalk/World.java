@@ -112,35 +112,35 @@ public class World {
         metaClass = objectClass.subclass();
         setValue("Class", metaClass);
         metaClass.addMethod("new", (fiber, args) -> {
-            fiber.enter(((STClass) args[0]).instantiate(), "init", new STInstance[]{});
+            fiber.enter(args[0].asClass().instantiate(), "init", new STInstance[]{});
         });
         metaClass.addMethod("new:", (fiber, args) -> {
-            fiber.enter(((STClass) args[0]).instantiate(args[1]), "init", new STInstance[]{});
+            fiber.enter(args[0].asClass().instantiate(args[1]), "init", new STInstance[]{});
         });
         metaClass.addMethod("parent", (fiber, args) -> {
-            STClass parent = ((STClass) args[0]).getSuperClass();
+            STClass parent = args[0].asClass().getSuperClass();
             if (parent == null)
                 fiber.setAccu(STNil.get());
             else
                 fiber.setAccu(parent);
         });
         metaClass.addMethod("subclass:", (fiber, args) -> {
-            final STSymbol name = ((STSymbol) args[1]);
-            STClass clazz = ((STClass) args[0]).subclass();
+            final STSymbol name = args[1].asSymbol();
+            STClass clazz = args[0].asClass().subclass();
             setValue(name, clazz);
         });
         metaClass.addMethod("method:", (fiber, args) -> {
-            STMethod method = ((STClass) args[0]).getMethod((STSymbol) args[1]);
+            STMethod method = args[0].asClass().getMethod(args[1].asSymbol());
             if (method == null || method.asInstance() == null)
                 fiber.setAccu(STNil.get());
             else
                 fiber.setAccu(method.asInstance());
         });
         metaClass.addMethod("addMethod:", (fiber, args) -> {
-            ((STClass) args[0]).addMethodFromSource(((STString) args[1]).getValue());
+            args[0].asClass().addMethodFromSource(args[1].asString().getValue());
         });
         metaClass.addMethod("selectors", (fiber, args) -> {
-            STSymbol[] selectors = ((STClass) args[0]).getSelectors();
+            STSymbol[] selectors = args[0].asClass().getSelectors();
             STArray result = new STArray(selectors);
             fiber.setAccu(result);
         });
@@ -166,62 +166,62 @@ public class World {
         booleanClass.addMethod("|", (fiber, args) -> fiber.setAccu(STBoolean.get(args[0].isTrue() || args[1].isTrue())));
 
         setValue("Integer", integerClass);
-        integerClass.addMethod("asChar", (fiber, args) -> fiber.setAccu(STCharacter.get((char) ((STInteger) args[0]).getValue())));
-        integerClass.addMethod("+", (fiber, args) -> fiber.setAccu(STInteger.get(((STInteger) args[0]).getValue() + ((STInteger) args[1]).getValue())));
-        integerClass.addMethod("-", (fiber, args) -> fiber.setAccu(STInteger.get(((STInteger) args[0]).getValue() - ((STInteger) args[1]).getValue())));
-        integerClass.addMethod("*", (fiber, args) -> fiber.setAccu(STInteger.get(((STInteger) args[0]).getValue() * ((STInteger) args[1]).getValue())));
-        integerClass.addMethod("/", (fiber, args) -> fiber.setAccu(STInteger.get(((STInteger) args[0]).getValue() / ((STInteger) args[1]).getValue())));
-        integerClass.addMethod("mod:", (fiber, args) -> fiber.setAccu(STInteger.get(((STInteger) args[0]).getValue() % ((STInteger) args[1]).getValue())));
-        integerClass.addMethod("negate", (fiber, args) -> fiber.setAccu(STInteger.get(-((STInteger) args[0]).getValue())));
-        integerClass.addMethod("bitAnd:", (fiber, args) -> fiber.setAccu(STInteger.get(((STInteger) args[0]).getValue() & ((STInteger) args[1]).getValue())));
-        integerClass.addMethod("bitOr:", (fiber, args) -> fiber.setAccu(STInteger.get(((STInteger) args[0]).getValue() | ((STInteger) args[1]).getValue())));
-        integerClass.addMethod("bitXor:", (fiber, args) -> fiber.setAccu(STInteger.get(((STInteger) args[0]).getValue() ^ ((STInteger) args[1]).getValue())));
-        integerClass.addMethod("leftShift:", (fiber, args) -> fiber.setAccu(STInteger.get(((STInteger) args[0]).getValue() << ((STInteger) args[1]).getValue())));
-        integerClass.addMethod("rightShift:", (fiber, args) -> fiber.setAccu(STInteger.get(((STInteger) args[0]).getValue() >> ((STInteger) args[1]).getValue())));
-        integerClass.addMethod("bitNot", (fiber, args) -> fiber.setAccu(STInteger.get(~((STInteger) args[0]).getValue())));
-        integerClass.addMethod("<", (fiber, args) -> fiber.setAccu(STBoolean.get(((STInteger) args[0]).getValue() < ((STInteger) args[1]).getValue())));
-        integerClass.addMethod("<=", (fiber, args) -> fiber.setAccu(STBoolean.get(((STInteger) args[0]).getValue() <= ((STInteger) args[1]).getValue())));
-        integerClass.addMethod(">", (fiber, args) -> fiber.setAccu(STBoolean.get(((STInteger) args[0]).getValue() > ((STInteger) args[1]).getValue())));
-        integerClass.addMethod(">=", (fiber, args) -> fiber.setAccu(STBoolean.get(((STInteger) args[0]).getValue() >= ((STInteger) args[1]).getValue())));
+        integerClass.addMethod("asChar", (fiber, args) -> fiber.setAccu(STCharacter.get((char) args[0].asInteger().getValue())));
+        integerClass.addMethod("+", (fiber, args) -> fiber.setAccu(STInteger.get(args[0].asInteger().getValue() + args[1].asInteger().getValue())));
+        integerClass.addMethod("-", (fiber, args) -> fiber.setAccu(STInteger.get(args[0].asInteger().getValue() - args[1].asInteger().getValue())));
+        integerClass.addMethod("*", (fiber, args) -> fiber.setAccu(STInteger.get(args[0].asInteger().getValue() * args[1].asInteger().getValue())));
+        integerClass.addMethod("/", (fiber, args) -> fiber.setAccu(STInteger.get(args[0].asInteger().getValue() / args[1].asInteger().getValue())));
+        integerClass.addMethod("mod:", (fiber, args) -> fiber.setAccu(STInteger.get(args[0].asInteger().getValue() % args[1].asInteger().getValue())));
+        integerClass.addMethod("negate", (fiber, args) -> fiber.setAccu(STInteger.get(-args[0].asInteger().getValue())));
+        integerClass.addMethod("bitAnd:", (fiber, args) -> fiber.setAccu(STInteger.get(args[0].asInteger().getValue() & args[1].asInteger().getValue())));
+        integerClass.addMethod("bitOr:", (fiber, args) -> fiber.setAccu(STInteger.get(args[0].asInteger().getValue() | args[1].asInteger().getValue())));
+        integerClass.addMethod("bitXor:", (fiber, args) -> fiber.setAccu(STInteger.get(args[0].asInteger().getValue() ^ args[1].asInteger().getValue())));
+        integerClass.addMethod("leftShift:", (fiber, args) -> fiber.setAccu(STInteger.get(args[0].asInteger().getValue() << args[1].asInteger().getValue())));
+        integerClass.addMethod("rightShift:", (fiber, args) -> fiber.setAccu(STInteger.get(args[0].asInteger().getValue() >> args[1].asInteger().getValue())));
+        integerClass.addMethod("bitNot", (fiber, args) -> fiber.setAccu(STInteger.get(~args[0].asInteger().getValue())));
+        integerClass.addMethod("<", (fiber, args) -> fiber.setAccu(STBoolean.get(args[0].asInteger().getValue() < args[1].asInteger().getValue())));
+        integerClass.addMethod("<=", (fiber, args) -> fiber.setAccu(STBoolean.get(args[0].asInteger().getValue() <= args[1].asInteger().getValue())));
+        integerClass.addMethod(">", (fiber, args) -> fiber.setAccu(STBoolean.get(args[0].asInteger().getValue() > args[1].asInteger().getValue())));
+        integerClass.addMethod(">=", (fiber, args) -> fiber.setAccu(STBoolean.get(args[0].asInteger().getValue() >= args[1].asInteger().getValue())));
         integerClass.addMethodFromSource("to: upper do: block | v\n[\n    v := self.\n    [ v <= upper ] whileTrue: [\n        block value: v.\n        v := v + 1.\n    ].\n  ^ self\n]\n");
 
         setValue("Character", characterClass);
-        characterClass.addMethod("asInt", (fiber, args) -> fiber.setAccu(STInteger.get(((STCharacter) args[0]).getValue())));
-        characterClass.addMethod("isWhitespace", (fiber, args) -> fiber.setAccu(STBoolean.get(Character.isWhitespace(((STCharacter) args[0]).getValue()))));
-        characterClass.addMethod("<", (fiber, args) -> fiber.setAccu(STBoolean.get(((STCharacter) args[0]).getValue() < ((STCharacter) args[1]).getValue())));
-        characterClass.addMethod("<=", (fiber, args) -> fiber.setAccu(STBoolean.get(((STCharacter) args[0]).getValue() <= ((STCharacter) args[1]).getValue())));
-        characterClass.addMethod(">", (fiber, args) -> fiber.setAccu(STBoolean.get(((STCharacter) args[0]).getValue() > ((STCharacter) args[1]).getValue())));
-        characterClass.addMethod(">=", (fiber, args) -> fiber.setAccu(STBoolean.get(((STCharacter) args[0]).getValue() >= ((STCharacter) args[1]).getValue())));
+        characterClass.addMethod("asInt", (fiber, args) -> fiber.setAccu(STInteger.get(args[0].asCharacter().getValue())));
+        characterClass.addMethod("isWhitespace", (fiber, args) -> fiber.setAccu(STBoolean.get(Character.isWhitespace(args[0].asCharacter().getValue()))));
+        characterClass.addMethod("<", (fiber, args) -> fiber.setAccu(STBoolean.get(args[0].asCharacter().getValue() < args[1].asCharacter().getValue())));
+        characterClass.addMethod("<=", (fiber, args) -> fiber.setAccu(STBoolean.get(args[0].asCharacter().getValue() <= args[1].asCharacter().getValue())));
+        characterClass.addMethod(">", (fiber, args) -> fiber.setAccu(STBoolean.get(args[0].asCharacter().getValue() > args[1].asCharacter().getValue())));
+        characterClass.addMethod(">=", (fiber, args) -> fiber.setAccu(STBoolean.get(args[0].asCharacter().getValue() >= args[1].asCharacter().getValue())));
         characterClass.addMethodFromSource("writeOn: w\n[\n    w outputChar: self\n]\n");
 
         setValue("String", stringClass);
-        stringClass.addMethod("size", (fiber, args) -> fiber.setAccu(STInteger.get((((STString) args[0]).getValue().length()))));
-        stringClass.addMethod("at:", (fiber, args) -> fiber.setAccu(STCharacter.get((((STString) args[0]).getValue().charAt(((STInteger) args[1]).getValue())))));
-        stringClass.addMethod("from:to:", (fiber, args) -> fiber.setAccu(new STString((((STString) args[0]).getValue().substring(((STInteger) args[1]).getValue(), ((STInteger) args[2]).getValue())))));
-        stringClass.addMethod("+", (fiber, args) -> fiber.setAccu(new STString(((STString) args[0]).getValue() + ((STString) args[1]).getValue())));
-        stringClass.addMethod("compile", (fiber, args) -> fiber.setAccu(new STClosure(((STString) args[0]).compile(), null)));
-        stringClass.addMethod("asSymbol", (fiber, args) -> fiber.setAccu(STSymbol.get(((STString) args[0]).getValue())));
+        stringClass.addMethod("size", (fiber, args) -> fiber.setAccu(STInteger.get((args[0].asString().getValue().length()))));
+        stringClass.addMethod("at:", (fiber, args) -> fiber.setAccu(STCharacter.get((args[0].asString().getValue().charAt(args[1].asInteger().getValue())))));
+        stringClass.addMethod("from:to:", (fiber, args) -> fiber.setAccu(new STString((args[0].asString().getValue().substring(args[1].asInteger().getValue(), args[2].asInteger().getValue())))));
+        stringClass.addMethod("+", (fiber, args) -> fiber.setAccu(new STString(args[0].asString().getValue() + args[1].asString().getValue())));
+        stringClass.addMethod("compile", (fiber, args) -> fiber.setAccu(new STClosure(args[0].asString().compile(), null)));
+        stringClass.addMethod("asSymbol", (fiber, args) -> fiber.setAccu(STSymbol.get(args[0].asString().getValue())));
         stringClass.addMethodFromSource("do: block\n[\n    0 to: self size - 1 do: [ :i | block value: (self at: i) ].\n  ^ self\n]\n");
         stringClass.addMethodFromSource("writeOn: w\n[\n    self do: [ :c | w out: c ]\n]\n");
 
         setValue("Symbol", symbolClass);
-        symbolClass.addMethod("asString", (fiber, args) -> fiber.setAccu(new STString(((STSymbol) args[0]).getName())));
+        symbolClass.addMethod("asString", (fiber, args) -> fiber.setAccu(new STString(args[0].asSymbol().getName())));
 
         setValue("Array", arrayClass);
         arrayClass.setInstantiator(() -> new STArray(0));
         arrayClass.setInstantiator2((size) -> new STArray(((STInteger) size).getValue()));
-        arrayClass.addMethod("size", (fiber, args) -> fiber.setAccu(STInteger.get(((STArray) args[0]).getSize())));
-        arrayClass.addMethod("at:", (fiber, args) -> fiber.setAccu(((STArray) args[0]).get(((STInteger) args[1]).getValue())));
-        arrayClass.addMethod("at:put:", (fiber, args) -> ((STArray) args[0]).set(((STInteger) args[1]).getValue(), args[2]));
+        arrayClass.addMethod("size", (fiber, args) -> fiber.setAccu(STInteger.get(args[0].asArray().getSize())));
+        arrayClass.addMethod("at:", (fiber, args) -> fiber.setAccu(args[0].asArray().get(args[1].asInteger().getValue())));
+        arrayClass.addMethod("at:put:", (fiber, args) -> args[0].asArray().set(args[1].asInteger().getValue(), args[2]));
         arrayClass.addMethodFromSource("do: block\n[\n    0 to: self size - 1 do: [ :i | block value: (self at: i) ].\n  ^ self\n]\n");
 
         setValue("Method", methodClass);
         Builtin valueBuiltin = (fiber, args) -> {
-            fiber.loadLexicalSelf(((STClosure) args[0]).getContext());
+            fiber.loadLexicalSelf(args[0].asClosure().getContext());
             fiber.push();
             for (int x = 1; x < args.length; x++)
                 fiber.push(args[x]);
-            ((STClosure) args[0]).execute(fiber, args.length - 1);
+            args[0].asClosure().execute(fiber, args.length - 1);
         };
 
         setValue("BlockClosure", closureClass);
@@ -236,42 +236,42 @@ public class World {
         closureClass.addMethodFromSource("whileTrue: body\n[\n    [\n        (self value) ifFalse: [ ^ self ].\n        body value.\n    ] repeat.\n]\n");
 
         setValue("CompiledMethod", compiledMethodClass);
-        compiledMethodClass.addMethod("source", (fiber, args) -> fiber.setAccu(new STString(((STCompiledMethod) args[0]).getSource())));
+        compiledMethodClass.addMethod("source", (fiber, args) -> fiber.setAccu(new STString(args[0].asCompiledMethod().getSource())));
 
         setValue("Port", portClass);
         portClass.addMethod("prompt:", (fiber, args) -> {
             fiber.pause();
-            ((STPort) args[0]).prompt(((STString) args[1]).getValue());
-            ((STPort) args[0]).onInput((STString line) -> fiber.restartWithValue(line));
+            args[0].asPort().prompt(args[1].asString().getValue());
+            args[0].asPort().onInput((STString line) -> fiber.restartWithValue(line));
         });
         portClass.addMethod("password:", (fiber, args) -> {
             fiber.pause();
-            ((STPort) args[0]).password(((STString) args[1]).getValue());
-            ((STPort) args[0]).onInput((STString line) -> fiber.restartWithValue(line));
+            args[0].asPort().password(((STString) args[1]).getValue());
+            args[0].asPort().onInput((STString line) -> fiber.restartWithValue(line));
         });
         portClass.addMethod("outputChar:", (fiber, args) -> {
-            ((STPort) args[0]).write("" + ((STCharacter) args[1]).getValue());
+            args[0].asPort().write("" + args[1].asCharacter().getValue());
         });
         portClass.addMethodFromSource("out: obj\n[\n    obj writeOn: self.\n  ^ self\n]\n");
         portClass.addMethodFromSource("store: obj\n[\n    obj storeOn: self.\n  ^ self\n]\n");
         portClass.addMethodFromSource("cr\n[\n    self out: '\n'.\n]\n");
         portClass.addMethod("edit:title:", (fiber, args) -> {
             fiber.pause();
-            ((STPort) args[0]).edit(((STString) args[2]).getValue(), ((STString) args[1]).getValue(), (v) -> {
+            args[0].asPort().edit(args[2].asString().getValue(), args[1].asString().getValue(), (v) -> {
                 if (v == null) fiber.restartWithValue(STNil.get());
                 else fiber.restartWithValue(v);
             });
         });
         portClass.addMethodFromSource("edit\n[\n  ^ self edit: '' title: 'Something new'\n]\n");
         portClass.addMethod("uploadToUser:", (fiber, args) -> {
-            ((STPort) args[0]).uploadToUser(((STString) args[1]).getValue());
+            args[0].asPort().uploadToUser(args[1].asString().getValue());
         });
         portClass.addMethod("downloadFromUser", (fiber, args) -> {
             fiber.pause();
-            ((STPort) args[0]).downloadFromUser((STString file) -> fiber.restartWithValue(file));
+            args[0].asPort().downloadFromUser((STString file) -> fiber.restartWithValue(file));
         });
         portClass.addMethod("close", (fiber, args) -> {
-            ((STPort) args[0]).close();
+            args[0].asPort().close();
         });
 
         STClass fourClass = objectClass.subclass();

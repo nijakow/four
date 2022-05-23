@@ -1,6 +1,7 @@
 package nijakow.four.smalltalk.objects;
 
 import nijakow.four.smalltalk.World;
+import nijakow.four.smalltalk.objects.method.STCompiledMethod;
 import nijakow.four.smalltalk.objects.method.STMethod;
 import nijakow.four.smalltalk.vm.FourException;
 
@@ -26,6 +27,7 @@ public abstract class STInstance {
     public STPort asPort() throws FourException { castError(); return null; }
     public STString asString() throws FourException { castError(); return null; }
     public STSymbol asSymbol() throws FourException { castError(); return null; }
+    public STCompiledMethod asCompiledMethod() throws FourException { castError(); return null; }
 
     public boolean isTrue() {
         return this != STBoolean.getFalse();

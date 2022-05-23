@@ -28,7 +28,7 @@ public class Context {
         return this.base;
     }
 
-    public void step(Fiber fiber) {
+    public void step(Fiber fiber) throws FourException {
         if (instruction == null)
             fiber.normalReturn();
         else {

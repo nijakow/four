@@ -3,6 +3,7 @@ package nijakow.four.smalltalk;
 import nijakow.four.smalltalk.objects.STInstance;
 import nijakow.four.smalltalk.objects.STSymbol;
 import nijakow.four.smalltalk.vm.Fiber;
+import nijakow.four.smalltalk.vm.FourException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,19 +27,19 @@ public class SmalltalkVM {
     /**
      * Tick the VM.
      */
-    public void tick() {
+    public void tick() throws FourException {
         for (int i = 0; i < runningSet.size(); i++) {
             final Fiber fiber = runningSet.get(i);
             fiber.runForAWhile();
         }
     }
 
-    public void startFiber(STInstance self, STSymbol message, STInstance[] args) {
+    public void startFiber(STInstance self, STSymbol message, STInstance[] args) throws FourException {
         Fiber fiber = new Fiber(this);
         fiber.enter(self, message, args);
         fiber.restart();
     }
-    public void startFiber(STInstance self, String message, STInstance[] args) {
+    public void startFiber(STInstance self, String message, STInstance[] args) throws FourException {
         startFiber(self, STSymbol.get(message), args);
     }
 

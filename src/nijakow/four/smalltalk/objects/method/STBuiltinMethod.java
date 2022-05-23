@@ -6,6 +6,7 @@ import nijakow.four.smalltalk.objects.STInstance;
 import nijakow.four.smalltalk.vm.Builtin;
 import nijakow.four.smalltalk.vm.Context;
 import nijakow.four.smalltalk.vm.Fiber;
+import nijakow.four.smalltalk.vm.FourException;
 
 import java.util.function.BiConsumer;
 
@@ -17,7 +18,7 @@ public class STBuiltinMethod extends STInstance implements STMethod {
     }
 
     @Override
-    public void execute(Fiber fiber, int args, Context context) {
+    public void execute(Fiber fiber, int args, Context context) throws FourException {
         args++; // Also send the receiver
         STInstance[] arglist = new STInstance[args];
         while (args --> 0)
