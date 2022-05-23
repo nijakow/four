@@ -41,8 +41,12 @@ public class Fiber {
         this.accu = value;
     }
 
+    public STInstance getSelf() {
+        return stack.get(top().getBase());
+    }
+
     public void loadSelf() {
-        setAccu(stack.get(top().getBase()));
+        setAccu(getSelf());
     }
 
     public void loadLexicalSelf(Context context) {
