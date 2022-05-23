@@ -2,6 +2,7 @@ package nijakow.four.smalltalk.objects;
 
 import nijakow.four.smalltalk.World;
 import nijakow.four.smalltalk.objects.method.STCompiledMethod;
+import nijakow.four.smalltalk.parser.ParseException;
 import nijakow.four.smalltalk.parser.Parser;
 import nijakow.four.smalltalk.parser.StringCharacterStream;
 import nijakow.four.smalltalk.parser.Tokenizer;
@@ -38,7 +39,7 @@ public class STString extends STInstance {
         return this.value;
     }
 
-    public STCompiledMethod compile() {
+    public STCompiledMethod compile() throws ParseException {
         StringCharacterStream stream = new StringCharacterStream(getValue());
         Tokenizer tokenizer = new Tokenizer(stream);
         Parser parser = new Parser(tokenizer);

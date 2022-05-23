@@ -42,7 +42,7 @@ public class Parser {
         return ((STSymbol) current().getPayload()).getName();
     }
 
-    private STSymbol expectSymbol() {
+    private STSymbol expectSymbol() throws ParseException {
         Token t = current();
         expect(TokenType.IDENTIFIER);
         return (STSymbol) t.getPayload();
@@ -60,13 +60,13 @@ public class Parser {
         return false;
     }
 
-    private void expect(TokenType type) {
+    private void expect(TokenType type) throws ParseException {
         if (!check(type)) {
-            throw new RuntimeException("Expected " + type + ", got " + current().getType());
+            throw new ParseException(current(), "Expected " + type + ", got " + current().getType());
         }
     }
 
-    private Pair<STSymbol, STSymbol[]> parseSmalltalkArglist() {
+    private Pair<STSymbol, STSymbol[]> parseSmalltalkArglist() throws ParseException {
         StringBuilder name = new StringBuilder();
         List<STSymbol> ts = new ArrayList<>();
 
@@ -89,7 +89,7 @@ public class Parser {
         return new Pair<>(STSymbol.get(name.toString()), ts.toArray(new STSymbol[]{}));
     }
 
-    private ExprAST parseSend(ExprAST receiver, int prio) {
+    private ExprAST parseSend(ExprAST receiver, int prio) throws ParseException {
         if (isUnary()) {
             return new SendAST(receiver, expectSymbol(), new ExprAST[]{});
         } else if (prio > 0 && isBinary()) {
@@ -107,7 +107,7 @@ public class Parser {
         return receiver;
     }
 
-    private BlockAST parseBlock() {
+    private BlockAST parseBlock() throws ParseException {
         List<STSymbol> ts = new ArrayList<>();
 
         while (check(TokenType.COLON))
@@ -118,7 +118,7 @@ public class Parser {
         return new BlockAST(ts.toArray(new STSymbol[]{}), parseExpressionsUntil(TokenType.RBRACK));
     }
 
-    private ExprAST parseSimpleExpression(int prio) {
+    private ExprAST parseSimpleExpression(int prio) throws ParseException {
         if (check(TokenType.LPAREN)) {
             ExprAST ast = parseExpression();
             expect(TokenType.RPAREN);
@@ -163,7 +163,7 @@ public class Parser {
         }
     }
 
-    private ExprAST parseExpression(int prio) {
+    private ExprAST parseExpression(int prio) throws ParseException {
         ExprAST expr = parseSimpleExpression(prio);
         ExprAST next = null;
 
@@ -175,11 +175,11 @@ public class Parser {
         return expr;
     }
 
-    private ExprAST parseExpression() {
+    private ExprAST parseExpression() throws ParseException {
         return parseExpression(2);
     }
 
-    private ExprsAST parseExpressionsUntil(TokenType type) {
+    private ExprsAST parseExpressionsUntil(TokenType type) throws ParseException {
         List<ExprAST> expressions = new ArrayList<>();
         if (!check(type)) {
             while (true) {
@@ -194,7 +194,7 @@ public class Parser {
         return new ExprsAST(expressions.toArray(new ExprAST[]{}));
     }
 
-    public MethodAST parseMethod() {
+    public MethodAST parseMethod() throws ParseException {
         Pair<STSymbol, STSymbol[]> head = parseSmalltalkArglist();
         List<STSymbol> locals = new ArrayList<>();
         if (check(TokenType.BAR)) {
@@ -207,7 +207,7 @@ public class Parser {
         return new MethodAST(head.getFirst(), head.getSecond(), locals.toArray(new STSymbol[]{}), parseExpressionsUntil(TokenType.RBRACK));
     }
 
-    public CommandLineAST parseCL() {
+    public CommandLineAST parseCL() throws ParseException {
         List<STSymbol> locals = new ArrayList<>();
         if (check(TokenType.BAR)) {
             while (is(TokenType.IDENTIFIER)) {

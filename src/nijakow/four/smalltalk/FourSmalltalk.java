@@ -6,6 +6,7 @@ import nijakow.four.smalltalk.net.Server;
 import nijakow.four.smalltalk.objects.STInstance;
 import nijakow.four.smalltalk.objects.STPort;
 import nijakow.four.smalltalk.objects.STSymbol;
+import nijakow.four.smalltalk.parser.ParseException;
 import nijakow.four.smalltalk.vm.FourException;
 
 import java.io.IOException;
@@ -16,7 +17,7 @@ public class FourSmalltalk {
     private final Server server;
     private final Logger logger;
 
-    public FourSmalltalk() throws IOException {
+    public FourSmalltalk() throws IOException, FourException {
         this.logger = new Logger();
         this.world = new World();
         this.vm = new SmalltalkVM(this.world);

@@ -5,6 +5,7 @@ import nijakow.four.smalltalk.objects.*;
 import nijakow.four.smalltalk.objects.method.STBuiltinMethod;
 import nijakow.four.smalltalk.objects.method.STCompiledMethod;
 import nijakow.four.smalltalk.objects.method.STMethod;
+import nijakow.four.smalltalk.parser.ParseException;
 import nijakow.four.smalltalk.vm.Builtin;
 import nijakow.four.smalltalk.vm.Fiber;
 
@@ -97,7 +98,7 @@ public class World {
         return this.portClass;
     }
 
-    public void buildDefaultWorld() {
+    public void buildDefaultWorld() throws ParseException {
         objectClass = new STClass();
         setValue("Object", objectClass);
         objectClass.addMethodFromSource("init\n[\n]\n");

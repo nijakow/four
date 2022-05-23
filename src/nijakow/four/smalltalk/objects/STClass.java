@@ -6,6 +6,7 @@ import nijakow.four.smalltalk.compiler.STCompiler;
 import nijakow.four.smalltalk.objects.method.STBuiltinMethod;
 import nijakow.four.smalltalk.objects.method.STCompiledMethod;
 import nijakow.four.smalltalk.objects.method.STMethod;
+import nijakow.four.smalltalk.parser.ParseException;
 import nijakow.four.smalltalk.parser.Parser;
 import nijakow.four.smalltalk.parser.StringCharacterStream;
 import nijakow.four.smalltalk.parser.Tokenizer;
@@ -76,7 +77,7 @@ public class STClass extends STInstance {
         return new STCompiler(this, null);
     }
 
-    public void addMethodFromSource(String source) {
+    public void addMethodFromSource(String source) throws ParseException {
         StringCharacterStream cs = new StringCharacterStream(source);
         Tokenizer tokenizer = new Tokenizer(cs);
         Parser parser = new Parser(tokenizer);
