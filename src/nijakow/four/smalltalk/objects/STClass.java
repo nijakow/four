@@ -9,6 +9,7 @@ import nijakow.four.smalltalk.objects.method.STMethod;
 import nijakow.four.smalltalk.parser.Parser;
 import nijakow.four.smalltalk.parser.StringCharacterStream;
 import nijakow.four.smalltalk.parser.Tokenizer;
+import nijakow.four.smalltalk.vm.Builtin;
 import nijakow.four.smalltalk.vm.Fiber;
 import nijakow.four.smalltalk.vm.FourException;
 
@@ -87,11 +88,11 @@ public class STClass extends STInstance {
         methods.put(name, method);
     }
 
-    public void addMethod(STSymbol name, BiConsumer<Fiber, STInstance[]> method) {
+    public void addMethod(STSymbol name, Builtin method) {
         methods.put(name, new STBuiltinMethod(method));
     }
 
-    public void addMethod(String name, BiConsumer<Fiber, STInstance[]> method) {
+    public void addMethod(String name, Builtin method) {
         addMethod(STSymbol.get(name), method);
     }
 

@@ -5,6 +5,7 @@ import nijakow.four.smalltalk.objects.*;
 import nijakow.four.smalltalk.objects.method.STBuiltinMethod;
 import nijakow.four.smalltalk.objects.method.STCompiledMethod;
 import nijakow.four.smalltalk.objects.method.STMethod;
+import nijakow.four.smalltalk.vm.Builtin;
 import nijakow.four.smalltalk.vm.Fiber;
 
 import java.util.HashMap;
@@ -215,7 +216,7 @@ public class World {
         arrayClass.addMethodFromSource("do: block\n[\n    0 to: self size - 1 do: [ :i | block value: (self at: i) ].\n  ^ self\n]\n");
 
         setValue("Method", methodClass);
-        BiConsumer<Fiber, STInstance[]> valueBuiltin = (fiber, args) -> {
+        Builtin valueBuiltin = (fiber, args) -> {
             fiber.loadLexicalSelf(((STClosure) args[0]).getContext());
             fiber.push();
             for (int x = 1; x < args.length; x++)
