@@ -5,6 +5,7 @@ import nijakow.four.smalltalk.objects.method.STCompiledMethod;
 import nijakow.four.smalltalk.objects.method.STMethod;
 import nijakow.four.smalltalk.vm.Context;
 import nijakow.four.smalltalk.vm.Fiber;
+import nijakow.four.smalltalk.vm.FourException;
 
 public class STClosure extends STInstance {
     private final STCompiledMethod method;
@@ -13,6 +14,11 @@ public class STClosure extends STInstance {
     public STClosure(STCompiledMethod method, Context context) {
         this.method = method;
         this.context = context;
+    }
+
+    @Override
+    public STClosure asClosure() throws FourException {
+        return this;
     }
 
     @Override

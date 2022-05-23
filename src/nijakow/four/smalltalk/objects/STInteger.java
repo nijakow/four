@@ -1,6 +1,7 @@
 package nijakow.four.smalltalk.objects;
 
 import nijakow.four.smalltalk.World;
+import nijakow.four.smalltalk.vm.FourException;
 
 public class STInteger extends STInstance {
     private final int value;
@@ -12,6 +13,11 @@ public class STInteger extends STInstance {
     @Override
     public String toString() {
         return Integer.toString(value);
+    }
+
+    @Override
+    public STInteger asInteger() throws FourException {
+        return this;
     }
 
     @Override

@@ -5,6 +5,7 @@ import nijakow.four.smalltalk.objects.method.STCompiledMethod;
 import nijakow.four.smalltalk.parser.Parser;
 import nijakow.four.smalltalk.parser.StringCharacterStream;
 import nijakow.four.smalltalk.parser.Tokenizer;
+import nijakow.four.smalltalk.vm.FourException;
 
 public class STString extends STInstance {
     private final String value;
@@ -16,6 +17,11 @@ public class STString extends STInstance {
     @Override
     public String toString() {
         return "'" + getValue() + "'";
+    }
+
+    @Override
+    public STString asString() throws FourException {
+        return this;
     }
 
     @Override

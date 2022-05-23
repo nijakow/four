@@ -1,6 +1,7 @@
 package nijakow.four.smalltalk.objects;
 
 import nijakow.four.smalltalk.World;
+import nijakow.four.smalltalk.vm.FourException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -15,6 +16,11 @@ public class STSymbol extends STInstance {
     @Override
     public String toString() {
         return "#'" + getName() + "'";
+    }
+
+    @Override
+    public STSymbol asSymbol() throws FourException {
+        return this;
     }
 
     public String getName() { return this.name; }

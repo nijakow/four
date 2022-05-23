@@ -1,6 +1,7 @@
 package nijakow.four.smalltalk.objects;
 
 import nijakow.four.smalltalk.World;
+import nijakow.four.smalltalk.vm.FourException;
 
 public class STObject extends STInstance {
     private STClass clazz;
@@ -9,6 +10,11 @@ public class STObject extends STInstance {
     STObject(STClass clazz, int slotCount) {
         this.clazz = clazz;
         this.values = new STInstance[slotCount];
+    }
+
+    @Override
+    public STObject asObject() throws FourException {
+        return this;
     }
 
     public STInstance get(int index) {

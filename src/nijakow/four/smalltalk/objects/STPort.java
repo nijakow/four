@@ -2,6 +2,7 @@ package nijakow.four.smalltalk.objects;
 
 import nijakow.four.smalltalk.World;
 import nijakow.four.smalltalk.net.IConnection;
+import nijakow.four.smalltalk.vm.FourException;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
@@ -17,6 +18,11 @@ public class STPort extends STInstance {
         this.connection = connection;
         this.connection.onEscape((strings) -> processEscaped(strings));
         // TODO: this.connection.onDisconnect();
+    }
+
+    @Override
+    public STPort asPort() throws FourException {
+        return this;
     }
 
     private String generateKey() {

@@ -10,6 +10,7 @@ import nijakow.four.smalltalk.parser.Parser;
 import nijakow.four.smalltalk.parser.StringCharacterStream;
 import nijakow.four.smalltalk.parser.Tokenizer;
 import nijakow.four.smalltalk.vm.Fiber;
+import nijakow.four.smalltalk.vm.FourException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -34,6 +35,11 @@ public class STClass extends STInstance {
 
     public STClass() {
         this(null, new STSymbol[]{});
+    }
+
+    @Override
+    public STClass asClass() throws FourException {
+        return this;
     }
 
     public STClass getSuperClass() {

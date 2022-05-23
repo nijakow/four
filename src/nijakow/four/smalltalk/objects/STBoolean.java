@@ -1,6 +1,7 @@
 package nijakow.four.smalltalk.objects;
 
 import nijakow.four.smalltalk.World;
+import nijakow.four.smalltalk.vm.FourException;
 
 public class STBoolean extends STInstance {
     private static final STBoolean TRUE = new STBoolean();
@@ -19,6 +20,11 @@ public class STBoolean extends STInstance {
     @Override
     public String toString() {
         return isTrue() ? "true" : "false";
+    }
+
+    @Override
+    public STBoolean asBoolean() throws FourException {
+        return this;
     }
 
     @Override

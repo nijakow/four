@@ -1,6 +1,7 @@
 package nijakow.four.smalltalk.objects;
 
 import nijakow.four.smalltalk.World;
+import nijakow.four.smalltalk.vm.FourException;
 
 public class STCharacter extends STInstance {
     private final char value;
@@ -23,6 +24,11 @@ public class STCharacter extends STInstance {
             default:
                 return "$" + value;
         }
+    }
+
+    @Override
+    public STCharacter asCharacter() throws FourException {
+        return this;
     }
 
     @Override

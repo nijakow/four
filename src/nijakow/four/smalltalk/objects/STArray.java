@@ -1,6 +1,7 @@
 package nijakow.four.smalltalk.objects;
 
 import nijakow.four.smalltalk.World;
+import nijakow.four.smalltalk.vm.FourException;
 
 public class STArray extends STInstance {
     private final STInstance[] values;
@@ -25,6 +26,11 @@ public class STArray extends STInstance {
         }
         sb.append(")");
         return sb.toString();
+    }
+
+    @Override
+    public STArray asArray() throws FourException {
+        return this;
     }
 
     @Override
