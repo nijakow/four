@@ -134,8 +134,8 @@ public class Fiber {
     }
 
     public boolean callHandler() {
-        Context context = top();
-        while (context != null) {
+        while (top() != null) {
+            Context context = top();
             loadSelf();
             popContext();
             if (context.getHandler() != null) {
