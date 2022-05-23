@@ -144,6 +144,7 @@ public class World {
             final STSymbol name = args[1].asSymbol();
             STClass clazz = args[0].asClass().subclass();
             setValue(name, clazz);
+            fiber.setAccu(clazz);
         });
         metaClass.addMethod("instanceVariables", (fiber, args) -> {
             fiber.setAccu(new STArray(args[0].asClass().getInstanceVariableNames()));
