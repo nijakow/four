@@ -10,20 +10,32 @@ import nijakow.four.smalltalk.vm.FourException;
 import nijakow.four.smalltalk.vm.instructions.VMInstruction;
 
 public class STCompiledMethod extends STInstance implements STMethod {
+    private final STClass clazz;
+    private final STSymbol name;
     private final VMInstruction instructions;
     private final int args;
     private final int locals;
     private final String source;
 
-    public STCompiledMethod(int args, int locals, VMInstruction first, String source) {
+    public STCompiledMethod(STClass clazz, STSymbol name, int args, int locals, VMInstruction first, String source) {
+        this.clazz = clazz;
+        this.name = name;
         this.instructions = first;
         this.args = args;
         this.locals = locals;
         this.source = source;
     }
 
+    public STCompiledMethod(STClass clazz, STSymbol name, int args, int locals, VMInstruction first) {
+        this(clazz, name, args, locals, first, null);
+    }
+
+    public STCompiledMethod(int args, int locals, VMInstruction first, String source) {
+        this(null, null, args, locals, first, source);
+    }
+
     public STCompiledMethod(int args, int locals, VMInstruction first) {
-        this(args, locals, first, null);
+        this(null, null, args, locals, first, null);
     }
 
     @Override
