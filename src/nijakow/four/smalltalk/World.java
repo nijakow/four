@@ -265,9 +265,15 @@ public class World {
             args[0].asPort().password(((STString) args[1]).getValue());
             args[0].asPort().onInput((STString line) -> fiber.restartWithValue(line));
         });
+        portClass.addMethod("smalltalk:", (fiber, args) -> {
+            fiber.pause();
+            args[0].asPort().smalltalk(((STString) args[1]).getValue());
+            args[0].asPort().onInput((STString line) -> fiber.restartWithValue(line));
+        });
         portClass.addMethod("outputChar:", (fiber, args) -> {
             args[0].asPort().write("" + args[1].asCharacter().getValue());
         });
+        portClass.addMethodFromSource("show: obj\n[\n    self out: obj.\n  ^ self\n]\n");
         portClass.addMethodFromSource("out: obj\n[\n    obj writeOn: self.\n  ^ self\n]\n");
         portClass.addMethodFromSource("store: obj\n[\n    obj storeOn: self.\n  ^ self\n]\n");
         portClass.addMethodFromSource("cr\n[\n    self out: '\n'.\n]\n");

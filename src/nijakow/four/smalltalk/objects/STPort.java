@@ -60,6 +60,10 @@ public class STPort extends STInstance {
         writeEscaped("prompt/password", prompt);
     }
 
+    public void smalltalk(String prompt) {
+        writeEscaped("prompt/smalltalk", prompt);
+    }
+
     public void edit(String title, String text, Consumer<STString> consumer) {
         final String key = generateKey();
         keys.put(key, (string) -> {
