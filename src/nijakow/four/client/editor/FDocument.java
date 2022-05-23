@@ -237,7 +237,10 @@ public class FDocument extends DefaultStyledDocument {
                 Style style = theme.getStyle(token.getType()) == null ? def : theme.getStyle(token.getType()).asStyle(def);
                 if (style == null) style = def;
                 int pos = token.getPosition().getIndex() + lineStart;
-                setCharacterAttributes(pos, (token.getEndPosition().getIndex() + lineStart) - pos, style, true);
+                try {
+                    setCharacterAttributes(pos, (token.getEndPosition().getIndex() + lineStart) - pos, style, true);
+                } catch (ArrayIndexOutOfBoundsException e) {
+                }
             } while (token.getType() != nijakow.four.smalltalk.parser.TokenType.EOF);
         } catch (Exception e) {
             // TODO Handle this gracefully
