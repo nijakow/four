@@ -25,6 +25,7 @@ import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 
 import nijakow.four.client.editor.ClientEditor;
+import nijakow.four.client.editor.FDocument;
 import nijakow.four.client.net.ClientConnection;
 import nijakow.four.client.net.ClientConnectionListener;
 import nijakow.four.client.utils.StringHelper;
@@ -38,6 +39,7 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 	private final JTextField prompt;
 	private final JPasswordField pwf;
 	private final JTextPane area;
+	private final JTextPane smalltalk;
 	private final StyledDocument term;
 	private final List<ClientEditor> editors;
 	private int[] ports;
@@ -116,6 +118,41 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 		JPanel south = new JPanel();
 		south.setOpaque(false);
 		south.setLayout(new BoxLayout(south, BoxLayout.X_AXIS));
+		smalltalk = new JTextPane();
+		FDocument o = new FDocument();
+		o.setHighlightingEnabled(true);
+		smalltalk.setDocument(o);
+		smalltalk.getKeymap().addActionForKeyStroke(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), new AbstractAction() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				final String content = smalltalk.getText();
+				try {
+					term.insertString(term.getLength(), promptText.getText(), null);
+					final String[] split = content.split("\n");
+					term.insertString(term.getLength(), split[0] + "\n", term.getStyle(Commands.Styles.STYLE_INPUT));
+					final int length = promptText.getText().length();
+					for (int i = 1; i < split.length; ++i) {
+						term.insertString(term.getLength(), StringHelper.generateFilledString(' ', length) + split[i] + "\n",
+								term.getStyle(Commands.Styles.STYLE_INPUT));
+					}
+				} catch (BadLocationException ex) {
+					ex.printStackTrace();
+				}
+				queue.schedule(() -> sendSmalltalk(content), 0, TimeUnit.NANOSECONDS);
+				smalltalk.setText("");
+			}
+		});
+		smalltalk.getKeymap().addActionForKeyStroke(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, KeyEvent.SHIFT_DOWN_MASK), new AbstractAction() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					o.insertString(smalltalk.getCaretPosition(), "\n", null);
+				} catch (BadLocationException ex) {
+					assert (false);
+				}
+			}
+		});
+		smalltalk.setVisible(false);
 		prompt = new JTextField();
 		prompt.setFont(font);
 		prompt.addActionListener(this);
@@ -137,6 +174,7 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 		south.add(promptText);
 		south.add(prompt);
 		south.add(pwf);
+		south.add(smalltalk);
 		south.add(reconnectButton);
 		reconnectButton.setVisible(false);
 		pwf.setVisible(false);
@@ -196,6 +234,9 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 			pwf.setCaretColor(Color.white);
 			area.setForeground(Color.lightGray);
 			area.setBackground(Color.black);
+			smalltalk.setForeground(Color.white);
+			smalltalk.setBackground(Color.gray);
+			smalltalk.setCaretColor(Color.white);
 			prompt.setForeground(Color.white);
 			prompt.setBackground(Color.gray);
 			prompt.setCaretColor(Color.white);
@@ -212,6 +253,9 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 			prompt.setForeground(null);
 			prompt.setBackground(Color.white);
 			prompt.setCaretColor(null);
+			smalltalk.setForeground(null);
+			smalltalk.setBackground(Color.white);
+			smalltalk.setCaretColor(Color.black);
 			promptText.setForeground(null);
 			promptText.setBackground(null);
 			connectionStatus.setBackground(null);
@@ -501,6 +545,7 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 	private void parsePromptPwd(String arg) {
 		pwf.setVisible(true);
 		prompt.setVisible(false);
+		smalltalk.setVisible(false);
 		pwf.requestFocusInWindow();
 		if (arg.length() > 0)
 			promptText.setText(new String(Base64.getDecoder().decode(arg), StandardCharsets.UTF_8));
@@ -509,10 +554,24 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 	}
 
 	private void parsePrompt(String arg) {
+		prompt.setVisible(true);
+		smalltalk.setVisible(false);
+		prompt.requestFocusInWindow();
 		if (arg.length() > 0)
 			promptText.setText(new String(Base64.getDecoder().decode(arg), StandardCharsets.UTF_8));
 		else
 			promptText.setText("");
+	}
+
+	private void sendSmalltalk(String text) {
+		try {
+			connection.send(Commands.Codes.SPECIAL_START + "");
+			connection.send(Commands.Codes.SPECIAL_LINE_SMALLTALK + Commands.Codes.SPECIAL_RAW);
+			connection.send(Base64.getEncoder().encodeToString(text.getBytes(StandardCharsets.UTF_8)));
+			connection.send("" + Commands.Codes.SPECIAL_END);
+		} catch (IOException e) {
+			showError("*** Could not send message --- see console for more details! ***\n");
+		}
 	}
 
 	private void parseEdit(String arg) {
@@ -563,6 +622,18 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 		}
 	}
 
+	private void parsePromptSmalltalk(String arg) {
+		pwf.setVisible(false);
+		prompt.setVisible(false);
+		smalltalk.setVisible(true);
+		smalltalk.requestFocusInWindow();
+		if (arg.length() > 0) {
+			promptText.setText(new String(Base64.getDecoder().decode(arg), StandardCharsets.UTF_8));
+		} else {
+			promptText.setText("");
+		}
+	}
+
 	private void parseArgument(String arg) {
 		int first = arg.indexOf(Commands.Codes.SPECIAL_RAW);
 		if (first >= 0) {
@@ -573,6 +644,7 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 				case Commands.Codes.SPECIAL_IMG: parseImg(arg); break;
 				case Commands.Codes.SPECIAL_UPLOAD: parseUpload(arg.substring(first + 1)); break;
 				case Commands.Codes.SPECIAL_DOWNLOAD: performUpload(arg.substring(first + 1)); break;
+				case Commands.Codes.SPECIAL_SMALLTALK: parsePromptSmalltalk(arg.substring(first + 1)); break;
 				default: current = getStyleByName(arg); break;
 			}
 		} else current = getStyleByName(arg);

@@ -301,7 +301,7 @@ public class World {
 
         STClass fourClass = objectClass.subclass();
         fourClass.addMethodFromSource("run\n[\n]\n");
-        fourClass.addMethodFromSource("newConnection: connection | line\n[\n    Transcript := connection.\n    [\n        line := connection prompt: 'Smalltalk > '.\n        (line isWhitespace) ifFalse: [\n            Exception handle: [ connection store: line compile value; cr ]\n                          do: [ Transcript out: 'Caught an exception!'; cr ].\n        ].\n    ] repeat.\n]\n");
+        fourClass.addMethodFromSource("newConnection: connection | line\n[\n    Transcript := connection.\n    [\n        line := connection smalltalk: 'Smalltalk > '.\n        (line isWhitespace) ifFalse: [\n            Exception handle: [ connection store: line compile value; cr ]\n                          do: [ Transcript out: 'Caught an exception!'; cr ].\n        ].\n    ] repeat.\n]\n");
 
         STObject four = (STObject) fourClass.instantiate();
         setValue("Four", four);
