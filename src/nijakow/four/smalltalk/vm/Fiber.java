@@ -140,7 +140,7 @@ public class Fiber {
             popContext();
             if (context.getHandler() != null) {
                 push();
-                context.getHandler().execute(this, 1);
+                context.getHandler().execute(this, 0);
                 return true;
             }
         }
