@@ -118,7 +118,7 @@ public class World {
         objectClass.addMethod("toString", (fiber, args) -> fiber.setAccu(new STString(args[0].toString())));
         objectClass.addMethod("=", (fiber, args) -> fiber.setAccu(STBoolean.get(args[0].is(args[1]))));
         objectClass.addMethod("!=", (fiber, args) -> fiber.setAccu(STBoolean.get(!args[0].is(args[1]))));
-        objectClass.addMethodFromSource("writeOn: w\n[\n    w out: self toString\n]\n");
+        objectClass.addMethodFromSource("writeOn: w\n[\n    self storeOn: w\n]\n");
         objectClass.addMethodFromSource("storeOn: w\n[\n    w out: self toString\n]\n");
 
         metaClass = objectClass.subclass();
