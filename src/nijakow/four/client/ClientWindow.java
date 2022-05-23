@@ -131,24 +131,17 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 					public void actionPerformed(ActionEvent e) {
 						final String content = smalltalk.getText();
 						try {
+							final int length = promptText.getText().length();
 							term.insertString(term.getLength(), promptText.getText(), null);
-							final String[] split = content.split("\n");
-							int i;
-							for (i = 0; i < split[0].length(); i++) {
+							for (int i = 0; i < content.length(); i++) {
 								smalltalk.setCaretPosition(i);
-								term.insertString(term.getLength(), split[0].charAt(i) + "", smalltalk.getCharacterAttributes());
+								term.insertString(term.getLength(), "" + content.charAt(i), smalltalk.getCharacterAttributes());
+								if (content.charAt(i) == '\n') {
+									term.insertString(term.getLength(), StringHelper.generateFilledString(' ', length),
+											term.getStyle(Commands.Styles.STYLE_INPUT));
+								}
 							}
 							term.insertString(term.getLength(), "\n", null);
-							final int length = promptText.getText().length();
-							for (int j = 1; j < split.length; ++j) {
-								term.insertString(term.getLength(), StringHelper.generateFilledString(' ', length),
-										term.getStyle(Commands.Styles.STYLE_INPUT));
-								for (int k = 0; k < split[j].length(); ++k) {
-									smalltalk.setCaretPosition(++i);
-									term.insertString(term.getLength(), split[j].charAt(k) + "", smalltalk.getCharacterAttributes());
-								}
-								term.insertString(term.getLength(), "\n", null);
-							}
 						} catch (BadLocationException ex) {
 							ex.printStackTrace();
 						}
