@@ -57,6 +57,7 @@ public class DefaultTheme extends FTheme {
         FStyle flowControl = new FStyle(TokenType.CARET);
         flowControl.setForeground(new Color(0x167505));
         addStyle(TokenType.CARET, flowControl);
+        addStyle(TokenType.ASSIGN, flowControl);
 
         /*FStyle controlWord = new FStyle(TokenType.IF);
         controlWord.setForeground(Color.red);
