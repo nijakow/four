@@ -162,6 +162,9 @@ public class World {
             if (args[1] != STNil.get())
                 args[0].asClass().addMethodFromSource(args[1].asString().getValue());
         });
+        metaClass.addMethod("removeMethod:", (fiber, args) -> {
+            args[0].asClass().removeMethod(args[1].asSymbol());
+        });
         metaClass.addMethod("selectors", (fiber, args) -> {
             STSymbol[] selectors = args[0].asClass().getSelectors();
             STArray result = new STArray(selectors);
@@ -172,7 +175,7 @@ public class World {
             fiber.top().setHandler(args[2].asClosure());
         });
         metaClass.addMethodFromSource("edit\n[\n    self addMethod: Transcript edit.\n]\n");
-        metaClass.addMethodFromSource("edit: name | text\n[\n    ((self method: name) = nil) ifTrue: [\n        text := (name asString) + ' | \"Local variables\"\\n[\\n  ^ self\\n]\\n'.\n    ] ifFalse: [\n        text := (self method: name) source.\n    ].\n    self addMethod: (Transcript edit: text title: ('Method ' + (name asString))).\n]\n");
+        metaClass.addMethodFromSource("edit: name | text\n[\n    ((self method: name) = nil) ifTrue: [\n        text := (name asString) + ' | \"Local variables\"\\n[\\n  ^ self\\n]\\n'.\n    ] ifFalse: [\n        text := (self method: name) source.\n    ].\n    text := (Transcript edit: text title: ('Method ' + (name asString))).\n    (text = nil)  ifTrue: [ ^ self ].\n    (text isEmpty) ifTrue: [ self removeMethod: name ]\n                  ifFalse: [ self addMethod: text ].\n  ^ self\n]\n");
 
         nilClass = objectClass.subclass();
         booleanClass = objectClass.subclass();
@@ -233,7 +236,7 @@ public class World {
         stringClass.addMethod("asSymbol", (fiber, args) -> fiber.setAccu(STSymbol.get(args[0].asString().getValue())));
         stringClass.addMethodFromSource("do: block\n[\n    0 to: self size - 1 do: [ :i | block value: (self at: i) ].\n  ^ self\n]\n");
         stringClass.addMethodFromSource("writeOn: w\n[\n    self do: [ :c | w out: c ]\n]\n");
-        stringClass.addMethodFromSource("isWhitespace\n[\n    self do: [ :c | (c isWhitespace) ifFalse: [ ^ false ] ].\n  ^ true\n]\n");
+        stringClass.addMethodFromSource("isEmpty\n[\n    self do: [ :c | (c isWhitespace) ifFalse: [ ^ false ] ].\n  ^ true\n]\n");
 
         setValue("Symbol", symbolClass);
         symbolClass.addMethod("asString", (fiber, args) -> fiber.setAccu(new STString(args[0].asSymbol().getName())));
@@ -326,7 +329,7 @@ public class World {
 
         STClass shellClass = objectClass.subclass();
         setValue("Shell", shellClass);
-        shellClass.addMethodFromSource("run | line\n[\n    [\n    line := Transcript smalltalk: 'Smalltalk > '.\n    (line isWhitespace) ifFalse: [\n        Exception handle: [ Transcript store: line compile value; cr ]\n                      do: [ Transcript out: 'Caught an exception!'; cr ].\n    ].\n] repeat.\n]\n");
+        shellClass.addMethodFromSource("run | line\n[\n    [\n    line := Transcript smalltalk: 'Smalltalk > '.\n    (line isEmpty) ifFalse: [\n        Exception handle: [ Transcript store: line compile value; cr ]\n                      do: [ Transcript out: 'Caught an exception!'; cr ].\n    ].\n] repeat.\n]\n");
 
         STClass fourClass = objectClass.subclass();
         fourClass.addMethodFromSource("main\n[\n]\n");

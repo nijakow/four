@@ -113,6 +113,10 @@ public class STClass extends STInstance {
         addMethod(STSymbol.get(name), method);
     }
 
+    public void removeMethod(STSymbol name) {
+        methods.remove(name);
+    }
+
     public STMethod getMethod(STSymbol name) {
         return methods.get(name);
     }
