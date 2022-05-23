@@ -121,6 +121,7 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 		smalltalk = new JTextPane();
 		smalltalk.setFont(new Font("Monospaced", Font.PLAIN, 14));
 		FDocument o = new FDocument();
+		o.setAutoIndentingEnabled(true);
 		o.setHighlightingEnabled(true);
 		smalltalk.setDocument(o);
 		smalltalk.addFocusListener(new FocusListener() {
