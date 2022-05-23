@@ -133,11 +133,21 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 						try {
 							term.insertString(term.getLength(), promptText.getText(), null);
 							final String[] split = content.split("\n");
-							term.insertString(term.getLength(), split[0] + "\n", term.getStyle(Commands.Styles.STYLE_INPUT));
+							int i;
+							for (i = 0; i < split[0].length(); i++) {
+								smalltalk.setCaretPosition(i);
+								term.insertString(term.getLength(), split[0].charAt(i) + "", smalltalk.getCharacterAttributes());
+							}
+							term.insertString(term.getLength(), "\n", null);
 							final int length = promptText.getText().length();
-							for (int i = 1; i < split.length; ++i) {
-								term.insertString(term.getLength(), StringHelper.generateFilledString(' ', length) + split[i] + "\n",
+							for (int j = 1; j < split.length; ++j) {
+								term.insertString(term.getLength(), StringHelper.generateFilledString(' ', length),
 										term.getStyle(Commands.Styles.STYLE_INPUT));
+								for (int k = 0; k < split[j].length(); ++k) {
+									smalltalk.setCaretPosition(++i);
+									term.insertString(term.getLength(), split[j].charAt(k) + "", smalltalk.getCharacterAttributes());
+								}
+								term.insertString(term.getLength(), "\n", null);
 							}
 						} catch (BadLocationException ex) {
 							ex.printStackTrace();
