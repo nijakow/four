@@ -14,6 +14,7 @@ public class RawConnection implements IConnection {
 	private final Logger logger;
 	private final SocketChannel socket;
 	private Consumer<String> inputHandler = null;
+	private Consumer<String> smalltalkHandler = null;
 	private Consumer<String[]> escapeHandler = null;
 	private Runnable disconnectHandler = null;
 	private final ArrayList<Byte> currentLine = new ArrayList<>();
@@ -60,8 +61,21 @@ public class RawConnection implements IConnection {
 				for (int index = 1; index < split.length; index++)
 					split[index] = new String(Base64.getDecoder().decode(split[index]), StandardCharsets.UTF_8);
 				currentEscaped.clear();
-				if (escapeHandler != null)
-					escapeHandler.accept(split);
+				if (split.length > 0) {
+					if ("line/smalltalk".equals(split[0])) {
+						if (smalltalkHandler != null && split.length >= 2) {
+							/*
+							 * Smalltalk handlers will be reset!
+							 */
+							Consumer<String> consumer = smalltalkHandler;
+							smalltalkHandler = null;
+							consumer.accept(split[1]);
+						}
+					} else {
+						if (escapeHandler != null)
+							escapeHandler.accept(split);
+					}
+				}
 			} else {
 				currentEscaped.add(b);
 			}
@@ -98,6 +112,11 @@ public class RawConnection implements IConnection {
 	@Override
 	public void onInput(Consumer<String> consumer) {
 		this.inputHandler = consumer;
+	}
+
+	@Override
+	public void onSmalltalkInput(Consumer<String> consumer) {
+		this.smalltalkHandler = consumer;
 	}
 
 	@Override

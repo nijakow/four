@@ -38,6 +38,10 @@ public class STPort extends STInstance {
         this.connection.onInput((line) -> callback.accept(new STString(line)));
     }
 
+    public void onSmalltalkInput(Consumer<STString> callback) {
+        this.connection.onSmalltalkInput((line) -> callback.accept(new STString(line)));
+    }
+
     public void write(String text) {
         this.connection.writeString(text);
     }

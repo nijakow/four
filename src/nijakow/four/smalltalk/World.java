@@ -269,6 +269,7 @@ public class World {
             fiber.pause();
             args[0].asPort().smalltalk(((STString) args[1]).getValue());
             args[0].asPort().onInput((STString line) -> fiber.restartWithValue(line));
+            args[0].asPort().onSmalltalkInput((STString line) -> fiber.restartWithValue(line));
         });
         portClass.addMethod("outputChar:", (fiber, args) -> {
             args[0].asPort().write("" + args[1].asCharacter().getValue());
