@@ -159,6 +159,8 @@ public class World {
             args[1].asClosure().execute(fiber, 0);
             fiber.top().setHandler(args[2].asClosure());
         });
+        metaClass.addMethodFromSource("addMethod\n[\n    self addMethod: Transcript edit.\n]\n");
+        metaClass.addMethodFromSource("editMethod: name\n[\n    self addMethod: (Transcript edit: (self method: name) source title: ('Method ' + (name asString))).\n]\n");
 
         nilClass = objectClass.subclass();
         booleanClass = objectClass.subclass();
