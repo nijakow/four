@@ -48,6 +48,17 @@ public class Tokenizer {
         return sb.toString();
     }
 
+    private boolean isBreakChar(char c) {
+        return Character.isWhitespace(c) || c == '.' || c == ',' || c == ';' || c == ')' || c == ']' || c > 0x7f;
+    }
+
+    private String readSymbolLiteral() {
+        StringBuilder sb = new StringBuilder();
+        while (stream.hasNext() && !isBreakChar(stream.peek()))
+            sb.append(readChar());
+        return sb.toString();
+    }
+
     public Token nextToken() {
         skipWhitespace();
 
@@ -66,6 +77,7 @@ public class Tokenizer {
         else if (stream.peeks("$")) return new Token(TokenType.CHARACTER, STCharacter.get(readChar()), this, start, stream.getPosition());
         else if (stream.peeks("\'")) return new Token(TokenType.STRING, readStringUntil("\'"), this, start, stream.getPosition());
         else if (stream.peeks("#\'")) return new Token(TokenType.SYMBOL, STSymbol.get(readStringUntil("\'")), this, start, stream.getPosition());
+        else if (stream.peeks("#")) return new Token(TokenType.SYMBOL, STSymbol.get(readSymbolLiteral()), this, start, stream.getPosition());
         else if (stream.peeks(":=")) return new Token(TokenType.ASSIGN, this, start, stream.getPosition());
         else if (stream.peeks("(")) return new Token(TokenType.LPAREN, this, start, stream.getPosition());
         else if (stream.peeks(")")) return new Token(TokenType.RPAREN, this, start, stream.getPosition());
@@ -85,7 +97,7 @@ public class Tokenizer {
         StringBuilder builder = new StringBuilder();
         while (stream.hasNext()) {
             char c = stream.peek();
-            if (Character.isWhitespace(c) || c == '.' || c == ',' || c == ';' || c == ')' || c == ']' || c > 0x7f)
+            if (isBreakChar(c))
                 break;
             builder.append(c);
             stream.read();
