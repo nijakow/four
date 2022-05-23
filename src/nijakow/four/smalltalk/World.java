@@ -186,6 +186,11 @@ public class World {
 
         setValue("Character", characterClass);
         characterClass.addMethod("asInt", (fiber, args) -> fiber.setAccu(STInteger.get(((STCharacter) args[0]).getValue())));
+        characterClass.addMethod("isWhitespace", (fiber, args) -> fiber.setAccu(STBoolean.get(Character.isWhitespace(((STCharacter) args[0]).getValue()))));
+        characterClass.addMethod("<", (fiber, args) -> fiber.setAccu(STBoolean.get(((STCharacter) args[0]).getValue() < ((STCharacter) args[1]).getValue())));
+        characterClass.addMethod("<=", (fiber, args) -> fiber.setAccu(STBoolean.get(((STCharacter) args[0]).getValue() <= ((STCharacter) args[1]).getValue())));
+        characterClass.addMethod(">", (fiber, args) -> fiber.setAccu(STBoolean.get(((STCharacter) args[0]).getValue() > ((STCharacter) args[1]).getValue())));
+        characterClass.addMethod(">=", (fiber, args) -> fiber.setAccu(STBoolean.get(((STCharacter) args[0]).getValue() >= ((STCharacter) args[1]).getValue())));
         characterClass.addMethodFromSource("writeOn: w\n[\n    w outputChar: self\n]\n");
 
         setValue("String", stringClass);
