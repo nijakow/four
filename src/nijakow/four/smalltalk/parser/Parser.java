@@ -216,7 +216,7 @@ public class Parser {
             }
             expect(TokenType.BAR);
         }
-        return new CommandLineAST(locals.toArray(new STSymbol[]{}), parseExpression());
+        return new CommandLineAST(locals.toArray(new STSymbol[]{}), parseExpressionsUntil(TokenType.EOF));
     }
 
     public Parser(Tokenizer tokenizer) {
