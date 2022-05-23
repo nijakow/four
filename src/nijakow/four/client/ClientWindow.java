@@ -119,37 +119,49 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 		south.setOpaque(false);
 		south.setLayout(new BoxLayout(south, BoxLayout.X_AXIS));
 		smalltalk = new JTextPane();
+		smalltalk.setFont(new Font("Monospaced", Font.PLAIN, 16));
 		FDocument o = new FDocument();
 		o.setHighlightingEnabled(true);
 		smalltalk.setDocument(o);
-		smalltalk.getKeymap().addActionForKeyStroke(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), new AbstractAction() {
+		smalltalk.addFocusListener(new FocusListener() {
 			@Override
-			public void actionPerformed(ActionEvent e) {
-				final String content = smalltalk.getText();
-				try {
-					term.insertString(term.getLength(), promptText.getText(), null);
-					final String[] split = content.split("\n");
-					term.insertString(term.getLength(), split[0] + "\n", term.getStyle(Commands.Styles.STYLE_INPUT));
-					final int length = promptText.getText().length();
-					for (int i = 1; i < split.length; ++i) {
-						term.insertString(term.getLength(), StringHelper.generateFilledString(' ', length) + split[i] + "\n",
-								term.getStyle(Commands.Styles.STYLE_INPUT));
+			public void focusGained(FocusEvent e) {
+				smalltalk.getKeymap().addActionForKeyStroke(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), new AbstractAction() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						final String content = smalltalk.getText();
+						try {
+							term.insertString(term.getLength(), promptText.getText(), null);
+							final String[] split = content.split("\n");
+							term.insertString(term.getLength(), split[0] + "\n", term.getStyle(Commands.Styles.STYLE_INPUT));
+							final int length = promptText.getText().length();
+							for (int i = 1; i < split.length; ++i) {
+								term.insertString(term.getLength(), StringHelper.generateFilledString(' ', length) + split[i] + "\n",
+										term.getStyle(Commands.Styles.STYLE_INPUT));
+							}
+						} catch (BadLocationException ex) {
+							ex.printStackTrace();
+						}
+						queue.schedule(() -> sendSmalltalk(content), 0, TimeUnit.NANOSECONDS);
+						smalltalk.setText("");
 					}
-				} catch (BadLocationException ex) {
-					ex.printStackTrace();
-				}
-				queue.schedule(() -> sendSmalltalk(content), 0, TimeUnit.NANOSECONDS);
-				smalltalk.setText("");
+				});
+				smalltalk.getKeymap().addActionForKeyStroke(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, KeyEvent.SHIFT_DOWN_MASK), new AbstractAction() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						try {
+							o.insertString(smalltalk.getCaretPosition(), "\n", null);
+						} catch (BadLocationException ex) {
+							assert (false);
+						}
+					}
+				});
 			}
-		});
-		smalltalk.getKeymap().addActionForKeyStroke(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, KeyEvent.SHIFT_DOWN_MASK), new AbstractAction() {
+
 			@Override
-			public void actionPerformed(ActionEvent e) {
-				try {
-					o.insertString(smalltalk.getCaretPosition(), "\n", null);
-				} catch (BadLocationException ex) {
-					assert (false);
-				}
+			public void focusLost(FocusEvent e) {
+				smalltalk.getKeymap().removeKeyStrokeBinding(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0));
+				smalltalk.getKeymap().removeKeyStrokeBinding(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, InputEvent.SHIFT_DOWN_MASK));
 			}
 		});
 		smalltalk.setVisible(false);
@@ -235,7 +247,7 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 			area.setForeground(Color.lightGray);
 			area.setBackground(Color.black);
 			smalltalk.setForeground(Color.white);
-			smalltalk.setBackground(Color.gray);
+			smalltalk.setBackground(Color.black);
 			smalltalk.setCaretColor(Color.white);
 			prompt.setForeground(Color.white);
 			prompt.setBackground(Color.gray);
