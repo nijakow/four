@@ -7,6 +7,7 @@ public class STNil extends STInstance {
     private static final STNil NIL = new STNil();
 
     public static STNil get() { return NIL; }
+    public static STInstance wrap(STInstance instance) { return (instance == null) ? get() : instance; }
 
     private STNil() {}
 

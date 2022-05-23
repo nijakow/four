@@ -235,6 +235,8 @@ public class World {
 
         setValue("Symbol", symbolClass);
         symbolClass.addMethod("asString", (fiber, args) -> fiber.setAccu(new STString(args[0].asSymbol().getName())));
+        symbolClass.addMethod("globalValue", (fiber, args) -> fiber.setAccu(fiber.getVM().getWorld().getValue(args[0].asSymbol())));
+        symbolClass.addMethod("globalValue:", (fiber, args) -> fiber.getVM().getWorld().setValue(args[0].asSymbol(), args[1]));
 
         setValue("Array", arrayClass);
         arrayClass.setInstantiator(() -> new STArray(0));
@@ -320,9 +322,13 @@ public class World {
 
         setValue("Exception", exceptionClass);
 
+        STClass shellClass = objectClass.subclass();
+        setValue("Shell", shellClass);
+        shellClass.addMethodFromSource("run | line\n[\n    [\n    line := Transcript smalltalk: 'Smalltalk > '.\n    (line isWhitespace) ifFalse: [\n        Exception handle: [ Transcript store: line compile value; cr ]\n                      do: [ Transcript out: 'Caught an exception!'; cr ].\n    ].\n] repeat.\n]\n");
+
         STClass fourClass = objectClass.subclass();
-        fourClass.addMethodFromSource("run\n[\n]\n");
-        fourClass.addMethodFromSource("newConnection: connection | line\n[\n    Transcript := connection.\n    [\n        line := connection smalltalk: 'Smalltalk > '.\n        (line isWhitespace) ifFalse: [\n            Exception handle: [ connection store: line compile value; cr ]\n                          do: [ Transcript out: 'Caught an exception!'; cr ].\n        ].\n    ] repeat.\n]\n");
+        fourClass.addMethodFromSource("main\n[\n]\n");
+        fourClass.addMethodFromSource("newConnection: connection\n[\n    Transcript := connection.\n    (Shell new) run.\n]\n");
 
         STObject four = (STObject) fourClass.instantiate();
         setValue("Four", four);

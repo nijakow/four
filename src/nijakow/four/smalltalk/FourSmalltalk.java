@@ -40,7 +40,7 @@ public class FourSmalltalk {
     }
 
     public void run() throws IOException, FourException {
-        vm.startFiber(this.world.getValue(STSymbol.get("Four")), STSymbol.get("run"), new STInstance[]{});
+        vm.startFiber(this.world.getValue(STSymbol.get("Four")), STSymbol.get("main"), new STInstance[]{});
         while (true) {
             vm.tick();
             server.tick(vm.getPreferredIdleTime());
