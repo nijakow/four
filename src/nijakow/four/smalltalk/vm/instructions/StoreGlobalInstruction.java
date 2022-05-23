@@ -12,7 +12,7 @@ public class StoreGlobalInstruction extends VMInstruction {
 
     @Override
     public VMInstruction run(Fiber fiber) {
-        fiber.getVM().getWorld().setValue(this.symbol, fiber.getAccu());
+        fiber.storeGlobal(this.symbol);
         return getNext();
     }
 }

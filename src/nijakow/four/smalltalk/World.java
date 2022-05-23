@@ -1,20 +1,18 @@
 package nijakow.four.smalltalk;
 
-import nijakow.four.server.runtime.objects.blue.Method;
 import nijakow.four.smalltalk.objects.*;
-import nijakow.four.smalltalk.objects.method.STBuiltinMethod;
-import nijakow.four.smalltalk.objects.method.STCompiledMethod;
 import nijakow.four.smalltalk.objects.method.STMethod;
 import nijakow.four.smalltalk.parser.ParseException;
 import nijakow.four.smalltalk.vm.Builtin;
-import nijakow.four.smalltalk.vm.Fiber;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
-import java.util.function.BiConsumer;
+import java.util.Set;
 
 public class World {
     private final Map<STSymbol, STInstance> bindings = new HashMap<>();
+    private final Set<STSymbol> specialSymbols = new HashSet<>();
 
     private STClass objectClass;
     private STClass metaClass;
@@ -41,6 +39,15 @@ public class World {
 
     public STInstance getValue(STSymbol symbol) {
         return bindings.getOrDefault(symbol, STNil.get());
+    }
+
+    public boolean isSpecial(STSymbol symbol) {
+        return specialSymbols.contains(symbol);
+    }
+
+    public void makeSpecial(STSymbol symbol) {
+        if (symbol != null)
+            specialSymbols.add(symbol);
     }
 
     public void setValue(String name, STInstance value) {
@@ -100,6 +107,8 @@ public class World {
     }
 
     public void buildDefaultWorld() throws ParseException {
+        makeSpecial(STSymbol.get("Transcript"));
+
         objectClass = new STClass();
         setValue("Object", objectClass);
         objectClass.addMethodFromSource("init\n[\n]\n");

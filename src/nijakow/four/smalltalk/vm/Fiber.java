@@ -1,18 +1,18 @@
 package nijakow.four.smalltalk.vm;
 
 import nijakow.four.smalltalk.SmalltalkVM;
-import nijakow.four.smalltalk.objects.STClosure;
-import nijakow.four.smalltalk.objects.STInstance;
-import nijakow.four.smalltalk.objects.STString;
-import nijakow.four.smalltalk.objects.STSymbol;
+import nijakow.four.smalltalk.objects.*;
 import nijakow.four.smalltalk.objects.method.STCompiledMethod;
 import nijakow.four.smalltalk.objects.method.STMethod;
 import nijakow.four.smalltalk.vm.instructions.VMInstruction;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Vector;
 
 public class Fiber {
     private final SmalltalkVM vm;
+    private final Map<STSymbol, STInstance> fiberLocals = new HashMap<>();
     private boolean isPaused = true;
     private STInstance accu;
     private Context top;
@@ -68,6 +68,20 @@ public class Fiber {
 
     public void storeVariable(int depth, int offset) {
         stack.set(lexical(depth).getBase() + offset + 1, getAccu());
+    }
+
+    public void loadGlobal(STSymbol global) {
+        if (getVM().getWorld().isSpecial(global))
+            setAccu(fiberLocals.getOrDefault(global, STNil.get()));
+        else
+            setAccu(getVM().getWorld().getValue(global));
+    }
+
+    public void storeGlobal(STSymbol global) {
+        if (getVM().getWorld().isSpecial(global))
+            fiberLocals.put(global, getAccu());
+        else
+            getVM().getWorld().setValue(global, getAccu());
     }
 
     public void loadClosure(STCompiledMethod method) {

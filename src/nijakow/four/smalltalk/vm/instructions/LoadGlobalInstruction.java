@@ -12,7 +12,7 @@ public class LoadGlobalInstruction extends VMInstruction {
 
     @Override
     public VMInstruction run(Fiber fiber) {
-        fiber.setAccu(fiber.getVM().getWorld().getValue(this.symbol));
+        fiber.loadGlobal(this.symbol);
         return getNext();
     }
 }
