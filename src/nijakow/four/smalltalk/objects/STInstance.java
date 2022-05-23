@@ -5,14 +5,51 @@ import nijakow.four.smalltalk.objects.method.STCompiledMethod;
 import nijakow.four.smalltalk.objects.method.STMethod;
 import nijakow.four.smalltalk.vm.FourException;
 
+import java.util.*;
+
 public abstract class STInstance {
+    /*
+     *     S t a t i c   P a r t
+     */
+    private static final Set<STInstance> allInstances;
+
+    static {
+        allInstances = Collections.newSetFromMap(new WeakHashMap<>());
+    }
+
+    public static final STInstance[] allInstancesOf(STClass clazz, World world) {
+        List<STInstance> instances = new ArrayList<>();
+        for (STInstance instance : allInstances) {
+            if (instance.inheritsFrom(clazz, world))
+                instances.add(instance);
+        }
+        return instances.toArray(new STInstance[]{});
+    }
+
+    /*
+     *     D y n a m i c   P a r t
+     */
+    public STInstance() {
+        register();
+    }
+
     public abstract STClass getClass(World world);
+
+    public boolean inheritsFrom(STClass clazz, World world) {
+        STClass ourClass = getClass(world);
+        return ourClass.isSubclassOf(clazz);
+    }
+
     public STMethod getInstanceMethod(World world, STSymbol name) {
         return getClass(world).findMethod(name);
     }
 
     public boolean is(Object obj) {
         return this == obj;
+    }
+
+    public void register() {
+        allInstances.add(this);
     }
 
     private void castError() throws FourException { throw new FourException("Can not cast!"); }

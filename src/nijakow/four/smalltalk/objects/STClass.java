@@ -123,4 +123,8 @@ public class STClass extends STInstance {
     public STClass getClass(World world) {
         return world.getMetaClass();
     }
+
+    public boolean isSubclassOf(STClass clazz) {
+        return (this == clazz) || (getSuperClass() != null && getSuperClass().isSubclassOf(clazz));
+    }
 }

@@ -16,6 +16,10 @@ public class STInteger extends STInstance {
     }
 
     @Override
+    public void register() {
+    }
+
+    @Override
     public STInteger asInteger() throws FourException {
         return this;
     }

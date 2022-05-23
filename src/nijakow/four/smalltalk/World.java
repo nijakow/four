@@ -128,6 +128,10 @@ public class World {
         metaClass.addMethod("new:", (fiber, args) -> {
             fiber.enter(args[0].asClass().instantiate(args[1]), "init", new STInstance[]{});
         });
+        metaClass.addMethod("instances", (fiber, args) -> {
+            STInstance[] instances = STInstance.allInstancesOf(args[0].asClass(), fiber.getVM().getWorld());
+            fiber.setAccu(new STArray(instances));
+        });
         metaClass.addMethod("parent", (fiber, args) -> {
             STClass parent = args[0].asClass().getSuperClass();
             if (parent == null)

@@ -27,6 +27,10 @@ public class STCharacter extends STInstance {
     }
 
     @Override
+    public void register() {
+    }
+
+    @Override
     public STCharacter asCharacter() throws FourException {
         return this;
     }
