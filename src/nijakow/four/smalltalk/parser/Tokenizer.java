@@ -77,11 +77,15 @@ public class Tokenizer {
         else if (stream.peeks(",")) return new Token(TokenType.COMMA, this, start, stream.getPosition());
         else if (stream.peeks(":")) return new Token(TokenType.COLON, this, start, stream.getPosition());
         else if (stream.peeks(";")) return new Token(TokenType.SEMICOLON, this, start, stream.getPosition());
+        else if (stream.peek() > 0x7f) {
+            stream.read();
+            return new Token(TokenType.ERROR, this, start, stream.getPosition());
+        }
 
         StringBuilder builder = new StringBuilder();
         while (stream.hasNext()) {
             char c = stream.peek();
-            if (Character.isWhitespace(c) || c == '.' || c == ',' || c == ';' || c == ')' || c == ']')
+            if (Character.isWhitespace(c) || c == '.' || c == ',' || c == ';' || c == ')' || c == ']' || c > 0x7f)
                 break;
             builder.append(c);
             stream.read();
