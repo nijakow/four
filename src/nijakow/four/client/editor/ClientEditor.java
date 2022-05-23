@@ -267,8 +267,8 @@ public class ClientEditor extends JFrame implements ActionListener {
 			File selected = chooser.getSelectedFile();
 			try {
 				doc.setTheme(new GenericTheme(selected));
-			} catch (ParseException e) {
-				JOptionPane.showMessageDialog(this, e.getErrorText(), "Could not parse file!", JOptionPane.ERROR_MESSAGE);
+			} catch (RuntimeException e) {
+				//JOptionPane.showMessageDialog(this, e.getErrorText(), "Could not parse file!", JOptionPane.ERROR_MESSAGE);
 				return null;
 			} catch (Exception e) {
 				JOptionPane.showMessageDialog(this, "Could not open file: " + selected + "!",

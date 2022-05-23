@@ -20,10 +20,10 @@ public class FStyle {
     private Color background;
     private Color foreground;
     private FStyle parent;
-    private TokenType tokenType;
+    private nijakow.four.smalltalk.parser.TokenType tokenType;
 
     public FStyle() {
-        this((TokenType) null);
+        this((nijakow.four.smalltalk.parser.TokenType) null);
     }
 
     public FStyle(Style style) {
@@ -72,11 +72,11 @@ public class FStyle {
         setTokenType(original.getTokenType());
     }
 
-    public FStyle(TokenType tokenType) {
+    public FStyle(nijakow.four.smalltalk.parser.TokenType tokenType) {
         this(tokenType, null);
     }
 
-    public FStyle(TokenType tokenType, FStyle parent) {
+    public FStyle(nijakow.four.smalltalk.parser.TokenType tokenType, FStyle parent) {
         this.tokenType = tokenType;
         setParent(parent);
         bold = null;
@@ -264,11 +264,11 @@ public class FStyle {
         return ret;
     }
 
-    public TokenType getTokenType() {
+    public nijakow.four.smalltalk.parser.TokenType getTokenType() {
         return tokenType;
     }
 
-    public void setTokenType(TokenType tokenType) {
+    public void setTokenType(nijakow.four.smalltalk.parser.TokenType tokenType) {
         this.tokenType = tokenType;
     }
 }

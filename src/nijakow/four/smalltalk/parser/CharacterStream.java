@@ -5,4 +5,5 @@ public interface CharacterStream {
     char peek();
     char read();
     boolean peeks(String pattern);
+    StreamPosition getPosition();
 }

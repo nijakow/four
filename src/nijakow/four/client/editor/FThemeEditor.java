@@ -1,6 +1,6 @@
 package nijakow.four.client.editor;
 
-import nijakow.four.share.lang.c.parser.TokenType;
+import nijakow.four.smalltalk.parser.TokenType;
 
 import javax.swing.*;
 import javax.swing.border.EtchedBorder;

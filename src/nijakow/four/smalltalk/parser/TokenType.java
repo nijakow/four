@@ -1,7 +1,8 @@
 package nijakow.four.smalltalk.parser;
 
 public enum TokenType {
-    EOF, IDENTIFIER, SYMBOL, INTEGER, CHARACTER, STRING,
+    EOF, COMMENT, DOCUMENTAR,
+    IDENTIFIER, SYMBOL, INTEGER, CHARACTER, STRING,
     LPAREN, RPAREN,
     LBRACK, RBRACK,
     BAR, CARET,

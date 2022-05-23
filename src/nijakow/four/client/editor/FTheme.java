@@ -7,7 +7,7 @@ import java.util.Collection;
 import java.util.HashMap;
 
 public abstract class FTheme {
-    private final HashMap<TokenType, FStyle> styles;
+    private final HashMap<nijakow.four.smalltalk.parser.TokenType, FStyle> styles;
     private final FStyle errorStyle;
 
     public FTheme() {
@@ -23,7 +23,7 @@ public abstract class FTheme {
         return ret;
     }
 
-    public void addStyle(TokenType type, FStyle style) {
+    public void addStyle(nijakow.four.smalltalk.parser.TokenType type, FStyle style) {
         styles.put(type, style);
     }
 
@@ -31,7 +31,7 @@ public abstract class FTheme {
         return styles.values();
     }
 
-    public FStyle getStyle(TokenType type) {
+    public FStyle getStyle(nijakow.four.smalltalk.parser.TokenType type) {
         return styles.get(type);
     }
 

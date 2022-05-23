@@ -36,4 +36,9 @@ public class StringCharacterStream implements CharacterStream {
         }
         return true;
     }
+
+    @Override
+    public StreamPosition getPosition() {
+        return new StringCharacterStreamPosition(this, "", string, index);
+    }
 }

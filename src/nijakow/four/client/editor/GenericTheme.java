@@ -1,9 +1,10 @@
 package nijakow.four.client.editor;
 
-import nijakow.four.share.lang.c.parser.ParseException;
+
 import nijakow.four.share.lang.base.parser.StreamPosition;
 import nijakow.four.share.lang.base.parser.StringCharStream;
-import nijakow.four.share.lang.c.parser.TokenType;
+import nijakow.four.smalltalk.parser.ParseException;
+import nijakow.four.smalltalk.parser.TokenType;
 
 import java.awt.*;
 import java.io.*;
@@ -53,7 +54,7 @@ public class GenericTheme extends WritableTheme {
     private void expect(FToken token, FTokenType type) throws ParseException {
         if ((type == FTokenType.TRUE || type == FTokenType.FALSE)) {
             if (!(token.getType() == FTokenType.FALSE || token.getType() == FTokenType.TRUE)) {
-                throw new ParseException(token.getStartPos(), "Expected a bool!");
+                throw new  RuntimeException();//throw new ParseException(token.getStartPos(), "Expected a bool!");
             } else return;
         }
         if (token.getType() != type) {
@@ -69,7 +70,8 @@ public class GenericTheme extends WritableTheme {
                 case INT: message = "Expected an integer!"; break;
                 case FLOAT: message = "Expected a float!"; break;
             }
-            throw new ParseException(token.getStartPos(), message);
+            throw new RuntimeException("");
+            //throw new ParseException(token.getStartPos(), message);
         }
     }
 
@@ -79,7 +81,8 @@ public class GenericTheme extends WritableTheme {
         FStyle fStyle = new FStyle(TokenType.valueOf((String) token.getPayload()));
         if ((token = nextToken()).getType() == FTokenType.COLON) {
             FStyle parent = findStyle(TokenType.valueOf((String) (token = nextToken()).getPayload()));
-            if (parent == null) throw new ParseException(token.getStartPos(), "Parent not found!");
+            //if (parent == null) throw new ParseException(token.getStartPos(), "Parent not found!");
+            if (parent == null) throw new RuntimeException("");
             fStyle.setParent(parent);
             token = nextToken();
         }
@@ -146,10 +149,10 @@ public class GenericTheme extends WritableTheme {
                         fStyle.setForeground(new Color((Integer) tmp.getPayload()));
                         break;
 
-                    default: throw new ParseException(tmp.getStartPos(), "Expected a value!");
+                    default: throw new RuntimeException();//throw new ParseException(tmp.getStartPos(), "Expected a value!");
                 }
             }
-        } else throw new ParseException(token.getStartPos(), "Expected style definition!");
+        } else throw new RuntimeException();//throw new ParseException(token.getStartPos(), "Expected style definition!");
         return fStyle;
     }
 
@@ -159,7 +162,7 @@ public class GenericTheme extends WritableTheme {
             switch (t.getType()) {
                 case COMMENT: continue;
                 case TYPE: styles.add(parseFStyle()); break;
-                default: throw new ParseException(t.getStartPos(), "Expected a style declaration!");
+                default: throw new RuntimeException();//throw new ParseException(t.getStartPos(), "Expected a style declaration!");
             }
         }
         for (FStyle style : styles) addStyle(style.getTokenType(), style);

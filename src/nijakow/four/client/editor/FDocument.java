@@ -3,6 +3,7 @@ package nijakow.four.client.editor;
 import nijakow.four.client.utils.StringHelper;
 import nijakow.four.share.lang.base.parser.StringCharStream;
 import nijakow.four.share.lang.c.parser.*;
+import nijakow.four.smalltalk.parser.StringCharacterStream;
 
 import javax.swing.text.*;
 import java.util.ArrayList;
@@ -228,16 +229,16 @@ public class FDocument extends DefaultStyledDocument {
                 lineEnd = bco == -1 ? text.length() : bco + 2;
             }
             String line = text.substring(lineStart, lineEnd);
-            Tokenizer tokenizer = new Tokenizer(new StringCharStream("", line));
+            nijakow.four.smalltalk.parser.Tokenizer tokenizer = new nijakow.four.smalltalk.parser.Tokenizer(new StringCharacterStream(line));
             tokenizer.enableCommentTokens();
-            Token token;
+            nijakow.four.smalltalk.parser.Token token;
             do {
                 token = tokenizer.nextToken();
                 Style style = theme.getStyle(token.getType()) == null ? def : theme.getStyle(token.getType()).asStyle(def);
                 if (style == null) style = def;
                 int pos = token.getPosition().getIndex() + lineStart;
                 setCharacterAttributes(pos, (token.getEndPosition().getIndex() + lineStart) - pos, style, true);
-            } while (token.getType() != TokenType.EOF);
+            } while (token.getType() != nijakow.four.smalltalk.parser.TokenType.EOF);
         } catch (Exception e) {
             // TODO Handle this gracefully
             e.printStackTrace();
