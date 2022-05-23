@@ -204,6 +204,7 @@ public class World {
         stringClass.addMethod("asSymbol", (fiber, args) -> fiber.setAccu(STSymbol.get(args[0].asString().getValue())));
         stringClass.addMethodFromSource("do: block\n[\n    0 to: self size - 1 do: [ :i | block value: (self at: i) ].\n  ^ self\n]\n");
         stringClass.addMethodFromSource("writeOn: w\n[\n    self do: [ :c | w out: c ]\n]\n");
+        stringClass.addMethodFromSource("isWhitespace\n[\n    self do: [ :c | (c isWhitespace) ifFalse: [ ^ false ] ].\n  ^ true\n]\n");
 
         setValue("Symbol", symbolClass);
         symbolClass.addMethod("asString", (fiber, args) -> fiber.setAccu(new STString(args[0].asSymbol().getName())));
@@ -277,7 +278,7 @@ public class World {
 
         STClass fourClass = objectClass.subclass();
         fourClass.addMethodFromSource("run\n[\n]\n");
-        fourClass.addMethodFromSource("newConnection: connection | line\n[\n    Transcript := connection.\n    [\n        line := connection prompt: 'Smalltalk > '.\n        (line = '') ifFalse: [ connection store: line compile value; cr ].\n    ] repeat.\n]\n");
+        fourClass.addMethodFromSource("newConnection: connection | line\n[\n    Transcript := connection.\n    [\n        line := connection prompt: 'Smalltalk > '.\n        (line isWhitespace) ifFalse: [ connection store: line compile value; cr ].\n    ] repeat.\n]\n");
 
         STObject four = (STObject) fourClass.instantiate();
         setValue("Four", four);

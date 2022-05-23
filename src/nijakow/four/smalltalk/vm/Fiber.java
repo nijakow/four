@@ -121,11 +121,10 @@ public class Fiber {
         Context context = top().getLexical();
         sp = top().getBase();
         while (context != null) {
-            if (top() == context) {
-                sp = top().getBase();
-                top = top().getParent();
+            sp = top().getBase();
+            top = top().getParent();
+            if (top() == context)
                 context = context.getLexical();
-            }
         }
         top = top().getParent();
         maybeHalt();
