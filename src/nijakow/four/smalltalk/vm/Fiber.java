@@ -6,13 +6,13 @@ import nijakow.four.smalltalk.objects.method.STCompiledMethod;
 import nijakow.four.smalltalk.objects.method.STMethod;
 import nijakow.four.smalltalk.vm.instructions.VMInstruction;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Vector;
+import java.util.*;
+import java.util.function.Consumer;
 
 public class Fiber {
     private final SmalltalkVM vm;
     private final Map<STSymbol, STInstance> fiberLocals = new HashMap<>();
+    private final List<Consumer<STInstance>> terminationCallbacks = new ArrayList<>();
     private boolean isPaused = true;
     private STInstance accu;
     private Context top;
@@ -28,6 +28,8 @@ public class Fiber {
     public SmalltalkVM getVM() {
         return this.vm;
     }
+
+    public void onExit(Consumer<STInstance> callback) { this.terminationCallbacks.add(callback); }
 
     public Context top() {
         return top;
@@ -218,6 +220,8 @@ public class Fiber {
          *                                                           - nijakow
          */
         pause();
+        for (Consumer<STInstance> callback : terminationCallbacks)
+            callback.accept(getAccu());
     }
 
     public void maybeHalt() {

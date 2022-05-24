@@ -8,6 +8,8 @@ import java.nio.channels.SocketChannel;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Consumer;
 
 public class RawConnection implements IConnection {
@@ -16,6 +18,7 @@ public class RawConnection implements IConnection {
 	private Consumer<String> inputHandler = null;
 	private Consumer<String> smalltalkHandler = null;
 	private Consumer<String[]> escapeHandler = null;
+	private Map<String, Consumer<String[]>> specialEscapeHandlers = new HashMap<>();
 	private Runnable disconnectHandler = null;
 	private final ArrayList<Byte> currentLine = new ArrayList<>();
 	private final ArrayList<Byte> currentEscaped = new ArrayList<>();
@@ -71,6 +74,8 @@ public class RawConnection implements IConnection {
 							smalltalkHandler = null;
 							consumer.accept(split[1]);
 						}
+					} else if (specialEscapeHandlers.containsKey(split[0])) {
+						specialEscapeHandlers.get(split[0]).accept(split);
 					} else {
 						if (escapeHandler != null)
 							escapeHandler.accept(split);
@@ -94,6 +99,17 @@ public class RawConnection implements IConnection {
 				currentLine.add(b);
 			}
 		}
+	}
+
+	@Override
+	public void writeEscaped(String... codes) {
+		writeString("\02");
+		writeString(codes[0]);
+		for (int i = 1; i < codes.length; i++) {
+			writeString(":");
+			writeString(Base64.getEncoder().encodeToString(codes[i].getBytes(StandardCharsets.UTF_8)));
+		}
+		writeString("\03");
 	}
 
 
@@ -122,6 +138,11 @@ public class RawConnection implements IConnection {
 	@Override
 	public void onEscape(Consumer<String[]> consumer) {
 		this.escapeHandler = consumer;
+	}
+
+	@Override
+	public void onEscape(String escape, Consumer<String[]> consumer) {
+		this.specialEscapeHandlers.put(escape, consumer);
 	}
 
 	@Override

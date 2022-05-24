@@ -34,13 +34,14 @@ public class SmalltalkVM {
         }
     }
 
-    public void startFiber(STInstance self, STSymbol message, STInstance[] args) throws FourException {
+    public Fiber startFiber(STInstance self, STSymbol message, STInstance[] args) throws FourException {
         Fiber fiber = new Fiber(this);
         fiber.enter(self, message, args);
         fiber.restart();
+        return fiber;
     }
-    public void startFiber(STInstance self, String message, STInstance[] args) throws FourException {
-        startFiber(self, STSymbol.get(message), args);
+    public Fiber startFiber(STInstance self, String message, STInstance[] args) throws FourException {
+        return startFiber(self, STSymbol.get(message), args);
     }
 
     public void restartFiber(Fiber fiber) { runningSet.add(fiber); }
