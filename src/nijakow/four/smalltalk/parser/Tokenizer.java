@@ -49,7 +49,7 @@ public class Tokenizer {
     }
 
     private boolean isBreakChar(char c) {
-        return Character.isWhitespace(c) || c == '.' || c == ',' || c == ';' || c == ')' || c == ']' || c > 0x7f;
+        return Character.isWhitespace(c) || c == '.' || c == ',' || c == ';' || c == '(' || c == '[' || c == '{' || c == ')' || c == ']' || c == '}' || c > 0x7f;
     }
 
     private String readSymbolLiteral() {
