@@ -240,6 +240,19 @@ public class FDocument extends DefaultStyledDocument {
                 try {
                     setCharacterAttributes(pos, (token.getEndPosition().getIndex() + lineStart) - pos, style, true);
                 } catch (ArrayIndexOutOfBoundsException e) {
+                    System.err.println();
+                    System.err.println("-------------------");
+                    System.err.println("Token type: " + token.getType());
+                    System.err.println("Token start: " + token.getPosition().getIndex());
+                    System.err.println("Token end: " + token.getEndPosition().getIndex());
+                    System.err.println("Line start: " + lineStart);
+                    System.err.println("Pos: " + pos);
+                    System.err.println("Line: '" + line + "'");
+                    System.err.println("Full text: '" + getText(0, getLength()) + "'");
+                    System.err.println("Full length: " + getLength());
+                    System.err.println();
+                    e.printStackTrace();
+                    System.err.println("-------------------");
                 }
             } while (token.getType() != nijakow.four.smalltalk.parser.TokenType.EOF);
         } catch (Exception e) {
