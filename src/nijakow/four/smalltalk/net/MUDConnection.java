@@ -111,6 +111,10 @@ public class MUDConnection implements IMUDConnection {
         return true;
     }
 
+    public void awaitResult(Consumer<STInstance> consumer) {
+        waitingCallbacks.put("", consumer);
+    }
+
     private void handleResult(String[] params) {
         final String key = params[1];
         final STInstance value = decode(params[2]);
@@ -121,6 +125,10 @@ public class MUDConnection implements IMUDConnection {
 
     private void writeResult(String key, STInstance value) {
         connection.writeEscaped("fourconnect/result", key, encode(value));
+    }
+
+    public void writeResult(STInstance value) {
+        writeResult("", value);
     }
 
     public void writeSend(Consumer<STInstance> callback, STInstance receiver, STSymbol message, STInstance... args) {

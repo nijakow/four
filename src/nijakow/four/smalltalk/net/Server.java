@@ -18,24 +18,20 @@ import java.util.function.Consumer;
 public class Server implements AutoCloseable {
 	private final Logger logger;
 	private final Selector selector;
-	private Consumer<IConnection> onConnectFunc = null;
 
 	public Server(Logger logger) throws IOException {
 		this.logger = logger;
 		this.selector = Selector.open();
 	}
 	
-	public void onConnect(Consumer<IConnection> onConnectFunc) {
-		this.onConnectFunc = onConnectFunc;
-	}
-	
-	public void serveOn(String hostname, int port) throws IOException {
+	public void serveOn(String hostname, int port, Consumer<IConnection> consumer) throws IOException {
 		logger.println(LogLevel.INFO, "Serving on " + hostname + " " + port + ".");
 		ServerSocketChannel serverSocket = ServerSocketChannel.open();
 		serverSocket.setOption(StandardSocketOptions.SO_REUSEADDR, true);
 		serverSocket.bind(new InetSocketAddress(hostname, port));
 		serverSocket.configureBlocking(false);
-		serverSocket.register(selector, SelectionKey.OP_ACCEPT);
+		SelectionKey key = serverSocket.register(selector, SelectionKey.OP_ACCEPT);
+		key.attach(consumer);
 	}
 	
 	public void tick(long timeout) throws IOException {
@@ -49,6 +45,7 @@ public class Server implements AutoCloseable {
 			if (key.isAcceptable()) {
 				SocketChannel clientSocket = ((ServerSocketChannel) key.channel()).accept();
 				clientSocket.configureBlocking(false);
+				final Consumer<IConnection> onConnectFunc = (Consumer<IConnection>) key.attachment();
 				if (onConnectFunc == null) {
 					ByteBuffer bb = ByteBuffer.wrap("\r\n                      *** WHOOPS ***\r\n\r\nSorry, the server can't take any connections right now.\r\nPlease try again in a little while.\r\n\r\n".getBytes());
 					clientSocket.write(bb);

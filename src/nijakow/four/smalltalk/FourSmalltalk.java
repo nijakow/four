@@ -2,6 +2,7 @@ package nijakow.four.smalltalk;
 
 import nijakow.four.client.ClientWindow;
 import nijakow.four.smalltalk.logging.Logger;
+import nijakow.four.smalltalk.net.MUDConnection;
 import nijakow.four.smalltalk.net.Server;
 import nijakow.four.smalltalk.objects.STInstance;
 import nijakow.four.smalltalk.objects.STPort;
@@ -23,7 +24,10 @@ public class FourSmalltalk {
         this.vm = new SmalltalkVM(this.world);
         this.server = new Server(this.logger);
         this.world.buildDefaultWorld();
-        this.server.onConnect((connection) -> {
+    }
+
+    public void serveOn(String hostname, int port) throws IOException {
+        this.server.serveOn(hostname, port, (connection) -> {
             final STInstance master = this.world.getValue("Four");
             try {
                 this.vm.startFiber(master, "newConnection:", new STInstance[]{
@@ -35,8 +39,11 @@ public class FourSmalltalk {
         });
     }
 
-    public void serveOn(String hostname, int port) throws IOException {
-        this.server.serveOn(hostname, port);
+    public void fourconnectOn(String hostname, int port, STInstance home) throws IOException {
+        this.server.serveOn(hostname, port, (connection) -> {
+            MUDConnection mudConnection = new MUDConnection(this.vm, connection);
+            mudConnection.writeResult(home);
+        });
     }
 
     public void run() throws IOException, FourException {
