@@ -423,7 +423,7 @@ public class World {
 
         STClass shellClass = objectClass.subclass();
         setValue("Shell", shellClass);
-        shellClass.addMethodFromSource("run | line\n[\n    [\n    line := Transcript smalltalk: 'Smalltalk > '.\n    (line isEmpty) ifFalse: [\n        Exception handle: [ Transcript store: line compile value; cr ]\n                      do: [ Transcript out: 'Caught an exception!'; cr ].\n    ].\n] repeat.\n]\n");
+        shellClass.addMethodFromSource("run | line\n[\n    [\n        line := Transcript smalltalk: 'Smalltalk > '.\n        (line isEmpty) ifFalse: [\n            Exception handle: [ Transcript store: line compile value; cr ]\n                          do: [ Transcript out: 'Caught an exception!'; cr ].\n        ].\n    ] repeat.\n]\n");
 
         STClass fourClass = objectClass.subclass();
         fourClass.addMethodFromSource("main\n[\n]\n");
