@@ -113,7 +113,7 @@ public class STCompiler {
     }
 
     public void writeLoad(STSymbol symbol) {
-        int index = (this.clazz == null) ? -1 : this.clazz.findMember(symbol);
+        int index = (this.clazz == null) ? -1 : this.clazz.getInstanceVariableIndex(symbol);
         if (index >= 0)
             writeLoadInstance(index);
         else {
@@ -138,7 +138,7 @@ public class STCompiler {
     }
 
     public void writeStore(STSymbol symbol) {
-        int index = (this.clazz == null) ? -1 : this.clazz.findMember(symbol);
+        int index = (this.clazz == null) ? -1 : this.clazz.getInstanceVariableIndex(symbol);
         if (index >= 0)
             writeStoreInstance(index);
         else {

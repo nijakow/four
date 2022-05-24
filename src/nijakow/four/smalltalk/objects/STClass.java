@@ -29,7 +29,7 @@ public class STClass extends STInstance {
         this.superclass = superclass;
         this.members = members;
         this.methods = new HashMap<>();
-        this.instantiator = () -> new STObject(this, this.members.length);
+        this.instantiator = () -> new STObject(this, getInstanceVariableCount());
         this.instantiator2 = (arg) -> STNil.get();
     }
 
@@ -68,6 +68,22 @@ public class STClass extends STInstance {
 
     public STClass subclass() {
         return new STClass(this, new STSymbol[]{});
+    }
+
+    private int getParentInstanceVariableCount() {
+        return (superclass == null) ? 0 : superclass.getInstanceVariableCount();
+    }
+
+    public int getInstanceVariableCount() {
+        return this.members.length + getParentInstanceVariableCount();
+    }
+
+    public int getInstanceVariableIndex(STSymbol name) {
+        int i = (superclass == null) ? -1 : superclass.getInstanceVariableIndex(name);
+        for (int x = 0; x < this.members.length; x++)
+            if (this.members[x] == name)
+                return x + getParentInstanceVariableCount();
+        return i;
     }
 
     public STSymbol[] getInstanceVariableNames() {
@@ -126,13 +142,6 @@ public class STClass extends STInstance {
         if (method == null)
             return (this.superclass == null) ? null : this.superclass.findMethod(name);
         return method;
-    }
-
-    public int findMember(STSymbol name) {
-        for (int i = 0; i < members.length; i++)
-            if (members[i] == name)
-                return i;
-        return -1;
     }
 
     public STSymbol[] getSelectors() {
