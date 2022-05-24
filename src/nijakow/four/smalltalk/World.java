@@ -259,6 +259,14 @@ public class World {
                 fiber.setAccu(STNil.get());
             }
         });
+        stringClass.addMethod("serve:on:", (fiber, args) -> {
+            try {
+                fiber.getVM().getFour().fourconnectOn(args[0].asString().getValue(), args[2].asInteger().getValue(), args[1]);
+                fiber.setAccu(STBoolean.getTrue());
+            } catch (IOException e) {
+                fiber.setAccu(STBoolean.getFalse());
+            }
+        });
 
         setValue("Symbol", symbolClass);
         symbolClass.addMethod("asString", (fiber, args) -> fiber.setAccu(new STString(args[0].asSymbol().getName())));

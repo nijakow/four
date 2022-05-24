@@ -41,10 +41,10 @@ public class FourSmalltalk {
         });
     }
 
-    public void fourconnectOn(String hostname, int port) throws IOException {
+    public void fourconnectOn(String hostname, int port, STInstance home) throws IOException {
         this.server.serveOn(hostname, port, (connection) -> {
             MUDConnection mudConnection = new MUDConnection(this.vm, connection);
-            mudConnection.writeResult(this.world.getValue("Four")); // TODO: Choose a different object!
+            mudConnection.writeResult(home);
         });
     }
 
@@ -59,7 +59,6 @@ public class FourSmalltalk {
     public static void main(String[] args) throws IOException, FourException {
         FourSmalltalk four = new FourSmalltalk();
         four.serveOn("localhost", 4242);
-        four.fourconnectOn("localhost", 4243);
         ClientWindow.openWindow("localhost", new int[] {4242});
         four.run();
     }
