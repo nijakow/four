@@ -30,6 +30,7 @@ public class World {
     private STClass portClass;
     private STClass exceptionClass;
     private STClass vectorClass;
+    private STClass foreignClass;
 
     public World() {
     }
@@ -105,6 +106,10 @@ public class World {
 
     public STClass getPortClass() {
         return this.portClass;
+    }
+
+    public STClass getForeignClass() {
+        return foreignClass;
     }
 
     public void buildDefaultWorld() throws ParseException {
@@ -192,6 +197,7 @@ public class World {
         builtinMethodClass = methodClass.subclass();
         portClass = objectClass.subclass();
         exceptionClass = objectClass.subclass();
+        foreignClass = new STClass();
         vectorClass = objectClass.subclass();
 
         setValue("Nil", nilClass);

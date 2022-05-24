@@ -65,8 +65,11 @@ public abstract class STInstance {
     public STString asString() throws FourException { castError(); return null; }
     public STSymbol asSymbol() throws FourException { castError(); return null; }
     public STCompiledMethod asCompiledMethod() throws FourException { castError(); return null; }
+    public STForeign asForeign() throws FourException { castError(); return null; }
 
     public boolean isTrue() {
         return this != STBoolean.getFalse();
     }
+
+    public boolean isForeign() { return false; }
 }

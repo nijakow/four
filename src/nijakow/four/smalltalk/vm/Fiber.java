@@ -123,10 +123,19 @@ public class Fiber {
 
     public void send(STSymbol message, int args) throws FourException {
         STInstance instance = stack.get(sp - args - 1);
-        STMethod m = instance.getInstanceMethod(this.getVM().getWorld(), message);
-        if (m == null)
-            throw new FourException("Method not found: " + message + "!");
-        m.execute(this, args, null);
+        if (instance.isForeign()) {
+            STInstance[] arguments = new STInstance[args];
+            while (args --> 0)
+                arguments[args] = pop();
+            pop();  // Pop the instance itself
+            pause();
+            instance.asForeign().send(message, arguments, (result) -> restartWithValue(result));
+        } else {
+            STMethod m = instance.getInstanceMethod(this.getVM().getWorld(), message);
+            if (m == null)
+                throw new FourException("Method not found: " + message + "!");
+            m.execute(this, args, null);
+        }
     }
 
     private void popContext() {
