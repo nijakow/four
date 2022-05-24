@@ -1,8 +1,7 @@
 package nijakow.four.smalltalk.net;
 
 import nijakow.four.smalltalk.SmalltalkVM;
-import nijakow.four.smalltalk.objects.STInstance;
-import nijakow.four.smalltalk.objects.STSymbol;
+import nijakow.four.smalltalk.objects.*;
 import nijakow.four.smalltalk.vm.FourException;
 
 import java.util.HashMap;
@@ -28,10 +27,39 @@ public class MUDConnection implements IMUDConnection {
     }
 
     private STInstance decode(String object) {
-        return null;    // TODO
+        int index = object.indexOf(':');
+        final String id = object.substring(0, index - 1);
+        final String data = object.substring(index + 1);
+        switch (id)
+        {
+            case "nil": return STNil.get();
+            case "boolean": return STBoolean.get("true".equals(data));
+            case "int": return STInteger.get(Integer.parseInt(data));
+            case "char": return STCharacter.get((char) Integer.parseInt(data));
+            case "string": return new STString(data);
+            case "symbol": return STSymbol.get(data);
+            default: return null;
+        }
     }
 
     private String encode(STInstance object) {
+        /*
+         * Using instanceof is bad style, but the approach
+         * works for now. Famous last words, I know... :)
+         *                                   - nijakow
+         */
+        if (object instanceof STInteger)
+            return "int:" + ((STInteger) object).getValue();
+        else if (object instanceof STCharacter)
+            return "char:" + (int) ((STCharacter) object).getValue();
+        else if (object instanceof STString)
+            return "string:" + ((STString) object).getValue();
+        else if (object instanceof STSymbol)
+            return "symbol:" + ((STSymbol) object).getName();
+        else if (object instanceof STBoolean)
+            return "boolean:" + ((STBoolean) object).isTrue();
+        else if (object instanceof STNil)
+            return "nil:";
         return null;    // TODO
     }
 
