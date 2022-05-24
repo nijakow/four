@@ -25,6 +25,10 @@ public class STSymbol extends STInstance {
 
     public String getName() { return this.name; }
 
+    public boolean isProbablyAGlobal() {
+        return Character.isUpperCase(getName().charAt(0));
+    }
+
     private static Map<String, STSymbol> symbols = new HashMap<>();
     public static STSymbol get(String name) {
         if (!symbols.containsKey(name))

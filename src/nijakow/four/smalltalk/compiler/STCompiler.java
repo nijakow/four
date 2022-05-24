@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.function.Consumer;
 
 public class STCompiler {
+    private final STCompilerWarningLog warnings;
     private final STClass clazz;
     private final STCompiler parent;
     private final List<STSymbol> locals = new ArrayList<>();
@@ -19,7 +20,9 @@ public class STCompiler {
     private VMInstruction first;
     private VMInstruction last;
 
-    public STCompiler(STClass clazz, STCompiler parent) { this.clazz = clazz; this.parent = parent; }
+    public STCompiler(STClass clazz, STCompiler parent) { this.clazz = clazz; this.parent = parent;
+        warnings = new STCompilerWarningLog();
+    }
 
     public STCompiler subscope() {
         return new STCompiler(this.clazz, this);
@@ -117,8 +120,11 @@ public class STCompiler {
             Pair<Integer, Integer> result = find(symbol);
             if (result != null)
                 writeLoadLocal(result.getFirst(), result.getSecond());
-            else
+            else {
+                if (!symbol.isProbablyAGlobal())
+                    warnings.addWarning("Accidental global reference? " + symbol);
                 writeLoadGlobal(symbol);
+            }
         }
     }
 
@@ -130,8 +136,11 @@ public class STCompiler {
             Pair<Integer, Integer> result = find(symbol);
             if (result != null)
                 writeStoreLocal(result.getFirst(), result.getSecond());
-            else
+            else {
+                if (!symbol.isProbablyAGlobal())
+                    warnings.addWarning("Accidental global reference? " + symbol);
                 writeStoreGlobal(symbol);
+            }
         }
     }
 
