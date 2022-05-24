@@ -37,8 +37,8 @@ public class Server implements AutoCloseable {
 	public IConnection connectTo(String hostname, int port) throws IOException {
 		logger.println(LogLevel.INFO, "Connecting to " + hostname + " " + port + ".");
 		SocketChannel socket = SocketChannel.open();
-		socket.configureBlocking(false);
 		socket.connect(new InetSocketAddress(hostname, port));
+		socket.configureBlocking(false);
 		RawConnection connection = new RawConnection(this.logger, socket);
 		socket.register(selector, SelectionKey.OP_READ, connection);
 		return connection;

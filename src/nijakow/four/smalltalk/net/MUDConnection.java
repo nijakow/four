@@ -21,7 +21,7 @@ public class MUDConnection implements IMUDConnection {
         this.vm = vm;
         this.connection = connection;
         this.connection.onEscape("fourconnect/send", this::handleSend);
-        this.connection.onEscape("fourconnect/result", this::handleSend);
+        this.connection.onEscape("fourconnect/result", this::handleResult);
     }
 
     private String generateKey() {
@@ -30,7 +30,7 @@ public class MUDConnection implements IMUDConnection {
 
     private STInstance decode(String object) {
         int index = object.indexOf(':');
-        final String id = object.substring(0, index - 1);
+        final String id = object.substring(0, index);
         final String data = object.substring(index + 1);
         switch (id)
         {
