@@ -1,3 +1,4 @@
+--- needs: Collection
 Collection subclass: #Dictionary;
 instanceVariableNames: 'vector'
 ---
