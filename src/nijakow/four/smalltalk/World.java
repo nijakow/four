@@ -1,10 +1,13 @@
 package nijakow.four.smalltalk;
 
+import nijakow.four.smalltalk.net.IConnection;
+import nijakow.four.smalltalk.net.MUDConnection;
 import nijakow.four.smalltalk.objects.*;
 import nijakow.four.smalltalk.objects.method.STMethod;
 import nijakow.four.smalltalk.parser.ParseException;
 import nijakow.four.smalltalk.vm.Builtin;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -246,6 +249,16 @@ public class World {
         stringClass.addMethodFromSource("do: block\n[\n    0 to: self size - 1 do: [ :i | block value: (self at: i) value: i ].\n  ^ self\n]\n");
         stringClass.addMethodFromSource("writeOn: w\n[\n    self do: [ :c | w out: c ]\n]\n");
         stringClass.addMethodFromSource("isEmpty\n[\n    self do: [ :c | (c isWhitespace) ifFalse: [ ^ false ] ].\n  ^ true\n]\n");
+        stringClass.addMethod("connect:", (fiber, args) -> {
+            try {
+                IConnection connection = fiber.getVM().getFour().getServer().connectTo(args[0].asString().getValue(), args[1].asInteger().getValue());
+                MUDConnection mudConnection = new MUDConnection(fiber.getVM(), connection);
+                fiber.pause();
+                mudConnection.awaitResult(fiber::restartWithValue);
+            } catch (IOException e) {
+                fiber.setAccu(STNil.get());
+            }
+        });
 
         setValue("Symbol", symbolClass);
         symbolClass.addMethod("asString", (fiber, args) -> fiber.setAccu(new STString(args[0].asSymbol().getName())));

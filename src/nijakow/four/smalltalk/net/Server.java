@@ -33,6 +33,16 @@ public class Server implements AutoCloseable {
 		SelectionKey key = serverSocket.register(selector, SelectionKey.OP_ACCEPT);
 		key.attach(consumer);
 	}
+
+	public IConnection connectTo(String hostname, int port) throws IOException {
+		logger.println(LogLevel.INFO, "Connecting to " + hostname + " " + port + ".");
+		SocketChannel socket = SocketChannel.open();
+		socket.configureBlocking(false);
+		socket.connect(new InetSocketAddress(hostname, port));
+		RawConnection connection = new RawConnection(this.logger, socket);
+		socket.register(selector, SelectionKey.OP_READ, connection);
+		return connection;
+	}
 	
 	public void tick(long timeout) throws IOException {
 		if (timeout < 0) timeout = 0;

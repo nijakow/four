@@ -10,11 +10,16 @@ import java.util.List;
 
 public class SmalltalkVM {
     private final List<Fiber> runningSet = new ArrayList<Fiber>();
+    private final FourSmalltalk four;
     private final World world;
 
-    public SmalltalkVM(World world) {
+    public SmalltalkVM(FourSmalltalk four, World world) {
+        this.four = four;
         this.world = world;
     }
+
+    public FourSmalltalk getFour() { return this.four; }
+    public World getWorld() { return this.world; }
 
     /**
      * Get the time that the VM wants to spend in idle mode.
@@ -46,8 +51,4 @@ public class SmalltalkVM {
 
     public void restartFiber(Fiber fiber) { runningSet.add(fiber); }
     public void pauseFiber(Fiber fiber) { runningSet.remove(fiber); }
-
-    public World getWorld() {
-        return this.world;
-    }
 }
