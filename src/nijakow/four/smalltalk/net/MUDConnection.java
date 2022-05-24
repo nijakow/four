@@ -11,8 +11,10 @@ import java.util.function.Consumer;
 public class MUDConnection implements IMUDConnection {
     private final SmalltalkVM vm;
     private final IConnection connection;
-    private final Map<String, STInstance> knownObjects = new HashMap<>();
     private final Map<String, Consumer<STInstance>> waitingCallbacks = new HashMap<>();
+    private final Map<STInstance, String> forwardObjects = new HashMap<>();
+    private final Map<String, STInstance> backwardObjects = new HashMap<>();
+    private final Map<String, STForeign> foreigns = new HashMap<>();
     private long keyCounter;
 
     public MUDConnection(SmalltalkVM vm, IConnection connection) {
@@ -38,7 +40,9 @@ public class MUDConnection implements IMUDConnection {
             case "char": return STCharacter.get((char) Integer.parseInt(data));
             case "string": return new STString(data);
             case "symbol": return STSymbol.get(data);
-            default: return null;
+            case "foreign": return decodeForeign(data);
+            case "backward": return decodeBackward(data);
+            default: return STNil.get();
         }
     }
 
@@ -60,7 +64,36 @@ public class MUDConnection implements IMUDConnection {
             return "boolean:" + ((STBoolean) object).isTrue();
         else if (object instanceof STNil)
             return "nil:";
-        return null;    // TODO
+        else if (object instanceof STForeign) {
+            /*
+             * Make sure that this object actually comes from us.
+             */
+            assert ((STForeign) object).getConnection() == this;
+            return "backward:" + ((STForeign) object).getID();
+        }
+        else
+            return "foreign:" + encodeForeign(object);
+    }
+
+    private String encodeForeign(STInstance object) {
+        if (forwardObjects.containsKey(object))
+            return forwardObjects.get(object);
+        final String key = generateKey();
+        forwardObjects.put(object, key);
+        backwardObjects.put(key, object);
+        return key;
+    }
+
+    private STInstance decodeBackward(String id) {
+        return backwardObjects.getOrDefault(id, STNil.get());
+    }
+
+    private STForeign decodeForeign(String id) {
+        if (foreigns.containsKey(id))
+            return foreigns.get(id);
+        STForeign foreign = new STForeign(this, id);
+        foreigns.put(id, foreign);
+        return foreign;
     }
 
     private boolean handleSend(String[] params) {
@@ -90,7 +123,7 @@ public class MUDConnection implements IMUDConnection {
         connection.writeEscaped("fourconnect/result", key, encode(value));
     }
 
-    private void writeSend(Consumer<STInstance> callback, STInstance receiver, STSymbol message, STInstance... args) {
+    public void writeSend(Consumer<STInstance> callback, STInstance receiver, STSymbol message, STInstance... args) {
         final String key = generateKey();
         waitingCallbacks.put(key, callback);
         String[] encodedArgs = new String[args.length + 4];
