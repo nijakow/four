@@ -300,7 +300,7 @@ public class ClientEditor extends JFrame implements ActionListener {
 			themeChoose.setVisible(false);
 		} else {
 			comboBox.setSelectedItem(DEFAULT_THEME);
-			themeCreate.setVisible(false);
+			themeCreate.setText("Copy and edit...");
 			themeChoose.setVisible(false);
 		}
 		comboBox.addItem(OTHER_THEME);
@@ -316,7 +316,8 @@ public class ClientEditor extends JFrame implements ActionListener {
 
 					case DEFAULT_THEME:
 						themeChoose.setVisible(false);
-						themeCreate.setVisible(false);
+						themeCreate.setVisible(true);
+						themeCreate.setText("Copy and edit...");
 						PreferencesHelper.getInstance().setEditorTheme(Commands.Themes.DEFAULT);
 						doc.setTheme(null);
 						break;
