@@ -121,7 +121,16 @@ public class STCompiler {
             if (result != null)
                 writeLoadLocal(result.getFirst(), result.getSecond());
             else {
-                if (!symbol.isProbablyAGlobal())
+                /*
+                 * Many Smalltalk users make the mistake of writing
+                 * the method name without using the `self` keyword
+                 * before. This will warn them.
+                 * If we are not compiling for a class, we assume
+                 * that we're compiling a command line, therefore
+                 * the warning will not be issued.
+                 *                                  - nijakow
+                 */
+                if (!symbol.isProbablyAGlobal() && clazz != null)
                     warnings.addWarning("Accidental global reference? " + symbol);
                 writeLoadGlobal(symbol);
             }
@@ -137,7 +146,16 @@ public class STCompiler {
             if (result != null)
                 writeStoreLocal(result.getFirst(), result.getSecond());
             else {
-                if (!symbol.isProbablyAGlobal())
+                /*
+                 * Many Smalltalk users make the mistake of writing
+                 * the method name without using the `self` keyword
+                 * before. This will warn them.
+                 * If we are not compiling for a class, we assume
+                 * that we're compiling a command line, therefore
+                 * the warning will not be issued.
+                 *                                  - nijakow
+                 */
+                if (!symbol.isProbablyAGlobal() && clazz != null)
                     warnings.addWarning("Accidental global reference? " + symbol);
                 writeStoreGlobal(symbol);
             }
