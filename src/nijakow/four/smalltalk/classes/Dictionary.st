@@ -5,11 +5,12 @@ instanceVariableNames: 'vector'
 init
 [
     vector := Vector new.
+  ^ self
 ]
 ---
 do: block
 [
-    vector do: [ :v | block value: v value value: v key ]
+    vector do: [ :v | block value: v value value: v key ].
   ^ self
 ]
 ---
