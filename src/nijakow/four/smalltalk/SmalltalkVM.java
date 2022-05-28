@@ -1,9 +1,17 @@
 package nijakow.four.smalltalk;
 
+import nijakow.four.smalltalk.ast.CommandLineAST;
 import nijakow.four.smalltalk.objects.STInstance;
+import nijakow.four.smalltalk.objects.STNil;
 import nijakow.four.smalltalk.objects.STSymbol;
+import nijakow.four.smalltalk.objects.method.STCompiledMethod;
+import nijakow.four.smalltalk.parser.ParseException;
+import nijakow.four.smalltalk.parser.Parser;
+import nijakow.four.smalltalk.parser.StringCharacterStream;
+import nijakow.four.smalltalk.parser.Tokenizer;
 import nijakow.four.smalltalk.vm.Fiber;
 import nijakow.four.smalltalk.vm.FourException;
+import sun.jvm.hotspot.code.CompiledMethod;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,4 +59,17 @@ public class SmalltalkVM {
 
     public void restartFiber(Fiber fiber) { runningSet.add(fiber); }
     public void pauseFiber(Fiber fiber) { runningSet.remove(fiber); }
+
+    public STInstance runThisNow(String source) throws FourException {
+        Tokenizer tokenizer = new Tokenizer(new StringCharacterStream(source));
+        Parser parser = new Parser(tokenizer);
+        CommandLineAST ast = parser.parseCL();
+        STCompiledMethod method = ast.compile(source);
+        Fiber fiber = new Fiber(this);
+        fiber.push(STNil.get());
+        method.execute(fiber, 0, null);
+        while (fiber.isRunning())
+            fiber.runForAWhile();
+        return fiber.getAccu();
+    }
 }
