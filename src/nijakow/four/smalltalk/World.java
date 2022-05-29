@@ -128,6 +128,7 @@ public class World {
         objectClass.addMethodFromSource("init\n[\n]\n");
         objectClass.addMethod("value", (fiber, args) -> fiber.setAccu(args[0]));
         objectClass.addMethod("class", (fiber, args) -> fiber.setAccu(args[0].getClass(fiber.getVM().getWorld())));
+        objectClass.addMethod("isKindOf:", (fiber, args) -> fiber.setAccu(STBoolean.get(args[0].getClass(fiber.getVM().getWorld()).isSubclassOf(args[1].asClass()))));
         objectClass.addMethod("asBool", (fiber, args) -> fiber.setAccu(STBoolean.get(args[0].isTrue())));
         objectClass.addMethod("toString", (fiber, args) -> fiber.setAccu(new STString(args[0].toString())));
         objectClass.addMethod("=", (fiber, args) -> fiber.setAccu(STBoolean.get(args[0].is(args[1]))));
