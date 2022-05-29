@@ -37,7 +37,6 @@ public class World {
     private STClass builtinMethodClass;
     private STClass portClass;
     private STClass exceptionClass;
-    private STClass vectorClass;
     private STClass foreignClass;
 
     public World() {
@@ -208,7 +207,6 @@ public class World {
         portClass = objectClass.subclass();
         exceptionClass = objectClass.subclass();
         foreignClass = new STClass();
-        vectorClass = objectClass.subclass();
 
         setValue("Nil", nilClass);
 
@@ -383,70 +381,6 @@ public class World {
         });
 
         setValue("Exception", exceptionClass);
-
-        setValue("Vector", vectorClass);
-        vectorClass.setInstanceVariableNames("elements fill");
-        vectorClass.addMethodFromSource(
-                  "init\n"
-                + "[\n"
-                + "    elements := Array new: 8.\n"
-                + "    fill := 0.\n"
-                + "]\n"
-        );
-        vectorClass.addMethodFromSource(
-                "resizeTo: newsize | newelements\n"
-              + "[\n"
-              + "    newelements := Array new: newsize.\n"
-              + "    elements do: [ :v :i | newelements at: i put: v ].\n"
-              + "    elements := newelements.\n"
-              + "  ^ self\n"
-              + "]\n"
-        );
-        vectorClass.addMethodFromSource(
-                "size\n"
-              + "[\n"
-              + "  ^ fill\n"
-              + "]\n"
-        );
-        vectorClass.addMethodFromSource(
-                "at: index\n"
-              + "[\n"
-              + "  ^ elements at: index\n"
-              + "]\n"
-        );
-        vectorClass.addMethodFromSource(
-                "at: i put: v\n"
-              + "[\n"
-              + "    elements at: i put: v.\n"
-              + "  ^ self\n"
-              + "]\n"
-        );
-        vectorClass.addMethodFromSource(
-                "add: v\n"
-              + "[\n"
-              + "    (fill >= elements size) ifTrue: [\n"
-              + "        self resizeTo: (elements size * 2).\n"
-              + "    ].\n"
-              + "    elements at: fill put: v.\n"
-              + "    fill := fill + 1.\n"
-              + "  ^ self\n"
-              + "]\n"
-        );
-        vectorClass.addMethodFromSource(
-                "remove: index\n"
-              + "[\n"
-              + "    index to: (fill - 1) do: [ :v :i | self at: index put: (self at: index + 1) ].\n"
-              + "    fill := fill - 1.\n"
-              + "  ^ self\n"
-              + "]\n"
-        );
-        vectorClass.addMethodFromSource(
-                "do: block\n"
-              + "[\n"
-              + "    0 to: (self size - 1) do: [ :i | block value: (self at: i) value: i ].\n"
-              + "  ^ self\n"
-              + "]\n"
-        );
 
         STClass fourClass = objectClass.subclass();
         fourClass.addMethodFromSource("main\n[\n    '/nijakow/four/smalltalk/classes/Bootstrapper.st' openResource load.\n    Bootstrapper new run.\n]\n");
