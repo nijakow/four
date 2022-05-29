@@ -171,6 +171,7 @@ public class World {
             else
                 fiber.setAccu(method.asInstance());
         });
+        metaClass.addMethodFromSource(">> m\n[\n  ^ self method: m\n]\n");
         metaClass.addMethod("addMethod:", (fiber, args) -> {
             if (args[1] != STNil.get())
                 args[0].asClass().addMethodFromSource(args[1].asString().getValue());
