@@ -33,3 +33,10 @@ key: k value: v
     value := v.
   ^ self
 ]
+---
+storeOn: w
+[
+    w out: key;
+      out: ' -> ';
+      out: value.
+]
