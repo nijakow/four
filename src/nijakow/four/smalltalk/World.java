@@ -8,8 +8,10 @@ import nijakow.four.smalltalk.parser.ParseException;
 import nijakow.four.smalltalk.vm.Builtin;
 import nijakow.four.smalltalk.vm.Quickloader;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -258,6 +260,21 @@ public class World {
             quickloader.loadInto(fiber.getVM(), fiber.getVM().getWorld());
             fiber.setAccu(STBoolean.getTrue());
         });
+        stringClass.addMethod("openResource", (fiber, args) -> {
+            final BufferedReader reader = new BufferedReader(new InputStreamReader(this.getClass().getResourceAsStream(args[0].asString().getValue())));
+            final StringBuilder contents = new StringBuilder();
+            while (true) {
+                int i = 0;
+                try {
+                    i = reader.read();
+                } catch (IOException e) {
+                    break;
+                }
+                if (i < 0) break;
+                contents.append((char) i);
+            }
+            fiber.setAccu(new STString(contents.toString()));
+        });
         stringClass.addMethod("connect:", (fiber, args) -> {
             try {
                 IConnection connection = fiber.getVM().getFour().getServer().connectTo(args[0].asString().getValue(), args[1].asInteger().getValue());
@@ -430,12 +447,8 @@ public class World {
               + "]\n"
         );
 
-        STClass shellClass = objectClass.subclass();
-        setValue("Shell", shellClass);
-        shellClass.addMethodFromSource("run | line\n[\n    [\n        line := Transcript smalltalk: 'Smalltalk > '.\n        (line isEmpty) ifFalse: [\n            Exception handle: [ Transcript store: line compile value; cr ]\n                          do: [ Transcript out: 'Caught an exception!'; cr ].\n        ].\n    ] repeat.\n]\n");
-
         STClass fourClass = objectClass.subclass();
-        fourClass.addMethodFromSource("main\n[\n]\n");
+        fourClass.addMethodFromSource("main\n[\n    '/nijakow/four/smalltalk/classes/Bootstrapper.st' openResource load.\n    Bootstrapper new run.\n]\n");
         fourClass.addMethodFromSource("newConnection: connection\n[\n    Transcript := connection.\n    (Shell new) run.\n]\n");
 
         STObject four = (STObject) fourClass.instantiate();
