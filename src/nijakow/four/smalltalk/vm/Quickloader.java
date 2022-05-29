@@ -32,5 +32,9 @@ public class Quickloader {
                 builder.append(line + "\n");
             }
         }
+
+        final String lastLine = builder.toString();
+        if (!lastLine.isEmpty() && clazz != null)
+            clazz.addMethodFromSource(lastLine);
     }
 }

@@ -214,6 +214,10 @@ public class Fiber {
         }
     }
 
+    public void forceUnpause() {
+        isPaused = false;
+    }
+
     public void halt() {
         /*
          * TODO: Put a lock bit into the system that blocks normal reactivations!

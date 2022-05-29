@@ -66,6 +66,7 @@ public class SmalltalkVM {
         Fiber fiber = new Fiber(this);
         fiber.push(STNil.get());
         method.execute(fiber, 0, null);
+        fiber.forceUnpause();   // A normal "start" would insert the fiber into the VM's fiber table ;-)
         while (fiber.isRunning())
             fiber.runForAWhile();
         return fiber.getAccu();
