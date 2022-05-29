@@ -5,13 +5,11 @@ import nijakow.four.smalltalk.objects.STInstance;
 import nijakow.four.smalltalk.objects.STNil;
 import nijakow.four.smalltalk.objects.STSymbol;
 import nijakow.four.smalltalk.objects.method.STCompiledMethod;
-import nijakow.four.smalltalk.parser.ParseException;
 import nijakow.four.smalltalk.parser.Parser;
 import nijakow.four.smalltalk.parser.StringCharacterStream;
 import nijakow.four.smalltalk.parser.Tokenizer;
 import nijakow.four.smalltalk.vm.Fiber;
 import nijakow.four.smalltalk.vm.FourException;
-import sun.jvm.hotspot.code.CompiledMethod;
 
 import java.util.ArrayList;
 import java.util.List;

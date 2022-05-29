@@ -6,8 +6,11 @@ import nijakow.four.smalltalk.objects.*;
 import nijakow.four.smalltalk.objects.method.STMethod;
 import nijakow.four.smalltalk.parser.ParseException;
 import nijakow.four.smalltalk.vm.Builtin;
+import nijakow.four.smalltalk.vm.Quickloader;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -249,6 +252,11 @@ public class World {
         stringClass.addMethodFromSource("do: block\n[\n    0 to: self size - 1 do: [ :i | block value: (self at: i) value: i ].\n  ^ self\n]\n");
         stringClass.addMethodFromSource("writeOn: w\n[\n    self do: [ :c | w out: c ]\n]\n");
         stringClass.addMethodFromSource("isEmpty\n[\n    self do: [ :c | (c isWhitespace) ifFalse: [ ^ false ] ].\n  ^ true\n]\n");
+        stringClass.addMethod("load", (fiber, args) -> {
+            final Quickloader quickloader = new Quickloader(new ByteArrayInputStream(args[0].asString().getValue().getBytes(StandardCharsets.UTF_8)));
+            quickloader.loadInto(fiber.getVM(), fiber.getVM().getWorld());
+            fiber.setAccu(STBoolean.getTrue());
+        });
         stringClass.addMethod("connect:", (fiber, args) -> {
             try {
                 IConnection connection = fiber.getVM().getFour().getServer().connectTo(args[0].asString().getValue(), args[1].asInteger().getValue());
