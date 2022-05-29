@@ -24,6 +24,7 @@ public class STClass extends STInstance {
     private final Map<STSymbol, STMethod> methods;
     private Supplier<STInstance> instantiator;
     private Function<STInstance, STInstance> instantiator2;
+    private String category;
 
     private STClass(STClass superclass, STSymbol[] members) {
         this.superclass = superclass;
@@ -103,6 +104,9 @@ public class STClass extends STInstance {
          * TODO: Update all instances
          */
     }
+
+    public String getCategory() { return this.category; }
+    public void setCategory(String category) { this.category = category; }
 
 
     public STCompiler openCompiler() {

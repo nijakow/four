@@ -15,6 +15,11 @@ public class STString extends STInstance {
         this.value = value;
     }
 
+    public static STInstance wrap(String value) {
+        if (value == null) return STNil.get();
+        else               return new STString(value);
+    }
+
     @Override
     public String toString() {
         return "'" + getValue() + "'";
