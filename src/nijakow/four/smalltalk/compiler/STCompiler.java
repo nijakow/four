@@ -97,6 +97,10 @@ public class STCompiler {
         addInstruction(new SendInstruction(message, args));
     }
 
+    public void writeSuperSend(STSymbol message, int args) {
+        addInstruction(new SuperSendInstruction(message, args));
+    }
+
     public void writeReturn() {
         addInstruction(new ReturnInstruction());
     }

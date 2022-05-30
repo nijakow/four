@@ -157,6 +157,8 @@ public class Parser {
             return new ConstantAST(STBoolean.getFalse());
         } else if (check(TokenType.NIL)) {
             return new ConstantAST(STNil.get());
+        } else if (check(TokenType.SUPER)) {
+            return new SuperAST();
         } else {
             expect(TokenType.SELF);
             return new SelfAST();

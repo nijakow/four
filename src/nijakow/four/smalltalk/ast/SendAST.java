@@ -54,7 +54,10 @@ public class SendAST extends ExprAST {
                 arg.compile(compiler);
                 compiler.writePush();
             }
-            compiler.writeSend(message, arguments.length);
+            if (receiver instanceof SuperAST)
+                compiler.writeSuperSend(message, arguments.length);
+            else
+                compiler.writeSend(message, arguments.length);
         }
     }
 }
