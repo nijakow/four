@@ -35,6 +35,8 @@ public class Tokenizer {
                 case 'e': return '\033';
                 case 'b': return '\b';
                 case 's': return ' ';
+                case '{': return '\002';
+                case '}': return '\003';
                 default: return c;
             }
         }
@@ -108,7 +110,7 @@ public class Tokenizer {
         StreamPosition end = stream.getPosition();
 
         try {
-            return new Token(TokenType.INTEGER, Integer.valueOf(str), this, start, end);
+            return new Token(TokenType.INTEGER, Integer.decode(str), this, start, end);
         } catch (NumberFormatException e) {
         }
 

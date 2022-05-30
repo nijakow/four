@@ -270,6 +270,7 @@ public class World {
         stringClass.addMethod("at:", (fiber, args) -> fiber.setAccu(STCharacter.get((args[0].asString().getValue().charAt(args[1].asInteger().getValue() - 1)))));
         stringClass.addMethod("from:to:", (fiber, args) -> fiber.setAccu(new STString((args[0].asString().getValue().substring(args[1].asInteger().getValue() - 1, args[2].asInteger().getValue() - 1)))));
         stringClass.addMethod("+", (fiber, args) -> fiber.setAccu(new STString(args[0].asString().getValue() + args[1].asString().getValue())));
+        stringClass.addMethod("char+", (fiber, args) -> fiber.setAccu(new STString(args[0].asString().getValue() + args[1].asCharacter().getValue())));
         stringClass.addMethod("compile", (fiber, args) -> fiber.setAccu(new STClosure(args[0].asString().compile(), null)));
         stringClass.addMethod("asSymbol", (fiber, args) -> fiber.setAccu(STSymbol.get(args[0].asString().getValue())));
         stringClass.addMethodFromSource("writeOn: w\n[\n    self do: [ :c | w out: c ]\n]\n");
@@ -318,6 +319,7 @@ public class World {
         symbolClass.addMethod("asString", (fiber, args) -> fiber.setAccu(new STString(args[0].asSymbol().getName())));
         symbolClass.addMethod("globalValue", (fiber, args) -> fiber.setAccu(fiber.getVM().getWorld().getValue(args[0].asSymbol())));
         symbolClass.addMethod("globalValue:", (fiber, args) -> fiber.getVM().getWorld().setValue(args[0].asSymbol(), args[1]));
+        symbolClass.addMethodFromSource("storeOn: w\n[\n    w out: self toString\n]\n");
 
         setValue("Array", arrayClass);
         arrayClass.setInstantiator(() -> new STArray(0));
