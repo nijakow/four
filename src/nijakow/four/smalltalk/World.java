@@ -186,8 +186,8 @@ public class World {
         metaClass.addMethod("removeMethod:", (fiber, args) -> {
             args[0].asClass().removeMethod(args[1].asSymbol());
         });
-        metaClass.addMethod("category", (fiber, args) -> fiber.setAccu(STString.wrap(args[0].asClass().getCategory())));
-        metaClass.addMethod("category:", (fiber, args) -> args[0].asClass().setCategory(args[1].asString().getValue()));
+        metaClass.addMethod("meta", (fiber, args) -> fiber.setAccu(args[0].asClass().getMeta()));
+        metaClass.addMethod("meta:", (fiber, args) -> args[0].asClass().setMeta(args[1]));
         metaClass.addMethod("selectors", (fiber, args) -> {
             STSymbol[] selectors = args[0].asClass().getSelectors();
             STArray result = new STArray(selectors);

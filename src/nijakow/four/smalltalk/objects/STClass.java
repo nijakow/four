@@ -24,7 +24,7 @@ public class STClass extends STInstance {
     private final Map<STSymbol, STMethod> methods;
     private Supplier<STInstance> instantiator;
     private Function<STInstance, STInstance> instantiator2;
-    private String category;
+    private STInstance meta;
 
     private STClass(STClass superclass, STSymbol[] members) {
         this.superclass = superclass;
@@ -32,6 +32,7 @@ public class STClass extends STInstance {
         this.methods = new HashMap<>();
         this.instantiator = () -> new STObject(this, getInstanceVariableCount());
         this.instantiator2 = (arg) -> STNil.get();
+        this.meta = STNil.get();
     }
 
     public STClass() {
@@ -105,8 +106,8 @@ public class STClass extends STInstance {
          */
     }
 
-    public String getCategory() { return this.category; }
-    public void setCategory(String category) { this.category = category; }
+    public STInstance getMeta() { return this.meta; }
+    public void setMeta(STInstance meta) { this.meta = meta; }
 
 
     public STCompiler openCompiler() {
