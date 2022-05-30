@@ -17,5 +17,6 @@ run
          load: 'Set.st';
          load: 'Association.st';
          load: 'Dictionary.st';
+         load: 'OutputStream.st';
          load: 'Shell.st'.
 ]

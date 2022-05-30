@@ -41,6 +41,7 @@ public class World {
     private STClass collectionClass;
     private STClass sequenceableCollectionClass;
     private STClass arrayedCollectionClass;
+    private STClass outputStreamClass;
 
     public World() {
     }
@@ -203,6 +204,7 @@ public class World {
         collectionClass = objectClass.subclass();
         sequenceableCollectionClass = collectionClass.subclass();
         arrayedCollectionClass = collectionClass.subclass();
+        outputStreamClass = objectClass.subclass();
         nilClass = objectClass.subclass();
         booleanClass = objectClass.subclass();
         integerClass = objectClass.subclass();
@@ -214,13 +216,14 @@ public class World {
         methodClass = objectClass.subclass();
         compiledMethodClass = methodClass.subclass();
         builtinMethodClass = methodClass.subclass();
-        portClass = objectClass.subclass();
+        portClass = outputStreamClass.subclass();
         exceptionClass = objectClass.subclass();
         foreignClass = new STClass();
 
         setValue("Collection", collectionClass);
         setValue("SequenceableCollection", sequenceableCollectionClass);
         setValue("ArrayedCollection", arrayedCollectionClass);
+        setValue("OutputStream", outputStreamClass);
 
         setValue("Nil", nilClass);
         nilClass.addMethodFromSource("storeOn: w\n[\n    w out: 'nil'\n]\n");
@@ -374,10 +377,6 @@ public class World {
         portClass.addMethod("outputChar:", (fiber, args) -> {
             args[0].asPort().write("" + args[1].asCharacter().getValue());
         });
-        portClass.addMethodFromSource("show: obj\n[\n    self out: obj.\n  ^ self\n]\n");
-        portClass.addMethodFromSource("out: obj\n[\n    obj writeOn: self.\n  ^ self\n]\n");
-        portClass.addMethodFromSource("store: obj\n[\n    obj storeOn: self.\n  ^ self\n]\n");
-        portClass.addMethodFromSource("cr\n[\n    self out: '\n'.\n]\n");
         portClass.addMethod("edit:title:", (fiber, args) -> {
             fiber.pause();
             args[0].asPort().edit(args[2].asString().getValue(), args[1].asString().getValue(), (v) -> {

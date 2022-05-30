@@ -33,24 +33,35 @@ takeFrom: collection
   ^ self
 ]
 ---
+addAll: collection
+[
+    collection do: [ :v | self add: v ].
+  ^ collection
+]
+---
+species
+[
+  ^ self class
+]
+---
 select: block | c
 [
-    c := self class new.
-    self do: [ :v :i | (block value: v) ifTrue: [ c add: v ]. ].
+    c := self species new.
+    self do: [ :v | (block value: v) ifTrue: [ c add: v ]. ].
   ^ c
 ]
 ---
 reject: block | c
 [
-    c := self class new.
-    self do: [ :v :i | (block value: v) ifFalse: [ c add: v ]. ].
+    c := self species new.
+    self do: [ :v | (block value: v) ifFalse: [ c add: v ]. ].
   ^ c
 ]
 ---
 collect: block | c
 [
-    c := self class new.
-    self do: [ :v :i | c at: i put: (block value: v) ].
+    c := self species new.
+    self do: [ :v | c add: (block value: v) ].
   ^ c
 ]
 ---

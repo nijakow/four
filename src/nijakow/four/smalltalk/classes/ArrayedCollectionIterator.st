@@ -9,6 +9,11 @@ initWithIndexable: _indexable
   ^ self
 ]
 ---
+peek
+[
+  ^ indexable at: index
+]
+---
 hasNext
 [
   ^ index <= indexable size
