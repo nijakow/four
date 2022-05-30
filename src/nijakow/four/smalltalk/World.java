@@ -135,6 +135,7 @@ public class World {
         objectClass.addMethod("toString", (fiber, args) -> fiber.setAccu(new STString(args[0].toString())));
         objectClass.addMethod("=", (fiber, args) -> fiber.setAccu(STBoolean.get(args[0].is(args[1]))));
         objectClass.addMethod("!=", (fiber, args) -> fiber.setAccu(STBoolean.get(!args[0].is(args[1]))));
+        objectClass.addMethod("throw", (fiber, args) -> fiber.throwValue(args[0]));
         objectClass.addMethodFromSource("writeOn: w\n[\n    self storeOn: w\n]\n");
         objectClass.addMethodFromSource("storeOn: w\n[\n    w out: 'instance of '; out: self class\n]\n");
 
@@ -194,7 +195,7 @@ public class World {
         metaClass.addMethodFromSource("storeOn: w\n[\n    Symbol instances do: [ :sym | (self = sym globalValue) ifTrue: [ w out: sym asString. ^ self ] ].\n  super storeOn: w\n]\n");
         metaClass.addMethod("handle:do:", (fiber, args) -> {
             args[1].asClosure().execute(fiber, 0);
-            fiber.top().setHandler(args[2].asClosure());
+            fiber.top().setHandler(args[0].asClass(), args[2].asClosure());
         });
         metaClass.addMethodFromSource("edit\n[\n    self addMethod: Transcript edit.\n]\n");
         metaClass.addMethodFromSource("edit: name | text\n[\n    ((self method: name) = nil) ifTrue: [\n        text := (name asString) + ' | \"Local variables\"\\n[\\n  ^ self\\n]\\n'.\n    ] ifFalse: [\n        text := (self method: name) source.\n    ].\n    text := (Transcript edit: text title: ('Method ' + (name asString))).\n    (text = nil)  ifTrue: [ ^ self ].\n    (text isWhitespace) ifTrue: [ self removeMethod: name ]\n                  ifFalse: [ self addMethod: text ].\n  ^ self\n]\n");
@@ -222,11 +223,13 @@ public class World {
         setValue("ArrayedCollection", arrayedCollectionClass);
 
         setValue("Nil", nilClass);
+        nilClass.addMethodFromSource("storeOn: w\n[\n    w out: 'nil'\n]\n");
 
         setValue("Boolean", booleanClass);
         booleanClass.addMethod("not", (fiber, args) -> fiber.setAccu(STBoolean.get(!args[0].isTrue())));
         booleanClass.addMethod("&", (fiber, args) -> fiber.setAccu(STBoolean.get(args[0].isTrue() && args[1].isTrue())));
         booleanClass.addMethod("|", (fiber, args) -> fiber.setAccu(STBoolean.get(args[0].isTrue() || args[1].isTrue())));
+        booleanClass.addMethodFromSource("storeOn: w\n[\n    w out: self toString\n]\n");
 
         setValue("Integer", integerClass);
         integerClass.addMethod("asChar", (fiber, args) -> fiber.setAccu(STCharacter.get((char) args[0].asInteger().getValue())));
@@ -247,6 +250,7 @@ public class World {
         integerClass.addMethod(">", (fiber, args) -> fiber.setAccu(STBoolean.get(args[0].asInteger().getValue() > args[1].asInteger().getValue())));
         integerClass.addMethod(">=", (fiber, args) -> fiber.setAccu(STBoolean.get(args[0].asInteger().getValue() >= args[1].asInteger().getValue())));
         integerClass.addMethodFromSource("to: upper do: block | v\n[\n    v := self.\n    [ v <= upper ] whileTrue: [\n        block value: v.\n        v := v + 1.\n    ].\n  ^ self\n]\n");
+        integerClass.addMethodFromSource("storeOn: w\n[\n    w out: self toString\n]\n");
 
         setValue("Character", characterClass);
         characterClass.addMethod("asInt", (fiber, args) -> fiber.setAccu(STInteger.get(args[0].asCharacter().getValue())));
@@ -256,6 +260,7 @@ public class World {
         characterClass.addMethod(">", (fiber, args) -> fiber.setAccu(STBoolean.get(args[0].asCharacter().getValue() > args[1].asCharacter().getValue())));
         characterClass.addMethod(">=", (fiber, args) -> fiber.setAccu(STBoolean.get(args[0].asCharacter().getValue() >= args[1].asCharacter().getValue())));
         characterClass.addMethodFromSource("writeOn: w\n[\n    w outputChar: self\n]\n");
+        characterClass.addMethodFromSource("storeOn: w\n[\n    w out: self toString\n]\n");
 
         setValue("String", stringClass);
         stringClass.addMethod("size", (fiber, args) -> fiber.setAccu(STInteger.get((args[0].asString().getValue().length()))));

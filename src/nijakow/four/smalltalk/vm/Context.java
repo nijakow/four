@@ -1,5 +1,7 @@
 package nijakow.four.smalltalk.vm;
 
+import nijakow.four.share.util.Pair;
+import nijakow.four.smalltalk.objects.STClass;
 import nijakow.four.smalltalk.objects.STClosure;
 import nijakow.four.smalltalk.objects.method.STCompiledMethod;
 import nijakow.four.smalltalk.vm.instructions.VMInstruction;
@@ -10,7 +12,7 @@ public class Context {
     private final STCompiledMethod method;
     private final int base;
     private VMInstruction instruction;
-    private STClosure handler;
+    private Pair<STClass, STClosure> handler;
 
     public Context(Context parent, Context lexical, STCompiledMethod method, VMInstruction instruction, int base) {
         this.parent = parent;
@@ -32,12 +34,12 @@ public class Context {
         return this.base;
     }
 
-    public STClosure getHandler() {
+    public Pair<STClass, STClosure> getHandler() {
         return handler;
     }
 
-    public void setHandler(STClosure handler) {
-        this.handler = handler;
+    public void setHandler(STClass clazz, STClosure handler) {
+        this.handler = new Pair<>(clazz, handler);
     }
 
     public void step(Fiber fiber) throws FourException {

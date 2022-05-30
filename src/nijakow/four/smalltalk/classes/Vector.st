@@ -27,6 +27,8 @@ at: index
 ---
 at: i put: v
 [
+    (i > elements size) ifTrue: [ self resizeTo: i ].
+    (i > fill) ifTrue: [ fill := i ].
     elements at: i put: v.
   ^ self
 ]

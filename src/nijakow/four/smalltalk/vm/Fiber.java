@@ -187,14 +187,16 @@ public class Fiber {
         maybeHalt();
     }
 
-    public boolean callHandler() {
+    public boolean callHandler(STInstance value) {
         while (top() != null) {
             Context context = top();
             loadSelf();
             popContext();
-            if (context.getHandler() != null) {
+            if (context.getHandler() != null && value.getClass(this.getVM().getWorld()).isSubclassOf(context.getHandler().getFirst())) {
                 push();
-                context.getHandler().execute(this, 0);
+                setAccu(value);
+                push();
+                context.getHandler().getSecond().execute(this, 1);
                 return true;
             }
         }
@@ -208,7 +210,7 @@ public class Fiber {
             try {
                 top().step(this);
             } catch (FourException e) {
-                if (!callHandler())
+                if (!callHandler(STNil.get()))
                     throw e;
             }
         }
@@ -255,6 +257,13 @@ public class Fiber {
 
     public void maybeHalt() {
         if (isDead() && !isPaused()) {
+            halt();
+        }
+    }
+
+    public void throwValue(STInstance value) {
+        if (!callHandler(value)) {
+            setAccu(value);
             halt();
         }
     }
