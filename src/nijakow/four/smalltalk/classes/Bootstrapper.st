@@ -9,6 +9,8 @@ load: name
 run
 [
     self load: 'Collection.st';
+         load: 'SequenceableCollection.st';
+         load: 'ArrayedCollection.st';
          load: 'Vector.st';
          load: 'Set.st';
          load: 'Association.st';

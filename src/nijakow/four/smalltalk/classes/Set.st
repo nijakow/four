@@ -14,6 +14,11 @@ do: block
   ^ self
 ]
 ---
+size
+[
+  ^ vector size
+]
+---
 add: e
 [
     (self contains: e) ifFalse: [ vector add: e ].

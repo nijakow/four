@@ -36,8 +36,11 @@ public class World {
     private STClass compiledMethodClass;
     private STClass builtinMethodClass;
     private STClass portClass;
-    private STClass exceptionClass;
     private STClass foreignClass;
+    private STClass exceptionClass;
+    private STClass collectionClass;
+    private STClass sequenceableCollectionClass;
+    private STClass arrayedCollectionClass;
 
     public World() {
     }
@@ -193,15 +196,18 @@ public class World {
             fiber.top().setHandler(args[2].asClosure());
         });
         metaClass.addMethodFromSource("edit\n[\n    self addMethod: Transcript edit.\n]\n");
-        metaClass.addMethodFromSource("edit: name | text\n[\n    ((self method: name) = nil) ifTrue: [\n        text := (name asString) + ' | \"Local variables\"\\n[\\n  ^ self\\n]\\n'.\n    ] ifFalse: [\n        text := (self method: name) source.\n    ].\n    text := (Transcript edit: text title: ('Method ' + (name asString))).\n    (text = nil)  ifTrue: [ ^ self ].\n    (text isEmpty) ifTrue: [ self removeMethod: name ]\n                  ifFalse: [ self addMethod: text ].\n  ^ self\n]\n");
+        metaClass.addMethodFromSource("edit: name | text\n[\n    ((self method: name) = nil) ifTrue: [\n        text := (name asString) + ' | \"Local variables\"\\n[\\n  ^ self\\n]\\n'.\n    ] ifFalse: [\n        text := (self method: name) source.\n    ].\n    text := (Transcript edit: text title: ('Method ' + (name asString))).\n    (text = nil)  ifTrue: [ ^ self ].\n    (text isWhitespace) ifTrue: [ self removeMethod: name ]\n                  ifFalse: [ self addMethod: text ].\n  ^ self\n]\n");
 
+        collectionClass = objectClass.subclass();
+        sequenceableCollectionClass = collectionClass.subclass();
+        arrayedCollectionClass = collectionClass.subclass();
         nilClass = objectClass.subclass();
         booleanClass = objectClass.subclass();
         integerClass = objectClass.subclass();
         characterClass = objectClass.subclass();
-        stringClass = objectClass.subclass();
+        stringClass = arrayedCollectionClass.subclass();
         symbolClass = objectClass.subclass();
-        arrayClass = objectClass.subclass();
+        arrayClass = arrayedCollectionClass.subclass();
         closureClass = objectClass.subclass();
         methodClass = objectClass.subclass();
         compiledMethodClass = methodClass.subclass();
@@ -209,6 +215,10 @@ public class World {
         portClass = objectClass.subclass();
         exceptionClass = objectClass.subclass();
         foreignClass = new STClass();
+
+        setValue("Collection", collectionClass);
+        setValue("SequenceableCollection", sequenceableCollectionClass);
+        setValue("ArrayedCollection", arrayedCollectionClass);
 
         setValue("Nil", nilClass);
 
@@ -248,14 +258,14 @@ public class World {
 
         setValue("String", stringClass);
         stringClass.addMethod("size", (fiber, args) -> fiber.setAccu(STInteger.get((args[0].asString().getValue().length()))));
-        stringClass.addMethod("at:", (fiber, args) -> fiber.setAccu(STCharacter.get((args[0].asString().getValue().charAt(args[1].asInteger().getValue())))));
-        stringClass.addMethod("from:to:", (fiber, args) -> fiber.setAccu(new STString((args[0].asString().getValue().substring(args[1].asInteger().getValue(), args[2].asInteger().getValue())))));
+        stringClass.addMethod("at:", (fiber, args) -> fiber.setAccu(STCharacter.get((args[0].asString().getValue().charAt(args[1].asInteger().getValue() - 1)))));
+        stringClass.addMethod("from:to:", (fiber, args) -> fiber.setAccu(new STString((args[0].asString().getValue().substring(args[1].asInteger().getValue() - 1, args[2].asInteger().getValue() - 1)))));
         stringClass.addMethod("+", (fiber, args) -> fiber.setAccu(new STString(args[0].asString().getValue() + args[1].asString().getValue())));
         stringClass.addMethod("compile", (fiber, args) -> fiber.setAccu(new STClosure(args[0].asString().compile(), null)));
         stringClass.addMethod("asSymbol", (fiber, args) -> fiber.setAccu(STSymbol.get(args[0].asString().getValue())));
-        stringClass.addMethodFromSource("do: block\n[\n    0 to: self size - 1 do: [ :i | block value: (self at: i) value: i ].\n  ^ self\n]\n");
         stringClass.addMethodFromSource("writeOn: w\n[\n    self do: [ :c | w out: c ]\n]\n");
-        stringClass.addMethodFromSource("isEmpty\n[\n    self do: [ :c | (c isWhitespace) ifFalse: [ ^ false ] ].\n  ^ true\n]\n");
+        stringClass.addMethodFromSource("storeOn: w\n[\n    w out: $'.\n    self do: [ :c | w out: c ].\n    w out: $'.\n]\n");
+        stringClass.addMethodFromSource("isWhitespace\n[\n    self do: [ :c | (c isWhitespace) ifFalse: [ ^ false ] ].\n  ^ true\n]\n");
         stringClass.addMethod("load", (fiber, args) -> {
             final Quickloader quickloader = new Quickloader(new ByteArrayInputStream(args[0].asString().getValue().getBytes(StandardCharsets.UTF_8)));
             quickloader.loadInto(fiber.getVM(), fiber.getVM().getWorld());
@@ -304,9 +314,8 @@ public class World {
         arrayClass.setInstantiator(() -> new STArray(0));
         arrayClass.setInstantiator2((size) -> new STArray(((STInteger) size).getValue()));
         arrayClass.addMethod("size", (fiber, args) -> fiber.setAccu(STInteger.get(args[0].asArray().getSize())));
-        arrayClass.addMethod("at:", (fiber, args) -> fiber.setAccu(args[0].asArray().get(args[1].asInteger().getValue())));
-        arrayClass.addMethod("at:put:", (fiber, args) -> args[0].asArray().set(args[1].asInteger().getValue(), args[2]));
-        arrayClass.addMethodFromSource("do: block\n[\n    0 to: self size - 1 do: [ :i | block value: (self at: i) value: i ].\n  ^ self\n]\n");
+        arrayClass.addMethod("at:", (fiber, args) -> fiber.setAccu(args[0].asArray().get(args[1].asInteger().getValue() - 1)));
+        arrayClass.addMethod("at:put:", (fiber, args) -> args[0].asArray().set(args[1].asInteger().getValue() - 1, args[2]));
 
         setValue("Method", methodClass);
         Builtin valueBuiltin = (fiber, args) -> {

@@ -14,6 +14,11 @@ do: block
   ^ self
 ]
 ---
+size
+[
+  ^ vector size
+]
+---
 at: key
 [
     vector do: [ :v |

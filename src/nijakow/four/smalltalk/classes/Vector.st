@@ -1,5 +1,4 @@
---- needs: Collection
-Collection subclass: #Vector;
+ArrayedCollection subclass: #Vector;
 instanceVariableNames: 'elements fill'
 ---
 init
@@ -37,20 +36,14 @@ add: v
     (fill >= elements size) ifTrue: [
         self resizeTo: (elements size * 2).
     ].
-    elements at: fill put: v.
+    elements at: (fill + 1) put: v.
     fill := fill + 1.
   ^ self
 ]
 ---
 remove: index
 [
-    index to: (fill - 1) do: [ :v :i | self at: index put: (self at: index + 1) ].
+    index to: fill do: [ :v :i | self at: index put: (self at: index + 1) ].
     fill := fill - 1.
-  ^ self
-]
----
-do: block
-[
-    0 to: (self size - 1) do: [ :i | block value: (self at: i) value: i ].
   ^ self
 ]

@@ -1,8 +1,12 @@
-Object subclass: #Collection;
-instanceVariableNames: ''
+Collection
 ---
 init
 [
+]
+---
+isEmpty
+[
+  ^ self size = 0
 ]
 ---
 storeOn: w
