@@ -150,7 +150,7 @@ public class STClass extends STInstance {
 
     public STMethod findSuperMethod(STSymbol name) {
         final STClass superclass = getSuperClass();
-        return (superclass == null) ? null : superclass.getMethod(name);
+        return (superclass == null) ? null : superclass.findMethod(name);
     }
 
     public STSymbol[] getSelectors() {

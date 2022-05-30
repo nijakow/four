@@ -1,4 +1,4 @@
-Iterator subclass: #IndexIterator;
+Iterator subclass: #ArrayedCollectionIterator;
 instanceVariableNames: 'indexable index'
 ---
 initWithIndexable: _indexable

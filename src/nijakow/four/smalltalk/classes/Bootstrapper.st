@@ -8,9 +8,11 @@ load: name
 ---
 run
 [
-    self load: 'Collection.st';
+    self load: 'Iterator.st';
+         load: 'Collection.st';
          load: 'SequenceableCollection.st';
          load: 'ArrayedCollection.st';
+         load: 'ArrayedCollectionIterator.st';
          load: 'Vector.st';
          load: 'Set.st';
          load: 'Association.st';

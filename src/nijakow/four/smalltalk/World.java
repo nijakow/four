@@ -136,7 +136,7 @@ public class World {
         objectClass.addMethod("=", (fiber, args) -> fiber.setAccu(STBoolean.get(args[0].is(args[1]))));
         objectClass.addMethod("!=", (fiber, args) -> fiber.setAccu(STBoolean.get(!args[0].is(args[1]))));
         objectClass.addMethodFromSource("writeOn: w\n[\n    self storeOn: w\n]\n");
-        objectClass.addMethodFromSource("storeOn: w\n[\n    w out: self toString\n]\n");
+        objectClass.addMethodFromSource("storeOn: w\n[\n    w out: 'instance of '; out: self class\n]\n");
 
         metaClass = objectClass.subclass();
         setValue("Class", metaClass);
@@ -191,6 +191,7 @@ public class World {
             STArray result = new STArray(selectors);
             fiber.setAccu(result);
         });
+        metaClass.addMethodFromSource("storeOn: w\n[\n    Symbol instances do: [ :sym | (self = sym globalValue) ifTrue: [ w out: sym asString. ^ self ] ].\n  super storeOn: w\n]\n");
         metaClass.addMethod("handle:do:", (fiber, args) -> {
             args[1].asClosure().execute(fiber, 0);
             fiber.top().setHandler(args[2].asClosure());
