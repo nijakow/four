@@ -17,7 +17,20 @@ setupColors
 ---
 run
 [
-    self load: 'Iterator.st';
+    self load: 'Object.st';
+         load: 'Class.st';
+         load: 'Nil.st';
+         load: 'Boolean.st';
+         load: 'Integer.st';
+         load: 'Character.st';
+         load: 'String.st';
+         load: 'Symbol.st';
+         load: 'Array.st';
+         load: 'Method.st';
+         load: 'BlockClosure.st';
+         load: 'CompiledMethod.st';
+         load: 'Port.st';
+         load: 'Iterator.st';
          load: 'Collection.st';
          load: 'SequenceableCollection.st';
          load: 'ArrayedCollection.st';
