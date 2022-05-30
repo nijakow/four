@@ -106,8 +106,8 @@ public class Fiber {
         return stack.get(--sp);
     }
 
-    public void enter(Context lexical, VMInstruction instruction, int args, int locals) {
-        Context context = new Context(top(), lexical, instruction, sp - args - 1);
+    public void enter(Context lexical, STCompiledMethod method, VMInstruction instruction, int args, int locals) {
+        Context context = new Context(top(), lexical, method, instruction, sp - args - 1);
         sp += locals - args;
         this.top = context;
     }
@@ -123,6 +123,14 @@ public class Fiber {
         enter(self, STSymbol.get(message), args);
     }
 
+    public void enterSuper(STInstance self, STSymbol message, STInstance[] args) throws FourException {
+        push(self);
+        for (STInstance arg : args)
+            push(arg);
+        setAccu(self);
+        superSend(message, args.length);
+    }
+
     public void send(STSymbol message, int args) throws FourException {
         STInstance instance = stack.get(sp - args - 1);
         if (instance.isForeign()) {
@@ -134,6 +142,23 @@ public class Fiber {
             instance.asForeign().send(message, arguments, (result) -> restartWithValue(result));
         } else {
             STMethod m = instance.getInstanceMethod(this.getVM().getWorld(), message);
+            if (m == null)
+                throw new FourException("Method not found: " + message + "!");
+            m.execute(this, args, null);
+        }
+    }
+
+    public void superSend(STSymbol message, int args) throws FourException {
+        STInstance instance = stack.get(sp - args - 1);
+        if (instance.isForeign()) {
+            STInstance[] arguments = new STInstance[args];
+            while (args --> 0)
+                arguments[args] = pop();
+            pop();  // Pop the instance itself
+            pause();
+            instance.asForeign().sendSuper(message, arguments, (result) -> restartWithValue(result));
+        } else {
+            STMethod m = instance.getInstanceSuperMethod(this.getVM().getWorld(), message);
             if (m == null)
                 throw new FourException("Method not found: " + message + "!");
             m.execute(this, args, null);

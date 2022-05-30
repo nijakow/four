@@ -148,6 +148,11 @@ public class STClass extends STInstance {
         return method;
     }
 
+    public STMethod findSuperMethod(STSymbol name) {
+        final STClass superclass = getSuperClass();
+        return (superclass == null) ? null : superclass.getMethod(name);
+    }
+
     public STSymbol[] getSelectors() {
         return methods.keySet().toArray(new STSymbol[0]);
     }

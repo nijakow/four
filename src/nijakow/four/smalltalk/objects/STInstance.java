@@ -43,6 +43,7 @@ public abstract class STInstance {
     public STMethod getInstanceMethod(World world, STSymbol name) {
         return getClass(world).findMethod(name);
     }
+    public STMethod getInstanceSuperMethod(World world, STSymbol name) { return getClass(world).findSuperMethod(name); }
 
     public boolean is(Object obj) {
         return this == obj;

@@ -36,4 +36,8 @@ public class STForeign extends STInstance {
     public void send(STSymbol message, STInstance[] args, Consumer<STInstance> result) {
         this.connection.writeSend(result, this, message, args);
     }
+
+    public void sendSuper(STSymbol message, STInstance[] args, Consumer<STInstance> result) {
+        this.connection.writeSuperSend(result, this, message, args);
+    }
 }

@@ -55,6 +55,13 @@ public class SmalltalkVM {
         return startFiber(self, STSymbol.get(message), args);
     }
 
+    public Fiber startFiberUsingSuperSend(STInstance self, STSymbol message, STInstance[] args) throws FourException {
+        Fiber fiber = new Fiber(this);
+        fiber.enterSuper(self, message, args);
+        fiber.restart();
+        return fiber;
+    }
+
     public void restartFiber(Fiber fiber) { runningSet.add(fiber); }
     public void pauseFiber(Fiber fiber) { runningSet.remove(fiber); }
 

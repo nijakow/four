@@ -21,6 +21,7 @@ public class MUDConnection implements IMUDConnection {
         this.vm = vm;
         this.connection = connection;
         this.connection.onEscape("fourconnect/send", this::handleSend);
+        this.connection.onEscape("fourconnect/supersend", this::handleSuperSend);
         this.connection.onEscape("fourconnect/result", this::handleResult);
     }
 
@@ -111,6 +112,21 @@ public class MUDConnection implements IMUDConnection {
         return true;
     }
 
+    private boolean handleSuperSend(String[] params) {
+        try {
+            final String key = params[1];
+            STInstance receiver = decode(params[2]);
+            STSymbol message = decode(params[3]).asSymbol();
+            STInstance[] arguments = new STInstance[params.length - 4];
+            for (int i = 0; i < arguments.length; i++)
+                arguments[i] = decode(params[i + 4]);
+            vm.startFiberUsingSuperSend(receiver, message, arguments).onExit((value) -> writeResult(key, value));
+        } catch (FourException e) {
+            return false;
+        }
+        return true;
+    }
+
     public void awaitResult(Consumer<STInstance> consumer) {
         waitingCallbacks.put("", consumer);
     }
@@ -136,6 +152,19 @@ public class MUDConnection implements IMUDConnection {
         waitingCallbacks.put(key, callback);
         String[] encodedArgs = new String[args.length + 4];
         encodedArgs[0] = "fourconnect/send";
+        encodedArgs[1] = key;
+        encodedArgs[2] = encode(receiver);
+        encodedArgs[3] = encode(message);
+        for (int i = 0; i < args.length; i++)
+            encodedArgs[i + 4] = encode(args[i]);
+        connection.writeEscaped(encodedArgs);
+    }
+
+    public void writeSuperSend(Consumer<STInstance> callback, STInstance receiver, STSymbol message, STInstance... args) {
+        final String key = generateKey();
+        waitingCallbacks.put(key, callback);
+        String[] encodedArgs = new String[args.length + 4];
+        encodedArgs[0] = "fourconnect/supersend";
         encodedArgs[1] = key;
         encodedArgs[2] = encode(receiver);
         encodedArgs[3] = encode(message);
