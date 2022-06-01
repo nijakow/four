@@ -203,7 +203,7 @@ public class World {
 
         collectionClass = objectClass.subclass();
         sequenceableCollectionClass = collectionClass.subclass();
-        arrayedCollectionClass = collectionClass.subclass();
+        arrayedCollectionClass = sequenceableCollectionClass.subclass();
         outputStreamClass = objectClass.subclass();
         nilClass = objectClass.subclass();
         booleanClass = objectClass.subclass();
