@@ -13,7 +13,7 @@ writeOn: w
 [
     w << '#('.
     self do: [ :v | w << v << ' ' ].
-    w out: ')'.
+    w << ')'.
 ]
 ---
 asArray
