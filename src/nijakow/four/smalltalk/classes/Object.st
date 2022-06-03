@@ -2,5 +2,5 @@ Object
 ---
 storeOn: w
 [
-    w << self
+    w out: self
 ]

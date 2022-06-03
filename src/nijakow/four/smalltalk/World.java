@@ -137,7 +137,7 @@ public class World {
         objectClass.addMethod("=", (fiber, args) -> fiber.setAccu(STBoolean.get(args[0].is(args[1]))));
         objectClass.addMethod("!=", (fiber, args) -> fiber.setAccu(STBoolean.get(!args[0].is(args[1]))));
         objectClass.addMethod("throw", (fiber, args) -> fiber.throwValue(args[0]));
-        objectClass.addMethodFromSource("writeOn: w\n[\n    w << 'instance of ' << self class\n]\n");
+        objectClass.addMethodFromSource("writeOn: w\n[\n    w out: 'instance of '; out: self class\n]\n");
 
         metaClass = objectClass.subclass();
         setValue("Class", metaClass);
@@ -192,7 +192,7 @@ public class World {
             STArray result = new STArray(selectors);
             fiber.setAccu(result);
         });
-        metaClass.addMethodFromSource("writeOn: w\n[\n    Symbol instances do: [ :sym | (self = sym globalValue) ifTrue: [ w << sym name. ^ self ] ].\n  super writeOn: w\n]\n");
+        metaClass.addMethodFromSource("writeOn: w\n[\n    Symbol instances do: [ :sym | (self = sym globalValue) ifTrue: [ w out: sym name. ^ self ] ].\n  super writeOn: w\n]\n");
         metaClass.addMethod("handle:do:", (fiber, args) -> {
             args[1].asClosure().execute(fiber, 0);
             fiber.top().setHandler(args[0].asClass(), args[2].asClosure());
@@ -225,13 +225,13 @@ public class World {
         setValue("OutputStream", outputStreamClass);
 
         setValue("Nil", nilClass);
-        nilClass.addMethodFromSource("writeOn: w\n[\n    w << 'nil'\n]\n");
+        nilClass.addMethodFromSource("writeOn: w\n[\n    w out: 'nil'\n]\n");
 
         setValue("Boolean", booleanClass);
         booleanClass.addMethod("not", (fiber, args) -> fiber.setAccu(STBoolean.get(!args[0].isTrue())));
         booleanClass.addMethod("&", (fiber, args) -> fiber.setAccu(STBoolean.get(args[0].isTrue() && args[1].isTrue())));
         booleanClass.addMethod("|", (fiber, args) -> fiber.setAccu(STBoolean.get(args[0].isTrue() || args[1].isTrue())));
-        booleanClass.addMethodFromSource("writeOn: w\n[\n    w << self toString\n]\n");
+        booleanClass.addMethodFromSource("writeOn: w\n[\n    w out: self toString\n]\n");
 
         setValue("Integer", integerClass);
         integerClass.addMethod("asChar", (fiber, args) -> fiber.setAccu(STCharacter.get((char) args[0].asInteger().getValue())));
@@ -252,7 +252,7 @@ public class World {
         integerClass.addMethod(">", (fiber, args) -> fiber.setAccu(STBoolean.get(args[0].asInteger().getValue() > args[1].asInteger().getValue())));
         integerClass.addMethod(">=", (fiber, args) -> fiber.setAccu(STBoolean.get(args[0].asInteger().getValue() >= args[1].asInteger().getValue())));
         integerClass.addMethodFromSource("to: upper do: block | v\n[\n    v := self.\n    [ v <= upper ] whileTrue: [\n        block value: v.\n        v := v + 1.\n    ].\n  ^ self\n]\n");
-        integerClass.addMethodFromSource("writeOn: w\n[\n    w << self toString\n]\n");
+        integerClass.addMethodFromSource("writeOn: w\n[\n    w out: self toString\n]\n");
 
         setValue("Character", characterClass);
         characterClass.addMethod("asInt", (fiber, args) -> fiber.setAccu(STInteger.get(args[0].asCharacter().getValue())));
@@ -370,7 +370,7 @@ public class World {
             args[0].asPort().onInput((STString line) -> fiber.restartWithValue(line));
             args[0].asPort().onSmalltalkInput((STString line) -> fiber.restartWithValue(line));
         });
-        portClass.addMethod("char<<", (fiber, args) -> {
+        portClass.addMethod("charOut:", (fiber, args) -> {
             args[0].asPort().write("" + args[1].asCharacter().getValue());
         });
         portClass.addMethod("edit:title:", (fiber, args) -> {

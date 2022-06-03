@@ -2,13 +2,13 @@ Character
 ---
 writeOn: w
 [
-    w char<< self
+    w charOut: self
 ]
 ---
 storeOn: w
 [
-    (self = $\s)  ifTrue: [ w << '$\\s'              ]
-                 ifFalse: [ w << '$' << self escaped ].
+    (self = $\s)  ifTrue: [ w out: '$\\s'                 ]
+                 ifFalse: [ w out: '$'; out: self escaped ].
 ]
 ---
 escaped

@@ -36,7 +36,7 @@ key: k value: v
 ---
 writeOn: w
 [
-    w << key
-      << ' -> '
-      << value.
+    w out: key;
+      out: ' -> ';
+      out: value.
 ]

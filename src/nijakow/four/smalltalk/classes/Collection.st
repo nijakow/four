@@ -11,9 +11,9 @@ isEmpty
 ---
 writeOn: w
 [
-    w << '#('.
-    self do: [ :v | w << v << ' ' ].
-    w << ')'.
+    w out: '#('.
+    self do: [ :v | w out: v; out: ' ' ].
+    w out: ')'.
 ]
 ---
 asArray

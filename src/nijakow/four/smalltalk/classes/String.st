@@ -2,14 +2,14 @@ String
 ---
 writeOn: w
 [
-    self do: [ :c | w << c ]
+    self do: [ :c | w out: c ]
 ]
 ---
 storeOn: w
 [
-    w << $'.
-    self do: [ :c | w << c escaped ].
-    w << $'.
+    w out: $'.
+    self do: [ :c | w out: c escaped ].
+    w out: $'.
 ]
 ---
 isWhitespace

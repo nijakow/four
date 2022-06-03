@@ -2,6 +2,6 @@ Symbol
 ---
 writeOn: w
 [
-    w      << $#
-      store<< self name
+    w out: $#;
+      store: self name.
 ]
