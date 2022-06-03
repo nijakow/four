@@ -1,18 +1,12 @@
 OutputStream
 ---
-show: obj
-[
-    self out: obj.
-  ^ self
-]
----
-out: obj
+<< obj
 [
     obj writeOn: self.
   ^ self
 ]
 ---
-store: obj
+store<< obj
 [
     obj storeOn: self.
   ^ self
@@ -20,20 +14,20 @@ store: obj
 ---
 cr
 [
-    self out: $\n.
+    self << $\n.
 ]
 ---
 normal
 [
-    self out: '\{RESET\}'
+    self << '\{RESET\}'
 ]
 ---
 foreground: color
 [
-    self out: '\{FG_0x'; out: color toHex; out: $\}.
+    self << '\{FG_0x'; out: color toHex; out: $\}.
 ]
 ---
 background: color
 [
-    self out: '\{BG_0x'; out: color toHex; out: $\}.
+    self << '\{BG_0x'; out: color toHex; out: $\}.
 ]

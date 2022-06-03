@@ -34,9 +34,9 @@ key: k value: v
   ^ self
 ]
 ---
-storeOn: w
+writeOn: w
 [
-    w out: key;
-      out: ' -> ';
-      out: value.
+    w << key
+      << ' -> '
+      << value.
 ]

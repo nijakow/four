@@ -9,10 +9,10 @@ isEmpty
   ^ self size = 0
 ]
 ---
-storeOn: w
+writeOn: w
 [
-    w out: '#('.
-    self do: [ :v | w out: v; out: ' ' ].
+    w << '#('.
+    self do: [ :v | w << v << ' ' ].
     w out: ')'.
 ]
 ---

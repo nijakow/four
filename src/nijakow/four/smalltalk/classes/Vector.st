@@ -43,7 +43,7 @@ add: v
   ^ self
 ]
 ---
-removeIndex: index
+erase: index
 [
     index to: fill do: [ :v :i | self at: index put: (self at: index + 1) ].
     fill := fill - 1.
@@ -54,7 +54,7 @@ remove: element
 [
     1 to: fill do: [ :i |
         ((elements at: i) = element) ifTrue: [
-            self removeIndex: i.
+            self erase: i.
           ^ self
         ]
     ].
