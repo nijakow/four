@@ -40,7 +40,10 @@ run
          load: 'Association.st';
          load: 'Dictionary.st';
          load: 'Color.st';
+         load: 'InputStream.st';
          load: 'OutputStream.st';
+         load: 'PortInputStream.st';
+         load: 'PortOutputStream.st';
          load: 'IO.st';
          load: 'Shell.st'.
     self setupColors.

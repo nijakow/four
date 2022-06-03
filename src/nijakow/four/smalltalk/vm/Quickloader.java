@@ -33,8 +33,12 @@ public class Quickloader {
             }
         }
 
-        final String lastLine = builder.toString();
-        if (!lastLine.isEmpty() && clazz != null)
-            clazz.addMethodFromSource(lastLine);
+        if (builder.length() > 0) {
+            if (clazz == null) {
+                clazz = vm.runThisNow(builder.toString()).asClass();
+            } else {
+                clazz.addMethodFromSource(builder.toString());
+            }
+        }
     }
 }

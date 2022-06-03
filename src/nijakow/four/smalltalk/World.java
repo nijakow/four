@@ -161,7 +161,7 @@ public class World {
         metaClass.addMethod("subclass:", (fiber, args) -> {
             final STSymbol name = args[1].asSymbol();
             STClass clazz = args[0].asClass().subclass();
-            setValue(name, clazz);
+            fiber.getVM().getWorld().setValue(name, clazz);
             fiber.setAccu(clazz);
         });
         metaClass.addMethod("instanceVariables", (fiber, args) -> {
