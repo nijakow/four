@@ -41,6 +41,7 @@ run
          load: 'Dictionary.st';
          load: 'Color.st';
          load: 'OutputStream.st';
+         load: 'IO.st';
          load: 'Shell.st'.
     self setupColors.
 ]
