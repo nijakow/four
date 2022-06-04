@@ -7,6 +7,13 @@ init
     fill := 0.
 ]
 ---
+asArray | a
+[
+    a := (Array new: self size).
+    self do: [ :v :i | a at: i put: v ].
+  ^ a
+]
+---
 resizeTo: newsize | newelements
 [
     newelements := Array new: newsize.

@@ -4,6 +4,13 @@ init
 [
 ]
 ---
+asArray | v
+[
+    v := Vector new.
+    self do: [ :e | v add: e ].
+  ^ v asArray
+]
+---
 isEmpty
 [
   ^ self size = 0
@@ -14,11 +21,6 @@ writeOn: w
     w out: '#('.
     self do: [ :v | w store: v; out: ' ' ].
     w out: ')'.
-]
----
-asArray
-[
-  ^ (Array new: self size) takeFrom: self
 ]
 ---
 addTo: collection
