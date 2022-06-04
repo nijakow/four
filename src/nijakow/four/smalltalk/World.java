@@ -193,13 +193,10 @@ public class World {
             STArray result = new STArray(selectors);
             fiber.setAccu(result);
         });
-        metaClass.addMethodFromSource("writeOn: w\n[\n    Symbol instances do: [ :sym | (self = sym globalValue) ifTrue: [ w out: sym name. ^ self ] ].\n  super writeOn: w\n]\n");
         metaClass.addMethod("handle:do:", (fiber, args) -> {
             args[1].asClosure().execute(fiber, 0);
             fiber.top().setHandler(args[0].asClass(), args[2].asClosure());
         });
-        metaClass.addMethodFromSource("edit\n[\n    self addMethod: Transcript edit.\n]\n");
-        metaClass.addMethodFromSource("edit: name | text\n[\n    ((self method: name) = nil) ifTrue: [\n        text := (name name) + ' | \"Local variables\"\\n[\\n  ^ self\\n]\\n'.\n    ] ifFalse: [\n        text := (self method: name) source.\n    ].\n    text := (Transcript edit: text title: ('Method ' + (name name))).\n    (text = nil)  ifTrue: [ ^ self ].\n    (text isWhitespace) ifTrue: [ self removeMethod: name ]\n                  ifFalse: [ self addMethod: text ].\n  ^ self\n]\n");
 
         collectionClass = objectClass.subclass(this);
         sequenceableCollectionClass = collectionClass.subclass(this);
