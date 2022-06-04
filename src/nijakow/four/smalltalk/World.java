@@ -139,7 +139,7 @@ public class World {
         objectClass.addMethod("throw", (fiber, args) -> fiber.throwValue(args[0]));
         objectClass.addMethodFromSource("writeOn: w\n[\n    w out: 'instance of '; out: self class\n]\n");
 
-        metaClass = objectClass.subclass();
+        metaClass = objectClass.subclass(this);
         setValue("Class", metaClass);
         metaClass.addMethod("new", (fiber, args) -> {
             fiber.enter(args[0].asClass().instantiate(), "init", new STInstance[]{});
@@ -151,7 +151,7 @@ public class World {
             STInstance[] instances = STInstance.allInstancesOf(args[0].asClass(), fiber.getVM().getWorld());
             fiber.setAccu(new STArray(instances));
         });
-        metaClass.addMethod("parent", (fiber, args) -> {
+        metaClass.addMethod("superclass", (fiber, args) -> {
             STClass parent = args[0].asClass().getSuperClass();
             if (parent == null)
                 fiber.setAccu(STNil.get());
@@ -160,7 +160,7 @@ public class World {
         });
         metaClass.addMethod("subclass:", (fiber, args) -> {
             final STSymbol name = args[1].asSymbol();
-            STClass clazz = args[0].asClass().subclass();
+            STClass clazz = args[0].asClass().subclass(fiber.getVM().getWorld());
             fiber.getVM().getWorld().setValue(name, clazz);
             fiber.setAccu(clazz);
         });
@@ -185,8 +185,6 @@ public class World {
         metaClass.addMethod("removeMethod:", (fiber, args) -> {
             args[0].asClass().removeMethod(args[1].asSymbol());
         });
-        metaClass.addMethod("meta", (fiber, args) -> fiber.setAccu(args[0].asClass().getMeta()));
-        metaClass.addMethod("meta:", (fiber, args) -> args[0].asClass().setMeta(args[1]));
         metaClass.addMethod("selectors", (fiber, args) -> {
             STSymbol[] selectors = args[0].asClass().getSelectors();
             STArray result = new STArray(selectors);
@@ -200,23 +198,23 @@ public class World {
         metaClass.addMethodFromSource("edit\n[\n    self addMethod: Transcript edit.\n]\n");
         metaClass.addMethodFromSource("edit: name | text\n[\n    ((self method: name) = nil) ifTrue: [\n        text := (name name) + ' | \"Local variables\"\\n[\\n  ^ self\\n]\\n'.\n    ] ifFalse: [\n        text := (self method: name) source.\n    ].\n    text := (Transcript edit: text title: ('Method ' + (name asString))).\n    (text = nil)  ifTrue: [ ^ self ].\n    (text isWhitespace) ifTrue: [ self removeMethod: name ]\n                  ifFalse: [ self addMethod: text ].\n  ^ self\n]\n");
 
-        collectionClass = objectClass.subclass();
-        sequenceableCollectionClass = collectionClass.subclass();
-        arrayedCollectionClass = sequenceableCollectionClass.subclass();
-        outputStreamClass = objectClass.subclass();
-        nilClass = objectClass.subclass();
-        booleanClass = objectClass.subclass();
-        integerClass = objectClass.subclass();
-        characterClass = objectClass.subclass();
-        stringClass = arrayedCollectionClass.subclass();
-        symbolClass = objectClass.subclass();
-        arrayClass = arrayedCollectionClass.subclass();
-        closureClass = objectClass.subclass();
-        methodClass = objectClass.subclass();
-        compiledMethodClass = methodClass.subclass();
-        builtinMethodClass = methodClass.subclass();
-        portClass = outputStreamClass.subclass();
-        exceptionClass = objectClass.subclass();
+        collectionClass = objectClass.subclass(this);
+        sequenceableCollectionClass = collectionClass.subclass(this);
+        arrayedCollectionClass = sequenceableCollectionClass.subclass(this);
+        outputStreamClass = objectClass.subclass(this);
+        nilClass = objectClass.subclass(this);
+        booleanClass = objectClass.subclass(this);
+        integerClass = objectClass.subclass(this);
+        characterClass = objectClass.subclass(this);
+        stringClass = arrayedCollectionClass.subclass(this);
+        symbolClass = objectClass.subclass(this);
+        arrayClass = arrayedCollectionClass.subclass(this);
+        closureClass = objectClass.subclass(this);
+        methodClass = objectClass.subclass(this);
+        compiledMethodClass = methodClass.subclass(this);
+        builtinMethodClass = methodClass.subclass(this);
+        portClass = outputStreamClass.subclass(this);
+        exceptionClass = objectClass.subclass(this);
         foreignClass = new STClass();
 
         setValue("Collection", collectionClass);
@@ -394,7 +392,7 @@ public class World {
 
         setValue("Exception", exceptionClass);
 
-        STClass fourClass = objectClass.subclass();
+        STClass fourClass = objectClass.subclass(this);
         fourClass.addMethodFromSource("main\n[\n    '/nijakow/four/smalltalk/classes/Bootstrapper.st' openResource load.\n    Bootstrapper new run.\n]\n");
         fourClass.addMethodFromSource("newConnection: connection\n[\n    Transcript := connection.\n    (Shell new) run.\n]\n");
 

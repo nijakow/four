@@ -12,7 +12,7 @@ isEmpty
 writeOn: w
 [
     w out: '#('.
-    self do: [ :v | w out: v; out: ' ' ].
+    self do: [ :v | w store: v; out: ' ' ].
     w out: ')'.
 ]
 ---

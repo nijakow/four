@@ -19,6 +19,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class STClass extends STInstance {
+    private final STClass metaclass;
     private final STClass superclass;
     private STSymbol[] members;
     private final Map<STSymbol, STMethod> methods;
@@ -26,13 +27,17 @@ public class STClass extends STInstance {
     private Function<STInstance, STInstance> instantiator2;
     private STInstance meta;
 
-    private STClass(STClass superclass, STSymbol[] members) {
+    private STClass(STClass metaclass, STClass superclass, STSymbol[] members) {
+        this.metaclass = metaclass;
         this.superclass = superclass;
         this.members = members;
         this.methods = new HashMap<>();
         this.instantiator = () -> new STObject(this, getInstanceVariableCount());
         this.instantiator2 = (arg) -> STNil.get();
-        this.meta = STNil.get();
+    }
+
+    public STClass(STClass superclass, STSymbol[] members) {
+        this(null, superclass, members);
     }
 
     public STClass() {
@@ -64,12 +69,12 @@ public class STClass extends STInstance {
         this.instantiator2 = instantiator;
     }
 
-    public STClass subclass(STSymbol[] members) {
+    public STClass subclass(World world, STSymbol[] members) {
         return new STClass(this, members);
     }
 
-    public STClass subclass() {
-        return new STClass(this, new STSymbol[]{});
+    public STClass subclass(World world) {
+        return subclass(world, new STSymbol[]{});
     }
 
     private int getParentInstanceVariableCount() {
@@ -105,9 +110,6 @@ public class STClass extends STInstance {
          * TODO: Update all instances
          */
     }
-
-    public STInstance getMeta() { return this.meta; }
-    public void setMeta(STInstance meta) { this.meta = meta; }
 
 
     public STCompiler openCompiler() {
@@ -160,6 +162,8 @@ public class STClass extends STInstance {
 
     @Override
     public STClass getClass(World world) {
+        if (this.metaclass != null)
+            return this.metaclass;
         return world.getMetaClass();
     }
 
