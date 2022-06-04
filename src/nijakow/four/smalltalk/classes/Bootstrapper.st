@@ -21,6 +21,8 @@ run
          load: 'Class.st';
          load: 'Nil.st';
          load: 'Boolean.st';
+         load: 'Number.st';
+         load: 'IntegerLike.st';
          load: 'Integer.st';
          load: 'Character.st';
          load: 'String.st';

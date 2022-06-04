@@ -1,13 +1,6 @@
 Integer
 ---
-min: other
+writeOn: w
 [
-    (self < other)  ifTrue: [ ^ self  ]
-                   ifFalse: [ ^ other ]
-]
----
-max: other
-[
-    (self > other)  ifTrue: [ ^ self  ]
-                   ifFalse: [ ^ other ]
+    w out: self toString
 ]

@@ -42,6 +42,8 @@ public class World {
     private STClass sequenceableCollectionClass;
     private STClass arrayedCollectionClass;
     private STClass outputStreamClass;
+    private STClass numberClass;
+    private STClass integerLikeClass;
 
     public World() {
     }
@@ -203,10 +205,12 @@ public class World {
         sequenceableCollectionClass = collectionClass.subclass(this);
         arrayedCollectionClass = sequenceableCollectionClass.subclass(this);
         outputStreamClass = objectClass.subclass(this);
+        numberClass = objectClass.subclass(this);
+        integerLikeClass = numberClass.subclass(this);
         nilClass = objectClass.subclass(this);
         booleanClass = objectClass.subclass(this);
-        integerClass = objectClass.subclass(this);
-        characterClass = objectClass.subclass(this);
+        integerClass = integerLikeClass.subclass(this);
+        characterClass = integerLikeClass.subclass(this);
         stringClass = arrayedCollectionClass.subclass(this);
         symbolClass = objectClass.subclass(this);
         arrayClass = arrayedCollectionClass.subclass(this);
@@ -232,6 +236,8 @@ public class World {
         booleanClass.addMethod("|", (fiber, args) -> fiber.setAccu(STBoolean.get(args[0].isTrue() || args[1].isTrue())));
         booleanClass.addMethodFromSource("writeOn: w\n[\n    w out: self toString\n]\n");
 
+        setValue("Number", numberClass);
+        setValue("IntegerLike", integerLikeClass);
         setValue("Integer", integerClass);
         integerClass.addMethod("asChar", (fiber, args) -> fiber.setAccu(STCharacter.get((char) args[0].asInteger().getValue())));
         integerClass.addMethod("+", (fiber, args) -> fiber.setAccu(STInteger.get(args[0].asInteger().getValue() + args[1].asInteger().getValue())));
@@ -250,13 +256,13 @@ public class World {
         integerClass.addMethod("<=", (fiber, args) -> fiber.setAccu(STBoolean.get(args[0].asInteger().getValue() <= args[1].asInteger().getValue())));
         integerClass.addMethod(">", (fiber, args) -> fiber.setAccu(STBoolean.get(args[0].asInteger().getValue() > args[1].asInteger().getValue())));
         integerClass.addMethod(">=", (fiber, args) -> fiber.setAccu(STBoolean.get(args[0].asInteger().getValue() >= args[1].asInteger().getValue())));
-        integerClass.addMethodFromSource("to: upper do: block | v\n[\n    v := self.\n    [ v <= upper ] whileTrue: [\n        block value: v.\n        v := v + 1.\n    ].\n  ^ self\n]\n");
-        integerClass.addMethodFromSource("writeOn: w\n[\n    w out: self toString\n]\n");
 
         setValue("Character", characterClass);
         characterClass.addMethod("asInt", (fiber, args) -> fiber.setAccu(STInteger.get(args[0].asCharacter().getValue())));
         characterClass.addMethod("asString", (fiber, args) -> fiber.setAccu(new STString("" + args[0].asCharacter().getValue())));
         characterClass.addMethod("isWhitespace", (fiber, args) -> fiber.setAccu(STBoolean.get(Character.isWhitespace(args[0].asCharacter().getValue()))));
+        characterClass.addMethod("+", (fiber, args) -> fiber.setAccu(STCharacter.get((char) (args[0].asCharacter().getValue() + args[1].asInteger().getValue()))));
+        characterClass.addMethod("-", (fiber, args) -> fiber.setAccu(STCharacter.get((char) (args[0].asCharacter().getValue() - args[1].asInteger().getValue()))));
         characterClass.addMethod("<", (fiber, args) -> fiber.setAccu(STBoolean.get(args[0].asCharacter().getValue() < args[1].asCharacter().getValue())));
         characterClass.addMethod("<=", (fiber, args) -> fiber.setAccu(STBoolean.get(args[0].asCharacter().getValue() <= args[1].asCharacter().getValue())));
         characterClass.addMethod(">", (fiber, args) -> fiber.setAccu(STBoolean.get(args[0].asCharacter().getValue() > args[1].asCharacter().getValue())));
