@@ -139,7 +139,6 @@ public class World {
         objectClass.addMethod("=", (fiber, args) -> fiber.setAccu(STBoolean.get(args[0].is(args[1]))));
         objectClass.addMethod("!=", (fiber, args) -> fiber.setAccu(STBoolean.get(!args[0].is(args[1]))));
         objectClass.addMethod("throw", (fiber, args) -> fiber.throwValue(args[0]));
-        objectClass.addMethodFromSource("writeOn: w\n[\n    w out: 'instance of '; out: self class\n]\n");
 
         metaClass = objectClass.subclass(this);
         metaClass.setMetaClass(metaClass);
