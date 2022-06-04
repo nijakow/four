@@ -273,6 +273,10 @@ public class World {
         stringClass.addMethod("char+", (fiber, args) -> fiber.setAccu(new STString(args[0].asString().getValue() + args[1].asCharacter().getValue())));
         stringClass.addMethod("compile", (fiber, args) -> fiber.setAccu(new STClosure(args[0].asString().compile(), null)));
         stringClass.addMethod("asSymbol", (fiber, args) -> fiber.setAccu(STSymbol.get(args[0].asString().getValue())));
+        stringClass.addMethod("<", (fiber, args) -> fiber.setAccu(STBoolean.get(args[0].asString().getValue().compareTo(args[1].asString().getValue()) < 0)));
+        stringClass.addMethod("<=", (fiber, args) -> fiber.setAccu(STBoolean.get(args[0].asString().getValue().compareTo(args[1].asString().getValue()) <= 0)));
+        stringClass.addMethod(">", (fiber, args) -> fiber.setAccu(STBoolean.get(args[0].asString().getValue().compareTo(args[1].asString().getValue()) > 0)));
+        stringClass.addMethod(">=", (fiber, args) -> fiber.setAccu(STBoolean.get(args[0].asString().getValue().compareTo(args[1].asString().getValue()) >= 0)));
         stringClass.addMethod("load", (fiber, args) -> {
             final Quickloader quickloader = new Quickloader(new ByteArrayInputStream(args[0].asString().getValue().getBytes(StandardCharsets.UTF_8)));
             quickloader.loadInto(fiber.getVM(), fiber.getVM().getWorld());
