@@ -354,6 +354,7 @@ public class World {
         closureClass.addMethod("value:value:value:value:value:value:value:", valueBuiltin);
         closureClass.addMethodFromSource("whileTrue: body\n[\n    [\n        (self value) ifFalse: [ ^ self ].\n        body value.\n    ] repeat.\n]\n");
 
+        setValue("BuiltinMethod", builtinMethodClass);
         setValue("CompiledMethod", compiledMethodClass);
         compiledMethodClass.addMethod("holdingClass", (fiber, args) -> {
             STClass name = args[0].asCompiledMethod().getHoldingClass();
