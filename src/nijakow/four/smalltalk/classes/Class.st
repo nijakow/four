@@ -1,14 +1,20 @@
 Class
----
-writeOn: w
+<<<
+name
 [
     Symbol instances do: [ :sym |
         (self = sym globalValue) ifTrue: [
-            w out: sym name.
-          ^ self
+          ^ sym name
         ]
     ].
-    super writeOn: w
+  ^ nil
+]
+---
+methods | md
+[
+    md := Dictionary new.
+    self selectors do: [ :sel | md at: sel put: (self method: sel) ].
+  ^ md
 ]
 ---
 edit: name | text
@@ -23,4 +29,23 @@ edit: name | text
     (text isWhitespace) ifTrue: [ self removeMethod: name ]
                        ifFalse: [ self addMethod: text    ].
   ^ self
+]
+---
+writeOn: w | name
+[
+    name := self name.
+    (name != nil) ifTrue: [ w out: name. ^ self ].
+    w out: 'a class'.
+]
+---
+saveTo: w
+[
+    w out: self name; cr;
+      out: '<<<'.
+    self methods do: [ :m |
+        (m source != nil) ifTrue: [
+            w out: m source; cr;
+              out: '---'; cr.
+        ]
+    ].
 ]
