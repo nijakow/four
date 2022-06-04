@@ -1,6 +1,6 @@
 ArrayedCollection subclass: #Interval;
 instanceVariableNames: 'from to'
----
+<<<
 from: _from to: _to
 [
     from := _from.
@@ -15,7 +15,7 @@ species
 ---
 size
 [
-  ^ (from max: to) - (from min: to)
+  ^ (from max: to) asInt - (from min: to) asInt + 1
 ]
 ---
 at: index
@@ -26,4 +26,12 @@ at: index
 at: index put: value
 [
     self notImplementedError.
+]
+---
+
+Interval class
+<<<
+from: lower to: upper
+[
+  ^ (Interval new) from: lower to: upper
 ]

@@ -28,6 +28,9 @@ public class Quickloader {
                     }
                 }
                 builder = new StringBuilder();
+            } else if (line.startsWith("<<<")) {
+                clazz = vm.runThisNow(builder.toString()).asClass();
+                builder = new StringBuilder();
             } else {
                 builder.append(line + "\n");
             }

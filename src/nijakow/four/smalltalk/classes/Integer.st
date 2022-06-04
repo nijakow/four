@@ -1,4 +1,9 @@
 Integer
+<<<
+asInt
+[
+  ^ self
+]
 ---
 writeOn: w
 [

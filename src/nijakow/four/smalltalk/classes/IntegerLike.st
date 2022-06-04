@@ -1,4 +1,9 @@
 IntegerLike
+<<<
+to: upper
+[
+  ^ Interval from: self to: upper
+]
 ---
 to: upper do: block | v
 [
