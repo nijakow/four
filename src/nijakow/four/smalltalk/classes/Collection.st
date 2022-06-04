@@ -11,6 +11,11 @@ asArray | v
   ^ v asArray
 ]
 ---
+asString
+[
+  ^ self asArray asString
+]
+---
 isEmpty
 [
   ^ self size = 0

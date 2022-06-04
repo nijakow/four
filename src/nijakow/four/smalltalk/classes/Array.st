@@ -2,9 +2,7 @@ Array
 ---
 copy | a
 [
-    a := (self class) new: (self size).
-    self do: [ :v :i | a at: i put: v ].
-  ^ a
+  ^ self asArray
 ]
 ---
 destructivelySortBy: comparator | tmp runAgain

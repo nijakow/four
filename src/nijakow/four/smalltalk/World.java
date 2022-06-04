@@ -327,6 +327,13 @@ public class World {
         arrayClass.addMethod("size", (fiber, args) -> fiber.setAccu(STInteger.get(args[0].asArray().getSize())));
         arrayClass.addMethod("at:", (fiber, args) -> fiber.setAccu(args[0].asArray().get(args[1].asInteger().getValue() - 1)));
         arrayClass.addMethod("at:put:", (fiber, args) -> args[0].asArray().set(args[1].asInteger().getValue() - 1, args[2]));
+        arrayClass.addMethod("asString", (fiber, args) -> {
+            STArray array = args[0].asArray();
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < array.getSize(); i++)
+                sb.append(array.get(i).asCharacter().getValue());
+            fiber.setAccu(new STString(sb.toString()));
+        });
 
         setValue("Method", methodClass);
         Builtin valueBuiltin = (fiber, args) -> {
