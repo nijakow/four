@@ -41,6 +41,7 @@ run
          load: 'Set.st';
          load: 'Association.st';
          load: 'Dictionary.st';
+         load: 'Interval.st';
          load: 'Color.st';
          load: 'InputStream.st';
          load: 'OutputStream.st';
