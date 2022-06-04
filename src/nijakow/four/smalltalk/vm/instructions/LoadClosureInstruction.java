@@ -11,6 +11,11 @@ public class LoadClosureInstruction extends VMInstruction {
     }
 
     @Override
+    public String toString() {
+        return "LOAD_CLOSURE";
+    }
+
+    @Override
     public VMInstruction run(Fiber fiber) {
         fiber.loadClosure(method);
         return getNext();

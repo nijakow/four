@@ -13,6 +13,11 @@ public class VMJumpIfNotInstruction extends VMInstruction {
     }
 
     @Override
+    public String toString() {
+        return "JUMP_IF_NOT -> " + target;
+    }
+
+    @Override
     public VMInstruction run(Fiber fiber) {
         if (!fiber.getAccu().isTrue())
             return target;

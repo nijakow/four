@@ -11,6 +11,11 @@ public class LoadGlobalInstruction extends VMInstruction {
     }
 
     @Override
+    public String toString() {
+        return "LOAD_GLOBAL " + symbol;
+    }
+
+    @Override
     public VMInstruction run(Fiber fiber) {
         fiber.loadGlobal(this.symbol);
         return getNext();

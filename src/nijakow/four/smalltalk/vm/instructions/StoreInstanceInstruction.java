@@ -13,6 +13,11 @@ public class StoreInstanceInstruction extends VMInstruction {
     }
 
     @Override
+    public String toString() {
+        return "STORE_INSTANCE " + offset;
+    }
+
+    @Override
     public VMInstruction run(Fiber fiber) throws FourException {
         STInstance value = fiber.getAccu();
         fiber.loadSelf();

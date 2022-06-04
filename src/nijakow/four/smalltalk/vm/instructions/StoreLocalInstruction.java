@@ -12,6 +12,11 @@ public class StoreLocalInstruction extends VMInstruction {
     }
 
     @Override
+    public String toString() {
+        return "STORE_LOCAL " + depth + ", " + offset;
+    }
+
+    @Override
     public VMInstruction run(Fiber fiber) {
         fiber.storeVariable(depth, offset);
         return getNext();

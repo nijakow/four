@@ -11,6 +11,11 @@ public class StoreGlobalInstruction extends VMInstruction {
     }
 
     @Override
+    public String toString() {
+        return "STORE_GLOBAL " + symbol;
+    }
+
+    @Override
     public VMInstruction run(Fiber fiber) {
         fiber.storeGlobal(this.symbol);
         return getNext();

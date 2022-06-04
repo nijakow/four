@@ -14,6 +14,11 @@ public class SendInstruction extends VMInstruction {
     }
 
     @Override
+    public String toString() {
+        return "SEND " + message + ", " + args;
+    }
+
+    @Override
     public VMInstruction run(Fiber fiber) throws FourException {
         fiber.send(this.message, this.args);
         return getNext();

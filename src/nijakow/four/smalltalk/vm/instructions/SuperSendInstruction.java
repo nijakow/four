@@ -14,6 +14,11 @@ public class SuperSendInstruction extends VMInstruction {
     }
 
     @Override
+    public String toString() {
+        return "SUPER " + message + ", " + args;
+    }
+
+    @Override
     public VMInstruction run(Fiber fiber) throws FourException {
         fiber.superSend(this.message, this.args);
         return getNext();

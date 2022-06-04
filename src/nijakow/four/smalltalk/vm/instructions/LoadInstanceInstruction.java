@@ -11,6 +11,11 @@ public class LoadInstanceInstruction extends VMInstruction {
     }
 
     @Override
+    public String toString() {
+        return "LOAD_INSTANCE " + offset;
+    }
+
+    @Override
     public VMInstruction run(Fiber fiber) throws FourException {
         fiber.setAccu(fiber.getSelf().asObject().get(offset));
         return getNext();

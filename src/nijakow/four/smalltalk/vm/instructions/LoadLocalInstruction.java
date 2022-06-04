@@ -12,6 +12,11 @@ public class LoadLocalInstruction extends VMInstruction {
     }
 
     @Override
+    public String toString() {
+        return "LOAD_LOCAL " + depth + ", " + offset;
+    }
+
+    @Override
     public VMInstruction run(Fiber fiber) {
         fiber.loadVariable(depth, offset);
         return getNext();

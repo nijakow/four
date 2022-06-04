@@ -11,6 +11,11 @@ public class LoadConstantInstruction extends VMInstruction {
     }
 
     @Override
+    public String toString() {
+        return "LOAD_CONSTANT " + value;
+    }
+
+    @Override
     public VMInstruction run(Fiber fiber) {
         fiber.setAccu(this.value);
         return getNext();

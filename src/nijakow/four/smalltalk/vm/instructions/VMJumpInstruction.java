@@ -13,6 +13,11 @@ public class VMJumpInstruction extends VMInstruction {
     }
 
     @Override
+    public String toString() {
+        return "JUMP -> " + target;
+    }
+
+    @Override
     public VMInstruction run(Fiber fiber) {
         return target;
     }
