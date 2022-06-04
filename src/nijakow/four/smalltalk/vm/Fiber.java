@@ -1,5 +1,6 @@
 package nijakow.four.smalltalk.vm;
 
+import nijakow.four.server.Four;
 import nijakow.four.smalltalk.SmalltalkVM;
 import nijakow.four.smalltalk.objects.*;
 import nijakow.four.smalltalk.objects.method.STCompiledMethod;
@@ -261,10 +262,11 @@ public class Fiber {
         }
     }
 
-    public void throwValue(STInstance value) {
+    public void throwValue(STInstance value) throws FourException {
         if (!callHandler(value)) {
             setAccu(value);
             halt();
+            throw new FourException("Uncaught thrown value: " + value);
         }
     }
 }
