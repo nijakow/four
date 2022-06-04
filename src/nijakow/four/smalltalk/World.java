@@ -375,6 +375,12 @@ public class World {
             args[0].asPort().onInput((STString line) -> fiber.restartWithValue(line));
             args[0].asPort().onSmalltalkInput((STString line) -> fiber.restartWithValue(line));
         });
+        portClass.addMethod("smalltalk:text:", (fiber, args) -> {
+            fiber.pause();
+            args[0].asPort().smalltalk(((STString) args[1]).getValue(), ((STString) args[2]).getValue());
+            args[0].asPort().onInput((STString line) -> fiber.restartWithValue(line));
+            args[0].asPort().onSmalltalkInput((STString line) -> fiber.restartWithValue(line));
+        });
         portClass.addMethod("charOut:", (fiber, args) -> {
             args[0].asPort().write("" + args[1].asCharacter().getValue());
         });

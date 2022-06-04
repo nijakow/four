@@ -68,6 +68,10 @@ public class STPort extends STInstance {
         writeEscaped("prompt/smalltalk", prompt);
     }
 
+    public void smalltalk(String prompt, String text) {
+        writeEscaped("prompt/smalltalk", prompt, text);
+    }
+
     public void edit(String title, String text, Consumer<STString> consumer) {
         final String key = generateKey();
         keys.put(key, (string) -> {

@@ -654,7 +654,13 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 		smalltalk.setVisible(true);
 		smalltalk.requestFocusInWindow();
 		if (arg.length() > 0) {
-			promptText.setText(new String(Base64.getDecoder().decode(arg), StandardCharsets.UTF_8));
+			int i = arg.indexOf(Commands.Codes.SPECIAL_RAW);
+			if (i < 0)
+				promptText.setText(new String(Base64.getDecoder().decode(arg), StandardCharsets.UTF_8));
+			else {
+				promptText.setText(new String(Base64.getDecoder().decode(arg.substring(0, i)), StandardCharsets.UTF_8));
+				smalltalk.setText(new String(Base64.getDecoder().decode(arg.substring(i + 1)), StandardCharsets.UTF_8));
+			}
 		} else {
 			promptText.setText("");
 		}
