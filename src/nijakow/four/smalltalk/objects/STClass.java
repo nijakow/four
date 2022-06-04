@@ -19,13 +19,12 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class STClass extends STInstance {
-    private final STClass metaclass;
-    private final STClass superclass;
+    private STClass metaclass;
+    private STClass superclass;
     private STSymbol[] members;
     private final Map<STSymbol, STMethod> methods;
     private Supplier<STInstance> instantiator;
     private Function<STInstance, STInstance> instantiator2;
-    private STInstance meta;
 
     private STClass(STClass metaclass, STClass superclass, STSymbol[] members) {
         this.metaclass = metaclass;
@@ -53,6 +52,10 @@ public class STClass extends STInstance {
         return this.superclass;
     }
 
+    public void setMetaClass(STClass metaclass) {
+        this.metaclass = metaclass;
+    }
+
     public STInstance instantiate() {
         return instantiator.get();
     }
@@ -70,7 +73,7 @@ public class STClass extends STInstance {
     }
 
     public STClass subclass(World world, STSymbol[] members) {
-        return new STClass(this, members);
+        return new STClass(new STClass(getClass(world), new STSymbol[]{}), this, members);
     }
 
     public STClass subclass(World world) {

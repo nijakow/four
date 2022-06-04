@@ -140,6 +140,7 @@ public class World {
         objectClass.addMethodFromSource("writeOn: w\n[\n    w out: 'instance of '; out: self class\n]\n");
 
         metaClass = objectClass.subclass(this);
+        metaClass.setMetaClass(metaClass);
         setValue("Class", metaClass);
         metaClass.addMethod("new", (fiber, args) -> {
             fiber.enter(args[0].asClass().instantiate(), "init", new STInstance[]{});
