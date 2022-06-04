@@ -18,9 +18,9 @@ edit: name | text
     ] ifFalse: [
         text := (self method: name) source.
     ].
-    text := (Transcript edit: text title: ('Method ' + (name name))).
+    text := (Transcript smalltalk: ('Method ' + (name name) + ' > ') text: text).
     (text = nil) ifTrue: [ ^ self ].
     (text isWhitespace) ifTrue: [ self removeMethod: name ]
-                       ifFalse: [ self addMethod: text ].
+                       ifFalse: [ self addMethod: text    ].
   ^ self
 ]
