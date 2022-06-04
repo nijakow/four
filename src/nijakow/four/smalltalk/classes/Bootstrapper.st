@@ -45,8 +45,7 @@ run
          load: 'Color.st';
          load: 'InputStream.st';
          load: 'OutputStream.st';
-         load: 'PortInputStream.st';
-         load: 'PortOutputStream.st';
+         load: 'StringOutputStream.st';
          load: 'IO.st';
          load: 'Shell.st'.
     self setupColors.
