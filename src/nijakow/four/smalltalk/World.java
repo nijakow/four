@@ -394,6 +394,9 @@ public class World {
             args[0].asPort().onInput((STString line) -> fiber.restartWithValue(line));
             args[0].asPort().onSmalltalkInput((STString line) -> fiber.restartWithValue(line));
         });
+        portClass.addMethod("image:width:height:", (fiber, args) -> {
+            args[0].asPort().image(((STString) args[1]).getValue(), ((STInteger) args[2]).getValue(), ((STInteger) args[3]).getValue());
+        });
         portClass.addMethod("charOut:", (fiber, args) -> {
             args[0].asPort().write("" + args[1].asCharacter().getValue());
         });

@@ -47,6 +47,7 @@ run
          load: 'OutputStream.st';
          load: 'StringOutputStream.st';
          load: 'IO.st';
+         load: 'Image.st';
          load: 'TestCase.st';
          load: 'TestResult.st';
          load: 'TestSuite.st';

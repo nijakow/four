@@ -94,6 +94,10 @@ public class STPort extends STInstance {
         writeEscaped("file/download", key);
     }
 
+    public void image(String url, int width, int height) {
+        writeEscaped("media/image", ((width < 0) ? "?" : width) + "x" + ((height < 0) ? "?" : height) + "," + url);
+    }
+
     private void processEscaped(String[] message) {
         switch (message[0])
         {
