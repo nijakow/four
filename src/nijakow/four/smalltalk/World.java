@@ -193,6 +193,8 @@ public class World {
             fiber.setAccu(result);
         });
         metaClass.addMethod("handle:do:", (fiber, args) -> {
+            fiber.loadSelf();
+            fiber.push();
             args[1].asClosure().execute(fiber, 0);
             fiber.top().setHandler(args[0].asClass(), args[2].asClosure());
         });

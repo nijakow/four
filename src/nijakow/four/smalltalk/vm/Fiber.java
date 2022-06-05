@@ -178,12 +178,12 @@ public class Fiber {
 
     public void lexicalReturn() {
         Context context = top().getLexical();
-        sp = top().getBase();
         while (context != null) {
             popContext();
             if (top() == context)
                 context = context.getLexical();
         }
+        sp = top().getBase();
         top = top().getParent();
         maybeHalt();
     }

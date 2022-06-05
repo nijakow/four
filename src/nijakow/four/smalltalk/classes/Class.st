@@ -41,10 +41,10 @@ writeOn: w | name
 saveTo: w
 [
     w out: self name; cr;
-      out: '<<<'.
+      out: '<<<'; cr.
     self methods do: [ :m |
-        (m source != nil) ifTrue: [
-            w out: m source; cr;
+        (m isKindOf: CompiledMethod) ifTrue: [
+            w out: m source; cr; cr;
               out: '---'; cr.
         ]
     ].
