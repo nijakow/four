@@ -17,3 +17,13 @@ charOut: c
     chars add: c.
   ^ self
 ]
+---
+clear
+[
+    chars clear.
+]
+---
+isEmpty
+[
+  ^ chars isEmpty
+]

@@ -67,3 +67,9 @@ remove: element
     ].
   ^ self
 ]
+---
+clear
+[
+    fill := 0.
+  ^ self
+]
