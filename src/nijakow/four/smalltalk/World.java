@@ -368,6 +368,7 @@ public class World {
             STSymbol name = args[0].asCompiledMethod().getName();
             fiber.setAccu(name == null ? STNil.get() : name);
         });
+        compiledMethodClass.addMethod("doc", (fiber, args) -> fiber.setAccu(new STString(args[0].asCompiledMethod().getDocumentar())));
         compiledMethodClass.addMethod("source", (fiber, args) -> fiber.setAccu(new STString(args[0].asCompiledMethod().getSource())));
 
         setValue("Port", portClass);

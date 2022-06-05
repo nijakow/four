@@ -127,7 +127,7 @@ public class STClass extends STInstance {
         STSymbol name = ast.getName();
         STCompiler compiler = openCompiler();
         ast.compile(compiler);
-        STCompiledMethod method = compiler.finish(name, source);
+        STCompiledMethod method = compiler.finish(name, ast.getDocumentar(), source);
         methods.put(name, method);
     }
 

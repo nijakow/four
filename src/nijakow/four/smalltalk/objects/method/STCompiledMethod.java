@@ -15,27 +15,29 @@ public class STCompiledMethod extends STInstance implements STMethod {
     private final VMInstruction instructions;
     private final int args;
     private final int locals;
+    private final String documentar;
     private final String source;
 
-    public STCompiledMethod(STClass clazz, STSymbol name, int args, int locals, VMInstruction first, String source) {
+    public STCompiledMethod(STClass clazz, STSymbol name, int args, int locals, VMInstruction first, String documentar, String source) {
         this.clazz = clazz;
         this.name = name;
         this.instructions = first;
         this.args = args;
         this.locals = locals;
+        this.documentar = documentar;
         this.source = source;
     }
 
-    public STCompiledMethod(STClass clazz, STSymbol name, int args, int locals, VMInstruction first) {
-        this(clazz, name, args, locals, first, null);
+    public STCompiledMethod(STClass clazz, STSymbol name, int args, int locals, VMInstruction first, String documentar) {
+        this(clazz, name, args, locals, first, documentar, null);
     }
 
-    public STCompiledMethod(int args, int locals, VMInstruction first, String source) {
-        this(null, null, args, locals, first, source);
+    public STCompiledMethod(int args, int locals, VMInstruction first, String documentar, String source) {
+        this(null, null, args, locals, first, documentar, source);
     }
 
-    public STCompiledMethod(int args, int locals, VMInstruction first) {
-        this(null, null, args, locals, first, null);
+    public STCompiledMethod(int args, int locals, VMInstruction first, String documentar) {
+        this(null, null, args, locals, first, documentar);
     }
 
     @Override
@@ -67,6 +69,10 @@ public class STCompiledMethod extends STInstance implements STMethod {
     public STSymbol getName() { return this.name; }
 
     public STClass getHoldingClass() { return this.clazz; }
+
+    public String getDocumentar() {
+        return this.documentar == null ? "" : this.documentar;
+    }
 
     public String getSource() {
         return this.source == null ? "" : this.source;

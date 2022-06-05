@@ -18,7 +18,7 @@ public class BlockAST extends ExprAST {
         for (STSymbol arg : args)
             compiler.addArg(arg);
         body.compile(compiler);
-        return compiler.finish(null);
+        return compiler.finish(null, null);
     }
 
     @Override

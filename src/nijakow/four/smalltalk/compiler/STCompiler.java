@@ -31,11 +31,11 @@ public class STCompiler {
     public void addLocal(STSymbol symbol) { locals.add(symbol); }
     public void addArg(STSymbol arg) { argCount++; addLocal(arg); }
 
-    public STCompiledMethod finish(STSymbol name, String source) {
-        return new STCompiledMethod(clazz, name, argCount, locals.size(), first, source);
+    public STCompiledMethod finish(STSymbol name, String documentar, String source) {
+        return new STCompiledMethod(clazz, name, argCount, locals.size(), first, documentar, source);
     }
-    public STCompiledMethod finish(STSymbol name) {
-        return new STCompiledMethod(clazz, name, argCount, locals.size(), first);
+    public STCompiledMethod finish(STSymbol name, String documentar) {
+        return new STCompiledMethod(clazz, name, argCount, locals.size(), first, documentar);
     }
 
     private void addInstruction(VMInstruction instruction) {

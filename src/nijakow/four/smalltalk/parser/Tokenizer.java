@@ -69,7 +69,7 @@ public class Tokenizer {
         else if (stream.peeks("\"\"\"")) {
             /* Documentar */
             final String comment = readStringUntil("\"\"\"");
-            return enableComments ? new Token(TokenType.DOCUMENTAR, comment, this, start, stream.getPosition()) : nextToken();
+            return new Token(TokenType.DOCUMENTAR, comment, this, start, stream.getPosition());
         }
         else if (stream.peeks("\"")) {
             /* Comment */

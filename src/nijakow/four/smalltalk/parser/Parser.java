@@ -203,6 +203,11 @@ public class Parser {
     }
 
     public MethodAST parseMethod() throws ParseException {
+        String documentar = null;
+        if (is(TokenType.DOCUMENTAR)) {
+            documentar = (String) current().getPayload();
+            advance();
+        }
         Pair<STSymbol, STSymbol[]> head = parseSmalltalkArglist();
         List<STSymbol> locals = new ArrayList<>();
         if (check(TokenType.BAR)) {
@@ -212,7 +217,7 @@ public class Parser {
             }
         }
         expect(TokenType.LBRACK);
-        return new MethodAST(head.getFirst(), head.getSecond(), locals.toArray(new STSymbol[]{}), parseExpressionsUntil(TokenType.RBRACK));
+        return new MethodAST(head.getFirst(), head.getSecond(), locals.toArray(new STSymbol[]{}), parseExpressionsUntil(TokenType.RBRACK), documentar);
     }
 
     public CommandLineAST parseCL() throws ParseException {

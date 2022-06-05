@@ -18,6 +18,6 @@ public class CommandLineAST {
         for (STSymbol local : locals)
             compiler.addLocal(local);
         expr.compile(compiler);
-        return compiler.finish(null, source);
+        return compiler.finish(null, null, source);
     }
 }

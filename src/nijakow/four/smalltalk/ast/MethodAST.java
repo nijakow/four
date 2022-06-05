@@ -8,16 +8,22 @@ public class MethodAST {
     private final STSymbol[] args;
     private final STSymbol[] locals;
     private final ExprAST body;
+    private final String documentar;
 
-    public MethodAST(STSymbol name, STSymbol[] args, STSymbol[] locals, ExprAST body) {
+    public MethodAST(STSymbol name, STSymbol[] args, STSymbol[] locals, ExprAST body, String documentar) {
         this.args = args;
         this.name = name;
         this.locals = locals;
         this.body = body;
+        this.documentar = documentar;
     }
 
     public STSymbol getName() {
         return this.name;
+    }
+
+    public String getDocumentar() {
+        return this.documentar;
     }
 
     public void compile(STCompiler compiler) {
