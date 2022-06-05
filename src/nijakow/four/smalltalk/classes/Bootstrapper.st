@@ -47,6 +47,9 @@ run
          load: 'OutputStream.st';
          load: 'StringOutputStream.st';
          load: 'IO.st';
+         load: 'TestCase.st';
+         load: 'TestResult.st';
+         load: 'TestSuite.st';
          load: 'Shell.st'.
     self setupColors.
 ]
