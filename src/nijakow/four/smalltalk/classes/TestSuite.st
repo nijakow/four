@@ -32,7 +32,7 @@ run | result
 ---
 run: aResult
 [
-    self tests do: [ :each |
+    tests do: [ :each |
         each run: aResult
     ].
 ]

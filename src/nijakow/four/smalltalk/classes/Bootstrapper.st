@@ -50,6 +50,8 @@ run
          load: 'TestCase.st';
          load: 'TestResult.st';
          load: 'TestSuite.st';
+         load: 'testsuites/BasicTests.st';
+         load: 'testsuites/BasicTestSuite.st';
          load: 'Shell.st'.
     self setupColors.
 ]

@@ -18,3 +18,13 @@ succeeded
 [
   ^ failures isEmpty
 ]
+---
+writeOn: w
+[
+    (self succeeded) ifTrue: [
+        w out: 'a successful '.
+    ] ifFalse: [
+        w out: 'a failed '.
+    ].
+    super writeOn: w.
+]
