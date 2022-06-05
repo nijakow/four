@@ -44,7 +44,7 @@ saveTo: w
       out: '<<<'; cr.
     self methods do: [ :m |
         (m isKindOf: CompiledMethod) ifTrue: [
-            w out: m source; cr; cr;
+            w out: m source;
               out: '---'; cr.
         ]
     ].
