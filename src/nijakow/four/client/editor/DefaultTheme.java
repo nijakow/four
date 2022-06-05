@@ -49,6 +49,7 @@ public class DefaultTheme extends FTheme {
         controlWord.setForeground(new Color(0xaba003));
         addStyle(TokenType.SELF, controlWord);
         addStyle(TokenType.SUPER, new FStyle(TokenType.SUPER, controlWord));
+        addStyle(TokenType.PRIMITIVE, new FStyle(TokenType.PRIMITIVE, controlWord));
 
         FStyle id = new FStyle(TokenType.IDENTIFIER);
         id.setForeground(new Color(0xb30bbf));

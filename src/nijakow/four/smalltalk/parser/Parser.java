@@ -166,6 +166,12 @@ public class Parser {
     }
 
     private ExprAST parseExpression(int prio) throws ParseException {
+        if (is(TokenType.PRIMITIVE)) {
+            final STSymbol symbol = (STSymbol) current.getPayload();
+            advance();
+            return new BuiltinAST(symbol);
+        }
+
         ExprAST expr = parseSimpleExpression(prio);
         ExprAST next = null;
 

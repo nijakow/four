@@ -6,6 +6,7 @@ import nijakow.four.smalltalk.objects.*;
 import nijakow.four.smalltalk.objects.method.STMethod;
 import nijakow.four.smalltalk.parser.ParseException;
 import nijakow.four.smalltalk.vm.Builtin;
+import nijakow.four.smalltalk.vm.Fiber;
 import nijakow.four.smalltalk.vm.Quickloader;
 
 import java.io.BufferedReader;
@@ -17,6 +18,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Consumer;
 
 public class World {
     private final Map<STSymbol, STInstance> bindings = new HashMap<>();
@@ -421,5 +423,9 @@ public class World {
 
         STObject four = (STObject) fourClass.instantiate();
         setValue("Four", four);
+    }
+
+    public Consumer<Fiber> getBuiltinFor(STSymbol symbol) {
+        return null;
     }
 }

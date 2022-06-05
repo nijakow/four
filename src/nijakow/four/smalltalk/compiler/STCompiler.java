@@ -181,4 +181,8 @@ public class STCompiler {
     public STCompilerLabel openLabel() {
         return new STCompilerLabel(this);
     }
+
+    public void writeBuiltin(STSymbol builtin) {
+        addInstruction(new VMBuiltinInstruction(builtin));
+    }
 }

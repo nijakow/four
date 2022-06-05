@@ -76,6 +76,11 @@ public class Tokenizer {
             final String comment = readStringUntil("\"");
             return enableComments ? new Token(TokenType.COMMENT, comment, this, start, stream.getPosition()) : nextToken();
         }
+        else if (stream.peeks("<primitive:")) {
+            /* Primitive */
+            final String name = readStringUntil(">");
+            return new Token(TokenType.PRIMITIVE, STSymbol.get(name.trim()), this, start, stream.getPosition());
+        }
         else if (stream.peeks("$")) return new Token(TokenType.CHARACTER, STCharacter.get(readChar()), this, start, stream.getPosition());
         else if (stream.peeks("\'")) return new Token(TokenType.STRING, readStringUntil("\'"), this, start, stream.getPosition());
         else if (stream.peeks("#\'")) return new Token(TokenType.SYMBOL, STSymbol.get(readStringUntil("\'")), this, start, stream.getPosition());
