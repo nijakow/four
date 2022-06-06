@@ -24,7 +24,6 @@ public class STClass extends STInstance {
     private STSymbol[] members;
     private final Map<STSymbol, STMethod> methods;
     private Supplier<STInstance> instantiator;
-    private Function<STInstance, STInstance> instantiator2;
 
     private STClass(STClass metaclass, STClass superclass, STSymbol[] members) {
         this.metaclass = metaclass;
@@ -32,7 +31,6 @@ public class STClass extends STInstance {
         this.members = members;
         this.methods = new HashMap<>();
         this.instantiator = () -> new STObject(this, getInstanceVariableCount());
-        this.instantiator2 = (arg) -> STNil.get();
     }
 
     public STClass(STClass superclass, STSymbol[] members) {
@@ -62,14 +60,6 @@ public class STClass extends STInstance {
 
     public void setInstantiator(Supplier<STInstance> instantiator) {
         this.instantiator = instantiator;
-    }
-
-    public STInstance instantiate(STInstance argument) {
-        return instantiator2.apply(argument);
-    }
-
-    public void setInstantiator2(Function<STInstance, STInstance> instantiator) {
-        this.instantiator2 = instantiator;
     }
 
     public STClass subclass(World world, STSymbol[] members) {

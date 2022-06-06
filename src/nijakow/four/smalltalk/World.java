@@ -5,6 +5,7 @@ import nijakow.four.smalltalk.net.MUDConnection;
 import nijakow.four.smalltalk.objects.*;
 import nijakow.four.smalltalk.objects.method.STMethod;
 import nijakow.four.smalltalk.parser.ParseException;
+import nijakow.four.smalltalk.vm.BasicBuiltin;
 import nijakow.four.smalltalk.vm.Builtin;
 import nijakow.four.smalltalk.vm.Fiber;
 import nijakow.four.smalltalk.vm.Quickloader;
@@ -23,6 +24,7 @@ import java.util.function.Consumer;
 public class World {
     private final Map<STSymbol, STInstance> bindings = new HashMap<>();
     private final Set<STSymbol> specialSymbols = new HashSet<>();
+    private final Map<STSymbol, BasicBuiltin> builtins = new HashMap<>();
 
     private STClass objectClass;
     private STClass metaClass;
@@ -147,9 +149,6 @@ public class World {
         setValue("Class", metaClass);
         metaClass.addMethod("new", (fiber, args) -> {
             fiber.enter(args[0].asClass().instantiate(), "init", new STInstance[]{});
-        });
-        metaClass.addMethod("new:", (fiber, args) -> {
-            fiber.enter(args[0].asClass().instantiate(args[1]), "init", new STInstance[]{});
         });
         metaClass.addMethod("instances", (fiber, args) -> {
             STInstance[] instances = STInstance.allInstancesOf(args[0].asClass(), fiber.getVM().getWorld());
@@ -327,7 +326,6 @@ public class World {
 
         setValue("Array", arrayClass);
         arrayClass.setInstantiator(() -> new STArray(0));
-        arrayClass.setInstantiator2((size) -> new STArray(((STInteger) size).getValue()));
         arrayClass.addMethod("size", (fiber, args) -> fiber.setAccu(STInteger.get(args[0].asArray().getSize())));
         arrayClass.addMethod("at:", (fiber, args) -> fiber.setAccu(args[0].asArray().get(args[1].asInteger().getValue() - 1)));
         arrayClass.addMethod("at:put:", (fiber, args) -> args[0].asArray().set(args[1].asInteger().getValue() - 1, args[2]));
@@ -428,9 +426,11 @@ public class World {
 
         STObject four = (STObject) fourClass.instantiate();
         setValue("Four", four);
+
+        builtins.put(STSymbol.get("newArray"), (fiber) -> fiber.setAccu(new STArray(fiber.getVariable(0).asInteger().asInteger().getValue())));
     }
 
-    public Consumer<Fiber> getBuiltinFor(STSymbol symbol) {
-        return null;
+    public BasicBuiltin getBuiltinFor(STSymbol symbol) {
+        return builtins.get(symbol);
     }
 }

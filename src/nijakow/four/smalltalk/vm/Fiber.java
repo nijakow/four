@@ -77,6 +77,10 @@ public class Fiber {
         stack.set(lexical(depth).getBase() + offset + 1, getAccu());
     }
 
+    public STInstance getVariable(int offset) {
+        return stack.get(top().getBase() + offset + 1);
+    }
+
     public void loadGlobal(STSymbol global) {
         if (getVM().getWorld().isSpecial(global))
             setAccu(fiberLocals.getOrDefault(global, STNil.get()));

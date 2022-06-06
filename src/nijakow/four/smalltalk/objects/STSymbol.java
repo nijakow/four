@@ -1,6 +1,7 @@
 package nijakow.four.smalltalk.objects;
 
 import nijakow.four.smalltalk.World;
+import nijakow.four.smalltalk.vm.BasicBuiltin;
 import nijakow.four.smalltalk.vm.Fiber;
 import nijakow.four.smalltalk.vm.FourException;
 import nijakow.four.smalltalk.vm.instructions.VMInstruction;
@@ -44,7 +45,7 @@ public class STSymbol extends STInstance {
         return world.getSymbolClass();
     }
 
-    public Consumer<Fiber> getBuiltin(World world) {
+    public BasicBuiltin getBuiltin(World world) {
         return world.getBuiltinFor(this);
     }
 }

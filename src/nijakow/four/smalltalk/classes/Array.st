@@ -28,3 +28,10 @@ sortBy: comparator
 [
   ^ self copy destructivelySortBy: comparator
 ]
+---
+Array class
+<<<
+new: size
+[
+  ^ <primitive:newArray>
+]

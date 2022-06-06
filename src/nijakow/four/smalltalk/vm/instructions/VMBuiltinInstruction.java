@@ -1,10 +1,9 @@
 package nijakow.four.smalltalk.vm.instructions;
 
 import nijakow.four.smalltalk.objects.STSymbol;
+import nijakow.four.smalltalk.vm.BasicBuiltin;
 import nijakow.four.smalltalk.vm.Fiber;
 import nijakow.four.smalltalk.vm.FourException;
-
-import java.util.function.Consumer;
 
 public class VMBuiltinInstruction extends VMInstruction {
     private final STSymbol builtin;
@@ -15,7 +14,7 @@ public class VMBuiltinInstruction extends VMInstruction {
 
     @Override
     public VMInstruction run(Fiber fiber) throws FourException {
-        Consumer<Fiber> b = builtin.getBuiltin(fiber.getVM().getWorld());
+        BasicBuiltin b = builtin.getBuiltin(fiber.getVM().getWorld());
         if (b == null)
             throw new FourException("Builtin not found: " + builtin);
         b.accept(fiber);
