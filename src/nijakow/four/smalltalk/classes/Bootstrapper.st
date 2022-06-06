@@ -53,6 +53,7 @@ run
          load: 'TestSuite.st';
          load: 'testsuites/BasicTests.st';
          load: 'testsuites/BasicTestSuite.st';
-         load: 'Shell.st'.
+         load: 'App.st';
+         load: 'apps/Shell.st'.
     self setupColors.
 ]
