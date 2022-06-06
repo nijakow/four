@@ -321,6 +321,7 @@ public class World {
 
         setValue("Symbol", symbolClass);
         symbolClass.addMethod("name", (fiber, args) -> fiber.setAccu(new STString(args[0].asSymbol().getName())));
+        symbolClass.addMethod("asString", (fiber, args) -> fiber.setAccu(new STString(args[0].asSymbol().getName())));
         symbolClass.addMethod("globalValue", (fiber, args) -> fiber.setAccu(fiber.getVM().getWorld().getValue(args[0].asSymbol())));
         symbolClass.addMethod("globalValue:", (fiber, args) -> fiber.getVM().getWorld().setValue(args[0].asSymbol(), args[1]));
 
