@@ -40,3 +40,10 @@ writeOn: w
       out: ' -> ';
       out: value.
 ]
+---
+Association class
+<<<
+key: k value: v
+[
+  ^ (self new) key: k value: v
+]

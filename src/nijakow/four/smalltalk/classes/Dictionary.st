@@ -38,3 +38,17 @@ at: key put: value
     vector add: ((Association new) key: key value: value).
   ^ self
 ]
+---
+keys | s
+[
+    s := Set new.
+    self do: [ :v :k | s add: k ].
+  ^ s
+]
+---
+values | s
+[
+    s := Set new.
+    self do: [ :v :k | s add: v ].
+  ^ s
+]

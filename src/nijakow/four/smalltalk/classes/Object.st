@@ -20,3 +20,8 @@ storeOn: w
 [
     w out: self
 ]
+---
+-> other
+[
+  ^ Association key: self value: other
+]
