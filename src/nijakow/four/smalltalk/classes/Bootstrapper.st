@@ -42,6 +42,7 @@ run
          load: 'collections/Association.st';
          load: 'collections/Dictionary.st';
          load: 'collections/Interval.st';
+         load: 'Exception.st';
          load: 'Color.st';
          load: 'InputStream.st';
          load: 'OutputStream.st';

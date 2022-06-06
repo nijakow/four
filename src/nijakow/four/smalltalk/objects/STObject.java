@@ -10,6 +10,8 @@ public class STObject extends STInstance {
     STObject(STClass clazz, int slotCount) {
         this.clazz = clazz;
         this.values = new STInstance[slotCount];
+        for (int x = 0; x < this.values.length; x++)
+            this.values[x] = STNil.get();
     }
 
     @Override

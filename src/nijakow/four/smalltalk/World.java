@@ -41,7 +41,6 @@ public class World {
     private STClass builtinMethodClass;
     private STClass portClass;
     private STClass foreignClass;
-    private STClass exceptionClass;
     private STClass collectionClass;
     private STClass sequenceableCollectionClass;
     private STClass arrayedCollectionClass;
@@ -218,7 +217,6 @@ public class World {
         compiledMethodClass = methodClass.subclass(this);
         builtinMethodClass = methodClass.subclass(this);
         portClass = outputStreamClass.subclass(this);
-        exceptionClass = objectClass.subclass(this);
         foreignClass = new STClass();
 
         setValue("Collection", collectionClass);
@@ -417,8 +415,6 @@ public class World {
         portClass.addMethod("close", (fiber, args) -> {
             args[0].asPort().close();
         });
-
-        setValue("Exception", exceptionClass);
 
         STClass fourClass = objectClass.subclass(this);
         fourClass.addMethodFromSource("main\n[\n    '/nijakow/four/smalltalk/classes/Bootstrapper.st' openResource load.\n    Bootstrapper new run.\n]\n");

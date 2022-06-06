@@ -117,13 +117,13 @@ public class STCompiler {
     }
 
     public void writeLoad(STSymbol symbol) {
-        int index = (this.clazz == null) ? -1 : this.clazz.getInstanceVariableIndex(symbol);
-        if (index >= 0)
-            writeLoadInstance(index);
+        Pair<Integer, Integer> result = find(symbol);
+        if (result != null)
+            writeLoadLocal(result.getFirst(), result.getSecond());
         else {
-            Pair<Integer, Integer> result = find(symbol);
-            if (result != null)
-                writeLoadLocal(result.getFirst(), result.getSecond());
+            int index = (this.clazz == null) ? -1 : this.clazz.getInstanceVariableIndex(symbol);
+            if (index >= 0)
+                writeLoadInstance(index);
             else {
                 /*
                  * Many Smalltalk users make the mistake of writing
@@ -142,13 +142,13 @@ public class STCompiler {
     }
 
     public void writeStore(STSymbol symbol) {
-        int index = (this.clazz == null) ? -1 : this.clazz.getInstanceVariableIndex(symbol);
-        if (index >= 0)
-            writeStoreInstance(index);
+        Pair<Integer, Integer> result = find(symbol);
+        if (result != null)
+            writeStoreLocal(result.getFirst(), result.getSecond());
         else {
-            Pair<Integer, Integer> result = find(symbol);
-            if (result != null)
-                writeStoreLocal(result.getFirst(), result.getSecond());
+            int index = (this.clazz == null) ? -1 : this.clazz.getInstanceVariableIndex(symbol);
+            if (index >= 0)
+                writeStoreInstance(index);
             else {
                 /*
                  * Many Smalltalk users make the mistake of writing
