@@ -850,6 +850,7 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 			prompt.setText(" Connection closed. ");
 			prompt.setEnabled(false);
 			pwf.setVisible(false);
+			smalltalk.setVisible(false);
 			prompt.setVisible(true);
 			pwf.setEnabled(false);
 			reconnectButton.setVisible(true);
