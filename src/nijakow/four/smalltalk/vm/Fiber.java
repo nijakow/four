@@ -163,7 +163,7 @@ public class Fiber {
             pause();
             instance.asForeign().sendSuper(message, arguments, (result) -> restartWithValue(result));
         } else {
-            STMethod m = instance.getInstanceSuperMethod(this.getVM().getWorld(), message);
+            STMethod m = top().getMethod().getHoldingClass().getSuperClass().findMethod(message);
             if (m == null)
                 throw new FourException("Method not found: " + message + "!");
             m.execute(this, args, null);

@@ -3,7 +3,7 @@ instanceVariableNames: 'entries'
 <<<
 init
 [
-    "TODO: super init."
+    super init.
     entries := Vector new.
 ]
 ---
