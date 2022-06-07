@@ -35,8 +35,24 @@ split
   ^ self splitOn: [ :c | c isWhitespace ]
 ]
 ---
+trim
+[
+    "TODO"
+  ^ self
+]
+---
+parseUInt | v
+[
+    v := 0.
+    self do: [ :c |
+        (c isDigit) ifFalse: [ ^ nil ].
+        v := (v * 10) + (c digitValue).
+    ].
+  ^ v
+]
+---
 parseInt
 [
     "TODO"
-  ^ nil
+  ^ self parseUInt
 ]
