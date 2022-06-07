@@ -89,7 +89,8 @@ public class FDocument extends DefaultStyledDocument {
         if (highlighting) {
             String finalStr = str;
             int finalOffs = offs;
-            threads.execute(() -> updateSyntaxHighlighting2(finalOffs, finalStr.length(), text));
+//            threads.execute(() -> updateSyntaxHighlighting2(finalOffs, finalStr.length(), text));
+            threads.execute(() -> updateSyntaxHighlighting2(0, getLength(), ""));
         }
     }
 
@@ -103,11 +104,13 @@ public class FDocument extends DefaultStyledDocument {
             len = lineEnd - lineStart;
             offs = lineStart;
         }
-        final String oldText = getText(0, getLength());
+//        final String oldText = getText(0, getLength());
         super.remove(offs, len);
+        final String txt = getText(0, getLength());
         if (highlighting) {
             int finalOffs = offs;
-            threads.execute(() -> updateSyntaxHighlighting2(finalOffs, 0, oldText));
+            threads.execute(() -> updateSyntaxHighlighting2(0, getLength(), txt));
+            //threads.execute(() -> updateSyntaxHighlighting2(finalOffs, 0, oldText));
         }
     }
 
@@ -211,10 +214,13 @@ public class FDocument extends DefaultStyledDocument {
     }
 
     private void updateSyntaxHighlighting2(int offset, int length, final String oldText) {
+        nijakow.four.smalltalk.parser.Token token = null;
+        int pos = 0, lineStart = 0, lineEnd = 0;
+        String line = null;
         try {
             final String text = getText(0, getLength());
-            int lineStart = getLineStart(offset);
-            int lineEnd = getLineEnd(offset + length);
+            lineStart = getLineStart(offset);
+            lineEnd = getLineEnd(offset + length);
             final int oldLineEnd = oldText.length() - text.length() + lineEnd;
             final boolean first = isInsideComment(lineStart);
             final boolean second = isInsideComment(lineEnd);
@@ -228,15 +234,14 @@ public class FDocument extends DefaultStyledDocument {
                 final int bco = text.indexOf("*/", lineEnd);
                 lineEnd = bco == -1 ? text.length() : bco + 2;
             }
-            String line = text.substring(lineStart, lineEnd);
+            line = text.substring(lineStart, lineEnd);
             nijakow.four.smalltalk.parser.Tokenizer tokenizer = new nijakow.four.smalltalk.parser.Tokenizer(new StringCharacterStream(line));
             tokenizer.enableCommentTokens();
-            nijakow.four.smalltalk.parser.Token token;
             do {
                 token = tokenizer.nextToken();
                 Style style = theme.getStyle(token.getType()) == null ? def : theme.getStyle(token.getType()).asStyle(def);
                 if (style == null) style = def;
-                int pos = token.getPosition().getIndex() + lineStart;
+                pos = token.getPosition().getIndex() + lineStart;
                 try {
                     setCharacterAttributes(pos, (token.getEndPosition().getIndex() + lineStart) - pos, style, true);
                 } catch (ArrayIndexOutOfBoundsException e) {
@@ -257,7 +262,23 @@ public class FDocument extends DefaultStyledDocument {
             } while (token.getType() != nijakow.four.smalltalk.parser.TokenType.EOF);
         } catch (Exception e) {
             // TODO Handle this gracefully
+            System.err.println();
+            System.err.println("-------------------");
+            System.err.println("Token type: " + token.getType());
+            System.err.println("Token start: " + token.getPosition().getIndex());
+            System.err.println("Token end: " + token.getEndPosition().getIndex());
+            System.err.println("Line start: " + lineStart);
+            System.err.println("Pos: " + pos);
+            System.err.println("Line: '" + line + "'");
+            try {
+                System.err.println("Full text: '" + getText(0, getLength()) + "'");
+            } catch (BadLocationException ex) {
+                throw new RuntimeException(ex);
+            }
+            System.err.println("Full length: " + getLength());
+            System.err.println();
             e.printStackTrace();
+            System.err.println("-------------------");
         }
     }
 }
