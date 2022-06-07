@@ -26,3 +26,8 @@ max: other
     (self > other)  ifTrue: [ ^ self  ]
                    ifFalse: [ ^ other ]
 ]
+---
+between: lower and: upper
+[
+  ^ [ self >= lower ] and: [ self <= upper ]
+]

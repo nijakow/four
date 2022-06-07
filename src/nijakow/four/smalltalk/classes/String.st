@@ -34,3 +34,9 @@ split
 [
   ^ self splitOn: [ :c | c isWhitespace ]
 ]
+---
+parseInt
+[
+    "TODO"
+  ^ nil
+]
