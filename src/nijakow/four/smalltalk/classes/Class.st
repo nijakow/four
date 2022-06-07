@@ -2,13 +2,11 @@ Class
 <<<
 name | glv
 [
-    Symbol instances do: [ :sym |
-        glv := sym globalValue.
+    Symbol boundInstancesDo: [ :sym :glv |
         (self = glv) ifTrue: [ ^ sym asString ].
     ].
-    Symbol instances do: [ :sym |
-        glv := sym globalValue.
-        ([ glv isKindOf: Class ] and: [ self = glv class ]) ifTrue: [ ^ sym asString + ' class' ].
+    Symbol boundInstancesDo: [ :sym :glv |
+        (self = glv class) ifTrue: [ ^ sym asString + ' class' ].
     ].
   ^ nil
 ]
