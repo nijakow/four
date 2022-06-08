@@ -1,10 +1,5 @@
 Object
 <<<
-init
-[
-  ^ self
-]
----
 value [ ^ self ]
 ---
 value: v1 [ self value ]
@@ -14,6 +9,47 @@ value: v1 value: v2 [ self value: v1 ]
 value: v1 value: v2 value: v3 [ self value: v1 value: v2 ]
 ---
 value: v1 value: v2 value: v3 value: v4 [ self value: v1 value: v2 value: v3 ]
+---
+class
+[
+  ^ <primitive:class>
+]
+---
+isKindOf: class
+[
+  ^ <primitive:isKindOf>
+]
+---
+asBool
+[
+  ^ true
+]
+---
+not
+[
+    self  ifTrue: [ ^ false ]
+         ifFalse: [ ^ true  ]
+]
+---
+= other
+[
+  ^ <primitive:=>
+]
+---
+!= other
+[
+  ^ (self = other) not
+]
+---
+throw
+[
+    <primitive:throw>
+]
+---
+toString
+[
+  ^ <primitive:toString>
+]
 ---
 writeOn: w
 [

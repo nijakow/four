@@ -133,15 +133,14 @@ public class World {
 
         objectClass = new STClass();
         setValue("Object", objectClass);
-        objectClass.addMethodFromSource("init\n[\n]\n");
-        objectClass.addMethod("value", (fiber, args) -> fiber.setAccu(args[0]));
-        objectClass.addMethod("class", (fiber, args) -> fiber.setAccu(args[0].getClass(fiber.getVM().getWorld())));
-        objectClass.addMethod("isKindOf:", (fiber, args) -> fiber.setAccu(STBoolean.get(args[0].getClass(fiber.getVM().getWorld()).isSubclassOf(args[1].asClass()))));
-        objectClass.addMethod("asBool", (fiber, args) -> fiber.setAccu(STBoolean.get(args[0].isTrue())));
-        objectClass.addMethod("toString", (fiber, args) -> fiber.setAccu(new STString(args[0].toString())));
-        objectClass.addMethod("=", (fiber, args) -> fiber.setAccu(STBoolean.get(args[0].is(args[1]))));
-        objectClass.addMethod("!=", (fiber, args) -> fiber.setAccu(STBoolean.get(!args[0].is(args[1]))));
-        objectClass.addMethod("throw", (fiber, args) -> fiber.throwValue(args[0]));
+        objectClass.addMethodFromSource("init\n[\n  ^ self\n]\n");
+        //objectClass.addMethod("class", (fiber, args) -> fiber.setAccu(args[0].getClass(fiber.getVM().getWorld())));
+        //objectClass.addMethod("isKindOf:", (fiber, args) -> fiber.setAccu(STBoolean.get(args[0].getClass(fiber.getVM().getWorld()).isSubclassOf(args[1].asClass()))));
+        //objectClass.addMethod("asBool", (fiber, args) -> fiber.setAccu(STBoolean.get(args[0].isTrue())));
+        //objectClass.addMethod("toString", (fiber, args) -> fiber.setAccu(new STString(args[0].toString())));
+        //objectClass.addMethod("=", (fiber, args) -> fiber.setAccu(STBoolean.get(args[0].is(args[1]))));
+        //objectClass.addMethod("!=", (fiber, args) -> fiber.setAccu(STBoolean.get(!args[0].is(args[1]))));
+        //objectClass.addMethod("throw", (fiber, args) -> fiber.throwValue(args[0]));
 
         metaClass = objectClass.subclass(this);
         metaClass.setMetaClass(metaClass);
@@ -429,10 +428,19 @@ public class World {
         STObject four = (STObject) fourClass.instantiate();
         setValue("Four", four);
 
-        builtins.put(STSymbol.get("newArray"), (fiber) -> fiber.setAccu(new STArray(fiber.getVariable(0).asInteger().asInteger().getValue())));
+        addBuiltin("newArray", (fiber) -> fiber.setAccu(new STArray(fiber.getVariable(0).asInteger().asInteger().getValue())));
+        addBuiltin("class", (fiber) -> fiber.setAccu(fiber.getSelf().getClass(fiber.getVM().getWorld())));
+        addBuiltin("isKindOf", (fiber) -> fiber.setAccu(STBoolean.get(fiber.getSelf().getClass(fiber.getWorld()).isSubclassOf(fiber.getVariable(0).asClass()))));
+        addBuiltin("toString", (fiber) -> fiber.setAccu(new STString(fiber.getSelf().toString())));
+        addBuiltin("=", (fiber) -> fiber.setAccu(STBoolean.get(fiber.getSelf().is(fiber.getVariable(0)))));
+        addBuiltin("throw", (fiber) -> fiber.throwValue(fiber.getSelf()));
     }
 
     public BasicBuiltin getBuiltinFor(STSymbol symbol) {
         return builtins.get(symbol);
+    }
+
+    private void addBuiltin(String name, BasicBuiltin builtin) {
+        this.builtins.put(STSymbol.get(name), builtin);
     }
 }

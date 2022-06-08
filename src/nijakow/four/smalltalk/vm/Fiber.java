@@ -2,6 +2,7 @@ package nijakow.four.smalltalk.vm;
 
 import nijakow.four.server.Four;
 import nijakow.four.smalltalk.SmalltalkVM;
+import nijakow.four.smalltalk.World;
 import nijakow.four.smalltalk.objects.*;
 import nijakow.four.smalltalk.objects.method.STCompiledMethod;
 import nijakow.four.smalltalk.objects.method.STMethod;
@@ -28,6 +29,10 @@ public class Fiber {
 
     public SmalltalkVM getVM() {
         return this.vm;
+    }
+
+    public World getWorld() {
+        return getVM().getWorld();
     }
 
     public void onExit(Consumer<STInstance> callback) { this.terminationCallbacks.add(callback); }
