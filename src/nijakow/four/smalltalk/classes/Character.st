@@ -22,3 +22,13 @@ escaped
     (self = $\}) ifTrue: [ ^ '\\}' ].
   ^ self asString
 ]
+---
+isDigit
+[
+  ^ self between: $0 and: $9
+]
+---
+digitValue
+[
+  ^ self asInt - $0 asInt
+]

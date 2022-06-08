@@ -1,11 +1,12 @@
 Class
 <<<
-name
+name | glv
 [
-    Symbol instances do: [ :sym |
-        (self = sym globalValue) ifTrue: [
-          ^ sym name
-        ]
+    Symbol boundInstancesDo: [ :sym :glv |
+        (self = glv) ifTrue: [ ^ sym asString ].
+    ].
+    Symbol boundInstancesDo: [ :sym :glv |
+        (self = glv class) ifTrue: [ ^ sym asString + ' class' ].
     ].
   ^ nil
 ]
@@ -38,14 +39,31 @@ writeOn: w | name
     w out: 'a class'.
 ]
 ---
-saveTo: w
+saveTo: w | n
 [
-    w out: self name; cr;
-      out: '<<<'; cr.
-    self methods do: [ :m |
-        (m isKindOf: CompiledMethod) ifTrue: [
-            w out: m source;
-              out: '---'; cr.
-        ]
-    ].
+    n := self name.
+    (n != nil) ifTrue: [
+        w out: n; cr;
+          out: '<<<'; cr.
+        self methods do: [ :m |
+            (m isKindOf: CompiledMethod) ifTrue: [
+                w out: m source;
+                  out: '---'; cr.
+            ]
+        ].
+    ]
+]
+---
+Class class
+<<<
+allInstancesDo: aBlock
+[
+    self instances do: aBlock
+]
+---
+allNamedDo: aBlock
+[
+    self instances do: [ :i |
+        (i name != nil) ifTrue: [ aBlock value: i ]
+    ]
 ]

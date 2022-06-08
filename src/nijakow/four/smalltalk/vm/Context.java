@@ -30,6 +30,8 @@ public class Context {
         return lexical;
     }
 
+    public STCompiledMethod getMethod() { return this.method; }
+
     public int getBase() {
         return this.base;
     }

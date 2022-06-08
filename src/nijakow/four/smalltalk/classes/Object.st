@@ -1,5 +1,10 @@
 Object
 <<<
+init
+[
+  ^ self
+]
+---
 value [ ^ self ]
 ---
 value: v1 [ self value ]
