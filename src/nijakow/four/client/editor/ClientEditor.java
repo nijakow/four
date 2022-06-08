@@ -102,6 +102,9 @@ public class ClientEditor extends JPanel implements ActionListener {
 				stopSyntaxHighlighting();
 			}
 		});
+		if (PreferencesHelper.getInstance().getEditorAlwaysHighlight()) {
+			highlight.setSelected(true);
+		}
 		JPanel buttons = new JPanel();
 		buttons.setOpaque(false);
 		buttons.setLayout(new GridLayout(1, 3));
