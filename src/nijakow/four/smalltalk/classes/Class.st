@@ -21,7 +21,11 @@ methods | md
 edit: name | text
 [
     ((self method: name) = nil) ifTrue: [
-        text := (name name) + ' | "Local variables"\n[\n  ^ self\n]\n'.
+        (name = #init)  ifTrue: [
+            text := (name name) + ' | "Local variables"\n[\n    super init.\n  ^ self\n]\n'.
+        ] ifFalse: [
+            text := (name name) + ' | "Local variables"\n[\n  ^ self\n]\n'.
+        ].
     ] ifFalse: [
         text := (self method: name) source.
     ].
