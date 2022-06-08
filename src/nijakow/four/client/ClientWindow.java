@@ -21,7 +21,6 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Style;
-import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 
 import nijakow.four.client.editor.ClientEditor;
@@ -44,6 +43,8 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 	private final StyledDocument term;
 	private final List<ClientEditor> editors;
 	private final Style defaultStyle;
+	private final FStyle errorStyle;
+	private final FStyle inputStyle;
 	private int[] ports;
 	private int portCounter;
 	private String buffer;
@@ -125,6 +126,12 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 		FDocument o = new FDocument();
 		o.setAutoIndentingEnabled(true);
 		o.setHighlightingEnabled(true);
+		errorStyle = new FStyle();
+		errorStyle.setBold(true);
+		errorStyle.setItalic(true);
+		errorStyle.setForeground(Color.red);
+		inputStyle = new FStyle();
+		inputStyle.setForeground(Color.gray);
 		smalltalk.setDocument(o);
 		smalltalk.addFocusListener(new FocusListener() {
 			@Override
@@ -141,7 +148,7 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 								term.insertString(term.getLength(), "" + content.charAt(i), smalltalk.getCharacterAttributes());
 								if (content.charAt(i) == '\n') {
 									term.insertString(term.getLength(), StringHelper.generateFilledString(' ', length),
-											term.getStyle(Commands.Styles.STYLE_INPUT));
+											inputStyle.asStyle(defaultStyle));
 								}
 							}
 							term.insertString(term.getLength(), "\n", null);
@@ -219,7 +226,6 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 			public void changedUpdate(DocumentEvent e) {
 			}
 		});
-		addStyles();
 		pane = new JScrollPane();
 		pane.setOpaque(false);
 		setLineBreaking(prefs.getLineBreaking());
@@ -306,7 +312,7 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 			pwf.requestFocusInWindow();
 	}
 	
-	private void addStyles() {
+	/*private void addStyles() {
 		final Style def = area.getLogicalStyle();
 		Style s = term.addStyle(Commands.Styles.STYLE_ERROR, def);
 		StyleConstants.setBold(s, true);
@@ -314,7 +320,7 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 		StyleConstants.setForeground(s, Color.red);
 		s = term.addStyle(Commands.Styles.STYLE_INPUT, def);
 		StyleConstants.setForeground(s, Color.gray);
-	}
+	}*/
 
 	private void disposeEditors() {
 		for (ClientEditor ed : editors) {
@@ -634,7 +640,7 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 	private void showError(String text) {
 		EventQueue.invokeLater(() -> {
 			try {
-				term.insertString(term.getLength(), text, term.getStyle(Commands.Styles.STYLE_ERROR));
+				term.insertString(term.getLength(), text, errorStyle.asStyle(defaultStyle));
 			} catch (BadLocationException e1) {
 				e1.printStackTrace();
 			}
@@ -845,11 +851,10 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 				tmp.enableInputMethods(true);
 				try {
 					term.insertString(term.getLength(), promptText.getText(), null);
-					final Style s = term.getStyle(Commands.Styles.STYLE_INPUT);
 					if (tmp == prompt)
-						term.insertString(term.getLength(), text, s);
+						term.insertString(term.getLength(), text, inputStyle.asStyle(defaultStyle));
 					else
-						term.insertString(term.getLength(), StringHelper.generateFilledString('*', text.length() - 1) + "\n", s);
+						term.insertString(term.getLength(), StringHelper.generateFilledString('*', text.length() - 1) + "\n", inputStyle.asStyle(defaultStyle));
 				} catch (BadLocationException e1) {
 					e1.printStackTrace();
 				}

@@ -42,8 +42,6 @@ public abstract class Commands {
 
 	public abstract static class Styles {
 		public static final String STYLE_BOLD        = "BOLD";
-		public static final String STYLE_ERROR       = "error";
-		public static final String STYLE_INPUT       = "input";
 		public static final String STYLE_NORMAL      = "RESET";
 		public static final String STYLE_BG_RGB      = "BG_0x";
 		public static final String STYLE_FG_RGB      = "FG_0x";
