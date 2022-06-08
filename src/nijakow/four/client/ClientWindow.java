@@ -26,6 +26,7 @@ import javax.swing.text.StyledDocument;
 
 import nijakow.four.client.editor.ClientEditor;
 import nijakow.four.client.editor.FDocument;
+import nijakow.four.client.editor.FStyle;
 import nijakow.four.client.net.ClientConnection;
 import nijakow.four.client.net.ClientConnectionListener;
 import nijakow.four.client.utils.StringHelper;
@@ -42,6 +43,7 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 	private final JTextPane smalltalk;
 	private final StyledDocument term;
 	private final List<ClientEditor> editors;
+	private final Style defaultStyle;
 	private int[] ports;
 	private int portCounter;
 	private String buffer;
@@ -52,7 +54,7 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 	private boolean reconnect;
 	private boolean bother;
 	private boolean wasSpecial;
-	private Style current;
+	private FStyle current;
 	private ScheduledFuture<?> reconnectorHandler;
 	private final ScheduledExecutorService queue;
 	private final Runnable reconnector = () -> {
@@ -197,6 +199,8 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 		south.add(settings);
 		getContentPane().add(south, BorderLayout.SOUTH);
 		area = new JTextPane();
+		defaultStyle = area.getLogicalStyle();          // TODO: Default style should be adjustable.
+		current = new FStyle();
 		area.setEditable(false);
 		area.setCursor(new Cursor(Cursor.TEXT_CURSOR));
 		area.setFont(font);
@@ -398,9 +402,7 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 			setLineBreaking(prefs.getLineBreaking());
 		});
 		JCheckBox shiftForNewline = new JCheckBox("Accept Smalltalk messages with Enter");
-		shiftForNewline.addItemListener(event -> {
-			prefs.setShiftForNewline(shiftForNewline.isSelected());
-		});
+		shiftForNewline.addItemListener(event -> prefs.setShiftForNewline(shiftForNewline.isSelected()));
 		JCheckBox darkMode = new JCheckBox("Dark mode");
 		settingsWindow.getContentPane().add(darkMode);
 		settingsWindow.getContentPane().add(lineBreak);
@@ -496,76 +498,23 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 		settingsWindow.setLocationRelativeTo(this);
 		settingsWindow.setVisible(true);
 	}
-	
-	private Style getStyleByName(String style) {
-		Style ret = term.addStyle(style, current == null ? area.getLogicalStyle() : current);
+
+	private void alterCurrentStyleByName(String style) {
 		switch (style) {
-			case Commands.Styles.STYLE_NORMAL:
-				ret = null;
-				break;
-
-			case Commands.Styles.STYLE_BLUE:
-				StyleConstants.setForeground(ret, Color.blue);
-				break;
-
-			case Commands.Styles.STYLE_RED:
-				StyleConstants.setForeground(ret, Color.red);
-				break;
-
-			case Commands.Styles.STYLE_GREEN:
-				StyleConstants.setForeground(ret, Color.green);
-				break;
-
-			case Commands.Styles.STYLE_YELLOW:
-				StyleConstants.setForeground(ret, Color.yellow);
-				break;
-
-			case Commands.Styles.STYLE_BLACK:
-				StyleConstants.setForeground(ret, Color.black);
-				break;
-
-			case Commands.Styles.STYLE_ITALIC:
-				StyleConstants.setItalic(ret, true);
-				break;
-
-			case Commands.Styles.STYLE_BOLD:
-				StyleConstants.setBold(ret, true);
-				break;
-
-			case Commands.Styles.STYLE_UNDERSCORED:
-				StyleConstants.setUnderline(ret, true);
-				break;
-
-			case Commands.Styles.STYLE_BG_BLACK:
-				StyleConstants.setBackground(ret, Color.black);
-				break;
-
-			case Commands.Styles.STYLE_BG_BLUE:
-				StyleConstants.setBackground(ret, Color.blue);
-				break;
-
-			case Commands.Styles.STYLE_BG_GREEN:
-				StyleConstants.setBackground(ret, Color.green);
-				break;
-
-			case Commands.Styles.STYLE_BG_RED:
-				StyleConstants.setBackground(ret, Color.red);
-				break;
-
-			case Commands.Styles.STYLE_BG_YELLOW:
-				StyleConstants.setBackground(ret, Color.yellow);
-				break;
-
+			case Commands.Styles.STYLE_NORMAL:      current = new FStyle();             break;
+			case Commands.Styles.STYLE_ITALIC:      current.setItalic(true);            break;
+			case Commands.Styles.STYLE_BOLD:        current.setBold(true);              break;
+			case Commands.Styles.STYLE_UNDERSCORED: current.setUnderlined(true);        break;
 			default:
 				if (style.startsWith(Commands.Styles.STYLE_BG_RGB)) {
-					StyleConstants.setBackground(ret, new Color(Integer.parseUnsignedInt(
+					current.setBackground(new Color(Integer.parseUnsignedInt(
 							style.substring(Commands.Styles.STYLE_BG_RGB.length()), 16)));
 				} else if (style.startsWith(Commands.Styles.STYLE_FG_RGB)) {
-					StyleConstants.setForeground(ret, new Color(Integer.parseUnsignedInt(
+					current.setForeground(new Color(Integer.parseUnsignedInt(
 							style.substring(Commands.Styles.STYLE_FG_RGB.length()), 16)));
 				}
+				break;
 		}
-		return ret;
 	}
 
 	private void parsePromptPwd(String arg) {
@@ -614,7 +563,7 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 
 	private void parseImg(String arg) {
 		try {
-			term.insertString(term.getLength(), " ", current);
+			term.insertString(term.getLength(), " ", current.asStyle(defaultStyle));
 		} catch (BadLocationException e) {
 			e.printStackTrace();
 		}
@@ -670,16 +619,16 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 		int first = arg.indexOf(Commands.Codes.SPECIAL_RAW);
 		if (first >= 0) {
 			switch (arg.substring(0, first)) {
-				case Commands.Codes.SPECIAL_PWD: parsePromptPwd(arg.substring(first + 1)); break;
-				case Commands.Codes.SPECIAL_PROMPT: parsePrompt(arg.substring(first + 1)); break;
-				case Commands.Codes.SPECIAL_EDIT: parseEdit(arg.substring(first + 1)); break;
-				case Commands.Codes.SPECIAL_IMG: parseImg(arg); break;
-				case Commands.Codes.SPECIAL_UPLOAD: parseUpload(arg.substring(first + 1)); break;
-				case Commands.Codes.SPECIAL_DOWNLOAD: performUpload(arg.substring(first + 1)); break;
+				case Commands.Codes.SPECIAL_PWD:       parsePromptPwd(arg.substring(first + 1));       break;
+				case Commands.Codes.SPECIAL_PROMPT:    parsePrompt(arg.substring(first + 1));          break;
+				case Commands.Codes.SPECIAL_EDIT:      parseEdit(arg.substring(first + 1));            break;
+				case Commands.Codes.SPECIAL_IMG:       parseImg(arg);                                             break;
+				case Commands.Codes.SPECIAL_UPLOAD:    parseUpload(arg.substring(first + 1));          break;
+				case Commands.Codes.SPECIAL_DOWNLOAD:  performUpload(arg.substring(first + 1));        break;
 				case Commands.Codes.SPECIAL_SMALLTALK: parsePromptSmalltalk(arg.substring(first + 1)); break;
-				default: current = getStyleByName(arg); break;
+				default: alterCurrentStyleByName(arg); break;
 			}
-		} else current = getStyleByName(arg);
+		} else alterCurrentStyleByName(arg);
 	}
 
 	private void showError(String text) {
@@ -836,7 +785,7 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 					buffer = "";
 				}
 				else
-					term.insertString(term.getLength(), Character.toString(c), current);
+					term.insertString(term.getLength(), Character.toString(c), current.asStyle(defaultStyle));
 			} catch (BadLocationException e) {
 				e.printStackTrace();
 			}

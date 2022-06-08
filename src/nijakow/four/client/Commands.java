@@ -49,16 +49,6 @@ public abstract class Commands {
 		public static final String STYLE_FG_RGB      = "FG_0x";
 		public static final String STYLE_ITALIC      = "ITALIC";
 		public static final String STYLE_UNDERSCORED = "UNDERSCORED";
-		@Deprecated public static final String STYLE_BG_RED    = "BG_RED";
-		@Deprecated	public static final String STYLE_BG_BLUE   = "BG_BLUE";
-		@Deprecated	public static final String STYLE_BG_BLACK  = "BG_BLACK";
-		@Deprecated	public static final String STYLE_BG_GREEN  = "BG_GREEN";
-		@Deprecated	public static final String STYLE_BG_YELLOW = "BG_YELLOW";
-		@Deprecated public static final String STYLE_RED       = "RED";
-		@Deprecated	public static final String STYLE_BLUE      = "BLUE";
-		@Deprecated public static final String STYLE_BLACK     = "BLACK";
-		@Deprecated	public static final String STYLE_GREEN     = "GREEN";
-		@Deprecated	public static final String STYLE_YELLOW    = "YELLOW";
 	}
 
 	public abstract static class Themes {
