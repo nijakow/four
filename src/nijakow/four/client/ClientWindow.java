@@ -311,16 +311,6 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 		else
 			pwf.requestFocusInWindow();
 	}
-	
-	/*private void addStyles() {
-		final Style def = area.getLogicalStyle();
-		Style s = term.addStyle(Commands.Styles.STYLE_ERROR, def);
-		StyleConstants.setBold(s, true);
-		StyleConstants.setItalic(s, true);
-		StyleConstants.setForeground(s, Color.red);
-		s = term.addStyle(Commands.Styles.STYLE_INPUT, def);
-		StyleConstants.setForeground(s, Color.gray);
-	}*/
 
 	private void disposeEditors() {
 		for (ClientEditor ed : editors) {
