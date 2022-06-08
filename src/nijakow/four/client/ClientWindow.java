@@ -40,8 +40,8 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 	private final JPasswordField pwf;
 	private final JTextPane area;
 	private final JTextPane smalltalk;
+	private final JPanel mainPanel;
 	private final StyledDocument term;
-	private final List<ClientEditor> editors;
 	private final Style defaultStyle;
 	private final FStyle errorStyle;
 	private final FStyle inputStyle;
@@ -117,7 +117,7 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 		if (ports.length == 1)
 			prefs.setPort(ports[0]);
 		portCounter = 0;
-		getContentPane().setLayout(new BorderLayout());
+		mainPanel = new JPanel(new BorderLayout());
 		JPanel south = new JPanel();
 		south.setOpaque(false);
 		south.setLayout(new BoxLayout(south, BoxLayout.X_AXIS));
@@ -192,7 +192,7 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 		reconnectButton.setActionCommand(Commands.Actions.ACTION_RECONNECT);
 		reconnectButton.addActionListener(this);
 		connectionStatus = new JLabel("", SwingConstants.CENTER);
-		getContentPane().add(connectionStatus, BorderLayout.NORTH);
+		mainPanel.add(connectionStatus, BorderLayout.NORTH);
 		JButton settings = new JButton("Settings");
 		settings.addActionListener(this);
 		settings.setActionCommand(Commands.Actions.ACTION_SETTINGS);
@@ -204,7 +204,7 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 		reconnectButton.setVisible(false);
 		pwf.setVisible(false);
 		south.add(settings);
-		getContentPane().add(south, BorderLayout.SOUTH);
+		mainPanel.add(south, BorderLayout.SOUTH);
 		area = new JTextPane();
 		defaultStyle = area.getLogicalStyle();          // TODO: Default style should be adjustable.
 		current = new FStyle();
@@ -229,7 +229,8 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 		pane = new JScrollPane();
 		pane.setOpaque(false);
 		setLineBreaking(prefs.getLineBreaking());
-		getContentPane().add(pane, BorderLayout.CENTER);
+		mainPanel.add(pane, BorderLayout.CENTER);
+		getContentPane().add(mainPanel);
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		int x = prefs.getWindowPositionX();
 		int y = prefs.getWindowPositionY();
@@ -239,7 +240,6 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 			setLocation(x, y);
 		int width = prefs.getWindowWidth();
 		int height = prefs.getWindowHeight();
-		editors = new LinkedList<>();
 		toggleMode(prefs.getDarkMode());
 		setMinimumSize(new Dimension(300, 200));
 		setPreferredSize(new Dimension(750, 500));
@@ -269,6 +269,7 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 			promptText.setForeground(Color.white);
 			promptText.setBackground(Color.darkGray);
 			connectionStatus.setBackground(Color.darkGray);
+			mainPanel.setBackground(Color.darkGray);
 			getContentPane().setBackground(Color.darkGray);
 		} else {
 			pwf.setForeground(null);
@@ -285,10 +286,8 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 			promptText.setForeground(null);
 			promptText.setBackground(null);
 			connectionStatus.setBackground(null);
+			mainPanel.setBackground(null);
 			getContentPane().setBackground(null);
-		}
-		for (ClientEditor clientEditor : editors) {
-			clientEditor.toggleMode(dark);
 		}
 	}
 
@@ -312,17 +311,10 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 			pwf.requestFocusInWindow();
 	}
 
-	private void disposeEditors() {
-		for (ClientEditor ed : editors) {
-			ed.dispose();
-		}
-	}
-
 	@Override
 	public void dispose() {
 		prefs.setWindowDimensions(getX(), getY(), getWidth(), getHeight());
 		prefs.flush();
-		disposeEditors();
 		closeConnection();
 		super.dispose();
 	}
@@ -364,9 +356,6 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 				 */
 				SwingUtilities.updateComponentTreeUI(settingsWindow);
 				SwingUtilities.updateComponentTreeUI(this);
-				for (ClientEditor editor : editors) {
-					SwingUtilities.updateComponentTreeUI(editor);
-				}
 				prefs.setUIManagerName(selected);
 				settingsWindow.pack();
 			}
@@ -728,39 +717,29 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 		dialog.setVisible(true);
 	}
 
-	private void openEditor(String id, String path, String content) {
-		ClientEditor editor = new ClientEditor(connection, id, path, content);
-		editor.addWindowListener(new WindowAdapter() {
-			@Override
-			public void windowDeactivated(WindowEvent e) {
-				prefs.setEditorDimensions(editor.getX(), editor.getY(), editor.getWidth(), editor.getHeight());
-			}
-
-			@Override
-			public void windowClosed(WindowEvent e) {
-				editors.remove(editor);
+	private void openEditor(String id, String title, String content) {
+		invalidate();
+		ClientEditor editor = new ClientEditor(connection, id, content, this);
+		final String oldTitle = getTitle();
+		setTitle(title);
+		getContentPane().removeAll();
+		getContentPane().add(editor);
+		editor.toggleMode(prefs.getDarkMode());
+		editor.setCallback(() -> {
+			invalidate();
+			getContentPane().removeAll();
+			getContentPane().add(mainPanel);
+			setTitle(oldTitle);
+			validate();
+			repaint();
+			if (smalltalk.isVisible()) {
+				smalltalk.requestFocusInWindow();
+			} else if (prompt.isVisible()) {
+				prompt.requestFocusInWindow();
 			}
 		});
-		int width = prefs.getEditorWidth();
-		int height = prefs.getEditorHeight();
-		if (width == -1 || height == -1) {
-			editor.pack();
-		} else {
-			editor.setSize(width, height);
-		}
-		int x = prefs.getEditorPositionX();
-		int y = prefs.getEditorPositionY();
-		if (x == -1 || y == -1) {
-			editor.setLocationRelativeTo(this);
-		} else {
-			if (editors.isEmpty())
-				editor.setLocation(x, y);
-			else
-				editor.setLocation(x + 25, y + 25);
-		}
-		editors.add(editor);
-		editor.toggleMode(prefs.getDarkMode());
-		editor.setVisible(true);
+		validate();
+		editor.requestFocusInWindow();
 	}
 	
 	@Override
@@ -787,7 +766,7 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 	@Override
 	public void connectionLost(ClientConnection connection) {
 		EventQueue.invokeLater(() -> {
-			disposeEditors();
+			// FIXME Find out if the editor is still showing!
 			prompt.setText(" Connection closed. ");
 			prompt.setEnabled(false);
 			pwf.setVisible(false);

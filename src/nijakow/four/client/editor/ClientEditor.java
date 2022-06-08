@@ -18,7 +18,7 @@ import nijakow.four.client.PreferencesHelper;
 import nijakow.four.client.net.ClientConnection;
 import nijakow.four.share.lang.c.parser.ParseException;
 
-public class ClientEditor extends JFrame implements ActionListener {
+public class ClientEditor extends JPanel implements ActionListener {
 	private static final long serialVersionUID = 1L;
 	private static final String DEFAULT_THEME = "Default";
 	private static final String OTHER_THEME = "Other...";
@@ -31,11 +31,14 @@ public class ClientEditor extends JFrame implements ActionListener {
 	private final String id;
 	private final ScheduledExecutorService queue;
 	private final FStyle def;
+	private final Frame parent;
 	private JDialog settingsWindow;
+	private Runnable callback;
 	private boolean dark;
 
-	public ClientEditor(ClientConnection c, String id, String path, String content) {
-		super(path);
+	public ClientEditor(ClientConnection c, String id, String content, Frame parent) {
+		super(new BorderLayout());
+		this.parent = parent;
 		this.id = id;
 		queue = Executors.newSingleThreadScheduledExecutor();
 		connection = c;
@@ -78,11 +81,10 @@ public class ClientEditor extends JFrame implements ActionListener {
 			}
 		});
 		setKeyStrokes();
-		getContentPane().setLayout(new BorderLayout());
 		scrollPane = new JScrollPane();
 		scrollPane.setOpaque(false);
 		toggleLineBreaking(PreferencesHelper.getInstance().getEditorLineBreaking());
-		getContentPane().add(scrollPane, BorderLayout.CENTER);
+		add(scrollPane, BorderLayout.CENTER);
 		JButton save = new JButton("Save");
 		save.addActionListener(this);
 		save.setActionCommand(Commands.Actions.ACTION_EDIT_SAVE);
@@ -100,9 +102,6 @@ public class ClientEditor extends JFrame implements ActionListener {
 				stopSyntaxHighlighting();
 			}
 		});
-		if (path.endsWith(".c") || PreferencesHelper.getInstance().getEditorAlwaysHighlight()) {
-			highlight.setSelected(true);
-		}
 		JPanel buttons = new JPanel();
 		buttons.setOpaque(false);
 		buttons.setLayout(new GridLayout(1, 3));
@@ -114,16 +113,15 @@ public class ClientEditor extends JFrame implements ActionListener {
 		allButtons.setLayout(new GridLayout(2, 1));
 		allButtons.add(buttons);
 		allButtons.add(highlight);
-		getContentPane().add(allButtons, BorderLayout.SOUTH);
-		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-		addWindowListener(new WindowAdapter() {
+		add(allButtons, BorderLayout.SOUTH);
+		addFocusListener(new FocusListener() {
 			@Override
-			public void windowActivated(WindowEvent e) {
+			public void focusGained(FocusEvent e) {
 				setKeyStrokes();
 			}
 
 			@Override
-			public void windowDeactivated(WindowEvent e) {
+			public void focusLost(FocusEvent e) {
 				popup.setVisible(false);
 			}
 		});
@@ -229,14 +227,14 @@ public class ClientEditor extends JFrame implements ActionListener {
 	public void toggleMode(boolean dark) {
 		this.dark = dark;
 		if (dark) {
-			getContentPane().setBackground(Color.darkGray);
+			setBackground(Color.darkGray);
 			highlight.setBackground(Color.darkGray);
 			highlight.setForeground(Color.white);
 			pane.setBackground(Color.black);
 			pane.setForeground(Color.lightGray);
 			pane.setCaretColor(Color.white);
 		} else {
-			getContentPane().setBackground(null);
+			setBackground(null);
 			highlight.setForeground(null);
 			highlight.setBackground(null);
 			pane.setBackground(Color.white);
@@ -281,7 +279,7 @@ public class ClientEditor extends JFrame implements ActionListener {
 	}
 
 	private JDialog createSettingsWindow() {
-		JDialog settingsWindow = new JDialog(this, "Editor: Settings", true);
+		JDialog settingsWindow = new JDialog(parent, "Editor: Settings", true);
 		settingsWindow.getContentPane().setLayout(new BorderLayout());
 		JPanel themePanel = new JPanel(new GridLayout(3, 1));
 		JButton themeChoose = new JButton("Open from disc...");
@@ -420,13 +418,13 @@ public class ClientEditor extends JFrame implements ActionListener {
 		});
 		settingsWindow.pack();
 		settingsWindow.setResizable(false);
-		settingsWindow.setDefaultCloseOperation(HIDE_ON_CLOSE);
+		settingsWindow.setDefaultCloseOperation(JDialog.HIDE_ON_CLOSE);
 		settingsWindow.setLocationRelativeTo(this);
 		return settingsWindow;
 	}
 
 	private void showThemeEditor(FTheme current) {
-		FThemeEditor editor = new FThemeEditor(this, current, def);
+		FThemeEditor editor = new FThemeEditor(parent, current, def);
 		editor.toggleMode(dark);
 		editor.setLocationRelativeTo(this);
 		editor.setVisible(true);
@@ -434,7 +432,7 @@ public class ClientEditor extends JFrame implements ActionListener {
 	}
 
 	private void showThemeEditor(FTheme current, String name) {
-		FThemeEditor editor = new FThemeEditor(this, current, name, def);
+		FThemeEditor editor = new FThemeEditor(parent, current, name, def);
 		editor.toggleMode(dark);
 		editor.setLocationRelativeTo(this);
 		editor.setVisible(true);
@@ -449,12 +447,22 @@ public class ClientEditor extends JFrame implements ActionListener {
 	}
 
 	@Override
-	public void dispose() {
+	public boolean requestFocusInWindow() {
+		return pane.requestFocusInWindow();
+	}
+
+	public void setCallback(Runnable callback) {
+		this.callback = callback;
+	}
+
+	private void close() {
 		send(false);
 		if (settingsWindow != null) {
 			settingsWindow.dispose();
 		}
-		super.dispose();
+		if (callback != null) {
+			callback.run();
+		}
 	}
 
 	public void send(final boolean save) {
@@ -473,11 +481,11 @@ public class ClientEditor extends JFrame implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		switch (e.getActionCommand()) {
-			case Commands.Actions.ACTION_EDIT_SAVE: send(true); break;
+			case Commands.Actions.ACTION_EDIT_SAVE: send(true); close(); break;
 
 			case Commands.Actions.ACTION_SETTINGS: showSettingsWindow(); break;
 
-			case Commands.Actions.ACTION_EDIT_CLOSE: dispose(); break;
+			case Commands.Actions.ACTION_EDIT_CLOSE: close(); break;
 		}
 	}
 }
