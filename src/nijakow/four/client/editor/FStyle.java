@@ -1,11 +1,12 @@
 package nijakow.four.client.editor;
 
-import nijakow.four.share.lang.c.parser.TokenType;
+import nijakow.four.smalltalk.parser.TokenType;
 
 import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
 import java.awt.Color;
+import java.util.Objects;
 
 public class FStyle {
     private Boolean bold;
@@ -20,10 +21,11 @@ public class FStyle {
     private Color background;
     private Color foreground;
     private FStyle parent;
-    private nijakow.four.smalltalk.parser.TokenType tokenType;
+    private TokenType tokenType;
+    private Style cached;
 
     public FStyle() {
-        this((nijakow.four.smalltalk.parser.TokenType) null);
+        this((TokenType) null);
     }
 
     public FStyle(Style style) {
@@ -70,13 +72,14 @@ public class FStyle {
             foreground = original.foreground;
         }
         setTokenType(original.getTokenType());
+        cached = null;
     }
 
-    public FStyle(nijakow.four.smalltalk.parser.TokenType tokenType) {
+    public FStyle(TokenType tokenType) {
         this(tokenType, null);
     }
 
-    public FStyle(nijakow.four.smalltalk.parser.TokenType tokenType, FStyle parent) {
+    public FStyle(TokenType tokenType, FStyle parent) {
         this.tokenType = tokenType;
         setParent(parent);
         bold = null;
@@ -90,6 +93,7 @@ public class FStyle {
         family = null;
         background = null;
         foreground = null;
+        cached = null;
     }
 
     public FStyle getParent() {
@@ -114,6 +118,7 @@ public class FStyle {
             this.parent = oldParent;
             throw new IllegalArgumentException("A FStyle must not inherit itself!");
         }
+        cached = null;
     }
 
     public Boolean isBold() {
@@ -121,7 +126,10 @@ public class FStyle {
     }
 
     public void setBold(Boolean bold) {
-        this.bold = bold;
+        if (!Objects.equals(this.bold, bold)) {
+            this.bold = bold;
+            cached = null;
+        }
     }
 
     public boolean isBoldOverwritten() {
@@ -133,7 +141,10 @@ public class FStyle {
     }
 
     public void setItalic(Boolean italic) {
-        this.italic = italic;
+        if (!Objects.equals(this.italic, italic)) {
+            this.italic = italic;
+            cached = null;
+        }
     }
 
     public boolean isItalicOverwritten() {
@@ -145,7 +156,10 @@ public class FStyle {
     }
 
     public void setStrikeThrough(Boolean strike) {
-        this.strike = strike;
+        if (!Objects.equals(this.strike, strike)) {
+            this.strike = strike;
+            cached = null;
+        }
     }
 
     public boolean isStrikeThroughOverwritten() {
@@ -157,7 +171,10 @@ public class FStyle {
     }
 
     public void setUnderlined(Boolean underlined) {
-        this.underlined = underlined;
+        if (!Objects.equals(this.underlined, underlined)) {
+            this.underlined = underlined;
+            cached = null;
+        }
     }
 
     public boolean isUnderlinedOverwritten() {
@@ -169,7 +186,10 @@ public class FStyle {
     }
 
     public void setAlignment(Integer alignment) {
-        this.alignment = alignment;
+        if (!Objects.equals(this.alignment, alignment)) {
+            this.alignment = alignment;
+            cached = null;
+        }
     }
 
     public boolean isAlignmentOverwritten() {
@@ -181,7 +201,10 @@ public class FStyle {
     }
 
     public void setBidiLevel(Integer bidiLevel) {
-        this.bidiLevel = bidiLevel;
+        if (!Objects.equals(this.bidiLevel, bidiLevel)) {
+            this.bidiLevel = bidiLevel;
+            cached = null;
+        }
     }
 
     public boolean isBidiLevelOverwritten() {
@@ -193,7 +216,10 @@ public class FStyle {
     }
 
     public void setSize(Integer size) {
-        this.size = size;
+        if (!Objects.equals(this.size, size)) {
+            this.size = size;
+            cached = null;
+        }
     }
 
     public boolean isSizeOverwritten() {
@@ -205,7 +231,10 @@ public class FStyle {
     }
 
     public void setFirstLineIndent(Float firstLineIndent) {
-        this.firstLineIndent = firstLineIndent;
+        if (!Objects.equals(this.firstLineIndent, firstLineIndent)) {
+            this.firstLineIndent = firstLineIndent;
+            cached = null;
+        }
     }
 
     public boolean isFirstLineIndentOverwritten() {
@@ -217,7 +246,10 @@ public class FStyle {
     }
 
     public void setFamily(String family) {
-        this.family = family;
+        if (!Objects.equals(this.family, family)) {
+            this.family = family;
+            cached = null;
+        }
     }
 
     public boolean isFamilyOverwritten() {
@@ -229,7 +261,10 @@ public class FStyle {
     }
 
     public void setBackground(Color background) {
-        this.background = background;
+        if (!Objects.equals(background, this.background)) {
+            this.background = background;
+            cached = null;
+        }
     }
 
     public boolean isBackgroundOverwritten() {
@@ -241,7 +276,10 @@ public class FStyle {
     }
 
     public void setForeground(Color foreground) {
-        this.foreground = foreground;
+        if (!Objects.equals(foreground, this.foreground)) {
+            this.foreground = foreground;
+            cached = null;
+        }
     }
 
     public boolean isForegroundOverwritten() {
@@ -249,26 +287,28 @@ public class FStyle {
     }
 
     public Style asStyle(Style parent) {
-        Style ret = StyleContext.getDefaultStyleContext().addStyle(null, parent);
-        if (isBold() != null) StyleConstants.setBold(ret, isBold());
-        if (isItalic() != null) StyleConstants.setItalic(ret, isItalic());
-        if (isUnderlined() != null) StyleConstants.setUnderline(ret, isUnderlined());
-        if (isStrikeThrough() != null) StyleConstants.setStrikeThrough(ret, isStrikeThrough());
-        if (getAlignment() != null) StyleConstants.setAlignment(ret, getAlignment());
-        if (getBidiLevel() != null) StyleConstants.setBidiLevel(ret, getBidiLevel());
-        if (getSize() != null) StyleConstants.setFontSize(ret, getSize());
-        if (getFirstLineIndent() != null) StyleConstants.setFirstLineIndent(ret, getFirstLineIndent());
-        if (getBackground() != null) StyleConstants.setBackground(ret, getBackground());
-        if (getForeground() != null) StyleConstants.setForeground(ret, getForeground());
-        if (getFamily() != null) StyleConstants.setFontFamily(ret, getFamily());
-        return ret;
+        if (cached == null) {
+            cached = StyleContext.getDefaultStyleContext().addStyle(null, parent);
+            if (isBold() != null) StyleConstants.setBold(cached, isBold());
+            if (isItalic() != null) StyleConstants.setItalic(cached, isItalic());
+            if (isUnderlined() != null) StyleConstants.setUnderline(cached, isUnderlined());
+            if (isStrikeThrough() != null) StyleConstants.setStrikeThrough(cached, isStrikeThrough());
+            if (getAlignment() != null) StyleConstants.setAlignment(cached, getAlignment());
+            if (getBidiLevel() != null) StyleConstants.setBidiLevel(cached, getBidiLevel());
+            if (getSize() != null) StyleConstants.setFontSize(cached, getSize());
+            if (getFirstLineIndent() != null) StyleConstants.setFirstLineIndent(cached, getFirstLineIndent());
+            if (getBackground() != null) StyleConstants.setBackground(cached, getBackground());
+            if (getForeground() != null) StyleConstants.setForeground(cached, getForeground());
+            if (getFamily() != null) StyleConstants.setFontFamily(cached, getFamily());
+        }
+        return cached;
     }
 
-    public nijakow.four.smalltalk.parser.TokenType getTokenType() {
+    public TokenType getTokenType() {
         return tokenType;
     }
 
-    public void setTokenType(nijakow.four.smalltalk.parser.TokenType tokenType) {
+    public void setTokenType(TokenType tokenType) {
         this.tokenType = tokenType;
     }
 }
