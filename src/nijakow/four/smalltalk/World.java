@@ -172,6 +172,12 @@ public class World {
         metaClass.addMethod("instanceVariableNames:", (fiber, args) -> {
             args[0].asClass().setInstanceVariableNames(args[1].asString().getValue());
         });
+        metaClass.addMethod("category", (fiber, args) -> {
+            fiber.setAccu(args[0].asClass().getPackage());
+        });
+        metaClass.addMethod("category:", (fiber, args) -> {
+            args[0].asClass().setPackage(args[1]);
+        });
         metaClass.addMethod("method:", (fiber, args) -> {
             STMethod method = args[0].asClass().getMethod(args[1].asSymbol());
             if (method == null || method.asInstance() == null)
