@@ -1,9 +1,10 @@
 package nijakow.four.client.editor;
 
 import nijakow.four.client.utils.StringHelper;
-import nijakow.four.share.lang.base.parser.StringCharStream;
-import nijakow.four.share.lang.c.parser.*;
 import nijakow.four.smalltalk.parser.StringCharacterStream;
+import nijakow.four.smalltalk.parser.Token;
+import nijakow.four.smalltalk.parser.TokenType;
+import nijakow.four.smalltalk.parser.Tokenizer;
 
 import javax.swing.text.*;
 import java.util.ArrayList;
@@ -82,15 +83,12 @@ public class FDocument extends DefaultStyledDocument {
                 offs -= indent;
             }
         }
-        if (str.equals("\t")) {
+        if (str.equals("\t")) { // TODO Replace all tabs by spaces
             str = "    ";
         }
         super.insertString(offs, str, a);
         if (highlighting) {
-            String finalStr = str;
-            int finalOffs = offs;
-//            threads.execute(() -> updateSyntaxHighlighting2(finalOffs, finalStr.length(), text));
-            threads.execute(() -> updateSyntaxHighlighting2(0, getLength(), ""));
+            threads.execute(this::updateSyntaxHighlighting);
         }
     }
 
@@ -104,13 +102,9 @@ public class FDocument extends DefaultStyledDocument {
             len = lineEnd - lineStart;
             offs = lineStart;
         }
-//        final String oldText = getText(0, getLength());
         super.remove(offs, len);
-        final String txt = getText(0, getLength());
         if (highlighting) {
-            int finalOffs = offs;
-            threads.execute(() -> updateSyntaxHighlighting2(0, getLength(), txt));
-            //threads.execute(() -> updateSyntaxHighlighting2(finalOffs, 0, oldText));
+            threads.execute(this::updateSyntaxHighlighting);
         }
     }
 
@@ -162,114 +156,29 @@ public class FDocument extends DefaultStyledDocument {
     }
 
     public void updateSyntaxHighlighting() {
-        String text;
-        try {
-            text = getText(0, getLength());
-        } catch (BadLocationException e) {
-            return;
-        }
-        updateSyntaxHighlighting2(0, getLength(), text);
-    }
-
-    private boolean isInsideComment(int index, final String text) {
-        return isInsideBlockComment(index, text) || isInsideDocComment(index, text);
-    }
-
-    private boolean isInsideComment(int index) throws BadLocationException {
-        return isInsideComment(index, getText(0, getLength()));
-    }
-
-    private boolean isInsideDocComment(int index) throws BadLocationException {
-        return isInsideDocComment(index, getText(0, getLength()));
-    }
-
-    private boolean isInsideDocComment(int index, final String text) {
-        final String before = text.substring(0, index);
-        final int lastClose = before.lastIndexOf("*/");
-        final int lastOpen = before.lastIndexOf("/**");
-        if (lastClose == -1 && lastOpen != -1) {
-            return true;
-        }
-        else if (lastClose != -1 && lastOpen != -1) {
-            return lastOpen > lastClose;
-        }
-        return false;
-    }
-
-    private boolean isInsideBlockComment(int index) throws BadLocationException {
-        return isInsideBlockComment(index, getText(0, getLength()));
-    }
-
-    private boolean isInsideBlockComment(int index, final String text) {
-        final String before = text.substring(0, index);
-        final int lastClose = before.lastIndexOf("*/");
-        final int lastOpen = before.lastIndexOf("/*");
-        if (lastClose == -1 && lastOpen != -1) {
-            return true;
-        }
-        else if (lastClose != -1 && lastOpen != -1) {
-            return lastOpen > lastClose;
-        }
-        return false;
-    }
-
-    private void updateSyntaxHighlighting2(int offset, int length, final String oldText) {
-        nijakow.four.smalltalk.parser.Token token = null;
-        int pos = 0, lineStart = 0, lineEnd = 0;
-        String line = null;
+        Token token = null;
+        int pos = 0;
         try {
             final String text = getText(0, getLength());
-            lineStart = getLineStart(offset);
-            lineEnd = getLineEnd(offset + length);
-            final int oldLineEnd = oldText.length() - text.length() + lineEnd;
-            final boolean first = isInsideComment(lineStart);
-            final boolean second = isInsideComment(lineEnd);
-            if (first) {
-                lineStart = text.substring(0, lineStart).lastIndexOf("/*");
-            }
-            if (second) {
-                final int bce = text.indexOf("*/", lineEnd);
-                lineEnd = bce == -1 ? text.length() : bce + 2;
-            } else if (first || (oldLineEnd > 0 && oldLineEnd < oldText.length() && isInsideComment(oldLineEnd, oldText))) {
-                final int bco = text.indexOf("*/", lineEnd);
-                lineEnd = bco == -1 ? text.length() : bco + 2;
-            }
-            line = text.substring(lineStart, lineEnd);
-            nijakow.four.smalltalk.parser.Tokenizer tokenizer = new nijakow.four.smalltalk.parser.Tokenizer(new StringCharacterStream(line));
+            Tokenizer tokenizer = new Tokenizer(new StringCharacterStream(text));
             tokenizer.enableCommentTokens();
             do {
                 token = tokenizer.nextToken();
                 Style style = theme.getStyle(token.getType()) == null ? def : theme.getStyle(token.getType()).asStyle(def);
                 if (style == null) style = def;
-                pos = token.getPosition().getIndex() + lineStart;
-                try {
-                    setCharacterAttributes(pos, (token.getEndPosition().getIndex() + lineStart) - pos, style, true);
-                } catch (ArrayIndexOutOfBoundsException e) {
-                    System.err.println();
-                    System.err.println("-------------------");
-                    System.err.println("Token type: " + token.getType());
-                    System.err.println("Token start: " + token.getPosition().getIndex());
-                    System.err.println("Token end: " + token.getEndPosition().getIndex());
-                    System.err.println("Line start: " + lineStart);
-                    System.err.println("Pos: " + pos);
-                    System.err.println("Line: '" + line + "'");
-                    System.err.println("Full text: '" + getText(0, getLength()) + "'");
-                    System.err.println("Full length: " + getLength());
-                    System.err.println();
-                    e.printStackTrace();
-                    System.err.println("-------------------");
-                }
-            } while (token.getType() != nijakow.four.smalltalk.parser.TokenType.EOF);
+                pos = token.getPosition().getIndex();
+                setCharacterAttributes(pos, (token.getEndPosition().getIndex()) - pos, style, true);
+            } while (token.getType() != TokenType.EOF);
         } catch (Exception e) {
             // TODO Handle this gracefully
             System.err.println();
             System.err.println("-------------------");
-            System.err.println("Token type: " + token.getType());
-            System.err.println("Token start: " + token.getPosition().getIndex());
-            System.err.println("Token end: " + token.getEndPosition().getIndex());
-            System.err.println("Line start: " + lineStart);
+            if (token != null) {
+                System.err.println("Token type: " + token.getType());
+                System.err.println("Token start: " + token.getPosition().getIndex());
+                System.err.println("Token end: " + token.getEndPosition().getIndex());
+            }
             System.err.println("Pos: " + pos);
-            System.err.println("Line: '" + line + "'");
             try {
                 System.err.println("Full text: '" + getText(0, getLength()) + "'");
             } catch (BadLocationException ex) {
