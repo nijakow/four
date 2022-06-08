@@ -738,10 +738,6 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 		dialog.setVisible(true);
 	}
 
-	private boolean interpretsCommand(String command) {
-		return false;
-	}
-
 	private void openEditor(String id, String path, String content) {
 		ClientEditor editor = new ClientEditor(connection, id, path, content);
 		editor.addWindowListener(new WindowAdapter() {
@@ -859,15 +855,13 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 					e1.printStackTrace();
 				}
 				tmp.setText("");
-				if (!interpretsCommand(text)) {
-					queue.schedule(() -> {
-						try {
-							connection.send(text);
-						} catch (Exception ex) {
-							showError("*** Could not send message --- see console for more details! ***\n");
-						}
-					}, 0, TimeUnit.NANOSECONDS);
-				}
+				queue.schedule(() -> {
+					try {
+						connection.send(text);
+					} catch (Exception ex) {
+						showError("*** Could not send message --- see console for more details! ***\n");
+					}
+				}, 0, TimeUnit.NANOSECONDS);
 				break;
 		}
 	}
