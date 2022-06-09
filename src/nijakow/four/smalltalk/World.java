@@ -230,13 +230,8 @@ public class World {
         setValue("OutputStream", outputStreamClass);
 
         setValue("Nil", nilClass);
-        nilClass.addMethodFromSource("writeOn: w\n[\n    w out: 'nil'\n]\n");
 
         setValue("Boolean", booleanClass);
-        booleanClass.addMethod("not", (fiber, args) -> fiber.setAccu(STBoolean.get(!args[0].isTrue())));
-        booleanClass.addMethod("&", (fiber, args) -> fiber.setAccu(STBoolean.get(args[0].isTrue() && args[1].isTrue())));
-        booleanClass.addMethod("|", (fiber, args) -> fiber.setAccu(STBoolean.get(args[0].isTrue() || args[1].isTrue())));
-        booleanClass.addMethodFromSource("writeOn: w\n[\n    w out: self toString\n]\n");
 
         setValue("Number", numberClass);
         setValue("IntegerLike", integerLikeClass);
