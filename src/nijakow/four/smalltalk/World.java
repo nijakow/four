@@ -314,10 +314,10 @@ public class World {
         });
 
         setValue("Symbol", symbolClass);
-        symbolClass.addMethod("name", (fiber, args) -> fiber.setAccu(new STString(args[0].asSymbol().getName())));
+        /*symbolClass.addMethod("name", (fiber, args) -> fiber.setAccu(new STString(args[0].asSymbol().getName())));
         symbolClass.addMethod("asString", (fiber, args) -> fiber.setAccu(new STString(args[0].asSymbol().getName())));
         symbolClass.addMethod("globalValue", (fiber, args) -> fiber.setAccu(fiber.getVM().getWorld().getValue(args[0].asSymbol())));
-        symbolClass.addMethod("globalValue:", (fiber, args) -> fiber.getVM().getWorld().setValue(args[0].asSymbol(), args[1]));
+        symbolClass.addMethod("globalValue:", (fiber, args) -> fiber.getVM().getWorld().setValue(args[0].asSymbol(), args[1]));*/
 
         setValue("Array", arrayClass);
         arrayClass.setInstantiator(() -> new STArray(0));
@@ -500,6 +500,10 @@ public class World {
             }
             fiber.setAccu(new STString(contents.toString()));
         });
+
+        addBuiltin("symbol/asString", (fiber) -> fiber.setAccu(new STString(fiber.getSelf().asSymbol().getName())));
+        addBuiltin("symbol/globalValue", (fiber) -> fiber.setAccu(fiber.getWorld().getValue(fiber.getSelf().asSymbol().getName())));
+        addBuiltin("symbol/globalValue:", (fiber) -> fiber.getWorld().setValue(fiber.getSelf().asSymbol(), fiber.getVariable(0)));
     }
 
     public BasicBuiltin getBuiltinFor(STSymbol symbol) {

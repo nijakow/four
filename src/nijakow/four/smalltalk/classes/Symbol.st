@@ -1,4 +1,24 @@
 Symbol
+<<<
+asString
+[
+  ^ <primitive:symbol/asString>
+]
+---
+name
+[
+  ^ self asString
+]
+---
+globalValue
+[
+  ^ <primitive:symbol/globalValue>
+]
+---
+globalValue: val
+[
+  ^ <primitive:symbol/globalValue:>
+]
 ---
 writeOn: w
 [
