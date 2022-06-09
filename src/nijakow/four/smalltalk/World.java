@@ -7,7 +7,6 @@ import nijakow.four.smalltalk.objects.method.STMethod;
 import nijakow.four.smalltalk.parser.ParseException;
 import nijakow.four.smalltalk.vm.BasicBuiltin;
 import nijakow.four.smalltalk.vm.Builtin;
-import nijakow.four.smalltalk.vm.Fiber;
 import nijakow.four.smalltalk.vm.Quickloader;
 
 import java.io.BufferedReader;
@@ -19,7 +18,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Consumer;
 
 public class World {
     private final Map<STSymbol, STInstance> bindings = new HashMap<>();
@@ -133,15 +131,14 @@ public class World {
 
         objectClass = new STClass();
         setValue("Object", objectClass);
-        objectClass.addMethodFromSource("init\n[\n]\n");
-        objectClass.addMethod("value", (fiber, args) -> fiber.setAccu(args[0]));
-        objectClass.addMethod("class", (fiber, args) -> fiber.setAccu(args[0].getClass(fiber.getVM().getWorld())));
-        objectClass.addMethod("isKindOf:", (fiber, args) -> fiber.setAccu(STBoolean.get(args[0].getClass(fiber.getVM().getWorld()).isSubclassOf(args[1].asClass()))));
-        objectClass.addMethod("asBool", (fiber, args) -> fiber.setAccu(STBoolean.get(args[0].isTrue())));
-        objectClass.addMethod("toString", (fiber, args) -> fiber.setAccu(new STString(args[0].toString())));
-        objectClass.addMethod("=", (fiber, args) -> fiber.setAccu(STBoolean.get(args[0].is(args[1]))));
-        objectClass.addMethod("!=", (fiber, args) -> fiber.setAccu(STBoolean.get(!args[0].is(args[1]))));
-        objectClass.addMethod("throw", (fiber, args) -> fiber.throwValue(args[0]));
+        objectClass.addMethodFromSource("init\n[\n  ^ self\n]\n");
+        //objectClass.addMethod("class", (fiber, args) -> fiber.setAccu(args[0].getClass(fiber.getVM().getWorld())));
+        //objectClass.addMethod("isKindOf:", (fiber, args) -> fiber.setAccu(STBoolean.get(args[0].getClass(fiber.getVM().getWorld()).isSubclassOf(args[1].asClass()))));
+        //objectClass.addMethod("asBool", (fiber, args) -> fiber.setAccu(STBoolean.get(args[0].isTrue())));
+        //objectClass.addMethod("toString", (fiber, args) -> fiber.setAccu(new STString(args[0].toString())));
+        //objectClass.addMethod("=", (fiber, args) -> fiber.setAccu(STBoolean.get(args[0].is(args[1]))));
+        //objectClass.addMethod("!=", (fiber, args) -> fiber.setAccu(STBoolean.get(!args[0].is(args[1]))));
+        //objectClass.addMethod("throw", (fiber, args) -> fiber.throwValue(args[0]));
 
         metaClass = objectClass.subclass(this);
         metaClass.setMetaClass(metaClass);
@@ -149,29 +146,37 @@ public class World {
         metaClass.addMethod("new", (fiber, args) -> {
             fiber.enter(args[0].asClass().instantiate(), "init", new STInstance[]{});
         });
-        metaClass.addMethod("instances", (fiber, args) -> {
+        /*metaClass.addMethod("instances", (fiber, args) -> {
             STInstance[] instances = STInstance.allInstancesOf(args[0].asClass(), fiber.getVM().getWorld());
             fiber.setAccu(new STArray(instances));
-        });
-        metaClass.addMethod("superclass", (fiber, args) -> {
+        });*/
+        /*metaClass.addMethod("superclass", (fiber, args) -> {
             STClass parent = args[0].asClass().getSuperClass();
             if (parent == null)
                 fiber.setAccu(STNil.get());
             else
                 fiber.setAccu(parent);
-        });
-        metaClass.addMethod("subclass:", (fiber, args) -> {
+        });*/
+        /*metaClass.addMethod("subclass:", (fiber, args) -> {
             final STSymbol name = args[1].asSymbol();
             STClass clazz = args[0].asClass().subclass(fiber.getVM().getWorld());
             fiber.getVM().getWorld().setValue(name, clazz);
             fiber.setAccu(clazz);
-        });
-        metaClass.addMethod("instanceVariables", (fiber, args) -> {
+        });*/
+        metaClass.addMethodFromSource("subclass: name\n[\n  ^ <primitive:class/subclass:>\n]\n");
+        /*metaClass.addMethod("instanceVariables", (fiber, args) -> {
             fiber.setAccu(new STArray(args[0].asClass().getInstanceVariableNames()));
-        });
-        metaClass.addMethod("instanceVariableNames:", (fiber, args) -> {
+        });*/
+        /*metaClass.addMethod("instanceVariableNames:", (fiber, args) -> {
             args[0].asClass().setInstanceVariableNames(args[1].asString().getValue());
-        });
+        });*/
+        metaClass.addMethodFromSource("instanceVariableNames: vars\n[\n    <primitive:class/instanceVariableNames:>.\n  ^ self\n]\n");
+        /*metaClass.addMethod("category", (fiber, args) -> {
+            fiber.setAccu(args[0].asClass().getPackage());
+        });*/
+        /*metaClass.addMethod("category:", (fiber, args) -> {
+            args[0].asClass().setPackage(args[1]);
+        });*/
         metaClass.addMethod("method:", (fiber, args) -> {
             STMethod method = args[0].asClass().getMethod(args[1].asSymbol());
             if (method == null || method.asInstance() == null)
@@ -423,10 +428,32 @@ public class World {
         STObject four = (STObject) fourClass.instantiate();
         setValue("Four", four);
 
-        builtins.put(STSymbol.get("newArray"), (fiber) -> fiber.setAccu(new STArray(fiber.getVariable(0).asInteger().asInteger().getValue())));
+        addBuiltin("newArray", (fiber) -> fiber.setAccu(new STArray(fiber.getVariable(0).asInteger().asInteger().getValue())));
+        addBuiltin("class", (fiber) -> fiber.setAccu(fiber.getSelf().getClass(fiber.getVM().getWorld())));
+        addBuiltin("isKindOf", (fiber) -> fiber.setAccu(STBoolean.get(fiber.getSelf().getClass(fiber.getWorld()).isSubclassOf(fiber.getVariable(0).asClass()))));
+        addBuiltin("toString", (fiber) -> fiber.setAccu(new STString(fiber.getSelf().toString())));
+        addBuiltin("=", (fiber) -> fiber.setAccu(STBoolean.get(fiber.getSelf().is(fiber.getVariable(0)))));
+        addBuiltin("throw", (fiber) -> fiber.throwValue(fiber.getSelf()));
+
+        addBuiltin("class/instances", (fiber) -> fiber.setAccu(new STArray(STInstance.allInstancesOf(fiber.getSelf().asClass(), fiber.getWorld()))));
+        addBuiltin("class/superclass", (fiber) -> fiber.setAccu(STNil.wrap(fiber.getSelf().asClass().getSuperClass())));
+        addBuiltin("class/subclass:", (fiber) -> {
+            final STSymbol name = fiber.getVariable(0).asSymbol();
+            STClass clazz = fiber.getSelf().asClass().subclass(fiber.getVM().getWorld());
+            fiber.getVM().getWorld().setValue(name, clazz);
+            fiber.setAccu(clazz);
+        });
+        addBuiltin("class/instanceVariables", (fiber) -> fiber.setAccu(new STArray(fiber.getSelf().asClass().getInstanceVariableNames())));
+        addBuiltin("class/instanceVariableNames:", (fiber) -> fiber.getSelf().asClass().setInstanceVariableNames(fiber.getVariable(0).asString().getValue()));
+        addBuiltin("class/category", (fiber) -> fiber.setAccu(fiber.getSelf().asClass().getCategory()));
+        addBuiltin("class/category:", (fiber) -> fiber.getSelf().asClass().setCategory(fiber.getVariable(0)));
     }
 
     public BasicBuiltin getBuiltinFor(STSymbol symbol) {
         return builtins.get(symbol);
+    }
+
+    private void addBuiltin(String name, BasicBuiltin builtin) {
+        this.builtins.put(STSymbol.get(name), builtin);
     }
 }

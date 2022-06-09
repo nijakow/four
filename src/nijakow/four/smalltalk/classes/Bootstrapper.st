@@ -56,6 +56,7 @@ run
          load: 'testsuites/BasicTestSuite.st';
          load: 'App.st';
          load: 'ui/Menu.st';
-         load: 'apps/Shell.st'.
+         load: 'apps/Shell.st';
+         load: 'apps/browser/Browser.st'.
     self setupColors.
 ]

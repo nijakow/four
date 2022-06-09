@@ -11,6 +11,31 @@ name | glv
   ^ nil
 ]
 ---
+instances
+[
+  ^ <primitive:class/instances>
+]
+---
+superclass
+[
+  ^ <primitive:class/superclass>
+]
+---
+instanceVariables
+[
+  ^ <primitive:class/instanceVariables>
+]
+---
+category
+[
+  ^ <primitive:class/category>
+]
+---
+category: newCategory
+[
+  ^ <primitive:class/category:>
+]
+---
 methods | md
 [
     md := Dictionary new.
@@ -21,7 +46,11 @@ methods | md
 edit: name | text
 [
     ((self method: name) = nil) ifTrue: [
-        text := (name name) + ' | "Local variables"\n[\n  ^ self\n]\n'.
+        (name = #init)  ifTrue: [
+            text := (name name) + ' | "Local variables"\n[\n    super init.\n  ^ self\n]\n'.
+        ] ifFalse: [
+            text := (name name) + ' | "Local variables"\n[\n  ^ self\n]\n'.
+        ].
     ] ifFalse: [
         text := (self method: name) source.
     ].

@@ -62,7 +62,7 @@ public class PreferencesHelper {
 	}
 
 	public boolean getEditorAlwaysHighlight() {
-		return prefs.getBoolean(Key.EDITOR_HIGHLIGHT, false);
+		return prefs.getBoolean(Key.EDITOR_HIGHLIGHT, true);
 	}
 
 	public boolean getEditorLineBreaking() {

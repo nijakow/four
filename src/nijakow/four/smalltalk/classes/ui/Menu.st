@@ -22,7 +22,7 @@ runOnce | i selection
     ].
     selection := (Transcript prompt: 'Choice > ') trim parseInt.
     ([ selection != nil ] and: [ selection between: 1 and: i - 1 ]) ifTrue: [
-        ^ (entries at: i) value value
+        ^ (entries at: selection) value
     ].
   ^ nil
 ]

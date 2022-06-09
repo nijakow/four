@@ -15,7 +15,6 @@ import nijakow.four.smalltalk.vm.FourException;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class STClass extends STInstance {
@@ -24,12 +23,14 @@ public class STClass extends STInstance {
     private STSymbol[] members;
     private final Map<STSymbol, STMethod> methods;
     private Supplier<STInstance> instantiator;
+    private STInstance category;
 
     private STClass(STClass metaclass, STClass superclass, STSymbol[] members) {
         this.metaclass = metaclass;
         this.superclass = superclass;
         this.members = members;
         this.methods = new HashMap<>();
+        this.category = STNil.get();
         this.instantiator = () -> new STObject(this, getInstanceVariableCount());
     }
 
@@ -53,6 +54,9 @@ public class STClass extends STInstance {
     public void setMetaClass(STClass metaclass) {
         this.metaclass = metaclass;
     }
+
+    public STInstance getCategory() { return this.category; }
+    public void setCategory(STInstance category) { this.category = category; }
 
     public STInstance instantiate() {
         return instantiator.get();
