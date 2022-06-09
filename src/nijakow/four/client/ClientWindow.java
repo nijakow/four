@@ -23,13 +23,12 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.Style;
 import javax.swing.text.StyledDocument;
 
-import nijakow.four.client.editor.ClientEditor;
-import nijakow.four.client.editor.FDocument;
-import nijakow.four.client.editor.FStyle;
+import nijakow.four.client.editor.*;
 import nijakow.four.client.net.ClientConnection;
 import nijakow.four.client.net.ClientConnectionListener;
 import nijakow.four.client.utils.StringHelper;
 import nijakow.four.client.utils.UIHelper;
+import nijakow.four.smalltalk.parser.ParseException;
 
 public class ClientWindow extends JFrame implements ActionListener, ClientConnectionListener {
 	private static final long serialVersionUID = 1L;
@@ -42,6 +41,7 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 	private final JTextPane smalltalk;
 	private final JPanel mainPanel;
 	private final StyledDocument term;
+	private final FDocument smallSyntaxDoc;
 	private final Style defaultStyle;
 	private final FStyle errorStyle;
 	private final FStyle inputStyle;
@@ -55,6 +55,7 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 	private boolean reconnect;
 	private boolean bother;
 	private boolean wasSpecial;
+	private boolean editorShowing;
 	private FStyle current;
 	private ScheduledFuture<?> reconnectorHandler;
 	private final ScheduledExecutorService queue;
@@ -96,9 +97,9 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 			}
 		}
 	};
-	
+
 	public ClientWindow(String hostname, int[] ports) {
-		super("Nijakow's \"Four\"");
+		super(Commands.Strings.TITLE);
 		final Font font = new Font("Monospaced", Font.PLAIN, 14);
 		buffer = "";
 		bother = true;
@@ -123,16 +124,17 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 		south.setLayout(new BoxLayout(south, BoxLayout.X_AXIS));
 		smalltalk = new JTextPane();
 		smalltalk.setFont(new Font("Monospaced", Font.PLAIN, 14));
-		FDocument o = new FDocument();
-		o.setAutoIndentingEnabled(true);
-		o.setHighlightingEnabled(true);
+		smallSyntaxDoc = new FDocument();
+		smallSyntaxDoc.setAutoIndentingEnabled(true);
+		smallSyntaxDoc.setHighlightingEnabled(true);
+		updateSyntaxTheme();
 		errorStyle = new FStyle();
 		errorStyle.setBold(true);
 		errorStyle.setItalic(true);
 		errorStyle.setForeground(Color.red);
 		inputStyle = new FStyle();
 		inputStyle.setForeground(Color.gray);
-		smalltalk.setDocument(o);
+		smalltalk.setDocument(smallSyntaxDoc);
 		smalltalk.addFocusListener(new FocusListener() {
 			@Override
 			public void focusGained(FocusEvent e) {
@@ -163,7 +165,7 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 					@Override
 					public void actionPerformed(ActionEvent e) {
 						try {
-							o.insertString(smalltalk.getCaretPosition(), "\n", null);
+							smallSyntaxDoc.insertString(smalltalk.getCaretPosition(), "\n", null);
 						} catch (BadLocationException ex) {
 							assert (false);
 						}
@@ -253,6 +255,27 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 		reconnectorHandler = queue.scheduleWithFixedDelay(reconnector, 0, 2500, TimeUnit.MILLISECONDS);
 	}
 
+	private void updateSyntaxTheme() {
+		final String theme = prefs.getEditorTheme();
+		if (!theme.equals(Commands.Themes.DEFAULT)) {
+			queue.schedule(() -> {
+				try {
+					smallSyntaxDoc.setTheme(new GenericTheme(new File(theme)));
+				} catch (IOException | GenericTheme.ParseException e) {
+					JOptionPane.showMessageDialog(this, "Could not open theme file: " + theme + "!\n" +
+									(e instanceof GenericTheme.ParseException ? ((GenericTheme.ParseException) e).getErrorText() : "") +
+                             "\nSwitching to default theme...",
+							"File error", JOptionPane.ERROR_MESSAGE);
+					smallSyntaxDoc.setTheme(null);
+					prefs.setEditorTheme(Commands.Themes.DEFAULT);
+				}
+			}, 0, TimeUnit.NANOSECONDS);
+		} else if (!(smallSyntaxDoc.getTheme() instanceof DefaultTheme)) {
+			smallSyntaxDoc.setTheme(null);
+		}
+		// FIXME Still not linked correctly!
+	}
+
 	private void toggleMode(boolean dark) {
 		if (dark) {
 			pwf.setForeground(Color.white);
@@ -302,7 +325,7 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 			pane.setViewportView(wrap);
 		}
 	}
-	
+
 	public void setVisible(boolean visible) {
 		super.setVisible(visible);
 		if (prompt.isVisible())
@@ -318,14 +341,14 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 		closeConnection();
 		super.dispose();
 	}
-	
+
 	private void closeConnection() {
 		reconnectorHandler.cancel(true);
 		if (connection != null)
 			connection.close();
 		bother = true;
 	}
-	
+
 	private void openSettingsWindow() {
 		JDialog settingsWindow = new JDialog(this, "Four: Settings", true);
 		settingsWindow.getContentPane().setLayout(new BoxLayout(settingsWindow.getContentPane(), BoxLayout.Y_AXIS));
@@ -717,6 +740,21 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 		dialog.setVisible(true);
 	}
 
+	private void switchToMainView(String oldTitle) {
+		invalidate();
+		getContentPane().removeAll();
+		getContentPane().add(mainPanel);
+		setTitle(oldTitle);
+		updateSyntaxTheme();
+		validate();
+		repaint();
+		if (smalltalk.isVisible()) {
+			smalltalk.requestFocusInWindow();
+		} else if (prompt.isVisible()) {
+			prompt.requestFocusInWindow();
+		}
+	}
+
 	private void openEditor(String id, String title, String content) {
 		invalidate();
 		ClientEditor editor = new ClientEditor(connection, id, content, this);
@@ -726,22 +764,15 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 		getContentPane().add(editor);
 		editor.toggleMode(prefs.getDarkMode());
 		editor.setCallback(() -> {
-			invalidate();
-			getContentPane().removeAll();
-			getContentPane().add(mainPanel);
-			setTitle(oldTitle);
-			validate();
-			repaint();
-			if (smalltalk.isVisible()) {
-				smalltalk.requestFocusInWindow();
-			} else if (prompt.isVisible()) {
-				prompt.requestFocusInWindow();
-			}
+			switchToMainView(oldTitle);
+			editorShowing = false;
 		});
 		validate();
+		repaint();
 		editor.requestFocusInWindow();
+		editorShowing = true;
 	}
-	
+
 	@Override
 	public void charReceived(ClientConnection connection, char c) {
 		EventQueue.invokeLater(() -> {
@@ -762,11 +793,11 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 			}
 		});
 	}
-	
+
 	@Override
 	public void connectionLost(ClientConnection connection) {
 		EventQueue.invokeLater(() -> {
-			// FIXME Find out if the editor is still showing!
+			if (editorShowing) switchToMainView(Commands.Strings.TITLE);
 			prompt.setText(" Connection closed. ");
 			prompt.setEnabled(false);
 			pwf.setVisible(false);
@@ -777,7 +808,7 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 			reconnectButton.requestFocusInWindow();
 		});
 	}
-	
+
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		JTextField tmp = prompt;
@@ -834,7 +865,7 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 				break;
 		}
 	}
-	
+
 	public static void openWindow(String hostname, int[] ports) {
 		EventQueue.invokeLater(() -> new ClientWindow(hostname, ports).setVisible(true));
 	}

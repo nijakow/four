@@ -1,9 +1,7 @@
 package nijakow.four.client.editor;
 
-
-import nijakow.four.share.lang.base.parser.StreamPosition;
-import nijakow.four.share.lang.base.parser.StringCharStream;
-import nijakow.four.smalltalk.parser.ParseException;
+import nijakow.four.smalltalk.parser.StreamPosition;
+import nijakow.four.smalltalk.parser.StringCharacterStream;
 import nijakow.four.smalltalk.parser.TokenType;
 
 import java.awt.*;
@@ -14,17 +12,17 @@ import java.util.List;
 import static nijakow.four.client.editor.WritableTheme.Types.*;
 
 public class GenericTheme extends WritableTheme {
-    private final StringCharStream stream;
+    private final StringCharacterStream stream;
     private final List<FStyle> styles;
 
     public GenericTheme(File file) throws IOException, ParseException {
-        stream = new StringCharStream(file.getName(), readFile(file));
+        stream = new StringCharacterStream(readFile(file));
         styles = new LinkedList<>();
         parseFile();
     }
 
     public GenericTheme(String content) throws ParseException {
-        stream = new StringCharStream("", content);
+        stream = new StringCharacterStream(content);
         styles = new LinkedList<>();
         parseFile();
     }
@@ -39,7 +37,7 @@ public class GenericTheme extends WritableTheme {
     }
 
     private void skipWhitespaces() {
-        while (Character.isWhitespace(stream.peek())) stream.advance();
+        while (stream.hasNext() && Character.isWhitespace(stream.peek())) stream.read();
     }
 
     private FStyle findStyle(TokenType type) {
@@ -54,7 +52,7 @@ public class GenericTheme extends WritableTheme {
     private void expect(FToken token, FTokenType type) throws ParseException {
         if ((type == FTokenType.TRUE || type == FTokenType.FALSE)) {
             if (!(token.getType() == FTokenType.FALSE || token.getType() == FTokenType.TRUE)) {
-                throw new  RuntimeException();//throw new ParseException(token.getStartPos(), "Expected a bool!");
+                throw new ParseException(token.getStartPos(), "Expected a bool!");
             } else return;
         }
         if (token.getType() != type) {
@@ -70,8 +68,7 @@ public class GenericTheme extends WritableTheme {
                 case INT: message = "Expected an integer!"; break;
                 case FLOAT: message = "Expected a float!"; break;
             }
-            throw new RuntimeException("");
-            //throw new ParseException(token.getStartPos(), message);
+            throw new ParseException(token.getStartPos(), message);
         }
     }
 
@@ -81,8 +78,7 @@ public class GenericTheme extends WritableTheme {
         FStyle fStyle = new FStyle(TokenType.valueOf((String) token.getPayload()));
         if ((token = nextToken()).getType() == FTokenType.COLON) {
             FStyle parent = findStyle(TokenType.valueOf((String) (token = nextToken()).getPayload()));
-            //if (parent == null) throw new ParseException(token.getStartPos(), "Parent not found!");
-            if (parent == null) throw new RuntimeException("");
+            if (parent == null) throw new ParseException(token.getStartPos(), "Parent not found!");
             fStyle.setParent(parent);
             token = nextToken();
         }
@@ -149,10 +145,10 @@ public class GenericTheme extends WritableTheme {
                         fStyle.setForeground(new Color((Integer) tmp.getPayload()));
                         break;
 
-                    default: throw new RuntimeException();//throw new ParseException(tmp.getStartPos(), "Expected a value!");
+                    default: throw new ParseException(tmp.getStartPos(), "Expected a value!");
                 }
             }
-        } else throw new RuntimeException();//throw new ParseException(token.getStartPos(), "Expected style definition!");
+        } else throw new ParseException(token.getStartPos(), "Expected style definition!");
         return fStyle;
     }
 
@@ -162,7 +158,7 @@ public class GenericTheme extends WritableTheme {
             switch (t.getType()) {
                 case COMMENT: continue;
                 case TYPE: styles.add(parseFStyle()); break;
-                default: throw new RuntimeException();//throw new ParseException(t.getStartPos(), "Expected a style declaration!");
+                default: throw new ParseException(t.getStartPos(), "Expected a style declaration!");
             }
         }
         for (FStyle style : styles) addStyle(style.getTokenType(), style);
@@ -171,9 +167,9 @@ public class GenericTheme extends WritableTheme {
     private String parseComment() {
         StringBuilder builder = new StringBuilder();
         int c;
-        while ((c = stream.peek()) != '\n' && c >= 0) {
+        while ((c = stream.peek()) != '\n') {
             builder.append((char) c);
-            stream.advance();
+            stream.read();
         }
         return builder.toString();
     }
@@ -195,7 +191,7 @@ public class GenericTheme extends WritableTheme {
         else if (stream.peeks(";")) return new FToken(FTokenType.SEMICOLON, pos, null, stream.getPosition());
 
         final StringBuilder builder = new StringBuilder();
-        while (!isSpecial(stream.peek())) builder.append((char) stream.next());
+        while (stream.hasNext() && !isSpecial(stream.peek())) builder.append(stream.read());
 
         final String raw = builder.toString();
 
@@ -209,6 +205,25 @@ public class GenericTheme extends WritableTheme {
             case "true": return new FToken(FTokenType.TRUE, pos, null, stream.getPosition());
             case "false": return new FToken(FTokenType.FALSE, pos, null, stream.getPosition());
             default: return new FToken(FTokenType.IDENTIFIER, pos, raw, stream.getPosition());
+        }
+    }
+
+    public static class ParseException extends Exception {
+        private final StreamPosition position;
+        private final String errorText;
+
+        public ParseException(StreamPosition position, String message) {
+            super(message);
+            this.position = position;
+            this.errorText = position == null ? message : position.makeErrorText(message);
+        }
+
+        public String getErrorText() {
+            return errorText;
+        }
+
+        public StreamPosition getPosition() {
+            return position;
         }
     }
 }

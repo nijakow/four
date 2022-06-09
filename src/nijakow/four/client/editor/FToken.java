@@ -1,13 +1,12 @@
 package nijakow.four.client.editor;
 
-import nijakow.four.share.lang.base.parser.StreamPosition;
+import nijakow.four.smalltalk.parser.StreamPosition;
 
 public final class FToken {
     private final FTokenType type;
     private final StreamPosition startPos;
     private final StreamPosition endPos;
     private final Object payload;
-
 
     public FToken(FTokenType type, StreamPosition startPos, Object payload, StreamPosition endPos) {
         this.type = type;
