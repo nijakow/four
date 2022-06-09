@@ -1,4 +1,54 @@
 String
+<<<
+size
+[
+  ^ <primitive:string/size>
+]
+---
+at: index
+[
+  ^ <primitive:string/at:>
+]
+---
+from: from to: to
+[
+  ^ <primitive:string/from:to:>
+]
+---
+char+ c
+[
+  ^ <primitive:string/charplus:>
+]
+---
+compile
+[
+  ^ <primitive:string/compile>
+]
+---
+asSymbol
+[
+  ^ <primitive:string/asSymbol>
+]
+---
+< other
+[
+  ^ <primitive:string/less:>
+]
+---
+<= other
+[
+  ^ [ self < other ] or: [ self = other ]
+]
+---
+> other
+[
+  ^ (self <= other) not
+]
+---
+>= other
+[
+  ^ (self < other) not
+]
 ---
 writeOn: w
 [

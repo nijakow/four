@@ -263,17 +263,17 @@ public class World {
         characterClass.addMethod("<", (fiber, args) -> fiber.setAccu(STBoolean.get(args[0].asCharacter().getValue() < args[1].asCharacter().getValue())));*/
 
         setValue("String", stringClass);
-        stringClass.addMethod("size", (fiber, args) -> fiber.setAccu(STInteger.get((args[0].asString().getValue().length()))));
-        stringClass.addMethod("at:", (fiber, args) -> fiber.setAccu(STCharacter.get((args[0].asString().getValue().charAt(args[1].asInteger().getValue() - 1)))));
-        stringClass.addMethod("from:to:", (fiber, args) -> fiber.setAccu(new STString((args[0].asString().getValue().substring(args[1].asInteger().getValue() - 1, args[2].asInteger().getValue() - 1)))));
+        //stringClass.addMethod("size", (fiber, args) -> fiber.setAccu(STInteger.get((args[0].asString().getValue().length()))));
+        //stringClass.addMethod("at:", (fiber, args) -> fiber.setAccu(STCharacter.get((args[0].asString().getValue().charAt(args[1].asInteger().getValue() - 1)))));
+        //stringClass.addMethod("from:to:", (fiber, args) -> fiber.setAccu(new STString((args[0].asString().getValue().substring(args[1].asInteger().getValue() - 1, args[2].asInteger().getValue() - 1)))));
         stringClass.addMethod("+", (fiber, args) -> fiber.setAccu(new STString(args[0].asString().getValue() + args[1].asString().getValue())));
-        stringClass.addMethod("char+", (fiber, args) -> fiber.setAccu(new STString(args[0].asString().getValue() + args[1].asCharacter().getValue())));
-        stringClass.addMethod("compile", (fiber, args) -> fiber.setAccu(new STClosure(args[0].asString().compile(), null)));
-        stringClass.addMethod("asSymbol", (fiber, args) -> fiber.setAccu(STSymbol.get(args[0].asString().getValue())));
-        stringClass.addMethod("<", (fiber, args) -> fiber.setAccu(STBoolean.get(args[0].asString().getValue().compareTo(args[1].asString().getValue()) < 0)));
-        stringClass.addMethod("<=", (fiber, args) -> fiber.setAccu(STBoolean.get(args[0].asString().getValue().compareTo(args[1].asString().getValue()) <= 0)));
-        stringClass.addMethod(">", (fiber, args) -> fiber.setAccu(STBoolean.get(args[0].asString().getValue().compareTo(args[1].asString().getValue()) > 0)));
-        stringClass.addMethod(">=", (fiber, args) -> fiber.setAccu(STBoolean.get(args[0].asString().getValue().compareTo(args[1].asString().getValue()) >= 0)));
+        //stringClass.addMethod("char+", (fiber, args) -> fiber.setAccu(new STString(args[0].asString().getValue() + args[1].asCharacter().getValue())));
+        //stringClass.addMethod("compile", (fiber, args) -> fiber.setAccu(new STClosure(args[0].asString().compile(), null)));
+        //stringClass.addMethod("asSymbol", (fiber, args) -> fiber.setAccu(STSymbol.get(args[0].asString().getValue())));
+        //stringClass.addMethod("<", (fiber, args) -> fiber.setAccu(STBoolean.get(args[0].asString().getValue().compareTo(args[1].asString().getValue()) < 0)));
+        //stringClass.addMethod("<=", (fiber, args) -> fiber.setAccu(STBoolean.get(args[0].asString().getValue().compareTo(args[1].asString().getValue()) <= 0)));
+        //stringClass.addMethod(">", (fiber, args) -> fiber.setAccu(STBoolean.get(args[0].asString().getValue().compareTo(args[1].asString().getValue()) > 0)));
+        //stringClass.addMethod(">=", (fiber, args) -> fiber.setAccu(STBoolean.get(args[0].asString().getValue().compareTo(args[1].asString().getValue()) >= 0)));
         stringClass.addMethod("load", (fiber, args) -> {
             final Quickloader quickloader = new Quickloader(new ByteArrayInputStream(args[0].asString().getValue().getBytes(StandardCharsets.UTF_8)));
             quickloader.loadInto(fiber.getVM(), fiber.getVM().getWorld());
@@ -470,6 +470,36 @@ public class World {
         addBuiltin("char/asString", (fiber) -> fiber.setAccu(new STString(fiber.getSelf().asCharacter().getValue() + "")));
         addBuiltin("char/plus:", (fiber) -> fiber.setAccu(STCharacter.get((char) (fiber.getSelf().asCharacter().getValue() + fiber.getVariable(0).asInteger().getValue()))));
         addBuiltin("char/minus:", (fiber) -> fiber.setAccu(STCharacter.get((char) (fiber.getSelf().asCharacter().getValue() - fiber.getVariable(0).asInteger().getValue()))));
+
+        addBuiltin("string/size", (fiber) -> fiber.setAccu(STInteger.get(fiber.getSelf().asString().getValue().length())));
+        addBuiltin("string/at:", (fiber) -> fiber.setAccu(STCharacter.get(fiber.getSelf().asString().getValue().charAt(fiber.getVariable(0).asInteger().getValue() - 1))));
+        addBuiltin("string/from:to:", (fiber) -> fiber.setAccu(new STString(fiber.getSelf().asString().getValue().substring(fiber.getVariable(0).asInteger().getValue() - 1, fiber.getVariable(1).asInteger().getValue() - 1))));
+        addBuiltin("string/plus:", (fiber) -> fiber.setAccu(new STString(fiber.getSelf().asString().getValue() + fiber.getVariable(0).asString().getValue())));
+        addBuiltin("string/charplus:", (fiber) -> fiber.setAccu(new STString(fiber.getSelf().asString().getValue() + fiber.getVariable(0).asCharacter().getValue())));
+        addBuiltin("string/compile", (fiber) -> fiber.setAccu(new STClosure(fiber.getSelf().asString().compile(), null)));
+        addBuiltin("string/asSymbol", (fiber) -> fiber.setAccu(STSymbol.get(fiber.getSelf().asString().getValue())));
+        addBuiltin("string/less:", (fiber) -> fiber.setAccu(STBoolean.get(fiber.getSelf().asString().getValue().compareTo(fiber.getVariable(0).asString().getValue()) < 0)));
+        addBuiltin("string/leq:", (fiber) -> fiber.setAccu(STBoolean.get(fiber.getSelf().asString().getValue().compareTo(fiber.getVariable(0).asString().getValue()) <= 0)));
+        addBuiltin("string/load", (fiber) -> {
+            final Quickloader quickloader = new Quickloader(new ByteArrayInputStream(fiber.getSelf().asString().getValue().getBytes(StandardCharsets.UTF_8)));
+            quickloader.loadInto(fiber.getVM(), fiber.getVM().getWorld());
+            fiber.setAccu(STBoolean.getTrue());
+        });
+        addBuiltin("string/openResource", (fiber) -> {
+            final BufferedReader reader = new BufferedReader(new InputStreamReader(this.getClass().getResourceAsStream(fiber.getSelf().asString().getValue())));
+            final StringBuilder contents = new StringBuilder();
+            while (true) {
+                int i = 0;
+                try {
+                    i = reader.read();
+                } catch (IOException e) {
+                    break;
+                }
+                if (i < 0) break;
+                contents.append((char) i);
+            }
+            fiber.setAccu(new STString(contents.toString()));
+        });
     }
 
     public BasicBuiltin getBuiltinFor(STSymbol symbol) {
