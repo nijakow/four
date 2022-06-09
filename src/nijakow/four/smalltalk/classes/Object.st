@@ -41,6 +41,11 @@ not
   ^ (self = other) not
 ]
 ---
+ifNil: aBlock
+[
+  ^ (self = nil) ifTrue: [ aBlock value ]
+]
+---
 throw
 [
     <primitive:throw>

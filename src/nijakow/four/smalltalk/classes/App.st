@@ -15,3 +15,10 @@ exec: app
 [
   ^ app run
 ]
+---
+App class
+<<<
+launch
+[
+  ^ (self new) run
+]
