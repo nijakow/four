@@ -40,6 +40,10 @@ public abstract class Commands {
 		public static final KeyStroke ENTER = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0);
 	}
 
+	public abstract static class Strings {
+		public static final String TITLE = "Nijakow's \"Four\"";
+	}
+
 	public abstract static class Styles {
 		public static final String STYLE_BOLD        = "BOLD";
 		public static final String STYLE_NORMAL      = "RESET";

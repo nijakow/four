@@ -55,6 +55,7 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 	private boolean reconnect;
 	private boolean bother;
 	private boolean wasSpecial;
+	private boolean editorShowing;
 	private FStyle current;
 	private ScheduledFuture<?> reconnectorHandler;
 	private final ScheduledExecutorService queue;
@@ -98,7 +99,7 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 	};
 	
 	public ClientWindow(String hostname, int[] ports) {
-		super("Nijakow's \"Four\"");
+		super(Commands.Strings.TITLE);
 		final Font font = new Font("Monospaced", Font.PLAIN, 14);
 		buffer = "";
 		bother = true;
@@ -717,6 +718,20 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 		dialog.setVisible(true);
 	}
 
+	private void switchToMainView(String oldTitle) {
+		invalidate();
+		getContentPane().removeAll();
+		getContentPane().add(mainPanel);
+		setTitle(oldTitle);
+		validate();
+		repaint();
+		if (smalltalk.isVisible()) {
+			smalltalk.requestFocusInWindow();
+		} else if (prompt.isVisible()) {
+			prompt.requestFocusInWindow();
+		}
+	}
+
 	private void openEditor(String id, String title, String content) {
 		invalidate();
 		ClientEditor editor = new ClientEditor(connection, id, content, this);
@@ -726,20 +741,13 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 		getContentPane().add(editor);
 		editor.toggleMode(prefs.getDarkMode());
 		editor.setCallback(() -> {
-			invalidate();
-			getContentPane().removeAll();
-			getContentPane().add(mainPanel);
-			setTitle(oldTitle);
-			validate();
-			repaint();
-			if (smalltalk.isVisible()) {
-				smalltalk.requestFocusInWindow();
-			} else if (prompt.isVisible()) {
-				prompt.requestFocusInWindow();
-			}
+			switchToMainView(oldTitle);
+			editorShowing = false;
 		});
 		validate();
+		repaint();
 		editor.requestFocusInWindow();
+		editorShowing = true;
 	}
 	
 	@Override
@@ -766,7 +774,7 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 	@Override
 	public void connectionLost(ClientConnection connection) {
 		EventQueue.invokeLater(() -> {
-			// FIXME Find out if the editor is still showing!
+			if (editorShowing) switchToMainView(Commands.Strings.TITLE);
 			prompt.setText(" Connection closed. ");
 			prompt.setEnabled(false);
 			pwf.setVisible(false);
