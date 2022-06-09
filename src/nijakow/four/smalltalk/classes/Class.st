@@ -11,6 +11,31 @@ name | glv
   ^ nil
 ]
 ---
+instances
+[
+  ^ <primitive:class/instances>
+]
+---
+superclass
+[
+  ^ <primitive:class/superclass>
+]
+---
+instanceVariables
+[
+  ^ <primitive:class/instanceVariables>
+]
+---
+category
+[
+  ^ <primitive:class/category>
+]
+---
+category: newCategory
+[
+  ^ <primitive:class/category:>
+]
+---
 methods | md
 [
     md := Dictionary new.

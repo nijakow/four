@@ -148,35 +148,37 @@ public class World {
         metaClass.addMethod("new", (fiber, args) -> {
             fiber.enter(args[0].asClass().instantiate(), "init", new STInstance[]{});
         });
-        metaClass.addMethod("instances", (fiber, args) -> {
+        /*metaClass.addMethod("instances", (fiber, args) -> {
             STInstance[] instances = STInstance.allInstancesOf(args[0].asClass(), fiber.getVM().getWorld());
             fiber.setAccu(new STArray(instances));
-        });
-        metaClass.addMethod("superclass", (fiber, args) -> {
+        });*/
+        /*metaClass.addMethod("superclass", (fiber, args) -> {
             STClass parent = args[0].asClass().getSuperClass();
             if (parent == null)
                 fiber.setAccu(STNil.get());
             else
                 fiber.setAccu(parent);
-        });
-        metaClass.addMethod("subclass:", (fiber, args) -> {
+        });*/
+        /*metaClass.addMethod("subclass:", (fiber, args) -> {
             final STSymbol name = args[1].asSymbol();
             STClass clazz = args[0].asClass().subclass(fiber.getVM().getWorld());
             fiber.getVM().getWorld().setValue(name, clazz);
             fiber.setAccu(clazz);
-        });
-        metaClass.addMethod("instanceVariables", (fiber, args) -> {
+        });*/
+        metaClass.addMethodFromSource("subclass: name\n[\n  ^ <primitive:class/subclass:>\n]\n");
+        /*metaClass.addMethod("instanceVariables", (fiber, args) -> {
             fiber.setAccu(new STArray(args[0].asClass().getInstanceVariableNames()));
-        });
-        metaClass.addMethod("instanceVariableNames:", (fiber, args) -> {
+        });*/
+        /*metaClass.addMethod("instanceVariableNames:", (fiber, args) -> {
             args[0].asClass().setInstanceVariableNames(args[1].asString().getValue());
-        });
-        metaClass.addMethod("category", (fiber, args) -> {
+        });*/
+        metaClass.addMethodFromSource("instanceVariableNames: vars\n[\n    <primitive:class/instanceVariableNames:>.\n  ^ self\n]\n");
+        /*metaClass.addMethod("category", (fiber, args) -> {
             fiber.setAccu(args[0].asClass().getPackage());
-        });
-        metaClass.addMethod("category:", (fiber, args) -> {
+        });*/
+        /*metaClass.addMethod("category:", (fiber, args) -> {
             args[0].asClass().setPackage(args[1]);
-        });
+        });*/
         metaClass.addMethod("method:", (fiber, args) -> {
             STMethod method = args[0].asClass().getMethod(args[1].asSymbol());
             if (method == null || method.asInstance() == null)
@@ -434,6 +436,19 @@ public class World {
         addBuiltin("toString", (fiber) -> fiber.setAccu(new STString(fiber.getSelf().toString())));
         addBuiltin("=", (fiber) -> fiber.setAccu(STBoolean.get(fiber.getSelf().is(fiber.getVariable(0)))));
         addBuiltin("throw", (fiber) -> fiber.throwValue(fiber.getSelf()));
+
+        addBuiltin("class/instances", (fiber) -> fiber.setAccu(new STArray(STInstance.allInstancesOf(fiber.getSelf().asClass(), fiber.getWorld()))));
+        addBuiltin("class/superclass", (fiber) -> fiber.setAccu(STNil.wrap(fiber.getSelf().asClass().getSuperClass())));
+        addBuiltin("class/subclass:", (fiber) -> {
+            final STSymbol name = fiber.getVariable(0).asSymbol();
+            STClass clazz = fiber.getSelf().asClass().subclass(fiber.getVM().getWorld());
+            fiber.getVM().getWorld().setValue(name, clazz);
+            fiber.setAccu(clazz);
+        });
+        addBuiltin("class/instanceVariables", (fiber) -> fiber.setAccu(new STArray(fiber.getSelf().asClass().getInstanceVariableNames())));
+        addBuiltin("class/instanceVariableNames:", (fiber) -> fiber.getSelf().asClass().setInstanceVariableNames(fiber.getVariable(0).asString().getValue()));
+        addBuiltin("class/category", (fiber) -> fiber.setAccu(fiber.getSelf().asClass().getPackage()));
+        addBuiltin("class/category:", (fiber) -> fiber.getSelf().asClass().setPackage(fiber.getVariable(0)));
     }
 
     public BasicBuiltin getBuiltinFor(STSymbol symbol) {
