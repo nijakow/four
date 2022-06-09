@@ -36,11 +36,36 @@ category: newCategory
   ^ <primitive:class/category:>
 ]
 ---
+method: name
+[
+  ^ <primitive:class/method:>
+]
+---
+>> name
+[
+  ^ self method: name
+]
+---
 methods | md
 [
     md := Dictionary new.
     self selectors do: [ :sel | md at: sel put: (self method: sel) ].
   ^ md
+]
+---
+addMethod: source
+[
+  ^ <primitive:class/addMethod:>
+]
+---
+removeMethod: name
+[
+  ^ <primitive:class/removeMethod:>
+]
+---
+selectors
+[
+  ^ <primitive:class/selectors>
 ]
 ---
 edit: name | text
@@ -81,6 +106,11 @@ saveTo: w | n
             ]
         ].
     ]
+]
+---
+handle: block do: handler
+[
+  ^ <primitive:class/handle:do:>
 ]
 ---
 Class class

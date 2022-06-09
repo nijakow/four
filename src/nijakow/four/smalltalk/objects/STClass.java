@@ -141,6 +141,12 @@ public class STClass extends STInstance {
         return methods.get(name);
     }
 
+    public STInstance getMethodAsInstance(STSymbol name) {
+        STMethod m = getMethod(name);
+        if (m == null) return STNil.get();
+        else           return m.asInstance();
+    }
+
     public STMethod findMethod(STSymbol name) {
         STMethod method = methods.get(name);
         if (method == null)

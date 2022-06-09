@@ -177,32 +177,32 @@ public class World {
         /*metaClass.addMethod("category:", (fiber, args) -> {
             args[0].asClass().setPackage(args[1]);
         });*/
-        metaClass.addMethod("method:", (fiber, args) -> {
+        /*metaClass.addMethod("method:", (fiber, args) -> {
             STMethod method = args[0].asClass().getMethod(args[1].asSymbol());
             if (method == null || method.asInstance() == null)
                 fiber.setAccu(STNil.get());
             else
                 fiber.setAccu(method.asInstance());
         });
-        metaClass.addMethodFromSource(">> m\n[\n  ^ self method: m\n]\n");
-        metaClass.addMethod("addMethod:", (fiber, args) -> {
+        metaClass.addMethodFromSource(">> m\n[\n  ^ self method: m\n]\n");*/
+        /*metaClass.addMethod("addMethod:", (fiber, args) -> {
             if (args[1] != STNil.get())
                 args[0].asClass().addMethodFromSource(args[1].asString().getValue());
         });
         metaClass.addMethod("removeMethod:", (fiber, args) -> {
             args[0].asClass().removeMethod(args[1].asSymbol());
-        });
-        metaClass.addMethod("selectors", (fiber, args) -> {
+        });*/
+        /*metaClass.addMethod("selectors", (fiber, args) -> {
             STSymbol[] selectors = args[0].asClass().getSelectors();
             STArray result = new STArray(selectors);
             fiber.setAccu(result);
-        });
-        metaClass.addMethod("handle:do:", (fiber, args) -> {
+        });*/
+        /*metaClass.addMethod("handle:do:", (fiber, args) -> {
             fiber.loadSelf();
             fiber.push();
             args[1].asClosure().execute(fiber, 0);
             fiber.top().setHandler(args[0].asClass(), args[2].asClosure());
-        });
+        });*/
 
         collectionClass = objectClass.subclass(this);
         sequenceableCollectionClass = collectionClass.subclass(this);
@@ -447,6 +447,18 @@ public class World {
         addBuiltin("class/instanceVariableNames:", (fiber) -> fiber.getSelf().asClass().setInstanceVariableNames(fiber.getVariable(0).asString().getValue()));
         addBuiltin("class/category", (fiber) -> fiber.setAccu(fiber.getSelf().asClass().getCategory()));
         addBuiltin("class/category:", (fiber) -> fiber.getSelf().asClass().setCategory(fiber.getVariable(0)));
+        addBuiltin("class/method:", (fiber) -> fiber.setAccu(STNil.wrap(fiber.getSelf().asClass().getMethodAsInstance(fiber.getVariable(0).asSymbol()))));
+        addBuiltin("class/addMethod:", (fiber) -> fiber.getSelf().asClass().addMethodFromSource(fiber.getVariable(0).asString().getValue()));
+        addBuiltin("class/removeMethod:", (fiber) -> fiber.getSelf().asClass().removeMethod(fiber.getVariable(0).asSymbol()));
+        addBuiltin("class/selectors", (fiber) -> fiber.setAccu(new STArray(fiber.getSelf().asClass().getSelectors())));
+        addBuiltin("class/handle:do:", (fiber) -> {
+            final STInstance self = fiber.getSelf();
+            final STInstance handler = fiber.getVariable(1);
+            fiber.loadSelf();
+            fiber.push();
+            fiber.getVariable(0).asClosure().execute(fiber, 0);
+            fiber.top().setHandler(self.asClass(), handler.asClosure());
+        });
     }
 
     public BasicBuiltin getBuiltinFor(STSymbol symbol) {
