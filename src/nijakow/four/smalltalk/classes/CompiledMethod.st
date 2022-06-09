@@ -1,9 +1,11 @@
 CompiledMethod
 <<<
+edit
+[
+    self holdingClass edit: self name
+]
+---
 browse
 [
-    "TODO: Fire up Apps/MethodBrowser"
-    Transcript cr;
-        out: 'The method '; store: self name; cr.
-  ^ nil
+    Apps/Browser/MethodBrowser browse: self
 ]

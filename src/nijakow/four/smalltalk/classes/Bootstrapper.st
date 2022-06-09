@@ -58,6 +58,8 @@ run
          load: 'ui/Menu.st';
          load: 'apps/Shell.st';
          load: 'apps/browser/Browser.st';
-         load: 'apps/browser/ClassBrowser.st'.
+         load: 'apps/browser/AbstractObjectBrowser.st';
+         load: 'apps/browser/ClassBrowser.st';
+         load: 'apps/browser/MethodBrowser.st'.
     self setupColors.
 ]
