@@ -57,6 +57,7 @@ run
          load: 'App.st';
          load: 'ui/Menu.st';
          load: 'apps/Shell.st';
-         load: 'apps/browser/Browser.st'.
+         load: 'apps/browser/Browser.st';
+         load: 'apps/browser/ClassBrowser.st'.
     self setupColors.
 ]

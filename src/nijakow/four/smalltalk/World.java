@@ -470,6 +470,7 @@ public class World {
         addBuiltin("char/asString", (fiber) -> fiber.setAccu(new STString(fiber.getSelf().asCharacter().getValue() + "")));
         addBuiltin("char/plus:", (fiber) -> fiber.setAccu(STCharacter.get((char) (fiber.getSelf().asCharacter().getValue() + fiber.getVariable(0).asInteger().getValue()))));
         addBuiltin("char/minus:", (fiber) -> fiber.setAccu(STCharacter.get((char) (fiber.getSelf().asCharacter().getValue() - fiber.getVariable(0).asInteger().getValue()))));
+        addBuiltin("char/less:", (fiber) -> fiber.setAccu(STBoolean.get(fiber.getSelf().asCharacter().getValue() < fiber.getVariable(0).asCharacter().getValue())));
 
         addBuiltin("string/size", (fiber) -> fiber.setAccu(STInteger.get(fiber.getSelf().asString().getValue().length())));
         addBuiltin("string/at:", (fiber) -> fiber.setAccu(STCharacter.get(fiber.getSelf().asString().getValue().charAt(fiber.getVariable(0).asInteger().getValue() - 1))));

@@ -17,12 +17,12 @@ runOnce | i selection
 [
     i := 1.
     entries do: [ :each |
-        Transcript out: i; out: ') '; out: each key; cr.
+        Transcript out: '  '; out: i; out: ') '; out: each key; cr.
         i := i + 1.
     ].
     selection := (Transcript prompt: 'Choice > ') trim parseInt.
     ([ selection != nil ] and: [ selection between: 1 and: i - 1 ]) ifTrue: [
-        ^ (entries at: selection) value
+        ^ (entries at: selection) value value: selection
     ].
   ^ nil
 ]

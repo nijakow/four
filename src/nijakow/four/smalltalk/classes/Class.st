@@ -48,9 +48,9 @@ method: name
 ---
 methods | md
 [
-    md := Dictionary new.
-    self selectors do: [ :sel | md at: sel put: (self method: sel) ].
-  ^ md
+    md := Vector new.
+    self selectors do: [ :sel | md add: (self method: sel) ].
+  ^ md asArray
 ]
 ---
 addMethod: source
@@ -111,6 +111,11 @@ saveTo: w | n
 handle: block do: handler
 [
   ^ <primitive:class/handle:do:>
+]
+---
+browse
+[
+  ^ Apps/Browser/ClassBrowser browse: self
 ]
 ---
 Class class

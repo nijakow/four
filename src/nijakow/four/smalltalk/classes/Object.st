@@ -46,6 +46,11 @@ ifNil: aBlock
   ^ (self = nil) ifTrue: [ aBlock value ]
 ]
 ---
+ifNotNil: aBlock
+[
+  ^ (self != nil) ifTrue: [ aBlock value ]
+]
+---
 throw
 [
     <primitive:throw>
@@ -70,4 +75,10 @@ storeOn: w
 -> other
 [
   ^ Association key: self value: other
+]
+---
+browse
+[
+    "TODO: Fire up Apps/InstanceBrowser"
+  ^ nil
 ]

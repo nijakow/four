@@ -20,6 +20,11 @@ asString
   ^ <primitive:char/minus:>
 ]
 ---
+< other
+[
+  ^ <primitive:char/less:>
+]
+---
 isWhitespace
 [
   ^   (self = $\s);
