@@ -97,7 +97,7 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 			}
 		}
 	};
-	
+
 	public ClientWindow(String hostname, int[] ports) {
 		super(Commands.Strings.TITLE);
 		final Font font = new Font("Monospaced", Font.PLAIN, 14);
@@ -261,9 +261,10 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 			queue.schedule(() -> {
 				try {
 					smallSyntaxDoc.setTheme(new GenericTheme(new File(theme)));
-				} catch (IOException | ParseException e) {
+				} catch (IOException | GenericTheme.ParseException e) {
 					JOptionPane.showMessageDialog(this, "Could not open theme file: " + theme + "!\n" +
-									"\nSwitching to default theme...",
+									(e instanceof GenericTheme.ParseException ? ((GenericTheme.ParseException) e).getErrorText() : "") +
+                             "\nSwitching to default theme...",
 							"File error", JOptionPane.ERROR_MESSAGE);
 					smallSyntaxDoc.setTheme(null);
 					prefs.setEditorTheme(Commands.Themes.DEFAULT);
@@ -272,6 +273,7 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 		} else if (!(smallSyntaxDoc.getTheme() instanceof DefaultTheme)) {
 			smallSyntaxDoc.setTheme(null);
 		}
+		// FIXME Still not linked correctly!
 	}
 
 	private void toggleMode(boolean dark) {
@@ -323,7 +325,7 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 			pane.setViewportView(wrap);
 		}
 	}
-	
+
 	public void setVisible(boolean visible) {
 		super.setVisible(visible);
 		if (prompt.isVisible())
@@ -339,14 +341,14 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 		closeConnection();
 		super.dispose();
 	}
-	
+
 	private void closeConnection() {
 		reconnectorHandler.cancel(true);
 		if (connection != null)
 			connection.close();
 		bother = true;
 	}
-	
+
 	private void openSettingsWindow() {
 		JDialog settingsWindow = new JDialog(this, "Four: Settings", true);
 		settingsWindow.getContentPane().setLayout(new BoxLayout(settingsWindow.getContentPane(), BoxLayout.Y_AXIS));
@@ -770,7 +772,7 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 		editor.requestFocusInWindow();
 		editorShowing = true;
 	}
-	
+
 	@Override
 	public void charReceived(ClientConnection connection, char c) {
 		EventQueue.invokeLater(() -> {
@@ -791,7 +793,7 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 			}
 		});
 	}
-	
+
 	@Override
 	public void connectionLost(ClientConnection connection) {
 		EventQueue.invokeLater(() -> {
@@ -806,7 +808,7 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 			reconnectButton.requestFocusInWindow();
 		});
 	}
-	
+
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		JTextField tmp = prompt;
@@ -863,7 +865,7 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 				break;
 		}
 	}
-	
+
 	public static void openWindow(String hostname, int[] ports) {
 		EventQueue.invokeLater(() -> new ClientWindow(hostname, ports).setVisible(true));
 	}
