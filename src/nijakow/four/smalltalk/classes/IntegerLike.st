@@ -1,5 +1,25 @@
 IntegerLike
 <<<
+< other
+[
+    self subclassResponsibility
+]
+---
+<= other
+[
+  ^ (self < other) or: (self = other)
+]
+---
+> other
+[
+  ^ (self <= other) not
+]
+---
+>= other
+[
+  ^ (self < other) not
+]
+---
 to: upper
 [
   ^ Interval from: self to: upper

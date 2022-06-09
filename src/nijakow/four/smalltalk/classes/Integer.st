@@ -1,5 +1,10 @@
 Integer
 <<<
+asChar
+[
+  ^ <primitive:integer/asChar>
+]
+---
 asInt
 [
   ^ self
@@ -68,21 +73,6 @@ rightShift: other
 < other
 [
   ^ <primitive:integer/less:>
-]
----
-<= other
-[
-  ^ (self < other) or: (self = other)
-]
----
-> other
-[
-  ^ (self <= other) not
-]
----
->= other
-[
-  ^ (self < other) not
 ]
 ---
 writeOn: w

@@ -236,8 +236,8 @@ public class World {
         setValue("Number", numberClass);
         setValue("IntegerLike", integerLikeClass);
         setValue("Integer", integerClass);
-        integerClass.addMethod("asChar", (fiber, args) -> fiber.setAccu(STCharacter.get((char) args[0].asInteger().getValue())));
-        /*integerClass.addMethod("+", (fiber, args) -> fiber.setAccu(STInteger.get(args[0].asInteger().getValue() + args[1].asInteger().getValue())));
+        /*integerClass.addMethod("asChar", (fiber, args) -> fiber.setAccu(STCharacter.get((char) args[0].asInteger().getValue())));
+        integerClass.addMethod("+", (fiber, args) -> fiber.setAccu(STInteger.get(args[0].asInteger().getValue() + args[1].asInteger().getValue())));
         integerClass.addMethod("-", (fiber, args) -> fiber.setAccu(STInteger.get(args[0].asInteger().getValue() - args[1].asInteger().getValue())));
         integerClass.addMethod("*", (fiber, args) -> fiber.setAccu(STInteger.get(args[0].asInteger().getValue() * args[1].asInteger().getValue())));
         integerClass.addMethod("/", (fiber, args) -> fiber.setAccu(STInteger.get(args[0].asInteger().getValue() / args[1].asInteger().getValue())));
@@ -255,15 +255,12 @@ public class World {
         integerClass.addMethod(">=", (fiber, args) -> fiber.setAccu(STBoolean.get(args[0].asInteger().getValue() >= args[1].asInteger().getValue())));*/
 
         setValue("Character", characterClass);
-        characterClass.addMethod("asInt", (fiber, args) -> fiber.setAccu(STInteger.get(args[0].asCharacter().getValue())));
+        /*characterClass.addMethod("asInt", (fiber, args) -> fiber.setAccu(STInteger.get(args[0].asCharacter().getValue())));
         characterClass.addMethod("asString", (fiber, args) -> fiber.setAccu(new STString("" + args[0].asCharacter().getValue())));
         characterClass.addMethod("isWhitespace", (fiber, args) -> fiber.setAccu(STBoolean.get(Character.isWhitespace(args[0].asCharacter().getValue()))));
         characterClass.addMethod("+", (fiber, args) -> fiber.setAccu(STCharacter.get((char) (args[0].asCharacter().getValue() + args[1].asInteger().getValue()))));
         characterClass.addMethod("-", (fiber, args) -> fiber.setAccu(STCharacter.get((char) (args[0].asCharacter().getValue() - args[1].asInteger().getValue()))));
-        characterClass.addMethod("<", (fiber, args) -> fiber.setAccu(STBoolean.get(args[0].asCharacter().getValue() < args[1].asCharacter().getValue())));
-        characterClass.addMethod("<=", (fiber, args) -> fiber.setAccu(STBoolean.get(args[0].asCharacter().getValue() <= args[1].asCharacter().getValue())));
-        characterClass.addMethod(">", (fiber, args) -> fiber.setAccu(STBoolean.get(args[0].asCharacter().getValue() > args[1].asCharacter().getValue())));
-        characterClass.addMethod(">=", (fiber, args) -> fiber.setAccu(STBoolean.get(args[0].asCharacter().getValue() >= args[1].asCharacter().getValue())));
+        characterClass.addMethod("<", (fiber, args) -> fiber.setAccu(STBoolean.get(args[0].asCharacter().getValue() < args[1].asCharacter().getValue())));*/
 
         setValue("String", stringClass);
         stringClass.addMethod("size", (fiber, args) -> fiber.setAccu(STInteger.get((args[0].asString().getValue().length()))));
@@ -455,6 +452,7 @@ public class World {
             fiber.top().setHandler(self.asClass(), handler.asClosure());
         });
 
+        addBuiltin("integer/asChar", (fiber) -> fiber.setAccu(STCharacter.get((char) fiber.getSelf().asInteger().getValue())));
         addBuiltin("integer/plus:", (fiber) -> fiber.setAccu(STInteger.get(fiber.getSelf().asInteger().getValue() + fiber.getVariable(0).asInteger().getValue())));
         addBuiltin("integer/minus:", (fiber) -> fiber.setAccu(STInteger.get(fiber.getSelf().asInteger().getValue() - fiber.getVariable(0).asInteger().getValue())));
         addBuiltin("integer/mul:", (fiber) -> fiber.setAccu(STInteger.get(fiber.getSelf().asInteger().getValue() * fiber.getVariable(0).asInteger().getValue())));
@@ -467,6 +465,11 @@ public class World {
         addBuiltin("integer/leftShift:", (fiber) -> fiber.setAccu(STInteger.get(fiber.getSelf().asInteger().getValue() << fiber.getVariable(0).asInteger().getValue())));
         addBuiltin("integer/rightShift:", (fiber) -> fiber.setAccu(STInteger.get(fiber.getSelf().asInteger().getValue() >> fiber.getVariable(0).asInteger().getValue())));
         addBuiltin("integer/less:", (fiber) -> fiber.setAccu(STBoolean.get(fiber.getSelf().asInteger().getValue() < fiber.getVariable(0).asInteger().getValue())));
+
+        addBuiltin("char/asInt", (fiber) -> fiber.setAccu(STInteger.get(fiber.getSelf().asCharacter().getValue())));
+        addBuiltin("char/asString", (fiber) -> fiber.setAccu(new STString(fiber.getSelf().asCharacter().getValue() + "")));
+        addBuiltin("char/plus:", (fiber) -> fiber.setAccu(STCharacter.get((char) (fiber.getSelf().asCharacter().getValue() + fiber.getVariable(0).asInteger().getValue()))));
+        addBuiltin("char/minus:", (fiber) -> fiber.setAccu(STCharacter.get((char) (fiber.getSelf().asCharacter().getValue() - fiber.getVariable(0).asInteger().getValue()))));
     }
 
     public BasicBuiltin getBuiltinFor(STSymbol symbol) {

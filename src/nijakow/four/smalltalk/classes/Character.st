@@ -1,4 +1,32 @@
 Character
+<<<
+asInt
+[
+  ^ <primitive:char/asInt>
+]
+---
+asString
+[
+  ^ <primitive:char/asString>
+]
+---
++ other
+[
+  ^ <primitive:char/plus:>
+]
+---
+- other
+[
+  ^ <primitive:char/minus:>
+]
+---
+isWhitespace
+[
+  ^   (self = $\s);
+  or: (self = $\t);
+  or: (self = $\n);
+  or: (self = $\r).
+]
 ---
 writeOn: w
 [
