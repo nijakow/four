@@ -7,7 +7,6 @@ import nijakow.four.smalltalk.objects.method.STMethod;
 import nijakow.four.smalltalk.parser.ParseException;
 import nijakow.four.smalltalk.vm.BasicBuiltin;
 import nijakow.four.smalltalk.vm.Builtin;
-import nijakow.four.smalltalk.vm.Fiber;
 import nijakow.four.smalltalk.vm.Quickloader;
 
 import java.io.BufferedReader;
@@ -19,7 +18,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Consumer;
 
 public class World {
     private final Map<STSymbol, STInstance> bindings = new HashMap<>();
@@ -447,8 +445,8 @@ public class World {
         });
         addBuiltin("class/instanceVariables", (fiber) -> fiber.setAccu(new STArray(fiber.getSelf().asClass().getInstanceVariableNames())));
         addBuiltin("class/instanceVariableNames:", (fiber) -> fiber.getSelf().asClass().setInstanceVariableNames(fiber.getVariable(0).asString().getValue()));
-        addBuiltin("class/category", (fiber) -> fiber.setAccu(fiber.getSelf().asClass().getPackage()));
-        addBuiltin("class/category:", (fiber) -> fiber.getSelf().asClass().setPackage(fiber.getVariable(0)));
+        addBuiltin("class/category", (fiber) -> fiber.setAccu(fiber.getSelf().asClass().getCategory()));
+        addBuiltin("class/category:", (fiber) -> fiber.getSelf().asClass().setCategory(fiber.getVariable(0)));
     }
 
     public BasicBuiltin getBuiltinFor(STSymbol symbol) {
