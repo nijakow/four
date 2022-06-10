@@ -313,6 +313,7 @@ public class FThemeEditor extends JDialog {
         });
         flPanel.add(flDesc);
         flPanel.add(fl);
+        fl.setEnabled(false);            // TODO: Needs possibility to be read from a file in order to be activated!
         otherPanel.add(flPanel);
         alignmentPanel = new JPanel(new GridLayout(2, 1));
         alignmentDesc = new JLabel("Alignment:");
@@ -632,7 +633,7 @@ public class FThemeEditor extends JDialog {
         bidi.setEnabled(enabled);
         size.setEnabled(enabled);
         fam.setEnabled(enabled);
-        fl.setEnabled(enabled);
+        //fl.setEnabled(enabled);          // TODO: Needs possibility to be read from a file in order to be activated!
         alignment.setEnabled(enabled);
         backIn.setEnabled(enabled);
         foreIn.setEnabled(enabled);
