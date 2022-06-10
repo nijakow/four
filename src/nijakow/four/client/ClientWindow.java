@@ -28,7 +28,6 @@ import nijakow.four.client.net.ClientConnection;
 import nijakow.four.client.net.ClientConnectionListener;
 import nijakow.four.client.utils.StringHelper;
 import nijakow.four.client.utils.UIHelper;
-import nijakow.four.smalltalk.parser.ParseException;
 
 public class ClientWindow extends JFrame implements ActionListener, ClientConnectionListener {
 	private static final long serialVersionUID = 1L;

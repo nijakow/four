@@ -16,7 +16,6 @@ import javax.swing.text.*;
 import nijakow.four.client.Commands;
 import nijakow.four.client.PreferencesHelper;
 import nijakow.four.client.net.ClientConnection;
-import nijakow.four.smalltalk.parser.ParseException;
 
 public class ClientEditor extends JPanel implements ActionListener {
 	private static final long serialVersionUID = 1L;
