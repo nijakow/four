@@ -9,15 +9,14 @@ import java.util.LinkedList;
 import java.util.List;
 
 import static nijakow.four.client.editor.WritableTheme.Types.*;
-
 public class WritableTheme extends FTheme {
-    private final List<FStyle> styles;
+    private final List<TokenStyle> styles;
 
     public WritableTheme() {
         styles = new LinkedList<>();
     }
 
-    private String styleToText(FStyle style) {
+    private String styleToText(TokenStyle style) {
         final StringBuilder builder = new StringBuilder();
         if (style.getParent() != null && !styles.contains(style.getParent())) {
             builder.append(styleToText(style.getParent()))
@@ -114,7 +113,7 @@ public class WritableTheme extends FTheme {
     private String generateText() {
         StringBuilder builder = new StringBuilder();
         styles.clear();
-        for (FStyle style : getAllStyles()) {
+        for (TokenStyle style : getAllStyles()) {
             if (!styles.contains(style)) builder.append(styleToText(style)).append("\n\n");
         }
         return builder.toString();

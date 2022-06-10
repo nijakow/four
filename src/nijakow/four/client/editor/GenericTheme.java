@@ -13,7 +13,7 @@ import static nijakow.four.client.editor.WritableTheme.Types.*;
 
 public class GenericTheme extends WritableTheme {
     private final StringCharacterStream stream;
-    private final List<FStyle> styles;
+    private final List<TokenStyle> styles;
 
     public GenericTheme(File file) throws IOException, ParseException {
         stream = new StringCharacterStream(readFile(file));
@@ -40,8 +40,8 @@ public class GenericTheme extends WritableTheme {
         while (stream.hasNext() && Character.isWhitespace(stream.peek())) stream.read();
     }
 
-    private FStyle findStyle(TokenType type) {
-        for (FStyle style : styles) {
+    private TokenStyle findStyle(TokenType type) {
+        for (TokenStyle style : styles) {
             if (style.getTokenType() == type) {
                 return style;
             }
@@ -72,10 +72,10 @@ public class GenericTheme extends WritableTheme {
         }
     }
 
-    private FStyle parseFStyle() throws ParseException {
+    private TokenStyle parseTokenStyle() throws ParseException {
         FToken token = nextToken();
         expect(token, FTokenType.IDENTIFIER);
-        FStyle fStyle = new FStyle(TokenType.valueOf((String) token.getPayload()));
+        TokenStyle fStyle = new TokenStyle(TokenType.valueOf((String) token.getPayload()));
         if ((token = nextToken()).getType() == FTokenType.COLON) {
             FStyle parent = findStyle(TokenType.valueOf((String) (token = nextToken()).getPayload()));
             if (parent == null) throw new ParseException(token.getStartPos(), "Parent not found!");
@@ -157,11 +157,11 @@ public class GenericTheme extends WritableTheme {
         while ((t = nextToken()).getType() != FTokenType.EOF) {
             switch (t.getType()) {
                 case COMMENT: continue;
-                case TYPE: styles.add(parseFStyle()); break;
+                case TYPE: styles.add(parseTokenStyle()); break;
                 default: throw new ParseException(t.getStartPos(), "Expected a style declaration!");
             }
         }
-        for (FStyle style : styles) addStyle(style.getTokenType(), style);
+        for (TokenStyle style : styles) addStyle(style.getTokenType(), style);
     }
 
     private String parseComment() {
