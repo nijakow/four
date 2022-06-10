@@ -1,7 +1,5 @@
 package nijakow.four.client.editor;
 
-import nijakow.four.smalltalk.parser.TokenType;
-
 import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
@@ -21,11 +19,10 @@ public class FStyle {
     private Color background;
     private Color foreground;
     private FStyle parent;
-    private TokenType tokenType;
     private Style cached;
 
     public FStyle() {
-        this((TokenType) null);
+        this((FStyle) null);
     }
 
     public FStyle(Style style) {
@@ -71,16 +68,10 @@ public class FStyle {
             background = original.background;
             foreground = original.foreground;
         }
-        setTokenType(original.getTokenType());
         cached = null;
     }
 
-    public FStyle(TokenType tokenType) {
-        this(tokenType, null);
-    }
-
-    public FStyle(TokenType tokenType, FStyle parent) {
-        this.tokenType = tokenType;
+    public FStyle(FStyle parent) {
         setParent(parent);
         bold = null;
         italic = null;
@@ -97,17 +88,12 @@ public class FStyle {
     }
 
     public FStyle getParent() {
-        /*
-         * TODO   Find a better way to prevent the default style from being written to the file.
-         *        It is not the duty of the FStyle itself.
-         *                                                                       - mhahnFr
-         */
-        return parent != null && parent.getTokenType() == null && parent.getParent() == null ? null : parent;
+        return parent;
     }
 
     private boolean inherits(FStyle other) {
         if (getParent() == null) return false;
-        if (getParent().getTokenType() == other.getTokenType()) return true;
+        if (getParent() == other) return true;
         return getParent().inherits(other);
     }
 
@@ -304,11 +290,11 @@ public class FStyle {
         return cached;
     }
 
-    public TokenType getTokenType() {
-        return tokenType;
+    protected boolean hasCached() {
+        return cached != null;
     }
 
-    public void setTokenType(TokenType tokenType) {
-        this.tokenType = tokenType;
+    protected void invalidateCache() {
+        cached = null;
     }
 }

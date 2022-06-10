@@ -1,13 +1,13 @@
 package nijakow.four.client.editor;
 
-import nijakow.four.share.lang.c.parser.TokenType;
+import nijakow.four.smalltalk.parser.TokenType;
 
 import java.awt.Color;
 import java.util.Collection;
 import java.util.HashMap;
 
 public abstract class FTheme {
-    private final HashMap<nijakow.four.smalltalk.parser.TokenType, FStyle> styles;
+    private final HashMap<TokenType, TokenStyle> styles;
     private final FStyle errorStyle;
 
     public FTheme() {
@@ -23,15 +23,15 @@ public abstract class FTheme {
         return ret;
     }
 
-    public void addStyle(nijakow.four.smalltalk.parser.TokenType type, FStyle style) {
+    public void addStyle(TokenType type, TokenStyle style) {
         styles.put(type, style);
     }
 
-    protected Collection<FStyle> getAllStyles() {
+    protected Collection<TokenStyle> getAllStyles() {
         return styles.values();
     }
 
-    public FStyle getStyle(nijakow.four.smalltalk.parser.TokenType type) {
+    public TokenStyle getStyle(TokenType type) {
         return styles.get(type);
     }
 

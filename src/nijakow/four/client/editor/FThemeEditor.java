@@ -72,7 +72,7 @@ public class FThemeEditor extends JDialog {
     private final JRadioButton strikeDisable;
     private boolean dark;
     private boolean inputEnabled;
-    private FStyle currentStyle;
+    private TokenStyle currentStyle;
     private String name;
 
     public FThemeEditor(Frame parent, FTheme current, FStyle defaultStyle) {
@@ -85,7 +85,7 @@ public class FThemeEditor extends JDialog {
             this.current = new WritableTheme();
         } else if (!(current instanceof WritableTheme)) {
             this.current = new WritableTheme();
-            for (FStyle style : current.getAllStyles()) {
+            for (TokenStyle style : current.getAllStyles()) {
                 this.current.addStyle(style.getTokenType(), style);
             }
         } else {
@@ -410,9 +410,9 @@ public class FThemeEditor extends JDialog {
         });
         inTokens.addItemListener(event -> {
             if (inTokens.getSelectedItem() == null) return;
-            FStyle newParent = this.current.getStyle((TokenType) inTokens.getSelectedItem());
+            TokenStyle newParent = this.current.getStyle((TokenType) inTokens.getSelectedItem());
             if (newParent == null) {
-                newParent = new FStyle((TokenType) inTokens.getSelectedItem(), defaultStyle);
+                newParent = new TokenStyle((TokenType) inTokens.getSelectedItem(), defaultStyle);
                 this.current.addStyle(newParent.getTokenType(), newParent);
             }
             try {
@@ -498,7 +498,7 @@ public class FThemeEditor extends JDialog {
             if (currentStyle != null) saveStyle();
             currentStyle = this.current.getStyle((TokenType) tokens.getSelectedItem());
             if (currentStyle == null) {
-                currentStyle = new FStyle((TokenType) tokens.getSelectedItem(), defaultStyle);
+                currentStyle = new TokenStyle((TokenType) tokens.getSelectedItem(), defaultStyle);
                 this.current.addStyle((TokenType) tokens.getSelectedItem(), currentStyle);
             }
             if (currentStyle.isBoldOverwritten()) (currentStyle.isBold() ? boldEnable : boldDisable).setSelected(true);
@@ -600,7 +600,7 @@ public class FThemeEditor extends JDialog {
                 fore.setBackground(defaultStyle.getForeground());
             }
             foreIn.setSelected(!currentStyle.isForegroundOverwritten());
-            final FStyle tmpParent = currentStyle.getParent();
+            final TokenStyle tmpParent = currentStyle.getParent();
             inherit.setSelected(tmpParent != null);
             if (tmpParent != null) inTokens.setSelectedItem(tmpParent.getTokenType());
         });
