@@ -131,3 +131,10 @@ allNamedDo: aBlock
         (i name != nil) ifTrue: [ aBlock value: i ]
     ]
 ]
+---
+allNamed | v
+[
+    v := Vector new.
+    self allNamedDo: [ :c | v add: c ].
+  ^ v asArray
+]

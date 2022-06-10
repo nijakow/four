@@ -75,6 +75,11 @@ rightShift: other
   ^ <primitive:integer/less:>
 ]
 ---
+timesDo: aBlock
+[
+    1 to: self do: aBlock.
+]
+---
 writeOn: w
 [
     w out: self toString

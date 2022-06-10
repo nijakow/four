@@ -20,6 +20,13 @@ char+ c
   ^ <primitive:string/charplus:>
 ]
 ---
+* n | v
+[
+    v := ''.
+    n timesDo: [ v := v + self ].
+  ^ v
+]
+---
 compile
 [
   ^ <primitive:string/compile>

@@ -16,6 +16,13 @@ showMethods | menu methods
     menu run
 ]
 ---
+downloadSnapshot | sos
+[
+    sos := StringOutputStream new.
+    self target saveTo: sos.
+    Transcript uploadToUser: sos close.
+]
+---
 run | running
 [
     running := true.
@@ -26,6 +33,7 @@ run | running
             entry: 'Methods...' does: [ self showMethods ];
             entry: 'Edit Statics...' does: [ self target class browse ];
             entry: 'Edit Superclass...' does: [ self target superclass browse ];
+            entry: 'Download a Snapshot' does: [ self downloadSnapshot ];
             entry: 'Exit' does: [ running := false ];
         run
     ].
