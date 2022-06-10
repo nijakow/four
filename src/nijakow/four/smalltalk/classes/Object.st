@@ -41,12 +41,12 @@ not
   ^ (self = other) not
 ]
 ---
-ifNil: aBlock
+isNil: aBlock
 [
   ^ (self = nil) ifTrue: [ aBlock value ]
 ]
 ---
-ifNotNil: aBlock
+notNil: aBlock
 [
   ^ (self != nil) ifTrue: [ aBlock value ]
 ]

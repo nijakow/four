@@ -3,7 +3,7 @@ App subclass: #Apps/Browser
 createClass | text class
 [
     text := Transcript edit: 'Object subclass: #NewClassName;\ninstanceVariableNames: \'\'\n' title: 'New Method'.
-    text ifNotNil: [
+    text notNil: [
         class := text compile value.
         (class isKindOf: Class)  ifTrue: [ self editClass: class                             ]
                                 ifFalse: [ Transcript out: 'Class could not be created!'; cr ]
@@ -28,7 +28,7 @@ editClass: class
 uploadClass | text
 [
     text := Transcript downloadFromUser.
-    text ifNil: [ ^ nil ].
+    text isNil: [ ^ nil ].
   ^ text load
 ]
 ---
@@ -42,7 +42,7 @@ classes | running menu list
         list do: [ :c | menu entry: c name does: [ :i | (list at: i) browse ] ].
         menu entry: 'Search...' does: [ self searchClass ].
         menu entry: 'New...' does: [ self createClass ].
-        menu entry: 'Upload...' does: [ :c | (c := self uploadClass). c ifNotNil: [ c browse ] ].
+        menu entry: 'Upload...' does: [ :c | (c := self uploadClass). c notNil: [ c browse ] ].
         menu entry: 'Exit' does: [ running := false ].
         menu run.
     ]

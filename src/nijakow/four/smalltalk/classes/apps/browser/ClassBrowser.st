@@ -10,7 +10,7 @@ showMethods | menu methods
     methods do: [ :m | menu entry: m name does: [ :i | (methods at: i) browse ] ].
     menu entry: 'New...' does: [ :name |
         name := Transcript prompt: 'Method name? '.
-        name ifNotNil: [ self target edit: name asSymbol ]
+        name notNil: [ self target edit: name asSymbol ]
     ].
     menu entry: 'Exit' does: [].
     menu run
