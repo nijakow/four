@@ -1,15 +1,13 @@
 App subclass: #Apps/Browser
 <<<
-createClass | name parent class
+createClass | text class
 [
-    name := Transcript prompt: 'Class name? '.
-    name ifNil: [ ^ self ].
-    parent := Transcript prompt: 'Parent? '.
-    parent ifNil: [ ^ self ].
-    "TODO: Category and instance variable names"
-    class := (parent asSymbol globalValue) subclass: name asSymbol.
-    Transcript out: 'Successfully created class '; out: name; out: '!'; cr.
-    self editClass: class.
+    text := Transcript edit: 'Object subclass: #NewClassName;\ninstanceVariableNames: \'\'\n' title: 'New Method'.
+    text ifNotNil: [
+        class := text compile value.
+        (class isKindOf: Class)  ifTrue: [ self editClass: class                             ]
+                                ifFalse: [ Transcript out: 'Class could not be created!'; cr ]
+    ].
 ]
 ---
 editClass: class
