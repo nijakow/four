@@ -1,5 +1,5 @@
 BlockClosure
----
+<<<
 withBreak
 [
   ^ [ self value: [ ^ self ] ] repeat

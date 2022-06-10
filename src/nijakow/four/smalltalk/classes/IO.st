@@ -1,6 +1,6 @@
 Object subclass: #IO;
 instanceVariableNames: 'input output port'
----
+<<<
 initWithI: _input O: _output Port: _port
 [
     input := _input.

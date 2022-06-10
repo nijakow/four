@@ -1,5 +1,5 @@
 Port
----
+<<<
 createIO
 [
   ^ (IO new) initWithI: (PortInputStream new init: self)

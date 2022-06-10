@@ -128,6 +128,7 @@ public class World {
 
     public void buildDefaultWorld() throws ParseException {
         makeSpecial(STSymbol.get("Transcript"));
+        makeSpecial(STSymbol.get("Me"));
 
         objectClass = new STClass();
         setValue("Object", objectClass);

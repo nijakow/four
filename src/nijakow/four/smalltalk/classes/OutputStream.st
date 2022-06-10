@@ -1,5 +1,5 @@
 OutputStream
----
+<<<
 out: obj
 [
     obj writeOn: self.

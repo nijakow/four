@@ -1,5 +1,5 @@
 Object subclass: #Bootstrapper
----
+<<<
 load: name
 [
     ('/nijakow/four/smalltalk/classes/' + name) openResource load.

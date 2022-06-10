@@ -1,6 +1,6 @@
 Object subclass: #Color;
 instanceVariableNames: 'r g b'
----
+<<<
 r [ ^ r ]
 ---
 g [ ^ g ]
