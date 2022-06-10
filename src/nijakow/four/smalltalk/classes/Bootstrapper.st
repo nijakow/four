@@ -54,6 +54,7 @@ run
          load: 'TestSuite.st';
          load: 'testsuites/BasicTests.st';
          load: 'testsuites/BasicTestSuite.st';
+         load: 'User.st';
          load: 'App.st';
          load: 'ui/Menu.st';
          load: 'apps/Shell.st';
