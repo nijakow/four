@@ -25,6 +25,13 @@ editClass: class
       run
 ]
 ---
+uploadClass | text
+[
+    text := Transcript downloadFromUser.
+    text ifNil: [ ^ nil ].
+  ^ text load
+]
+---
 classes | running menu list
 [
     [ running ] whileTrue: [
@@ -35,6 +42,7 @@ classes | running menu list
         list do: [ :c | menu entry: c name does: [ :i | (list at: i) browse ] ].
         menu entry: 'Search...' does: [ self searchClass ].
         menu entry: 'New...' does: [ self createClass ].
+        menu entry: 'Upload...' does: [ :c | (c := self uploadClass). c ifNotNil: [ c browse ] ].
         menu entry: 'Exit' does: [ running := false ].
         menu run.
     ]
