@@ -1,16 +1,10 @@
-App subclass: #Apps/Shell;
-instanceVariableNames: 'running'
----
-init
-[
-    running := false.
-]
+App subclass: #Apps/Shell
 ---
 run | line
 [
-    running := true.
-    [ running ] whileTrue: [
+    [
         line := Transcript smalltalk: 'Smalltalk > '.
+        (line trim = 'exit') ifTrue: [ ^ self ].
         (line isWhitespace) ifFalse: [
             Object handle: [ Transcript store: line compile value; cr   ]
                        do: [ :e |
@@ -18,10 +12,5 @@ run | line
                                           out: '    '; out: e; cr
                            ].
         ].
-    ].
-]
----
-exit
-[
-    running := false.
+    ] repeat.
 ]

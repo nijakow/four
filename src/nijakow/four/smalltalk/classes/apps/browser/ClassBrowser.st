@@ -24,6 +24,8 @@ run | running
             out: 'The class '; store: self target name; cr.
         UI/Menu new;
             entry: 'Methods...' does: [ self showMethods ];
+            entry: 'Edit Statics...' does: [ self target class browse ];
+            entry: 'Edit Superclass...' does: [ self target superclass browse ];
             entry: 'Exit' does: [ running := false ];
         run
     ].

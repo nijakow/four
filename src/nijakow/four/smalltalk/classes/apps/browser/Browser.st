@@ -27,6 +27,7 @@ run | running
             out: 'The Browser'; cr.
         UI/Menu new;
             entry: 'Create a new class' does: [ self createClass ];
+            entry: 'Launch a Shell' does: [ Apps/Shell launch ];
             entry: 'Exit' does: [ running := false ];
         run
     ]
