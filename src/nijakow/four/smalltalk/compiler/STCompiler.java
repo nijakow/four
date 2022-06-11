@@ -1,10 +1,10 @@
 package nijakow.four.smalltalk.compiler;
 
-import nijakow.four.share.util.Pair;
 import nijakow.four.smalltalk.objects.STClass;
 import nijakow.four.smalltalk.objects.STInstance;
 import nijakow.four.smalltalk.objects.method.STCompiledMethod;
 import nijakow.four.smalltalk.objects.STSymbol;
+import nijakow.four.smalltalk.util.Pair;
 import nijakow.four.smalltalk.vm.instructions.*;
 
 import java.util.ArrayList;

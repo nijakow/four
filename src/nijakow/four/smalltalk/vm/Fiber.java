@@ -1,9 +1,11 @@
 package nijakow.four.smalltalk.vm;
 
-import nijakow.four.server.Four;
 import nijakow.four.smalltalk.SmalltalkVM;
 import nijakow.four.smalltalk.World;
-import nijakow.four.smalltalk.objects.*;
+import nijakow.four.smalltalk.objects.STClosure;
+import nijakow.four.smalltalk.objects.STInstance;
+import nijakow.four.smalltalk.objects.STNil;
+import nijakow.four.smalltalk.objects.STSymbol;
 import nijakow.four.smalltalk.objects.method.STCompiledMethod;
 import nijakow.four.smalltalk.objects.method.STMethod;
 import nijakow.four.smalltalk.vm.instructions.VMInstruction;

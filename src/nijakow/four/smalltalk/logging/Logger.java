@@ -1,6 +1,6 @@
 package nijakow.four.smalltalk.logging;
 
-import nijakow.four.share.util.Pair;
+import nijakow.four.smalltalk.util.Pair;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;

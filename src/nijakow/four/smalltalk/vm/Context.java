@@ -1,9 +1,9 @@
 package nijakow.four.smalltalk.vm;
 
-import nijakow.four.share.util.Pair;
 import nijakow.four.smalltalk.objects.STClass;
 import nijakow.four.smalltalk.objects.STClosure;
 import nijakow.four.smalltalk.objects.method.STCompiledMethod;
+import nijakow.four.smalltalk.util.Pair;
 import nijakow.four.smalltalk.vm.instructions.VMInstruction;
 
 public class Context {

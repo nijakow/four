@@ -1,6 +1,6 @@
 package nijakow.four.smalltalk.parser;
 
-import nijakow.four.share.util.Pair;
+import nijakow.four.smalltalk.util.Pair;
 
 public class StringCharacterStreamPosition implements StreamPosition {
     private final StringCharacterStream stream;

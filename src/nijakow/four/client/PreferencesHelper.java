@@ -1,16 +1,16 @@
 package nijakow.four.client;
 
+import nijakow.four.smalltalk.FourSmalltalk;
+
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
-
-import nijakow.four.server.Four;
 
 public class PreferencesHelper {
 	private static PreferencesHelper instance;
 	private final Preferences prefs;
 	
 	private PreferencesHelper() {
-		prefs = Preferences.userNodeForPackage(Four.class);
+		prefs = Preferences.userNodeForPackage(FourSmalltalk.class);
 	}
 
 	public int getWindowPositionX() {

@@ -1,8 +1,8 @@
 package nijakow.four.smalltalk.parser;
 
-import nijakow.four.share.util.Pair;
 import nijakow.four.smalltalk.ast.*;
 import nijakow.four.smalltalk.objects.*;
+import nijakow.four.smalltalk.util.Pair;
 
 import java.util.ArrayList;
 import java.util.List;
