@@ -6,6 +6,7 @@ import nijakow.four.smalltalk.objects.STSymbol;
 public class Tokenizer {
     private final CharacterStream stream;
     private boolean enableComments = false;
+    private boolean muffleSymbols = false;
 
     public Tokenizer(CharacterStream stream) {
         this.stream = stream;
@@ -18,6 +19,10 @@ public class Tokenizer {
 
     public void enableCommentTokens() {
         this.enableComments = true;
+    }
+
+    public void muffleSymbols() {
+        this.muffleSymbols = true;
     }
 
     private char readChar() {
@@ -125,6 +130,6 @@ public class Tokenizer {
         else if ("false".equals(str)) return new Token(TokenType.FALSE, this, start, end);
         else if ("nil".equals(str)) return new Token(TokenType.NIL, this, start, end);
         else if ("thisContext".equals(str)) return new Token(TokenType.THISCONTEXT, this, start, end);
-        else return new Token(TokenType.IDENTIFIER, STSymbol.get(str), this, start, end);
+        else return new Token(TokenType.IDENTIFIER, this.muffleSymbols ? null : STSymbol.get(str), this, start, end);
     }
 }

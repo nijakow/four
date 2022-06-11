@@ -162,6 +162,7 @@ public class FDocument extends DefaultStyledDocument {
             final String text = getText(0, getLength());
             Tokenizer tokenizer = new Tokenizer(new StringCharacterStream(text));
             tokenizer.enableCommentTokens();
+            tokenizer.muffleSymbols();
             do {
                 token = tokenizer.nextToken();
                 Style style = theme.getStyle(token.getType()) == null ? def : theme.getStyle(token.getType()).asStyle(def);
