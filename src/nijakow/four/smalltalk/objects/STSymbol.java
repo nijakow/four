@@ -12,9 +12,11 @@ import java.util.function.Consumer;
 
 public class STSymbol extends STInstance {
     private final String name;
+    private final STString stName;
 
     private STSymbol(String name) {
         this.name = name;
+        this.stName = new STString(name);
     }
 
     @Override
@@ -47,5 +49,9 @@ public class STSymbol extends STInstance {
 
     public BasicBuiltin getBuiltin(World world) {
         return world.getBuiltinFor(this);
+    }
+
+    public STInstance getNameAsSTString() {
+        return this.stName;
     }
 }

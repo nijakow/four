@@ -367,7 +367,7 @@ public class World {
             fiber.setAccu(new STString(contents.toString()));
         });
 
-        addBuiltin("symbol/asString", (fiber) -> fiber.setAccu(new STString(fiber.getSelf().asSymbol().getName())));
+        addBuiltin("symbol/asString", (fiber) -> fiber.setAccu(fiber.getSelf().asSymbol().getNameAsSTString()));
         addBuiltin("symbol/globalValue", (fiber) -> fiber.setAccu(fiber.getWorld().getValue(fiber.getSelf().asSymbol().getName())));
         addBuiltin("symbol/globalValue:", (fiber) -> fiber.getWorld().setValue(fiber.getSelf().asSymbol(), fiber.getVariable(0)));
 

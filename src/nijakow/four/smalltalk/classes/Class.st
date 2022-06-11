@@ -5,9 +5,6 @@ name | glv
     Symbol boundInstancesDo: [ :sym :glv |
         (self = glv) ifTrue: [ ^ sym asString ].
     ].
-    Symbol boundInstancesDo: [ :sym :glv |
-        (self = glv class) ifTrue: [ ^ sym asString + ' class' ].
-    ].
   ^ nil
 ]
 ---
