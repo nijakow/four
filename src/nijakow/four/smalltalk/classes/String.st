@@ -1,4 +1,5 @@
-String
+String;
+category: 'Kernel-Strings'
 <<<
 size
 [
@@ -112,6 +113,22 @@ parseInt
 [
     "TODO"
   ^ self parseUInt
+]
+---
+"""
+    @category base64
+"""
+asBase64
+[
+  ^ <primitive:string/asBase64>
+]
+---
+"""
+    @category base64
+"""
+fromBase64
+[
+  ^ <primitive:string/fromBase64>
 ]
 ---
 String class

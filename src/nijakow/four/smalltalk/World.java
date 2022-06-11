@@ -14,10 +14,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class World {
     private final Map<STSymbol, STInstance> bindings = new HashMap<>();
@@ -264,6 +261,22 @@ public class World {
         addBuiltin("string/asSymbol", (fiber) -> fiber.setAccu(STSymbol.get(fiber.getSelf().asString().getValue())));
         addBuiltin("string/less:", (fiber) -> fiber.setAccu(STBoolean.get(fiber.getSelf().asString().getValue().compareTo(fiber.getVariable(0).asString().getValue()) < 0)));
         addBuiltin("string/leq:", (fiber) -> fiber.setAccu(STBoolean.get(fiber.getSelf().asString().getValue().compareTo(fiber.getVariable(0).asString().getValue()) <= 0)));
+        addBuiltin("string/asBase64", (fiber) -> {
+            final byte[] bytes = fiber.getSelf().asString().getValue().getBytes(StandardCharsets.UTF_8);
+            try {
+                fiber.setAccu(new STString(Base64.getEncoder().encodeToString(bytes)));
+            } catch (IllegalArgumentException e) {
+                fiber.setAccu(STNil.get());
+            }
+        });
+        addBuiltin("string/fromBase64", (fiber) -> {
+            final String value = fiber.getSelf().asString().getValue();
+            try {
+                fiber.setAccu(new STString(new String(Base64.getDecoder().decode(value), StandardCharsets.UTF_8)));
+            } catch (Exception e) {
+                fiber.setAccu(STNil.get());
+            }
+        });
         addBuiltin("string/load", (fiber) -> {
             final Quickloader quickloader = new Quickloader(new ByteArrayInputStream(fiber.getSelf().asString().getValue().getBytes(StandardCharsets.UTF_8)));
             quickloader.loadInto(fiber.getVM(), fiber.getVM().getWorld());
