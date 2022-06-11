@@ -1,6 +1,14 @@
 BlockClosure;
 category: 'Kernel-Methods'
 <<<
+whileTrue: body
+[
+    [
+        (self value) ifFalse: [ ^ self ].
+        body value.
+    ] repeat.
+]
+---
 withBreak
 [
   ^ [ self value: [ ^ self ] ] repeat

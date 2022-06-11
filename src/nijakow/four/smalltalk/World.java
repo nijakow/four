@@ -204,16 +204,8 @@ public class World {
         setValue("Symbol", symbolClass);
 
         setValue("Array", arrayClass);
-        arrayClass.setInstantiator(() -> new STArray(0));
 
         setValue("Method", methodClass);
-        Builtin valueBuiltin = (fiber, args) -> {
-            fiber.loadLexicalSelf(args[0].asClosure().getContext());
-            fiber.push();
-            for (int x = 1; x < args.length; x++)
-                fiber.push(args[x]);
-            args[0].asClosure().execute(fiber, args.length - 1);
-        };
 
         setValue("BlockClosure", closureClass);
         closureClass.addMethodFromSource("value\n[\n  ^ <primitive:closure/value>\n]\n");
@@ -227,7 +219,6 @@ public class World {
             s.append("\n[\n  ^ <primitive:closure/value>\n]\n");
             closureClass.addMethodFromSource(s.toString());
         }
-        closureClass.addMethodFromSource("whileTrue: body\n[\n    [\n        (self value) ifFalse: [ ^ self ].\n        body value.\n    ] repeat.\n]\n");
 
         setValue("BuiltinMethod", builtinMethodClass);
         setValue("CompiledMethod", compiledMethodClass);
