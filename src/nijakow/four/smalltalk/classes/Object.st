@@ -44,12 +44,17 @@ not
 ---
 isNil: aBlock
 [
-  ^ (self = nil) ifTrue: [ aBlock value ]
+  ^ self
 ]
 ---
 notNil: aBlock
 [
-  ^ (self != nil) ifTrue: [ aBlock value ]
+  ^ aBlock value
+]
+---
+otherwise: obj
+[
+  ^ self
 ]
 ---
 throw

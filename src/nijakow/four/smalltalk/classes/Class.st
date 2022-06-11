@@ -50,6 +50,35 @@ methods | md
   ^ md asArray
 ]
 ---
+methodsDo: aBlock
+[
+    self methods do: aBlock
+]
+---
+methodsInCategory: category Do: aBlock
+[
+    self methodsDo: [ :method |
+        (method category = category) ifTrue: [
+            aBlock value: method
+        ].
+    ].
+]
+---
+methodsInCategory: category | methods
+[
+    methods := Vector new.
+    self methodsInCategory: category
+         Do: [ :m | methods add: m ].
+  ^ methods asArray
+]
+---
+categories | cats
+[
+    cats := Set new.
+    self methodsDo: [ :method | method category notNil: [ cats add: method category ] ].
+  ^ cats asArray
+]
+---
 addMethod: source
 [
   ^ <primitive:class/addMethod:>

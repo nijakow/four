@@ -4,7 +4,7 @@ instanceVariableNames: 'methodName'
 run
 [
     Transcript cr;
-        out: 'The method '; store: self target name; out: ' in class '; store: self target holdingClass name; cr.
+        out: 'The method '; store: self target name; out: ' in class '; out: self target holdingClass; cr.
     UI/Menu new;
         entry: 'Read Documentation' does: [ Transcript out: 'Documentation:'; cr; cr; out: self target doc; cr. ];
         entry: 'Edit...' does: [ self target edit ];

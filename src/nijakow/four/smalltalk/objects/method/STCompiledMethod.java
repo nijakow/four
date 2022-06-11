@@ -92,4 +92,10 @@ public class STCompiledMethod extends STInstance implements STMethod {
     public String getSource() {
         return this.source == null ? "" : this.source;
     }
+
+    public STSymbol getCategory() {
+        if (categories == null || categories.length == 0)
+            return null;
+        return categories[0];
+    }
 }

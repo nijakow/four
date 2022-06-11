@@ -11,6 +11,11 @@ name
   ^ <primitive:method/name>
 ]
 ---
+category
+[
+  ^ <primitive:method/category>
+]
+---
 doc
 [
   ^ <primitive:method/doc>
