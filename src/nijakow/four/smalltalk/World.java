@@ -237,7 +237,7 @@ public class World {
         fourClass.addMethodFromSource("newConnection: connection\n[\n    Transcript := connection.\n    Apps/Browser launch.\n    Transcript close.\n]\n");
 
         STObject four = (STObject) fourClass.instantiate();
-        setValue("Four", four);
+        setValue("_Four", four);
 
         addBuiltin("class", (fiber) -> fiber.setAccu(fiber.getSelf().getClass(fiber.getVM().getWorld())));
         addBuiltin("isKindOf", (fiber) -> fiber.setAccu(STBoolean.get(fiber.getSelf().getClass(fiber.getWorld()).isSubclassOf(fiber.getVariable(0).asClass()))));

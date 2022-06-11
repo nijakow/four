@@ -30,7 +30,7 @@ public class FourSmalltalk {
 
     public void serveOn(String hostname, int port) throws IOException {
         this.server.serveOn(hostname, port, (connection) -> {
-            final STInstance master = this.world.getValue("Four");
+            final STInstance master = this.world.getValue("_Four");
             try {
                 this.vm.startFiber(master, "newConnection:", new STInstance[]{
                         new STPort(connection)
@@ -49,7 +49,7 @@ public class FourSmalltalk {
     }
 
     public void run() throws IOException, FourException {
-        vm.startFiber(this.world.getValue(STSymbol.get("Four")), STSymbol.get("main"), new STInstance[]{});
+        vm.startFiber(this.world.getValue(STSymbol.get("_Four")), STSymbol.get("main"), new STInstance[]{});
         while (true) {
             vm.tick();
             server.tick(vm.getPreferredIdleTime());
