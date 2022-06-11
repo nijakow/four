@@ -140,7 +140,7 @@ public class World {
         metaClass.addMethodFromSource("new\n[\n  ^ <primitive:class/new>\n]\n");
         metaClass.addMethodFromSource("subclass: name\n[\n  ^ <primitive:class/subclass:>\n]\n");
         metaClass.addMethodFromSource("instanceVariableNames: vars\n[\n    <primitive:class/instanceVariableNames:>.\n  ^ self\n]\n");
-        metaClass.addMethodFromSource("category: category\n[\n    category := category asSymbol.\n    <primitive:class/category>.\n  ^ self\n]\n");
+        metaClass.addMethodFromSource("category: category\n[\n    category := category asSymbol.\n    <primitive:class/category:>.\n  ^ self\n]\n");
 
         collectionClass = objectClass.subclass(this);
         sequenceableCollectionClass = collectionClass.subclass(this);

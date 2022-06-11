@@ -131,3 +131,13 @@ allNamed | v
     self allNamedDo: [ :c | v add: c ].
   ^ v asArray
 ]
+---
+byCategory | cats
+[
+    cats := Dictionary new.
+    self allNamedDo: [ :class |
+        (cats at: class category) isNil: [ cats at: class category put: Set new ].
+        (cats at: class category) add: class.
+    ].
+  ^ cats
+]
