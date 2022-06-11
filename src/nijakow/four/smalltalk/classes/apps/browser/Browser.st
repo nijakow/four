@@ -77,23 +77,6 @@ categories | list menu
     menu run.
 ]
 ---
-classes | running menu list
-[
-    [ running ] whileTrue: [
-        Transcript cr;
-            out: 'All Classes'; cr.
-        list := Class allNamed.
-        list := list sortBy: [ :a :b | a name asString < b name asString ].
-        menu := UI/Menu new.
-        list do: [ :c | menu entry: c name asString does: [ :i | (list at: i) browse ] ].
-        menu entry: 'Search...' does: [ self searchClass ].
-        menu entry: 'New...' does: [ self createClass ].
-        menu entry: 'Upload...' does: [ :c | (c := self uploadClass). c notNil: [ c browse ] ].
-        menu entry: 'Exit' does: [ running := false ].
-        menu run.
-    ]
-]
----
 run | running
 [
     running := true.
@@ -101,8 +84,8 @@ run | running
         Transcript cr;
             out: 'The Browser'; cr.
         UI/Menu new;
-            entry: 'Categories...' does: [ self categories ];
-            entry: 'New Class...' does: [ self createClass ];
+            entry: 'Classes...' does: [ self categories ];
+            entry: 'Search...' does: [ self searchClass ];
             entry: 'Launch a Shell' does: [ Apps/Shell launch ];
             entry: 'Exit' does: [ running := false ];
         run

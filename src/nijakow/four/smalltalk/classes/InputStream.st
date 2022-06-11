@@ -1,2 +1,2 @@
 Iterator subclass: #InputStream;
-category: 'IO'
+category: 'Kernel-IO'

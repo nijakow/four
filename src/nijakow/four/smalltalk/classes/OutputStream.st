@@ -1,5 +1,5 @@
 OutputStream;
-category: 'IO'
+category: 'Kernel-IO'
 <<<
 out: obj
 [

@@ -34,6 +34,8 @@ downloadSnapshot | sos
 ---
 showCategories | list menu
 [
+    Transcript cr;
+        out: 'Method Categories'; cr.
     list := self target categories.
     list := list sortBy: [ :a :b | a asString < b asString ].
     menu := UI/Menu new.
@@ -50,8 +52,7 @@ run | running
         Transcript cr;
             out: 'The class '; out: self target; cr.
         UI/Menu new;
-            entry: 'Methods...' does: [ self showMethods ];
-            entry: 'Methods by Category...' does: [ self showCategories ];
+            entry: 'Methods...' does: [ self showCategories ];
             entry: 'Edit Statics...' does: [ self target class browse ];
             entry: 'Edit Superclass...' does: [ self target superclass browse ];
             entry: 'Download a Snapshot' does: [ self downloadSnapshot ];
