@@ -322,7 +322,7 @@ public class World {
 
         setValue("Array", arrayClass);
         arrayClass.setInstantiator(() -> new STArray(0));
-        arrayClass.addMethod("size", (fiber, args) -> fiber.setAccu(STInteger.get(args[0].asArray().getSize())));
+        /*arrayClass.addMethod("size", (fiber, args) -> fiber.setAccu(STInteger.get(args[0].asArray().getSize())));
         arrayClass.addMethod("at:", (fiber, args) -> fiber.setAccu(args[0].asArray().get(args[1].asInteger().getValue() - 1)));
         arrayClass.addMethod("at:put:", (fiber, args) -> args[0].asArray().set(args[1].asInteger().getValue() - 1, args[2]));
         arrayClass.addMethod("asString", (fiber, args) -> {
@@ -331,7 +331,7 @@ public class World {
             for (int i = 0; i < array.getSize(); i++)
                 sb.append(array.get(i).asCharacter().getValue());
             fiber.setAccu(new STString(sb.toString()));
-        });
+        });*/
 
         setValue("Method", methodClass);
         Builtin valueBuiltin = (fiber, args) -> {
@@ -421,7 +421,6 @@ public class World {
         STObject four = (STObject) fourClass.instantiate();
         setValue("Four", four);
 
-        addBuiltin("newArray", (fiber) -> fiber.setAccu(new STArray(fiber.getVariable(0).asInteger().asInteger().getValue())));
         addBuiltin("class", (fiber) -> fiber.setAccu(fiber.getSelf().getClass(fiber.getVM().getWorld())));
         addBuiltin("isKindOf", (fiber) -> fiber.setAccu(STBoolean.get(fiber.getSelf().getClass(fiber.getWorld()).isSubclassOf(fiber.getVariable(0).asClass()))));
         addBuiltin("toString", (fiber) -> fiber.setAccu(new STString(fiber.getSelf().toString())));
@@ -506,6 +505,18 @@ public class World {
         addBuiltin("symbol/asString", (fiber) -> fiber.setAccu(new STString(fiber.getSelf().asSymbol().getName())));
         addBuiltin("symbol/globalValue", (fiber) -> fiber.setAccu(fiber.getWorld().getValue(fiber.getSelf().asSymbol().getName())));
         addBuiltin("symbol/globalValue:", (fiber) -> fiber.getWorld().setValue(fiber.getSelf().asSymbol(), fiber.getVariable(0)));
+
+        addBuiltin("array/new", (fiber) -> fiber.setAccu(new STArray(fiber.getVariable(0).asInteger().getValue())));
+        addBuiltin("array/size", (fiber) -> fiber.setAccu(STInteger.get(fiber.getSelf().asArray().getSize())));
+        addBuiltin("array/at:", (fiber) -> fiber.setAccu(fiber.getSelf().asArray().get(fiber.getVariable(0).asInteger().getValue() - 1)));
+        addBuiltin("array/at:put:", (fiber) -> fiber.getSelf().asArray().set(fiber.getVariable(0).asInteger().getValue() - 1, fiber.getVariable(1)));
+        addBuiltin("array/constructString", (fiber) -> {
+            final STArray array = fiber.getSelf().asArray();
+            final StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < array.getSize(); i++)
+                sb.append(array.get(i).asCharacter().getValue());
+            fiber.setAccu(new STString(sb.toString()));
+        });
     }
 
     public BasicBuiltin getBuiltinFor(STSymbol symbol) {

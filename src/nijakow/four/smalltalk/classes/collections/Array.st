@@ -1,4 +1,29 @@
 Array
+<<<
+size
+[
+  ^ <primitive:array/size>
+]
+---
+at: index
+[
+  ^ <primitive:array/at:>
+]
+---
+at: index put: value
+[
+  ^ <primitive:array/at:put:>
+]
+---
+constructString
+[
+  ^ <primitive:array/constructString>
+]
+---
+asString
+[
+  ^ self constructString
+]
 ---
 copy | a
 [
@@ -33,5 +58,5 @@ Array class
 <<<
 new: size
 [
-  ^ <primitive:newArray>
+  ^ <primitive:array/new>
 ]
