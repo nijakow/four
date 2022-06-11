@@ -68,16 +68,24 @@ public class FDocument extends DefaultStyledDocument {
         return StringHelper.generateFilledString(' ', i);
     }
 
+    private boolean isIndentIncChar(char c) {
+        return c == '[' || c == '{';
+    }
+
+    private boolean isIndentDecStr(String str) {
+        return "]".equals(str) || "}".equals(str);
+    }
+
     @Override
     public void insertString(int offs, String str, AttributeSet a) throws BadLocationException {
         final String text = getText(0, getLength());
         if (autoIndenting) {
             if (str.equals("\n")) {
                 str += getLineIndent(offs);
-                if (offs > 0 && text.charAt(offs - 1) == '[') {
+                if (offs > 0 && isIndentIncChar(text.charAt(offs - 1))) {
                     str += "    ";
                 }
-            } else if (str.equals("]") && isOnlyWhitespacesOnLine(offs)) {
+            } else if (isIndentDecStr(str) && isOnlyWhitespacesOnLine(offs)) {
                 final int indent = Math.min(Math.min(getLineIndent(offs).length(), 4), Math.max(0, offs - getLineStart(offs)));
                 super.remove(offs - indent, indent);
                 offs -= indent;

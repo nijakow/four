@@ -96,6 +96,8 @@ public class Tokenizer {
         else if (stream.peeks(")")) return new Token(TokenType.RPAREN, this, start, stream.getPosition());
         else if (stream.peeks("[")) return new Token(TokenType.LBRACK, this, start, stream.getPosition());
         else if (stream.peeks("]")) return new Token(TokenType.RBRACK, this, start, stream.getPosition());
+        else if (stream.peeks("{")) return new Token(TokenType.LCURLY, this, start, stream.getPosition());
+        else if (stream.peeks("}")) return new Token(TokenType.RCURLY, this, start, stream.getPosition());
         else if (stream.peeks("|")) return new Token(TokenType.BAR, this, start, stream.getPosition());
         else if (stream.peeks("^")) return new Token(TokenType.CARET, this, start, stream.getPosition());
         else if (stream.peeks(".")) return new Token(TokenType.DOT, this, start, stream.getPosition());
