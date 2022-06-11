@@ -1,1 +1,2 @@
-Iterator subclass: #InputStream
+Iterator subclass: #InputStream;
+category: 'IO'

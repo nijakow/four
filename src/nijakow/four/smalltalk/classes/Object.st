@@ -1,4 +1,5 @@
-Object
+Object;
+category: 'Kernel-Objects'
 <<<
 value [ ^ self ]
 ---

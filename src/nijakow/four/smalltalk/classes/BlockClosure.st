@@ -1,4 +1,5 @@
-BlockClosure
+BlockClosure;
+category: 'Kernel-Methods'
 <<<
 withBreak
 [

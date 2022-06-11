@@ -1,5 +1,6 @@
 OutputStream subclass: #StringOutputStream;
-instanceVariableNames: 'chars'
+instanceVariableNames: 'chars';
+category: 'IO'
 <<<
 init
 [

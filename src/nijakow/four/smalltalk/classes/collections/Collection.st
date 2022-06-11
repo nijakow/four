@@ -1,4 +1,5 @@
-Collection
+Collection;
+category: 'Collections-Abstract'
 ---
 init
 [

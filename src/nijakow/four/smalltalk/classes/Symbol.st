@@ -1,4 +1,5 @@
-Symbol
+Symbol;
+category: 'Kernel-Strings'
 <<<
 asSymbol
 [

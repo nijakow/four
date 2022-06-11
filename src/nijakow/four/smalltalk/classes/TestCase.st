@@ -1,5 +1,6 @@
 Object subclass: #TestCase;
-instanceVariableNames: 'testSelector'
+instanceVariableNames: 'testSelector';
+category: 'SUnit-Kernel'
 <<<
 init
 [

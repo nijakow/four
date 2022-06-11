@@ -1,5 +1,6 @@
 Object subclass: #Exception;
-instanceVariableNames: 'message'
+instanceVariableNames: 'message';
+category: 'Kernel-Exceptions-Kernel'
 <<<
 message
 [

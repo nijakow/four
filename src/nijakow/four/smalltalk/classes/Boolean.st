@@ -1,4 +1,5 @@
-Boolean
+Boolean;
+category: 'Kernel-Objects'
 <<<
 and: other
 [

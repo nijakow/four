@@ -1,4 +1,5 @@
-IntegerLike
+IntegerLike;
+category: 'Kernel-Numbers'
 <<<
 < other
 [

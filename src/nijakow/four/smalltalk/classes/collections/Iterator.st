@@ -1,5 +1,6 @@
 Object subclass: #Iterator;
-instanceVariableNames: ''
+instanceVariableNames: '';
+category: 'Collections-Iterators'
 ---
 do: block | i
 [

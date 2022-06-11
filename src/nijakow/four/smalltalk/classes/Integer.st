@@ -1,4 +1,5 @@
-Integer
+Integer;
+category: 'Kernel-Numbers'
 <<<
 asChar
 [

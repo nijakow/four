@@ -1,1 +1,2 @@
-SequenceableCollection
+SequenceableCollection;
+category: 'Collections-Abstract'

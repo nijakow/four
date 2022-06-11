@@ -1,5 +1,6 @@
 Object subclass: #Association;
-instanceVariableNames: 'key value'
+instanceVariableNames: 'key value';
+category: 'Collections-Support'
 ---
 init
 [

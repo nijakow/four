@@ -1,5 +1,6 @@
 Iterator subclass: #ArrayedCollectionIterator;
-instanceVariableNames: 'indexable index'
+instanceVariableNames: 'indexable index';
+category: 'Collections-Iterators'
 ---
 initWithIndexable: _indexable
 [

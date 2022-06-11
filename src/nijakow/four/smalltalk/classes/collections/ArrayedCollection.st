@@ -1,4 +1,5 @@
-ArrayedCollection
+ArrayedCollection;
+category: 'Collections-Abstract'
 ---
 do: block
 [

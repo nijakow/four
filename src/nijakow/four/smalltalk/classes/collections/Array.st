@@ -1,4 +1,5 @@
-Array
+Array;
+category: 'Collections-Arrayed'
 <<<
 size
 [

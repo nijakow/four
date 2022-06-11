@@ -1,4 +1,5 @@
-OutputStream
+OutputStream;
+category: 'IO'
 <<<
 out: obj
 [

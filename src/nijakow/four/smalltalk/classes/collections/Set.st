@@ -1,6 +1,6 @@
---- needs: Collection
 Collection subclass: #Set;
-instanceVariableNames: 'vector'
+instanceVariableNames: 'vector';
+category: 'Collections-Unordered'
 ---
 init
 [

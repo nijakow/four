@@ -1,4 +1,5 @@
-CompiledMethod
+CompiledMethod;
+category: 'Kernel-Methods'
 <<<
 holdingClass
 [

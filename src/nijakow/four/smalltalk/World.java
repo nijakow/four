@@ -140,6 +140,7 @@ public class World {
         metaClass.addMethodFromSource("new\n[\n  ^ <primitive:class/new>\n]\n");
         metaClass.addMethodFromSource("subclass: name\n[\n  ^ <primitive:class/subclass:>\n]\n");
         metaClass.addMethodFromSource("instanceVariableNames: vars\n[\n    <primitive:class/instanceVariableNames:>.\n  ^ self\n]\n");
+        metaClass.addMethodFromSource("category: category\n[\n    category := category asSymbol.\n    <primitive:class/category>.\n  ^ self\n]\n");
 
         collectionClass = objectClass.subclass(this);
         sequenceableCollectionClass = collectionClass.subclass(this);
@@ -177,6 +178,7 @@ public class World {
         setValue("Character", characterClass);
 
         setValue("String", stringClass);
+        stringClass.addMethodFromSource("asSymbol\n[\n  ^ <primitive:string/asSymbol>\n]\n");
         stringClass.addMethodFromSource("+ other\n[\n  ^ <primitive:string/plus:>\n]\n");
         stringClass.addMethodFromSource("load\n[\n  ^ <primitive:string/load>\n]\n");
         stringClass.addMethodFromSource("openResource\n[\n  ^ <primitive:string/openResource>\n]\n");

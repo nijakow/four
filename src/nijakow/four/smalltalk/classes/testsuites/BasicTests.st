@@ -1,4 +1,5 @@
-TestCase subclass: #BasicTests
+TestCase subclass: #BasicTests;
+category: 'KernelTests-Basic'
 ---
 setUp
 [

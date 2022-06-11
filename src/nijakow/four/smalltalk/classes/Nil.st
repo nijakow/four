@@ -1,4 +1,5 @@
-Nil
+Nil;
+category: 'Kernel-Objects'
 <<<
 writeOn: w
 [

@@ -1,5 +1,6 @@
 Object subclass: #TestSuite;
-instanceVariableNames: 'tests'
+instanceVariableNames: 'tests';
+category: 'SUnit-Kernel'
 <<<
 init
 [

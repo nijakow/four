@@ -1,5 +1,6 @@
 Object subclass: #IO;
-instanceVariableNames: 'input output port'
+instanceVariableNames: 'input output port';
+category: 'IO'
 <<<
 initWithI: _input O: _output Port: _port
 [

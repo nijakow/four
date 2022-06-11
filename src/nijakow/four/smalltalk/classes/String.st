@@ -37,11 +37,6 @@ asString
   ^ self
 ]
 ---
-asSymbol
-[
-  ^ <primitive:string/asSymbol>
-]
----
 < other
 [
   ^ <primitive:string/less:>

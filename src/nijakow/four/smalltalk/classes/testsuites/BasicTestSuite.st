@@ -1,4 +1,5 @@
-TestSuite subclass: #BasicTestSuite
+TestSuite subclass: #BasicTestSuite;
+category: 'KernelTests-Basic'
 ---
 init
 [

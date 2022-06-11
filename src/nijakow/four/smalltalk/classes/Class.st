@@ -1,4 +1,5 @@
-Class
+Class;
+category: 'Kernel-Classes'
 <<<
 name | glv
 [
@@ -26,11 +27,6 @@ instanceVariables
 category
 [
   ^ <primitive:class/category>
-]
----
-category: newCategory
-[
-  ^ <primitive:class/category:>
 ]
 ---
 method: name

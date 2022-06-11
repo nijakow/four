@@ -1,5 +1,6 @@
 Object subclass: #TestResult;
-instanceVariableNames: 'failures passed'
+instanceVariableNames: 'failures passed';
+category: 'SUnit-Kernel'
 <<<
 init
 [

@@ -1,5 +1,6 @@
 ArrayedCollection subclass: #Interval;
-instanceVariableNames: 'from to'
+instanceVariableNames: 'from to';
+category: 'Collections-Sequenceable'
 <<<
 from: _from to: _to
 [

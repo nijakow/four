@@ -1,5 +1,6 @@
 ArrayedCollection subclass: #Vector;
-instanceVariableNames: 'elements fill'
+instanceVariableNames: 'elements fill';
+category: 'Collections-Sequenceable'
 ---
 init
 [
