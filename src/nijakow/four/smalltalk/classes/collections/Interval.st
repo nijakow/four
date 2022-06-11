@@ -16,7 +16,8 @@ species
 ---
 size
 [
-  ^ (from max: to) asInt - (from min: to) asInt + 1
+    (from > to) ifTrue: [ ^ 0 ].
+  ^ (to asInt - from asInt) + 1
 ]
 ---
 at: index
