@@ -118,6 +118,10 @@ public class Parser {
         return new BlockAST(ts.toArray(new STSymbol[]{}), parseExpressionsUntil(TokenType.RBRACK));
     }
 
+    private CurlyAST parseCurly() throws ParseException {
+        return new CurlyAST(parseRawExpressionsUntil(TokenType.RCURLY));
+    }
+
     private ExprAST parseSimpleExpression(int prio) throws ParseException {
         if (check(TokenType.LPAREN)) {
             ExprAST ast = parseExpression();
@@ -149,6 +153,8 @@ public class Parser {
             return new ConstantAST(symbol);
         } else if (check(TokenType.LBRACK)) {
             return parseBlock();
+        } else if (check(TokenType.LCURLY)) {
+            return parseCurly();
         } else if (check(TokenType.CARET)) {
             return new ReturnAST(parseExpression(prio));
         } else if (check(TokenType.TRUE)) {
@@ -187,7 +193,7 @@ public class Parser {
         return parseExpression(2);
     }
 
-    private ExprsAST parseExpressionsUntil(TokenType type) throws ParseException {
+    private ExprAST[] parseRawExpressionsUntil(TokenType type) throws ParseException {
         List<ExprAST> expressions = new ArrayList<>();
         if (!check(type)) {
             while (true) {
@@ -199,7 +205,11 @@ public class Parser {
                     break;
             }
         }
-        return new ExprsAST(expressions.toArray(new ExprAST[]{}));
+        return expressions.toArray(new ExprAST[]{});
+    }
+
+    private ExprsAST parseExpressionsUntil(TokenType type) throws ParseException {
+        return new ExprsAST(parseRawExpressionsUntil(type));
     }
 
     public MethodAST parseMethod() throws ParseException {

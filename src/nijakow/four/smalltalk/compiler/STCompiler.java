@@ -185,4 +185,8 @@ public class STCompiler {
     public void writeBuiltin(STSymbol builtin) {
         addInstruction(new VMBuiltinInstruction(builtin));
     }
+
+    public void writeMakeArray(int length) {
+        addInstruction(new MakeArrayInstruction(length));
+    }
 }
