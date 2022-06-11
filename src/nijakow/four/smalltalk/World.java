@@ -130,54 +130,37 @@ public class World {
         makeSpecial(STSymbol.get("Transcript"));
         makeSpecial(STSymbol.get("Me"));
 
-        objectClass = new STClass();
+        objectClass = new STClass(STSymbol.get("Object"));
         setValue("Object", objectClass);
         objectClass.addMethodFromSource("init\n[\n  ^ self\n]\n");
 
-        metaClass = objectClass.subclass(this);
+        metaClass = objectClass.subclass(STSymbol.get("Class"), this);
         metaClass.setMetaClass(metaClass);
-        setValue("Class", metaClass);
         metaClass.addMethodFromSource("new\n[\n  ^ <primitive:class/new>\n]\n");
         metaClass.addMethodFromSource("subclass: name\n[\n  ^ <primitive:class/subclass:>\n]\n");
         metaClass.addMethodFromSource("instanceVariableNames: vars\n[\n    <primitive:class/instanceVariableNames:>.\n  ^ self\n]\n");
         metaClass.addMethodFromSource("category: category\n[\n    category := category asSymbol.\n    <primitive:class/category:>.\n  ^ self\n]\n");
 
-        collectionClass = objectClass.subclass(this);
-        sequenceableCollectionClass = collectionClass.subclass(this);
-        arrayedCollectionClass = sequenceableCollectionClass.subclass(this);
-        outputStreamClass = objectClass.subclass(this);
-        numberClass = objectClass.subclass(this);
-        integerLikeClass = numberClass.subclass(this);
-        nilClass = objectClass.subclass(this);
-        booleanClass = objectClass.subclass(this);
-        integerClass = integerLikeClass.subclass(this);
-        characterClass = integerLikeClass.subclass(this);
-        stringClass = arrayedCollectionClass.subclass(this);
-        symbolClass = objectClass.subclass(this);
-        arrayClass = arrayedCollectionClass.subclass(this);
-        closureClass = objectClass.subclass(this);
-        methodClass = objectClass.subclass(this);
-        compiledMethodClass = methodClass.subclass(this);
-        builtinMethodClass = methodClass.subclass(this);
-        portClass = outputStreamClass.subclass(this);
-        foreignClass = new STClass();
+        collectionClass = objectClass.subclass(STSymbol.get("Collection"), this);
+        sequenceableCollectionClass = collectionClass.subclass(STSymbol.get("SequenceableCollection"), this);
+        arrayedCollectionClass = sequenceableCollectionClass.subclass(STSymbol.get("ArrayedCollection"), this);
+        outputStreamClass = objectClass.subclass(STSymbol.get("OutputStream"), this);
+        numberClass = objectClass.subclass(STSymbol.get("Number"), this);
+        integerLikeClass = numberClass.subclass(STSymbol.get("IntegerLike"), this);
+        nilClass = objectClass.subclass(STSymbol.get("Nil"), this);
+        booleanClass = objectClass.subclass(STSymbol.get("Boolean"), this);
+        integerClass = integerLikeClass.subclass(STSymbol.get("Integer"), this);
+        characterClass = integerLikeClass.subclass(STSymbol.get("Character"), this);
+        stringClass = arrayedCollectionClass.subclass(STSymbol.get("String"), this);
+        symbolClass = objectClass.subclass(STSymbol.get("Symbol"), this);
+        arrayClass = arrayedCollectionClass.subclass(STSymbol.get("Array"), this);
+        closureClass = objectClass.subclass(STSymbol.get("BlockClosure"), this);
+        methodClass = objectClass.subclass(STSymbol.get("Method"), this);
+        compiledMethodClass = methodClass.subclass(STSymbol.get("CompiledMethod"), this);
+        builtinMethodClass = methodClass.subclass(STSymbol.get("BuiltinMethod"), this);
+        portClass = outputStreamClass.subclass(STSymbol.get("Port"), this);
+        foreignClass = new STClass(STSymbol.get("Foreign"));
 
-        setValue("Collection", collectionClass);
-        setValue("SequenceableCollection", sequenceableCollectionClass);
-        setValue("ArrayedCollection", arrayedCollectionClass);
-        setValue("OutputStream", outputStreamClass);
-
-        setValue("Nil", nilClass);
-
-        setValue("Boolean", booleanClass);
-
-        setValue("Number", numberClass);
-        setValue("IntegerLike", integerLikeClass);
-        setValue("Integer", integerClass);
-
-        setValue("Character", characterClass);
-
-        setValue("String", stringClass);
         stringClass.addMethodFromSource("asSymbol\n[\n  ^ <primitive:string/asSymbol>\n]\n");
         stringClass.addMethodFromSource("+ other\n[\n  ^ <primitive:string/plus:>\n]\n");
         stringClass.addMethodFromSource("load\n[\n  ^ <primitive:string/load>\n]\n");
@@ -201,13 +184,6 @@ public class World {
             }
         });*/
 
-        setValue("Symbol", symbolClass);
-
-        setValue("Array", arrayClass);
-
-        setValue("Method", methodClass);
-
-        setValue("BlockClosure", closureClass);
         closureClass.addMethodFromSource("value\n[\n  ^ <primitive:closure/value>\n]\n");
         for (int x = 1; x < 8; x++) {
             StringBuilder s = new StringBuilder();
@@ -220,12 +196,7 @@ public class World {
             closureClass.addMethodFromSource(s.toString());
         }
 
-        setValue("BuiltinMethod", builtinMethodClass);
-        setValue("CompiledMethod", compiledMethodClass);
-
-        setValue("Port", portClass);
-
-        STClass fourClass = objectClass.subclass(this);
+        STClass fourClass = objectClass.subclass(null, this);
         fourClass.addMethodFromSource("main\n[\n    '/nijakow/four/smalltalk/classes/Bootstrapper.st' openResource load.\n    Bootstrapper new run.\n]\n");
         fourClass.addMethodFromSource("newConnection: connection\n[\n    Transcript := connection.\n    Apps/Browser launch.\n    Transcript close.\n]\n");
 
@@ -243,8 +214,7 @@ public class World {
         addBuiltin("class/superclass", (fiber) -> fiber.setAccu(STNil.wrap(fiber.getSelf().asClass().getSuperClass())));
         addBuiltin("class/subclass:", (fiber) -> {
             final STSymbol name = fiber.getVariable(0).asSymbol();
-            STClass clazz = fiber.getSelf().asClass().subclass(fiber.getVM().getWorld());
-            fiber.getVM().getWorld().setValue(name, clazz);
+            STClass clazz = fiber.getSelf().asClass().subclass(name, fiber.getVM().getWorld());
             fiber.setAccu(clazz);
         });
         addBuiltin("class/instanceVariables", (fiber) -> fiber.setAccu(new STArray(fiber.getSelf().asClass().getInstanceVariableNames())));

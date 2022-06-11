@@ -22,9 +22,11 @@ public class STClass extends STInstance {
     private STClass superclass;
     private STSymbol[] members;
     private final Map<STSymbol, STMethod> methods;
+    private STInstance name;
     private STInstance category;
 
-    private STClass(STClass metaclass, STClass superclass, STSymbol[] members) {
+    private STClass(STSymbol name, STClass metaclass, STClass superclass, STSymbol[] members) {
+        this.name = name;
         this.metaclass = metaclass;
         this.superclass = superclass;
         this.members = members;
@@ -32,12 +34,12 @@ public class STClass extends STInstance {
         this.category = STNil.get();
     }
 
-    public STClass(STClass superclass, STSymbol[] members) {
-        this(null, superclass, members);
+    public STClass(STSymbol name, STClass superclass, STSymbol[] members) {
+        this(name, null, superclass, members);
     }
 
-    public STClass() {
-        this(null, new STSymbol[]{});
+    public STClass(STSymbol name) {
+        this(name, null, new STSymbol[]{});
     }
 
     @Override
@@ -60,12 +62,15 @@ public class STClass extends STInstance {
         return new STObject(this, this.getInstanceVariableCount());
     }
 
-    public STClass subclass(World world, STSymbol[] members) {
-        return new STClass(new STClass(getClass(world), new STSymbol[]{}), this, members);
+    public STClass subclass(STSymbol name, World world, STSymbol[] members) {
+        STClass subclass = new STClass(name, new STClass(null, getClass(world), new STSymbol[]{}), this, members);
+        if (name != null)
+            world.setValue(name, subclass);
+        return subclass;
     }
 
-    public STClass subclass(World world) {
-        return subclass(world, new STSymbol[]{});
+    public STClass subclass(STSymbol name, World world) {
+        return subclass(name, world, new STSymbol[]{});
     }
 
     private int getParentInstanceVariableCount() {
