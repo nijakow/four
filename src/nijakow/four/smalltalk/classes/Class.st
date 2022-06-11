@@ -21,6 +21,13 @@ instanceVariables
   ^ <primitive:class/instanceVariables>
 ]
 ---
+instanceVariableNames | sos
+[
+    sos := StringOutputStream new.
+    self instanceVariables do: [ :v | sos out: v asString; out: ' ' ].
+  ^ sos close
+]
+---
 category
 [
   ^ <primitive:class/category>
@@ -81,6 +88,14 @@ writeOn: w | name
     name := self name.
     (name != nil) ifTrue: [ w out: name asString. ^ self ].
     w out: 'a class'.
+]
+---
+saveHeaderTo: w
+[
+    w out: self superclass name asString; out: ' subclass: '; out: self name; out: ';'; cr;
+      out: 'instanceVariableNames: '; store: self instanceVariableNames.
+      self category notNil: [ w out: ';'; cr; out: 'category: '; store: self category asString ].
+    w cr.
 ]
 ---
 saveToWithoutStatics: w Name: n
