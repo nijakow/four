@@ -11,15 +11,17 @@ public class Context {
     private final Context lexical;
     private final STCompiledMethod method;
     private final int base;
+    private final int args;
     private VMInstruction instruction;
     private Pair<STClass, STClosure> handler;
 
-    public Context(Context parent, Context lexical, STCompiledMethod method, VMInstruction instruction, int base) {
+    public Context(Context parent, Context lexical, STCompiledMethod method, VMInstruction instruction, int base, int args) {
         this.parent = parent;
         this.lexical = lexical;
         this.method = method;
         this.instruction = instruction;
         this.base = base;
+        this.args = args;
     }
 
     public Context getParent() {
@@ -32,9 +34,9 @@ public class Context {
 
     public STCompiledMethod getMethod() { return this.method; }
 
-    public int getBase() {
-        return this.base;
-    }
+    public int getBase() { return this.base; }
+
+    public int getArgs() { return this.args; }
 
     public Pair<STClass, STClosure> getHandler() {
         return handler;

@@ -49,6 +49,8 @@ public class Fiber {
         this.accu = value;
     }
 
+    public int getArgs() { return top().getArgs(); }
+
     public STInstance getSelf() {
         return stack.get(top().getBase());
     }
@@ -117,7 +119,7 @@ public class Fiber {
     }
 
     public void enter(Context lexical, STCompiledMethod method, VMInstruction instruction, int args, int locals) {
-        Context context = new Context(top(), lexical, method, instruction, sp - args - 1);
+        Context context = new Context(top(), lexical, method, instruction, sp - args - 1, args);
         sp += locals - args;
         this.top = context;
     }
