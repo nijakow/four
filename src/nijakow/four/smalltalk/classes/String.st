@@ -32,6 +32,11 @@ compile
   ^ <primitive:string/compile>
 ]
 ---
+asString
+[
+  ^ self
+]
+---
 asSymbol
 [
   ^ <primitive:string/asSymbol>

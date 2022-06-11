@@ -1,5 +1,10 @@
 Symbol
 <<<
+asSymbol
+[
+  ^ self
+]
+---
 asString
 [
   ^ <primitive:symbol/asString>
