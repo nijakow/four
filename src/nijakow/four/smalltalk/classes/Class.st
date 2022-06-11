@@ -86,19 +86,27 @@ writeOn: w | name
     w out: 'a class'.
 ]
 ---
+saveToWithoutStatics: w Name: n
+[
+    w out: n; cr;
+      out: '<<<'; cr.
+    self methods do: [ :m |
+        (m isKindOf: CompiledMethod) ifTrue: [
+            w out: m source;
+              out: '---'; cr.
+        ]
+    ].
+]
+---
 saveTo: w | n
 [
     n := self name.
-    (n != nil) ifTrue: [
-        w out: n; cr;
-          out: '<<<'; cr.
-        self methods do: [ :m |
-            (m isKindOf: CompiledMethod) ifTrue: [
-                w out: m source;
-                  out: '---'; cr.
-            ]
+    n notNil: [
+        self saveToWithoutStatics: w Name: n.
+        (self != self class) ifTrue: [
+            self class saveToWithoutStatics: w Name: n + ' class'
         ].
-    ]
+    ].
 ]
 ---
 handle: block do: handler
