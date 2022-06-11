@@ -42,6 +42,7 @@ public class Tokenizer {
                 case 's': return ' ';
                 case '{': return '\002';
                 case '}': return '\003';
+                case '\0': return '\\';
                 default: return c;
             }
         }
@@ -124,7 +125,8 @@ public class Tokenizer {
         } catch (NumberFormatException e) {
         }
 
-        if ("self".equals(str)) return new Token(TokenType.SELF, this, start, end);
+        if (str.isEmpty()) return new Token(TokenType.EOF, this, start, end);
+        else if ("self".equals(str)) return new Token(TokenType.SELF, this, start, end);
         else if ("super".equals(str)) return new Token(TokenType.SUPER, this, start, end);
         else if ("true".equals(str)) return new Token(TokenType.TRUE, this, start, end);
         else if ("false".equals(str)) return new Token(TokenType.FALSE, this, start, end);

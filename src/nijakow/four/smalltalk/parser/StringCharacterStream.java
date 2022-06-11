@@ -16,11 +16,15 @@ public class StringCharacterStream implements CharacterStream {
 
     @Override
     public char peek() {
+        if (!hasNext())
+            return '\0';
         return string.charAt(index);
     }
 
     @Override
     public char read() {
+        if (!hasNext())
+            return '\0';
         return string.charAt(index++);
     }
 
