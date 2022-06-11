@@ -161,3 +161,21 @@ byCategory | cats
     ].
   ^ cats
 ]
+---
+inCategory: category | classes
+[
+    classes := Vector new.
+    self allNamedDo: [ :class |
+        (class category = category) ifTrue: [
+            classes add: class
+        ]
+    ].
+  ^ classes asArray
+]
+---
+allCategories | categories
+[
+    categories := Set new.
+    self allNamedDo: [ :class | class category notNil: [ categories add: class category ] ].
+  ^ categories asArray
+]
