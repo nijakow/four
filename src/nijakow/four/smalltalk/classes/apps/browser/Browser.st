@@ -1,13 +1,26 @@
 App subclass: #Apps/Browser
 <<<
-createClass | text class
+createClassInCategory: category | src text class
 [
-    text := Transcript edit: 'Object subclass: #NewClassName;\ninstanceVariableNames: \'\'\n' title: 'New Method'.
+    src := String build: [ :sos |
+        sos out: 'Object subclass: #NewClassName;'; cr;
+            out: 'instanceVariableNames: \'\''.
+        category notNil: [
+            sos out: ';'; cr;
+                out: 'category: '; store: category asString
+        ].
+    ].
+    text := Transcript edit: src title: 'New Method'.
     text notNil: [
         class := text compile value.
         (class isKindOf: Class)  ifTrue: [ self editClass: class                             ]
                                 ifFalse: [ Transcript out: 'Class could not be created!'; cr ]
     ].
+]
+---
+createClass
+[
+    self createClassInCategory: nil
 ]
 ---
 searchClass | name class
@@ -32,13 +45,14 @@ uploadClass | text
   ^ text load
 ]
 ---
-classes: list title: title | menu
+classes: list category: category | menu
 [
     Transcript cr;
-        out: title; cr.
+        out: 'Classes in '; store: category asString; cr.
     list := list sortBy: [ :a :b | a name asString < b name asString ].
     menu := UI/Menu new.
     list do: [ :c | menu entry: c name asString does: [ :i | (list at: i) browse ] ].
+    menu entry: 'New...' does: [ self createClassInCategory: category ].
     menu entry: 'Exit' does: [].
     menu run.
 ]
@@ -47,7 +61,7 @@ classesInCategory: category | name
 [
     (category = nil)  ifTrue: [ name := 'Uncategorized'                 ]
                      ifFalse: [ name := 'Category ' + category asString ].
-    self classes: (Class inCategory: category) title: name
+    self classes: (Class inCategory: category) category: category
 ]
 ---
 categories | list menu
@@ -87,8 +101,8 @@ run | running
         Transcript cr;
             out: 'The Browser'; cr.
         UI/Menu new;
-            entry: 'All Classes...' does: [ self classes ];
             entry: 'Categories...' does: [ self categories ];
+            entry: 'New Class...' does: [ self createClass ];
             entry: 'Launch a Shell' does: [ Apps/Shell launch ];
             entry: 'Exit' does: [ running := false ];
         run

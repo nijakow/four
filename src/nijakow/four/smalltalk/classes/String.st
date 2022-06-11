@@ -113,3 +113,12 @@ parseInt
     "TODO"
   ^ self parseUInt
 ]
+---
+String class
+<<<
+build: aBlock | sos
+[
+    sos := StringOutputStream new.
+    aBlock value: sos.
+  ^ sos close
+]

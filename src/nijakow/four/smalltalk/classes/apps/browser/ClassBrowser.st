@@ -3,7 +3,7 @@ Apps/Browser/AbstractObjectBrowser subclass: #Apps/Browser/ClassBrowser
 showMethods | menu methods
 [
     Transcript cr;
-        out: 'Methods of '; store: self target name; cr.
+        out: 'Methods of '; out: self target; cr.
     menu := UI/Menu new.
     methods := self target methods.
     methods := methods sortBy: [ :a :b | (a name asString) < (b name asString) ].
@@ -28,7 +28,7 @@ run | running
     running := true.
     [ running ] whileTrue: [
         Transcript cr;
-            out: 'The class '; store: self target name; cr.
+            out: 'The class '; out: self target; cr.
         UI/Menu new;
             entry: 'Methods...' does: [ self showMethods ];
             entry: 'Edit Statics...' does: [ self target class browse ];

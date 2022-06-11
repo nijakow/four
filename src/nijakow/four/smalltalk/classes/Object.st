@@ -62,6 +62,11 @@ toString
   ^ <primitive:toString>
 ]
 ---
+asString
+[
+  ^ self toString
+]
+---
 writeOn: w
 [
     w out: 'Instance of ';
