@@ -38,8 +38,9 @@ classes | running menu list
         Transcript cr;
             out: 'All Classes'; cr.
         list := Class allNamed.
+        list := list sortBy: [ :a :b | a name asString < b name asString ].
         menu := UI/Menu new.
-        list do: [ :c | menu entry: c name does: [ :i | (list at: i) browse ] ].
+        list do: [ :c | menu entry: c name asString does: [ :i | (list at: i) browse ] ].
         menu entry: 'Search...' does: [ self searchClass ].
         menu entry: 'New...' does: [ self createClass ].
         menu entry: 'Upload...' does: [ :c | (c := self uploadClass). c notNil: [ c browse ] ].

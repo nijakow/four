@@ -3,10 +3,7 @@ category: 'Kernel-Classes'
 <<<
 name | glv
 [
-    Symbol boundInstancesDo: [ :sym :glv |
-        (self = glv) ifTrue: [ ^ sym asString ].
-    ].
-  ^ nil
+  ^ <primitive:class/name>
 ]
 ---
 instances
@@ -82,7 +79,7 @@ edit: name | text
 writeOn: w | name
 [
     name := self name.
-    (name != nil) ifTrue: [ w out: name. ^ self ].
+    (name != nil) ifTrue: [ w out: name asString. ^ self ].
     w out: 'a class'.
 ]
 ---
@@ -102,9 +99,9 @@ saveTo: w | n
 [
     n := self name.
     n notNil: [
-        self saveToWithoutStatics: w Name: n.
+        self saveToWithoutStatics: w Name: n asString.
         (self != self class) ifTrue: [
-            self class saveToWithoutStatics: w Name: n + ' class'
+            self class saveToWithoutStatics: w Name: n asString + ' class'
         ].
     ].
 ]

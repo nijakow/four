@@ -47,6 +47,10 @@ public class STClass extends STInstance {
         return this;
     }
 
+    public STInstance getName() {
+        return this.name;
+    }
+
     public STClass getSuperClass() {
         return this.superclass;
     }

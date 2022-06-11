@@ -210,6 +210,7 @@ public class World {
         addBuiltin("throw", (fiber) -> fiber.throwValue(fiber.getSelf()));
 
         addBuiltin("class/new", (fiber) -> fiber.enter(fiber.getSelf().asClass().instantiate(), "init", new STInstance[]{}));
+        addBuiltin("class/name", (fiber) -> fiber.setAccu(STNil.wrap(fiber.getSelf().asClass().getName())));
         addBuiltin("class/instances", (fiber) -> fiber.setAccu(new STArray(STInstance.allInstancesOf(fiber.getSelf().asClass(), fiber.getWorld()))));
         addBuiltin("class/superclass", (fiber) -> fiber.setAccu(STNil.wrap(fiber.getSelf().asClass().getSuperClass())));
         addBuiltin("class/subclass:", (fiber) -> {
