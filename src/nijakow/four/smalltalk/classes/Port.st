@@ -7,6 +7,61 @@ createIO
                   Port: self
 ]
 ---
+prompt: text
+[
+  ^ <primitive:port/prompt:>
+]
+---
+password: text
+[
+  ^ <primitive:port/password:>
+]
+---
+smalltalk: prompt text: text
+[
+  ^ <primitive:port/smalltalk:text:>
+]
+---
+smalltalk: prompt
+[
+  ^ self smalltalk: prompt text: ''
+]
+---
+image: image width: w height: h
+[
+  ^ <primitive:port/image:width:height:>
+]
+---
+charOut: c
+[
+  ^ <primitive:port/charOut:>
+]
+---
+edit: text title: title
+[
+  ^ <primitive:port/edit:title:>
+]
+---
+edit
+[
+  ^ self edit: '' title: 'Something new'
+]
+---
+uploadToUser: text
+[
+  ^ <primitive:port/uploadToUser>
+]
+---
+downloadFromUser
+[
+  ^ <primitive:port/downloadFromUser>
+]
+---
+close
+[
+  ^ <primitive:port/close>
+]
+---
 confirm: text | result
 [
     [

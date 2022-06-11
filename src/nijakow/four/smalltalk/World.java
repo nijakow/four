@@ -231,52 +231,6 @@ public class World {
         setValue("CompiledMethod", compiledMethodClass);
 
         setValue("Port", portClass);
-        portClass.addMethod("prompt:", (fiber, args) -> {
-            fiber.pause();
-            args[0].asPort().prompt(args[1].asString().getValue());
-            args[0].asPort().onInput((STString line) -> fiber.restartWithValue(line));
-        });
-        portClass.addMethod("password:", (fiber, args) -> {
-            fiber.pause();
-            args[0].asPort().password(((STString) args[1]).getValue());
-            args[0].asPort().onInput((STString line) -> fiber.restartWithValue(line));
-        });
-        portClass.addMethod("smalltalk:", (fiber, args) -> {
-            fiber.pause();
-            args[0].asPort().smalltalk(((STString) args[1]).getValue());
-            args[0].asPort().onInput((STString line) -> fiber.restartWithValue(line));
-            args[0].asPort().onSmalltalkInput((STString line) -> fiber.restartWithValue(line));
-        });
-        portClass.addMethod("smalltalk:text:", (fiber, args) -> {
-            fiber.pause();
-            args[0].asPort().smalltalk(((STString) args[1]).getValue(), ((STString) args[2]).getValue());
-            args[0].asPort().onInput((STString line) -> fiber.restartWithValue(line));
-            args[0].asPort().onSmalltalkInput((STString line) -> fiber.restartWithValue(line));
-        });
-        portClass.addMethod("image:width:height:", (fiber, args) -> {
-            args[0].asPort().image(((STString) args[1]).getValue(), ((STInteger) args[2]).getValue(), ((STInteger) args[3]).getValue());
-        });
-        portClass.addMethod("charOut:", (fiber, args) -> {
-            args[0].asPort().write("" + args[1].asCharacter().getValue());
-        });
-        portClass.addMethod("edit:title:", (fiber, args) -> {
-            fiber.pause();
-            args[0].asPort().edit(args[2].asString().getValue(), args[1].asString().getValue(), (v) -> {
-                if (v == null) fiber.restartWithValue(STNil.get());
-                else fiber.restartWithValue(v);
-            });
-        });
-        portClass.addMethodFromSource("edit\n[\n  ^ self edit: '' title: 'Something new'\n]\n");
-        portClass.addMethod("uploadToUser:", (fiber, args) -> {
-            args[0].asPort().uploadToUser(args[1].asString().getValue());
-        });
-        portClass.addMethod("downloadFromUser", (fiber, args) -> {
-            fiber.pause();
-            args[0].asPort().downloadFromUser((STString file) -> fiber.restartWithValue(file));
-        });
-        portClass.addMethod("close", (fiber, args) -> {
-            args[0].asPort().close();
-        });
 
         STClass fourClass = objectClass.subclass(this);
         fourClass.addMethodFromSource("main\n[\n    '/nijakow/four/smalltalk/classes/Bootstrapper.st' openResource load.\n    Bootstrapper new run.\n]\n");
@@ -395,6 +349,52 @@ public class World {
         addBuiltin("method/name", (fiber) -> fiber.setAccu(STNil.wrap(fiber.getSelf().asCompiledMethod().getName())));
         addBuiltin("method/doc", (fiber) -> fiber.setAccu(new STString(fiber.getSelf().asCompiledMethod().getDocumentar())));
         addBuiltin("method/source", (fiber) -> fiber.setAccu(new STString(fiber.getSelf().asCompiledMethod().getSource())));
+
+        addBuiltin("port/prompt:", (fiber) -> {
+            fiber.pause();
+            fiber.getSelf().asPort().prompt(fiber.getVariable(0).asString().getValue());
+            fiber.getSelf().asPort().onInput((STString line) -> fiber.restartWithValue(line));
+        });
+        addBuiltin("port/password:", (fiber) -> {
+            fiber.pause();
+            fiber.getSelf().asPort().password(((STString) fiber.getVariable(0)).getValue());
+            fiber.getSelf().asPort().onInput((STString line) -> fiber.restartWithValue(line));
+        });
+        addBuiltin("port/smalltalk:", (fiber) -> {
+            fiber.pause();
+            fiber.getSelf().asPort().smalltalk(((STString) fiber.getVariable(0)).getValue());
+            fiber.getSelf().asPort().onInput((STString line) -> fiber.restartWithValue(line));
+            fiber.getSelf().asPort().onSmalltalkInput((STString line) -> fiber.restartWithValue(line));
+        });
+        addBuiltin("port/smalltalk:text:", (fiber) -> {
+            fiber.pause();
+            fiber.getSelf().asPort().smalltalk(((STString) fiber.getVariable(0)).getValue(), ((STString) fiber.getVariable(1)).getValue());
+            fiber.getSelf().asPort().onInput((STString line) -> fiber.restartWithValue(line));
+            fiber.getSelf().asPort().onSmalltalkInput((STString line) -> fiber.restartWithValue(line));
+        });
+        addBuiltin("port/image:width:height:", (fiber) -> {
+            fiber.getSelf().asPort().image(((STString) fiber.getVariable(0)).getValue(), ((STInteger) fiber.getVariable(1)).getValue(), ((STInteger) fiber.getVariable(2)).getValue());
+        });
+        addBuiltin("port/charOut:", (fiber) -> {
+            fiber.getSelf().asPort().write("" + fiber.getVariable(0).asCharacter().getValue());
+        });
+        addBuiltin("port/edit:title:", (fiber) -> {
+            fiber.pause();
+            fiber.getSelf().asPort().edit(fiber.getVariable(1).asString().getValue(), fiber.getVariable(0).asString().getValue(), (v) -> {
+                if (v == null) fiber.restartWithValue(STNil.get());
+                else fiber.restartWithValue(v);
+            });
+        });
+        addBuiltin("port/uploadToUser", (fiber) -> {
+            fiber.getSelf().asPort().uploadToUser(fiber.getVariable(0).asString().getValue());
+        });
+        addBuiltin("port/downloadFromUser", (fiber) -> {
+            fiber.pause();
+            fiber.getSelf().asPort().downloadFromUser((STString file) -> fiber.restartWithValue(file));
+        });
+        addBuiltin("port/close", (fiber) -> {
+            fiber.getSelf().asPort().close();
+        });
     }
 
     public BasicBuiltin getBuiltinFor(STSymbol symbol) {
