@@ -53,7 +53,7 @@ classes: list category: category | menu
     menu := UI/Menu new.
     list do: [ :c | menu entry: c name asString does: [ :i | (list at: i) browse ] ].
     menu entry: 'New...' does: [ self createClassInCategory: category ].
-    menu entry: 'Exit' does: [].
+    menu default: 'Exit' does: [].
     menu run.
 ]
 ---
@@ -73,7 +73,7 @@ categories | list menu
     menu := UI/Menu new.
     list do: [ :c | menu entry: c name asString does: [ :i | self classesInCategory: (list at: i) ] ].
     menu entry: '<Uncategorized>' does: [ self classesInCategory: nil ].
-    menu entry: 'Exit' does: [].
+    menu default: 'Exit' does: [].
     menu run.
 ]
 ---
@@ -87,7 +87,7 @@ run | running
             entry: 'Classes...' does: [ self categories ];
             entry: 'Search...' does: [ self searchClass ];
             entry: 'Launch a Shell' does: [ Apps/Shell launch ];
-            entry: 'Exit' does: [ running := false ];
+            default: 'Exit' does: [ running := false ];
         run
     ]
 ]

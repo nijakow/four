@@ -11,7 +11,7 @@ showMethods: methods | menu
         name := Transcript prompt: 'Method name? '.
         name notNil: [ self target edit: name asSymbol ]
     ].
-    menu entry: 'Exit' does: [].
+    menu default: 'Exit' does: [].
     menu run
 ]
 ---
@@ -41,7 +41,7 @@ showCategories | list menu
     menu := UI/Menu new.
     list do: [ :m | menu entry: m asString does: [ :i | self showMethodsInCategory: (list at: i) ] ].
     menu entry: '<Uncategorized>' does: [ :i | self showMethodsInCategory: nil ].
-    menu entry: 'Exit' does: [].
+    menu default: 'Exit' does: [].
     menu run.
 ]
 ---
@@ -56,7 +56,7 @@ run | running
             entry: 'Edit Statics...' does: [ self target class browse ];
             entry: 'Edit Superclass...' does: [ self target superclass browse ];
             entry: 'Download a Snapshot' does: [ self downloadSnapshot ];
-            entry: 'Exit' does: [ running := false ];
+            default: 'Exit' does: [ running := false ];
         run
     ].
 ]

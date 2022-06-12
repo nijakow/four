@@ -1,5 +1,5 @@
 App subclass: #UI/Menu;
-instanceVariableNames: 'entries'
+instanceVariableNames: 'entries default'
 <<<
 init
 [
@@ -13,6 +13,12 @@ entry: text does: action
   ^ self
 ]
 ---
+default: text does: action
+[
+    default := text -> action.
+  ^ self
+]
+---
 runOnce | i selection
 [
     i := 1.
@@ -20,9 +26,13 @@ runOnce | i selection
         Transcript out: '  '; out: i; out: ') '; out: each key; cr.
         i := i + 1.
     ].
+    default notNil: [ Transcript out: '  0) '; out: default key; cr ].
     selection := (Transcript prompt: 'Choice > ') trim parseInt.
     ([ selection != nil ] and: [ selection between: 1 and: i - 1 ]) ifTrue: [
         ^ (entries at: selection) value value: selection
+    ].
+    ((selection = 0) and: (default != nil)) ifTrue: [
+        ^ default value value: selection
     ].
   ^ nil
 ]
