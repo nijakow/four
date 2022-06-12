@@ -10,20 +10,6 @@ public class DefaultTheme extends FTheme {
         comment.setItalic(true);
         addStyle(TokenType.COMMENT, comment);
 
-        TokenStyle syntax = new TokenStyle(TokenType.LPAREN);
-        syntax.setForeground(new Color(0x398D86));
-        addStyle(TokenType.LPAREN, syntax);
-        addStyle(TokenType.RPAREN, syntax);
-        addStyle(TokenType.LBRACK, syntax);
-        addStyle(TokenType.RBRACK, syntax);
-        addStyle(TokenType.LCURLY, syntax);
-        addStyle(TokenType.RCURLY, syntax);
-        addStyle(TokenType.DOT, syntax);
-        addStyle(TokenType.COMMA, syntax);
-        addStyle(TokenType.COLON, syntax);
-        addStyle(TokenType.SEMICOLON, syntax);
-        addStyle(TokenType.BAR, syntax);
-
         TokenStyle doc = new TokenStyle(TokenType.DOCUMENTAR);
         doc.setForeground(new Color(0xB60117));
         doc.setItalic(true);
@@ -37,12 +23,13 @@ public class DefaultTheme extends FTheme {
         addStyle(TokenType.FALSE, new TokenStyle(TokenType.FALSE, keyWord));
         addStyle(TokenType.THISCONTEXT, new TokenStyle(TokenType.THISCONTEXT, keyWord));
         addStyle(TokenType.INTEGER, new TokenStyle(TokenType.INTEGER, keyWord));
+        addStyle(TokenType.CHARACTER, new TokenStyle(TokenType.CHARACTER, keyWord));
 
         TokenStyle type = new TokenStyle(TokenType.STRING);
-        type.setForeground(new Color(0x048282));
+        type.setForeground(new Color(0x046382));
+        type.setItalic(true);
         addStyle(TokenType.STRING, type);
         addStyle(TokenType.SYMBOL, new TokenStyle(TokenType.SYMBOL, type));
-        addStyle(TokenType.CHARACTER, new TokenStyle(TokenType.CHARACTER, type));
 
         TokenStyle controlWord = new TokenStyle(TokenType.SELF);
         controlWord.setForeground(new Color(0xaba003));
