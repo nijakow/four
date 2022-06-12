@@ -26,6 +26,11 @@ source
   ^ <primitive:method/source>
 ]
 ---
+disassemble
+[
+  ^ <primitive:method/disassemble>
+]
+---
 edit
 [
     self holdingClass edit: self name

@@ -93,6 +93,17 @@ public class STCompiledMethod extends STInstance implements STMethod {
         return this.source == null ? "" : this.source;
     }
 
+    public String disassemble() {
+        final StringBuilder src = new StringBuilder();
+        VMInstruction instruction = this.instructions;
+        while (instruction != null) {
+            src.append(instruction);
+            src.append('\n');
+            instruction = instruction.getNext();
+        }
+        return src.toString();
+    }
+
     public STSymbol getCategory() {
         if (categories == null || categories.length == 0)
             return null;

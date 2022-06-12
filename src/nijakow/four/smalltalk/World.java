@@ -335,6 +335,7 @@ public class World {
         addBuiltin("method/category", (fiber) -> fiber.setAccu(STNil.wrap(fiber.getSelf().asCompiledMethod().getCategory())));
         addBuiltin("method/doc", (fiber) -> fiber.setAccu(new STString(fiber.getSelf().asCompiledMethod().getDocumentar())));
         addBuiltin("method/source", (fiber) -> fiber.setAccu(new STString(fiber.getSelf().asCompiledMethod().getSource())));
+        addBuiltin("method/disassemble", (fiber) -> fiber.setAccu(new STString(fiber.getSelf().asCompiledMethod().disassemble())));
 
         addBuiltin("port/prompt:", (fiber) -> {
             fiber.pause();
