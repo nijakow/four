@@ -45,6 +45,13 @@ showCategories | list menu
     menu run.
 ]
 ---
+showInstanceVars
+[
+    Transcript     edit: (self target instanceVariableNames)
+                  title: 'Instance Variables'
+               onAccept: [ :text | self target instanceVariableNames: text ]
+]
+---
 run | running
 [
     running := true.
@@ -53,6 +60,7 @@ run | running
             out: 'The class '; out: self target; cr.
         UI/Menu new;
             entry: 'Methods...' does: [ self showCategories ];
+            entry: 'Instance Variables...' does: [ self showInstanceVars ];
             entry: 'Edit Statics...' does: [ self target class browse ];
             entry: 'Edit Superclass...' does: [ self target superclass browse ];
             entry: 'Download a Snapshot' does: [ self downloadSnapshot ];

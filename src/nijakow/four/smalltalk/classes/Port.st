@@ -48,6 +48,18 @@ edit
   ^ self edit: '' title: 'Something new'
 ]
 ---
+edit: text title: title onAccept: acceptBlock onCancel: cancelBlock
+[
+    text := self edit: text title: title.
+  ^ (text != nil)  ifTrue: [ acceptBlock value: text ]
+                  ifFalse: [ cancelBlock value       ]
+]
+---
+edit: text title: title onAccept: acceptBlock
+[
+  ^ self edit: text title: title onAccept: acceptBlock onCancel: [ nil ]
+]
+---
 uploadToUser: text
 [
   ^ <primitive:port/uploadToUser>
