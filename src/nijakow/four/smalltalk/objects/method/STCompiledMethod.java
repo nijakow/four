@@ -35,9 +35,11 @@ public class STCompiledMethod extends STInstance implements STMethod {
                 int j = documentar.indexOf('\n', i);
                 if (j < 0) j = documentar.length();
                 String[] tokens = documentar.substring(i, j).trim().split("\\s+");
-                this.categories = new STSymbol[tokens.length];
-                for (int x = 0; x < this.categories.length; x++) {
-                    this.categories[x] = STSymbol.get(tokens[x].trim());
+                if (!(tokens.length == 1 && tokens[0].isBlank())) {
+                    this.categories = new STSymbol[tokens.length];
+                    for (int x = 0; x < this.categories.length; x++) {
+                        this.categories[x] = STSymbol.get(tokens[x].trim());
+                    }
                 }
             }
         }

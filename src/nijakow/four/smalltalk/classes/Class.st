@@ -94,13 +94,14 @@ selectors
   ^ <primitive:class/selectors>
 ]
 ---
-edit: name | text
+edit: name | documentar text
 [
     ((self method: name) = nil) ifTrue: [
+        documentar := '\"\"\"\n    The method ' + name toString + '.\n\n    @category \n\"\"\"\n\n'.
         (name = #init)  ifTrue: [
-            text := (name name) + ' | "Local variables"\n[\n    super init.\n  ^ self\n]\n'.
+            text := documentar + (name name) + ' | "Local variables"\n[\n    super init.\n  ^ self\n]\n'.
         ] ifFalse: [
-            text := (name name) + ' | "Local variables"\n[\n  ^ self\n]\n'.
+            text := documentar + (name name) + ' | "Local variables"\n[\n  ^ self\n]\n'.
         ].
     ] ifFalse: [
         text := (self method: name) source.
