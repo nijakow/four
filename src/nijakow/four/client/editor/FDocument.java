@@ -1,10 +1,7 @@
 package nijakow.four.client.editor;
 
 import nijakow.four.client.utils.StringHelper;
-import nijakow.four.smalltalk.parser.StringCharacterStream;
-import nijakow.four.smalltalk.parser.Token;
-import nijakow.four.smalltalk.parser.TokenType;
-import nijakow.four.smalltalk.parser.Tokenizer;
+import nijakow.four.smalltalk.parser.*;
 
 import javax.swing.text.*;
 import java.util.ArrayList;
@@ -168,14 +165,39 @@ public class FDocument extends DefaultStyledDocument {
         int pos = 0;
         try {
             final String text = getText(0, getLength());
+
+            int errorPos = -1;
+            int errorEndPos = -1;
+
+            /*
+             * The following piece of code is a way to implement an
+             * error highlighter. At the moment, it is commented out
+             * because there is no way to decide if a certain piece
+             * of code is a method definition or a CLI input by just
+             * looking at it.
+             *                                          - nijakow
+             */
+            /*try {
+                Tokenizer tokenizer = new Tokenizer(new StringCharacterStream(text));
+                Parser parser = new Parser(tokenizer);
+                parser.parseCL();
+            } catch (ParseException e) {
+                final Token errorToken = e.getErroneousToken();
+                errorPos = errorToken.getPosition().getIndex();
+                errorEndPos = errorToken.getEndPosition().getIndex();
+            }*/
+
             Tokenizer tokenizer = new Tokenizer(new StringCharacterStream(text));
             tokenizer.enableCommentTokens();
             tokenizer.muffleSymbols();
+
             do {
                 token = tokenizer.nextToken();
                 Style style = theme.getStyle(token.getType()) == null ? def : theme.getStyle(token.getType()).asStyle(def);
                 if (style == null) style = def;
                 pos = token.getPosition().getIndex();
+                if (errorPos >= 0 && pos >= errorPos && pos <= errorEndPos)
+                    style = theme.getErrorStyle().asStyle(null);
                 setCharacterAttributes(pos, (token.getEndPosition().getIndex()) - pos, style, true);
             } while (token.getType() != TokenType.EOF);
         } catch (Exception e) {

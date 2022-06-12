@@ -9,4 +9,8 @@ public class ParseException extends FourException {
         super(message);
         this.token = token;
     }
+
+    public Token getErroneousToken() {
+        return this.token;
+    }
 }
