@@ -108,7 +108,7 @@ edit: name | text
     text := (Transcript edit: text title: ('Method ' + (name name))).
     (text = nil) ifTrue: [ ^ self ].
     (text isWhitespace) ifTrue: [ self removeMethod: name ]
-                       ifFalse: [ self addMethod: text    ].
+                       ifFalse: [ (self addMethod: text) notNil: [ :v | Exception signal: v ] ].
   ^ self
 ]
 ---

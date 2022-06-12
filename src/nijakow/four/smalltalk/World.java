@@ -7,6 +7,7 @@ import nijakow.four.smalltalk.objects.method.STMethod;
 import nijakow.four.smalltalk.parser.ParseException;
 import nijakow.four.smalltalk.vm.BasicBuiltin;
 import nijakow.four.smalltalk.vm.Builtin;
+import nijakow.four.smalltalk.vm.FourException;
 import nijakow.four.smalltalk.vm.Quickloader;
 
 import java.io.BufferedReader;
@@ -195,7 +196,7 @@ public class World {
 
         STClass fourClass = objectClass.subclass(null, this);
         fourClass.addMethodFromSource("main\n[\n    '/nijakow/four/smalltalk/classes/Bootstrapper.st' openResource load.\n    Bootstrapper new run.\n]\n");
-        fourClass.addMethodFromSource("newConnection: connection\n[\n    Transcript := connection.\n    Apps/Browser launch.\n    Transcript close.\n]\n");
+        fourClass.addMethodFromSource("newConnection: connection\n[\n    Transcript := connection.\n    Apps/Shell launch.\n    Transcript close.\n]\n");
 
         STObject four = (STObject) fourClass.instantiate();
         setValue("_Four", four);
@@ -220,7 +221,14 @@ public class World {
         addBuiltin("class/category", (fiber) -> fiber.setAccu(fiber.getSelf().asClass().getCategory()));
         addBuiltin("class/category:", (fiber) -> fiber.getSelf().asClass().setCategory(fiber.getVariable(0)));
         addBuiltin("class/method:", (fiber) -> fiber.setAccu(STNil.wrap(fiber.getSelf().asClass().getMethodAsInstance(fiber.getVariable(0).asSymbol()))));
-        addBuiltin("class/addMethod:", (fiber) -> fiber.getSelf().asClass().addMethodFromSource(fiber.getVariable(0).asString().getValue()));
+        addBuiltin("class/addMethod:", (fiber) -> {
+            try {
+                fiber.getSelf().asClass().addMethodFromSource(fiber.getVariable(0).asString().getValue());
+                fiber.setAccu(STNil.get());
+            } catch (ParseException e) {
+                fiber.setAccu(new STString(e.getMessage()));
+            }
+        });
         addBuiltin("class/removeMethod:", (fiber) -> fiber.getSelf().asClass().removeMethod(fiber.getVariable(0).asSymbol()));
         addBuiltin("class/selectors", (fiber) -> fiber.setAccu(new STArray(fiber.getSelf().asClass().getSelectors())));
         addBuiltin("class/handle:do:", (fiber) -> {

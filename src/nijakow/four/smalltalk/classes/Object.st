@@ -49,7 +49,7 @@ isNil: aBlock
 ---
 notNil: aBlock
 [
-  ^ aBlock value
+  ^ aBlock value: self
 ]
 ---
 otherwise: obj
