@@ -10,6 +10,20 @@ public class DefaultTheme extends FTheme {
         comment.setItalic(true);
         addStyle(TokenType.COMMENT, comment);
 
+        TokenStyle syntax = new TokenStyle(TokenType.LPAREN);
+        syntax.setForeground(new Color(0x398D86));
+        addStyle(TokenType.LPAREN, syntax);
+        addStyle(TokenType.RPAREN, syntax);
+        addStyle(TokenType.LBRACK, syntax);
+        addStyle(TokenType.RBRACK, syntax);
+        addStyle(TokenType.LCURLY, syntax);
+        addStyle(TokenType.RCURLY, syntax);
+        addStyle(TokenType.DOT, syntax);
+        addStyle(TokenType.COMMA, syntax);
+        addStyle(TokenType.COLON, syntax);
+        addStyle(TokenType.SEMICOLON, syntax);
+        addStyle(TokenType.BAR, syntax);
+
         TokenStyle doc = new TokenStyle(TokenType.DOCUMENTAR);
         doc.setForeground(new Color(0xB60117));
         doc.setItalic(true);
