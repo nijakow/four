@@ -13,6 +13,7 @@ public class FDocument extends DefaultStyledDocument {
     private final Style def;
     private boolean highlighting;
     private boolean autoIndenting;
+    private boolean parsingEnabled;
     private FTheme theme;
     private final ExecutorService threads;
 
@@ -56,6 +57,14 @@ public class FDocument extends DefaultStyledDocument {
 
     public boolean isSyntaxHighlighting() {
         return highlighting;
+    }
+
+    public boolean isParsingEnabled() {
+        return parsingEnabled;
+    }
+
+    public void setParsingEnabled(boolean parsingEnabled) {
+        this.parsingEnabled = parsingEnabled;
     }
 
     private String getLineIndent(int offs) throws BadLocationException {
@@ -160,44 +169,34 @@ public class FDocument extends DefaultStyledDocument {
         return true;
     }
 
+    private void parse() {
+        try {
+            Tokenizer tokenizer = new Tokenizer(new StringCharacterStream(getText(0, getLength())));
+            Parser parser = new Parser(tokenizer);
+            parser.parseCL();
+        } catch (ParseException e) {
+            final Token errorToken = e.getErroneousToken();
+            int errorPos = errorToken.getPosition().getIndex();
+            int errorEndPos = errorToken.getEndPosition().getIndex();
+            setCharacterAttributes(errorPos, errorEndPos, theme.getErrorStyle().asStyle(def), true);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public void updateSyntaxHighlighting() {
         Token token = null;
         int pos = 0;
         try {
             final String text = getText(0, getLength());
-
-            int errorPos = -1;
-            int errorEndPos = -1;
-
-            /*
-             * The following piece of code is a way to implement an
-             * error highlighter. At the moment, it is commented out
-             * because there is no way to decide if a certain piece
-             * of code is a method definition or a CLI input by just
-             * looking at it.
-             *                                          - nijakow
-             */
-            /*try {
-                Tokenizer tokenizer = new Tokenizer(new StringCharacterStream(text));
-                Parser parser = new Parser(tokenizer);
-                parser.parseCL();
-            } catch (ParseException e) {
-                final Token errorToken = e.getErroneousToken();
-                errorPos = errorToken.getPosition().getIndex();
-                errorEndPos = errorToken.getEndPosition().getIndex();
-            }*/
-
             Tokenizer tokenizer = new Tokenizer(new StringCharacterStream(text));
             tokenizer.enableCommentTokens();
             tokenizer.muffleSymbols();
-
             do {
                 token = tokenizer.nextToken();
                 Style style = theme.getStyle(token.getType()) == null ? def : theme.getStyle(token.getType()).asStyle(def);
                 if (style == null) style = def;
                 pos = token.getPosition().getIndex();
-                if (errorPos >= 0 && pos >= errorPos && pos <= errorEndPos)
-                    style = theme.getErrorStyle().asStyle(null);
                 setCharacterAttributes(pos, (token.getEndPosition().getIndex()) - pos, style, true);
             } while (token.getType() != TokenType.EOF);
         } catch (Exception e) {
@@ -220,5 +219,6 @@ public class FDocument extends DefaultStyledDocument {
             e.printStackTrace();
             System.err.println("-------------------");
         }
+        if (parsingEnabled) parse();
     }
 }

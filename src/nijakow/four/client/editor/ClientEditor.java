@@ -44,6 +44,7 @@ public class ClientEditor extends JPanel implements ActionListener {
 		pane = new JTextPane();
 		doc = new FDocument();
 		doc.setAutoIndentingEnabled(PreferencesHelper.getInstance().getAutoIndenting());
+		doc.setParsingEnabled(true);
 		String theme = PreferencesHelper.getInstance().getEditorTheme();
 		EventQueue.invokeLater(() -> {
 			if (!theme.equals(Commands.Themes.DEFAULT)) {
