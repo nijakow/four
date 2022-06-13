@@ -29,12 +29,28 @@ public class STCompiledMethod extends STInstance implements STMethod {
         this.documentar = documentar;
         this.source = source;
         if (documentar != null) {
+            /*
+             * Parse the documentar, look for "@category" to determine
+             * the categories this method will be sorted into
+             */
             int i = documentar.indexOf("@category");
             if (i >= 0) {
+                /*
+                 * Category declaration detected!
+                 */
                 i += 9;
                 int j = documentar.indexOf('\n', i);
                 if (j < 0) j = documentar.length();
+                /*
+                 * An @category declaration can contain multiple
+                 * categories, separated by spaces
+                 */
                 String[] tokens = documentar.substring(i, j).trim().split("\\s+");
+                /*
+                 * Check if the list of categories is empty. In such a case,
+                 * String.split() will return a String[] with one element - the
+                 * empty string!
+                 */
                 if (!(tokens.length == 1 && tokens[0].isBlank())) {
                     this.categories = new STSymbol[tokens.length];
                     for (int x = 0; x < this.categories.length; x++) {
