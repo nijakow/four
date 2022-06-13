@@ -196,7 +196,7 @@ public class World {
 
         STClass fourClass = objectClass.subclass(null, this);
         fourClass.addMethodFromSource("main\n[\n    '/nijakow/four/smalltalk/classes/Bootstrapper.st' openResource load.\n    Bootstrapper new run.\n]\n");
-        fourClass.addMethodFromSource("newConnection: connection\n[\n    Transcript := connection.\n    Apps/Shell launch.\n    Transcript close.\n]\n");
+        fourClass.addMethodFromSource("newConnection: connection\n[\n    Transcript := connection.\n    Apps/Browser launch.\n    Transcript close.\n]\n");
 
         STObject four = (STObject) fourClass.instantiate();
         setValue("_Four", four);
