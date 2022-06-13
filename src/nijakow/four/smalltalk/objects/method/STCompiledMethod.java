@@ -51,7 +51,7 @@ public class STCompiledMethod extends STInstance implements STMethod {
                  * String.split() will return a String[] with one element - the
                  * empty string!
                  */
-                if (!(tokens.length == 1 && tokens[0].isBlank())) {
+                if (!(tokens.length == 1 && tokens[0].isEmpty())) {
                     this.categories = new STSymbol[tokens.length];
                     for (int x = 0; x < this.categories.length; x++) {
                         this.categories[x] = STSymbol.get(tokens[x].trim());
