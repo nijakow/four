@@ -630,7 +630,7 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 				case Commands.Codes.SPECIAL_PROMPT:    parsePrompt(arg.substring(first + 1));          break;
 				case Commands.Codes.SPECIAL_EDIT:      parseEdit(arg.substring(first + 1));            break;
 				case Commands.Codes.SPECIAL_IMG:       parseImg(arg);                                             break;
-				case Commands.Codes.SPECIAL_UPLOAD:    parseDownload(arg.substring(first + 1));          break;
+				case Commands.Codes.SPECIAL_UPLOAD:    parseDownload(arg.substring(first + 1));        break;
 				case Commands.Codes.SPECIAL_DOWNLOAD:  performUpload(arg.substring(first + 1));        break;
 				case Commands.Codes.SPECIAL_SMALLTALK: parsePromptSmalltalk(arg.substring(first + 1)); break;
 				default: alterCurrentStyleByName(arg); break;
