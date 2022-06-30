@@ -639,8 +639,61 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 		} else alterCurrentStyleByName(arg);
 	}
 
+	private List<Integer> splitAnsiToArgs(String arg) {
+		ArrayList<Integer> ret = new ArrayList<>();
+		arg = arg.substring(1);
+		String[] splits = arg.split(";");
+		for (String s : splits) {
+			ret.add(Integer.decode(s));
+		}
+		return ret;
+	}
+
 	private void parseAnsi(String arg) {
-		// TODO
+		List<Integer> args = splitAnsiToArgs(arg);
+		for (int i = 0; i < args.size(); ++i) {
+			switch (args.get(i)) {
+				case 0:   current = new FStyle();                 break;
+				case 1:   current.setBold(true);                  break;
+				case 4:   current.setUnderlined(true);            break;
+				case 21:  current.setBold(false);                 break;
+				case 24:  current.setUnderlined(false);           break;
+				case 39:  current.setForeground(null);            break; // ???
+				case 30:  current.setForeground(Color.black);     break;
+				case 31:  current.setForeground(Color.red);       break;
+				case 32:  current.setForeground(Color.green);     break;
+				case 33:  current.setForeground(Color.yellow);    break;
+				case 34:  current.setForeground(Color.blue);      break;
+				case 35:  current.setForeground(Color.magenta);   break;
+				case 36:  current.setForeground(Color.cyan);      break;
+				case 37:  current.setForeground(Color.lightGray); break;
+				case 40:  current.setBackground(Color.black);     break;
+				case 41:  current.setBackground(Color.red);       break;
+				case 42:  current.setBackground(Color.green);     break;
+				case 43:  current.setBackground(Color.yellow);    break;
+				case 44:  current.setBackground(Color.blue);      break;
+				case 45:  current.setBackground(Color.magenta);   break;
+				case 46:  current.setBackground(Color.cyan);      break;
+				case 47:  current.setBackground(Color.lightGray); break;
+				case 49:  current.setBackground(null);            break; // ???
+				case 90:  current.setForeground(Color.darkGray);  break;
+				case 91:  current.setForeground(Color.red);       break; // TODO: light red
+				case 92:  current.setForeground(Color.green);     break; // TODO: light green
+				case 93:  current.setForeground(Color.yellow);    break; // TODO: light yellow
+				case 94:  current.setForeground(Color.blue);      break; // TODO: light blue
+				case 95:  current.setForeground(Color.magenta);   break; // TODO: light magenta
+				case 96:  current.setForeground(Color.cyan);      break; // TODO: light cyan
+				case 97:  current.setForeground(Color.white);     break;
+				case 100: current.setBackground(Color.darkGray);  break;
+				case 101: current.setBackground(Color.red);       break; // TODO: light red
+				case 102: current.setBackground(Color.green);     break; // TODO: light green
+				case 103: current.setBackground(Color.yellow);    break; // TODO: light yellow
+				case 104: current.setBackground(Color.blue);      break; // TODO: light blue
+				case 105: current.setBackground(Color.magenta);   break; // TODO: light magenta
+				case 106: current.setBackground(Color.cyan);      break; // TODO: light cyan
+				case 107: current.setBackground(Color.white);     break;
+			}
+		}
 	}
 
 	private void showError(String text) {
@@ -781,7 +834,7 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 	public void charReceived(ClientConnection connection, char c) {
 		EventQueue.invokeLater(() -> {
 			try {
-				if (c == Commands.Codes.ANSI_END) {
+				if (c == Commands.Codes.ANSI_END && wasAnsi) {
 					wasAnsi = false;
 					parseAnsi(buffer);
 				} else if (wasAnsi) {
