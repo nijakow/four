@@ -669,43 +669,43 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 
 				// Foreground
 				case 30:  current.setForeground(Color.black);     break;
+				case 91:                                                 // Not supported: light red
 				case 31:  current.setForeground(Color.red);       break;
+				case 92:                                                 // Not supported: light green
 				case 32:  current.setForeground(Color.green);     break;
+				case 93:                                                 // Not supported: light yellow
 				case 33:  current.setForeground(Color.yellow);    break;
+				case 94:                                                 // Not supported: light blue
 				case 34:  current.setForeground(Color.blue);      break;
+				case 95:                                                 // Not supported: light magenta
 				case 35:  current.setForeground(Color.magenta);   break;
+				case 96:                                                 // Not supported: light cyan
 				case 36:  current.setForeground(Color.cyan);      break;
 				case 37:  current.setForeground(Color.lightGray); break;
 				case 39:  current.setForeground(null);            break;
 				case 90:  current.setForeground(Color.darkGray);  break;
-				case 91:  current.setForeground(Color.red);       break; // TODO: light red
-				case 92:  current.setForeground(Color.green);     break; // TODO: light green
-				case 93:  current.setForeground(Color.yellow);    break; // TODO: light yellow
-				case 94:  current.setForeground(Color.blue);      break; // TODO: light blue
-				case 95:  current.setForeground(Color.magenta);   break; // TODO: light magenta
-				case 96:  current.setForeground(Color.cyan);      break; // TODO: light cyan
 				case 97:  current.setForeground(Color.white);     break;
 
 				// Background
 				case 40:  current.setBackground(Color.black);     break;
+				case 101:                                                // Not supported: light red
 				case 41:  current.setBackground(Color.red);       break;
+				case 102:                                                // Not supported: light green
 				case 42:  current.setBackground(Color.green);     break;
+				case 103:                                                // Not supported: light yellow
 				case 43:  current.setBackground(Color.yellow);    break;
+				case 104:                                                // Not supported: light blue
 				case 44:  current.setBackground(Color.blue);      break;
+				case 105:                                                // Not supported: light magenta
 				case 45:  current.setBackground(Color.magenta);   break;
+				case 106:                                                // Not supported: light cyan
 				case 46:  current.setBackground(Color.cyan);      break;
 				case 47:  current.setBackground(Color.lightGray); break;
 				case 49:  current.setBackground(null);            break;
 				case 100: current.setBackground(Color.darkGray);  break;
-				case 101: current.setBackground(Color.red);       break; // TODO: light red
-				case 102: current.setBackground(Color.green);     break; // TODO: light green
-				case 103: current.setBackground(Color.yellow);    break; // TODO: light yellow
-				case 104: current.setBackground(Color.blue);      break; // TODO: light blue
-				case 105: current.setBackground(Color.magenta);   break; // TODO: light magenta
-				case 106: current.setBackground(Color.cyan);      break; // TODO: light cyan
 				case 107: current.setBackground(Color.white);     break;
 
-				// 256 colour support
+				// 256 colour support and RGB colours
 				case 38:
 					++i;
 					if (args.get(i) == 5) set256ForegroundColour(args.get(i + 1)); // <-- Currently not supported!
