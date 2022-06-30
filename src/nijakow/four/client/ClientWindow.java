@@ -649,6 +649,14 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 		return ret;
 	}
 
+	private void set256ForegroundColour(int colourCode) {
+		System.err.println(colourCode + ": 256 colour table not available!");
+	}
+
+	private void set256BackgroundColour(int colourCode) {
+		System.err.println(colourCode + ": 256 colour table not available!");
+	}
+
 	private void parseAnsi(String arg) {
 		List<Integer> args = splitAnsiToArgs(arg);
 		for (int i = 0; i < args.size(); ++i) {
@@ -658,7 +666,8 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 				case 4:   current.setUnderlined(true);            break;
 				case 21:  current.setBold(false);                 break;
 				case 24:  current.setUnderlined(false);           break;
-				case 39:  current.setForeground(null);            break; // ???
+
+				// Foreground
 				case 30:  current.setForeground(Color.black);     break;
 				case 31:  current.setForeground(Color.red);       break;
 				case 32:  current.setForeground(Color.green);     break;
@@ -667,15 +676,7 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 				case 35:  current.setForeground(Color.magenta);   break;
 				case 36:  current.setForeground(Color.cyan);      break;
 				case 37:  current.setForeground(Color.lightGray); break;
-				case 40:  current.setBackground(Color.black);     break;
-				case 41:  current.setBackground(Color.red);       break;
-				case 42:  current.setBackground(Color.green);     break;
-				case 43:  current.setBackground(Color.yellow);    break;
-				case 44:  current.setBackground(Color.blue);      break;
-				case 45:  current.setBackground(Color.magenta);   break;
-				case 46:  current.setBackground(Color.cyan);      break;
-				case 47:  current.setBackground(Color.lightGray); break;
-				case 49:  current.setBackground(null);            break; // ???
+				case 39:  current.setForeground(null);            break;
 				case 90:  current.setForeground(Color.darkGray);  break;
 				case 91:  current.setForeground(Color.red);       break; // TODO: light red
 				case 92:  current.setForeground(Color.green);     break; // TODO: light green
@@ -684,6 +685,17 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 				case 95:  current.setForeground(Color.magenta);   break; // TODO: light magenta
 				case 96:  current.setForeground(Color.cyan);      break; // TODO: light cyan
 				case 97:  current.setForeground(Color.white);     break;
+
+				// Background
+				case 40:  current.setBackground(Color.black);     break;
+				case 41:  current.setBackground(Color.red);       break;
+				case 42:  current.setBackground(Color.green);     break;
+				case 43:  current.setBackground(Color.yellow);    break;
+				case 44:  current.setBackground(Color.blue);      break;
+				case 45:  current.setBackground(Color.magenta);   break;
+				case 46:  current.setBackground(Color.cyan);      break;
+				case 47:  current.setBackground(Color.lightGray); break;
+				case 49:  current.setBackground(null);            break;
 				case 100: current.setBackground(Color.darkGray);  break;
 				case 101: current.setBackground(Color.red);       break; // TODO: light red
 				case 102: current.setBackground(Color.green);     break; // TODO: light green
@@ -692,6 +704,25 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 				case 105: current.setBackground(Color.magenta);   break; // TODO: light magenta
 				case 106: current.setBackground(Color.cyan);      break; // TODO: light cyan
 				case 107: current.setBackground(Color.white);     break;
+
+				// 256 colour support
+				case 38:
+					++i;
+					if (args.get(i) == 5) set256ForegroundColour(args.get(i + 1)); // <-- Currently not supported!
+					else if (args.get(i) == 2) {
+						current.setForeground(new Color(args.get(i + 1), args.get(i + 2), args.get(i + 3)));
+						i += 2;
+					}
+					break;
+
+				case 48:
+					++i;
+					if (args.get(i) == 5) set256BackgroundColour(args.get(i + 1));  // <-- Currently not supported!
+					else if (args.get(i) == 2) {
+						current.setBackground(new Color(args.get(i + 1), args.get(i + 2), args.get(i + 3)));
+						i += 2;
+					}
+					break;
 			}
 		}
 	}
