@@ -30,6 +30,8 @@ public abstract class Commands {
 		public static final String SPECIAL_DOWNLOAD  = "file/download";
 		public static final char SPECIAL_START    = 0x02;
 		public static final char SPECIAL_END      = 0x03;
+		public static final char ANSI_START       = 0x1b;
+		public static final char ANSI_END         = 0x6d;
 	}
 
 	public abstract static class Keys {

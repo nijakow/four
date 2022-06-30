@@ -54,6 +54,7 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 	private boolean reconnect;
 	private boolean bother;
 	private boolean wasSpecial;
+	private boolean wasAnsi;
 	private boolean editorShowing;
 	private FStyle current;
 	private ScheduledFuture<?> reconnectorHandler;
@@ -638,6 +639,10 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 		} else alterCurrentStyleByName(arg);
 	}
 
+	private void parseAnsi(String arg) {
+		// TODO
+	}
+
 	private void showError(String text) {
 		EventQueue.invokeLater(() -> {
 			try {
@@ -776,7 +781,15 @@ public class ClientWindow extends JFrame implements ActionListener, ClientConnec
 	public void charReceived(ClientConnection connection, char c) {
 		EventQueue.invokeLater(() -> {
 			try {
-				if (c == Commands.Codes.SPECIAL_END) {
+				if (c == Commands.Codes.ANSI_END) {
+					wasAnsi = false;
+					parseAnsi(buffer);
+				} else if (wasAnsi) {
+					buffer += c;
+				} else if (c == Commands.Codes.ANSI_START) {
+					wasAnsi = true;
+					buffer = "";
+				} else if (c == Commands.Codes.SPECIAL_END) {
 					wasSpecial = false;
 					parseArgument(buffer);
 				} else if (wasSpecial)
